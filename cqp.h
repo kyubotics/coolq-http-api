@@ -47,13 +47,13 @@ CQ_setGroupKick(int32_t AuthCode, int64_t groupid, int64_t QQID, CQBOOL rejectad
 CQAPI(int32_t)
 CQ_setGroupBan(int32_t AuthCode, int64_t groupid, int64_t QQID, int64_t duration);
 CQAPI(int32_t)
-CQ_setGroupAdmin(int32_t AuthCode, int64_t groupid, int64_t QQID, CQBOOL setadmin);
+CQ_setGroupAnonymousBan(int32_t AuthCode, int64_t groupid, const char *anonymous, int64_t duration);
 CQAPI(int32_t)
 CQ_setGroupWholeBan(int32_t AuthCode, int64_t groupid, CQBOOL enableban);
 CQAPI(int32_t)
-CQ_setGroupAnonymousBan(int32_t AuthCode, int64_t groupid, const char *anomymous, int64_t duration);
+CQ_setGroupAdmin(int32_t AuthCode, int64_t groupid, int64_t QQID, CQBOOL setadmin);
 CQAPI(int32_t)
-CQ_setGroupAnonymous(int32_t AuthCode, int64_t groupid, CQBOOL enableanomymous);
+CQ_setGroupAnonymous(int32_t AuthCode, int64_t groupid, CQBOOL enableanonymous);
 CQAPI(int32_t)
 CQ_setGroupCard(int32_t AuthCode, int64_t groupid, int64_t QQID, const char *newcard);
 CQAPI(int32_t)
