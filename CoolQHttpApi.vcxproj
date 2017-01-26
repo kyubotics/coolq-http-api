@@ -88,7 +88,7 @@
     <Library Include="CQP.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="appmain.h" />
+    <ClInclude Include="app.h" />
     <ClInclude Include="cqp.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="encoding.h" />

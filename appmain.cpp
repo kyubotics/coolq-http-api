@@ -5,7 +5,6 @@
 */
 
 #include "stdafx.h"
-#include "appmain.h" // 应用AppID等信息，请正确填写，否则酷Q可能无法加载
 
 #include <sstream>
 #include <curl/curl.h>
@@ -107,15 +106,18 @@ void stop_httpd()
 {
     if (httpd_thread_handle)
     {
-        event_base_loopbreak(httpd_event_base);
+        if (httpd_event_base)
+        {
+            event_base_loopbreak(httpd_event_base);
+        }
         if (httpd_event)
         {
             evhttp_free(httpd_event);
         }
-        if (httpd_event_base)
-        {
-            event_base_free(httpd_event_base);
-        }
+        // if (httpd_event_base)
+        // {
+        //     event_base_free(httpd_event_base);
+        // }
         WSACleanup();
         CloseHandle(httpd_thread_handle);
         httpd_thread_handle = NULL;

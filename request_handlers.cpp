@@ -9,6 +9,16 @@ using namespace std;
 
 extern int ac; // global AuthCode in appmain.cpp
 
+CQHTTP_REQUEST_HANDLER(get_login_info)
+(const struct cqhttp_request &request)
+{
+    struct cqhttp_result result;
+    int64_t id = CQ_getLoginQQ(ac);
+    const char *nickname = CQ_getLoginNick(ac);
+    result.data = json_pack("{s:I,s:s?}", "id", id, "nickname", gbk_to_utf8(nickname).c_str());
+    return result;
+}
+
 CQHTTP_REQUEST_HANDLER(send_private_msg)
 (const struct cqhttp_request &request)
 {
@@ -115,9 +125,9 @@ CQHTTP_REQUEST_HANDLER(set_group_whole_ban)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    bool enabled = cqhttp_get_bool_param(request, "enabled", true);
+    bool enable = cqhttp_get_bool_param(request, "enable", true);
     if (group_id)
-        CQ_setGroupWholeBan(ac, group_id, enabled);
+        CQ_setGroupWholeBan(ac, group_id, enable);
     else
         result.status = CQHTTP_STATUS_FAILED;
     return result;
@@ -129,9 +139,9 @@ CQHTTP_REQUEST_HANDLER(set_group_admin)
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    bool enabled = cqhttp_get_bool_param(request, "enabled", true);
+    bool enable = cqhttp_get_bool_param(request, "enable", true);
     if (group_id && user_id)
-        CQ_setGroupAdmin(ac, group_id, user_id, enabled);
+        CQ_setGroupAdmin(ac, group_id, user_id, enable);
     else
         result.status = CQHTTP_STATUS_FAILED;
     return result;
@@ -142,9 +152,9 @@ CQHTTP_REQUEST_HANDLER(set_group_anonymous) // CoolQ Pro only
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    bool enabled = cqhttp_get_bool_param(request, "enabled", true);
+    bool enable = cqhttp_get_bool_param(request, "enable", true);
     if (group_id)
-        CQ_setGroupAnonymous(ac, group_id, enabled);
+        CQ_setGroupAnonymous(ac, group_id, enable);
     else
         result.status = CQHTTP_STATUS_FAILED;
     return result;
@@ -203,6 +213,23 @@ CQHTTP_REQUEST_HANDLER(set_discuss_leave)
     int64_t discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
     if (discuss_id)
         CQ_setDiscussLeave(ac, discuss_id);
+    else
+        result.status = CQHTTP_STATUS_FAILED;
+    return result;
+}
+
+CQHTTP_REQUEST_HANDLER(get_group_member_info_v2)
+(const struct cqhttp_request &request)
+{
+    struct cqhttp_result result;
+    int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
+    int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
+    bool no_cache = cqhttp_get_bool_param(request, "no_cache", false);
+    if (group_id && user_id)
+    {
+        string b64_info = gbk_to_utf8(CQ_getGroupMemberInfoV2(ac, group_id, user_id, no_cache));
+        result.data = json_pack("{s:s?}", "info", b64_info);
+    }
     else
         result.status = CQHTTP_STATUS_FAILED;
     return result;

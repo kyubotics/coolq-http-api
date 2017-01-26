@@ -27,7 +27,7 @@
     <ClInclude Include="targetver.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="appmain.h">
+    <ClInclude Include="app.h">
       <Filter>源文件</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
