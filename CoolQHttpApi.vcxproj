@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{87741E01-60D4-4160-934A-37F817EA099B}</ProjectGuid>
+    <RootNamespace>CoolQHttpApi</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>io.github.richardchien.coolqhttpapi</TargetName>
+    <ExtensionsToDeleteOnClean>$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
+    <IncludePath>C:\Users\Richard Chien\Documents\libevent-2.0.22\win32_include;C:\Users\Richard Chien\Documents\jansson-2.9\build\include;C:\Users\Richard Chien\Documents\curl-7.52.1\builds\libcurl-vc10-x86-debug-static-ipv6-sspi-winssl\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>io.github.richardchien.coolqhttpapi</TargetName>
+    <ExtensionsToDeleteOnClean>$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
+    <IncludePath>C:\Users\Richard Chien\Documents\libevent-2.0.22\win32_include;C:\Users\Richard Chien\Documents\jansson-2.9\build\include;C:\Users\Richard Chien\Documents\curl-7.52.1\builds\libcurl-vc10-x86-release-static-ipv6-sspi-winssl\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Richard Chien\Documents\libevent-2.0.22;C:\Users\Richard Chien\Documents\jansson-2.9\build\lib\Debug;C:\Users\Richard Chien\Documents\curl-7.52.1\builds\libcurl-vc10-x86-debug-static-ipv6-sspi-winssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libevent_core.lib;libevent_extras.lib;libcurl_a_debug.lib;jansson_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Users\Richard Chien\Documents\libevent-2.0.22;C:\Users\Richard Chien\Documents\jansson-2.9\build\lib\Release;C:\Users\Richard Chien\Documents\curl-7.52.1\builds\libcurl-vc10-x86-release-static-ipv6-sspi-winssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libevent_core.lib;libevent_extras.lib;libcurl_a.lib;jansson.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Library Include="CQP.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="appmain.h" />
+    <ClInclude Include="cqp.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="encoding.h" />
+    <ClInclude Include="misc_functions.h" />
+    <ClInclude Include="request_handlers.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="request.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="appmain.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="encoding.cpp" />
+    <ClCompile Include="misc_functions.cpp" />
+    <ClCompile Include="request.cpp" />
+    <ClCompile Include="request_handlers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\..\Program Files (x86)\CQA\app\io.github.richardchien.coolqhttpapi.json" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
