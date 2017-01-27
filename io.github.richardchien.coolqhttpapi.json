@@ -1,0 +1,130 @@
+// 酷Q 的Json文件支持以 // 开头的注释。
+// 打包前，应用的 .dll, .json 的文件名须以appid命名，应用AppInfo返回的内容须改为appid
+// 如 appid=com.example.democ, 则dll及json文件需分别命名为 com.example.democ.dll、com.example.democ.json
+{
+    "ret": 1, // 返回码，固定为1
+    "apiver": 9, // Api版本，本SDK为9
+    "name": "HTTP API", // 应用名称
+    "version": "1.0.0", // 应用版本
+    "version_id": 1, // 应用顺序版本（每次发布时至少+1）
+    "author": "Richard Chien", // 应用作者
+    "description": "使酷 Q 支持事件通过 HTTP 上报，以及接受 HTTP 请求来执行操作",
+    "event": [ // 事件列表，同一事件类型可重复定义（发布前请删除无用事件）
+        {
+            "id": 1, // 事件ID
+            "type": 21, // 事件类型
+            "name": "私聊消息处理", // 事件名称
+            "function": "_eventPrivateMsg", // 事件对应函数
+            "priority": 30000 // 事件优先级(参见 cqp.im/deveventpriority)
+        },
+        {
+            "id": 2,
+            "type": 2,
+            "name": "群消息处理",
+            "function": "_eventGroupMsg",
+            "priority": 30000
+        },
+        {
+            "id": 3,
+            "type": 4,
+            "name": "讨论组消息处理",
+            "function": "_eventDiscussMsg",
+            "priority": 30000
+        },
+        {
+            "id": 5,
+            "type": 101,
+            "name": "群管理变动事件处理",
+            "function": "_eventSystem_GroupAdmin",
+            "priority": 30000
+        },
+        {
+            "id": 6,
+            "type": 102,
+            "name": "群成员减少事件处理",
+            "function": "_eventSystem_GroupMemberDecrease",
+            "priority": 30000
+        },
+        {
+            "id": 7,
+            "type": 103,
+            "name": "群成员增加事件处理",
+            "function": "_eventSystem_GroupMemberIncrease",
+            "priority": 30000
+        },
+        {
+            "id": 10,
+            "type": 201,
+            "name": "好友已添加事件处理",
+            "function": "_eventFriend_Add",
+            "priority": 30000
+        },
+        {
+            "id": 8,
+            "type": 301,
+            "name": "好友添加请求处理",
+            "function": "_eventRequest_AddFriend",
+            "priority": 30000
+        },
+        {
+            "id": 9,
+            "type": 302,
+            "name": "群添加请求处理",
+            "function": "_eventRequest_AddGroup",
+            "priority": 30000
+        },
+        {
+            "id": 1001,
+            "type": 1001,
+            "name": "酷Q启动事件",
+            "priority": 30000,
+            "function": "_eventStartup"
+        },
+        {
+            "id": 1002,
+            "type": 1002,
+            "name": "酷Q关闭事件",
+            "priority": 30000,
+            "function": "_eventExit"
+        },
+        {
+            "id": 1003,
+            "type": 1003,
+            "name": "应用已被启用",
+            "priority": 30000,
+            "function": "_eventEnable"
+        },
+        {
+            "id": 1004,
+            "type": 1004,
+            "name": "应用将被停用",
+            "priority": 30000,
+            "function": "_eventDisable"
+        }
+    ],
+    "menu": [],
+    "status": [ // 悬浮窗状态（见 com.example.status 样例）
+    ],
+    "auth": [ // 应用权限（发布前请删除无用权限）
+        //20,  //[敏感]取Cookies getCookies / getCsrfToken
+        30, //接收语音 getRecord
+        101, //发送群消息 sendGroupMsg
+        103, //发送讨论组消息 sendDiscussMsg
+        106, //发送私聊消息 sendPrivateMsg
+        110, //发送赞 sendLike
+        120, //置群员移除 setGroupKick
+        121, //置群员禁言 setGroupBan
+        122, //置群管理员 setGroupAdmin
+        123, //置全群禁言 setGroupWholeBan
+        124, //置匿名群员禁言 setGroupAnonymousBan
+        125, //置群匿名设置 setGroupAnonymous
+        126, //置群成员名片 setGroupCard
+        127, //[敏感]置群退出 setGroupLeave
+        128, //置群成员专属头衔 setGroupSpecialTitle
+        130, //取群成员信息 getGroupMemberInfoV2 / getGroupMemberInfo
+        131, //取陌生人信息 getStrangerInfo
+        140, //置讨论组退出 setDiscussLeave
+        150, //置好友添加请求 setFriendAddRequest
+        151 //置群添加请求 setGroupAddRequest
+    ]
+}
