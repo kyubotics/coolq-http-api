@@ -1,9 +1,14 @@
 #include "request_handlers.h"
 
 #include <jansson.h>
+#include <cstdlib>
 
 #include "request.h"
 #include "encoding.h"
+#include "base64.h"
+
+#include <algorithm>
+#include <sstream>
 
 using namespace std;
 
@@ -196,7 +201,7 @@ CQHTTP_REQUEST_HANDLER(set_group_special_title)
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
     char *special_title = cqhttp_get_param(request, "special_title");
-    int64_t duration = cqhttp_get_integer_param(request, "duration", 30 * 24 * 60 * 60 /* 30 days */);
+    int64_t duration = cqhttp_get_integer_param(request, "duration", -1 /* permanent */); // seems to be no effect
     if (group_id && user_id)
         CQ_setGroupSpecialTitle(ac, group_id, user_id, special_title ? utf8_to_gbk(special_title).c_str() : NULL, duration);
     else
@@ -218,6 +223,75 @@ CQHTTP_REQUEST_HANDLER(set_discuss_leave)
     return result;
 }
 
+void get_integer_from_decoded_bytes(const string &bytes, size_t start, size_t size, void *dst)
+{
+    string sub = bytes.substr(start, size);
+    reverse(sub.begin(), sub.end());
+    memcpy(dst, sub.data(), size);
+}
+
+void get_string_from_decoded_bytes(const string &bytes, size_t start, size_t *size, string *dst)
+{
+    int16_t str_length = 0;
+    get_integer_from_decoded_bytes(bytes, start, 2, &str_length);
+    if (str_length == 0)
+        *dst = "";
+    else
+        *dst = gbk_to_utf8(bytes.substr(start + 2, str_length).c_str());
+    *size = 2 + str_length;
+}
+
+#define INIT(bytes_str)       \
+    size_t _start = 0, _size; \
+    string &_bytes = bytes_str;
+#define INTEGER(field)                                             \
+    _size = sizeof(field);                                         \
+    get_integer_from_decoded_bytes(_bytes, _start, _size, &field); \
+    _start += _size;
+#define STRING(field)                                              \
+    get_string_from_decoded_bytes(_bytes, _start, &_size, &field); \
+    _start += _size;
+
+struct raw_group_member_info
+{
+    int64_t group_id;
+    int64_t user_id;
+    string nickname; // all strings are converted to utf8
+    string card;
+    int32_t sex;
+    int32_t age;
+    string area;
+    int32_t join_time;
+    int32_t last_sent_time;
+    string level;
+    int32_t role;
+    int32_t unfriendly; // unsure
+    string title;
+    int32_t title_expire_time;
+    int32_t card_changeable;
+
+    json_t *json()
+    {
+        json_t *data = json_object();
+        json_object_set_new(data, "group_id", json_integer(group_id));
+        json_object_set_new(data, "user_id", json_integer(user_id));
+        json_object_set_new(data, "nickname", json_string(nickname.c_str()));
+        json_object_set_new(data, "card", json_string(card.c_str()));
+        json_object_set_new(data, "sex", json_string(sex == 0 ? "male" : (sex == 1 ? "female" : "unknown")));
+        json_object_set_new(data, "age", json_integer(age));
+        json_object_set_new(data, "area", json_string(area.c_str()));
+        json_object_set_new(data, "join_time", json_integer(join_time));
+        json_object_set_new(data, "last_sent_time", json_integer(last_sent_time));
+        json_object_set_new(data, "level", json_string(level.c_str()));
+        json_object_set_new(data, "role", json_string(role == 3 ? "owner" : (role == 2 ? "admin" : (role == 1 ? "member" : "unknown"))));
+        json_object_set_new(data, "unfriendly", json_boolean(unfriendly));
+        json_object_set_new(data, "title", json_string(title.c_str()));
+        json_object_set_new(data, "title_expire_time", json_integer(title_expire_time));
+        json_object_set_new(data, "card_changeable", json_boolean(card_changeable));
+        return data;
+    }
+};
+
 CQHTTP_REQUEST_HANDLER(get_group_member_info_v2)
 (const struct cqhttp_request &request)
 {
@@ -227,10 +301,81 @@ CQHTTP_REQUEST_HANDLER(get_group_member_info_v2)
     bool no_cache = cqhttp_get_bool_param(request, "no_cache", false);
     if (group_id && user_id)
     {
-        string b64_info = gbk_to_utf8(CQ_getGroupMemberInfoV2(ac, group_id, user_id, no_cache));
-        result.data = json_pack("{s:s?}", "info", b64_info);
+        string bytes = base64_decode(gbk_to_utf8(CQ_getGroupMemberInfoV2(ac, group_id, user_id, no_cache)));
+        if (bytes.size() >= 58 /* minimum valid bytes size */)
+        {
+            struct raw_group_member_info member_info;
+            INIT(bytes);
+            INTEGER(member_info.group_id);
+            INTEGER(member_info.user_id);
+            STRING(member_info.nickname);
+            STRING(member_info.card);
+            INTEGER(member_info.sex);
+            INTEGER(member_info.age);
+            STRING(member_info.area);
+            INTEGER(member_info.join_time);
+            INTEGER(member_info.last_sent_time);
+            STRING(member_info.level);
+            INTEGER(member_info.role);
+            INTEGER(member_info.unfriendly);
+            STRING(member_info.title);
+            INTEGER(member_info.title_expire_time);
+            INTEGER(member_info.card_changeable);
+            result.data = member_info.json();
+        }
+        else
+            result.status = CQHTTP_STATUS_FAILED;
     }
     else
         result.status = CQHTTP_STATUS_FAILED;
     return result;
 }
+
+struct raw_stranger_info
+{
+    int64_t user_id;
+    string nickname; // utf8
+    int32_t sex;
+    int32_t age;
+
+    json_t *json()
+    {
+        json_t *data = json_object();
+        json_object_set_new(data, "user_id", json_integer(user_id));
+        json_object_set_new(data, "nickname", json_string(nickname.c_str()));
+        json_object_set_new(data, "sex", json_string(sex == 0 ? "male" : (sex == 1 ? "female" : "unknown")));
+        json_object_set_new(data, "age", json_integer(age));
+        return data;
+    }
+};
+
+CQHTTP_REQUEST_HANDLER(get_stranger_info)
+(const struct cqhttp_request &request)
+{
+    struct cqhttp_result result;
+    int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
+    bool no_cache = cqhttp_get_bool_param(request, "no_cache", false);
+    if (user_id)
+    {
+        string bytes = base64_decode(gbk_to_utf8(CQ_getStrangerInfo(ac, user_id, no_cache)));
+        if (bytes.size() >= 18 /* minimum valid bytes size */)
+        {
+            struct raw_stranger_info stranger_info;
+            INIT(bytes);
+            INTEGER(stranger_info.user_id);
+            STRING(stranger_info.nickname);
+            INTEGER(stranger_info.sex);
+            INTEGER(stranger_info.age);
+            result.data = stranger_info.json();
+        }
+        else
+            result.status = CQHTTP_STATUS_FAILED;
+    }
+    else
+        result.status = CQHTTP_STATUS_FAILED;
+    return result;
+}
+
+#undef INIT
+#undef INTEGER
+#undef STRING

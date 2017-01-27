@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
+    <ClInclude Include="base64.h" />
     <ClInclude Include="cqp.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="encoding.h" />
@@ -100,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="appmain.cpp" />
+    <ClCompile Include="base64.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="encoding.cpp" />
     <ClCompile Include="misc_functions.cpp" />

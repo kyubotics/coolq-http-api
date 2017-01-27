@@ -45,6 +45,9 @@
     <ClInclude Include="request_handlers.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="base64.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="appmain.cpp">
@@ -63,6 +66,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="request_handlers.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="base64.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
