@@ -1,12 +1,12 @@
-/*
-* CoolQ Demo for VC++
-* Api Version 9
-* Written by Coxxs & Thanks for the help of orzFly
-*/
+/**
+ * CoolQ HTTP API core.
+ */
 
 #include "stdafx.h"
 
+#include <string>
 #include <sstream>
+#include <fstream>
 #include <curl/curl.h>
 #include <jansson.h>
 #include <event2/event.h>
@@ -16,6 +16,7 @@
 #include "encoding.h"
 #include "misc_functions.h"
 #include "request.h"
+#include "ini.h"
 
 using namespace std;
 
@@ -25,7 +26,12 @@ bool enabled = false;
 HANDLE httpd_thread_handle = NULL;
 struct event_base *httpd_event_base = NULL;
 struct evhttp *httpd_event = NULL;
-const char
+struct cqhttp_config
+{
+    string host;
+    int port;
+    string post_url;
+} httpd_config;
 
 /*
 * 返回应用的ApiVer、Appid，打包后将不会调用
@@ -47,28 +53,68 @@ CQEVENT(int32_t, Initialize, 4)
     return 0;
 }
 
-/*
-* Type=1001 酷Q启动
-* 无论本应用是否被启用，本函数都会在酷Q启动后执行一次，请在这里执行应用初始化代码。
-* 如非必要，不建议在这里加载窗口。（可以添加菜单，让用户手动打开窗口）
-*/
-CQEVENT(int32_t, __eventStartup, 0)
-()
+static int parse_conf_handler(void *user, const char *section, const char *name, const char *value)
 {
-    return 0;
+    struct cqhttp_config *config = (struct cqhttp_config *)user;
+    if (string(section) == "general")
+    {
+        string field = name;
+        if (field == "host")
+            config->host = value;
+        else if (field == "port")
+            config->port = atoi(value);
+        else if (field == "post_url")
+            config->post_url = value;
+        else
+            return 0;
+    }
+    else
+        return 0; /* unknown section/name, error */
+    return 1;
 }
 
-/*
-* Type=1002 酷Q退出
-* 无论本应用是否被启用，本函数都会在酷Q退出前执行一次，请在这里执行插件关闭代码。
-* 本函数调用完毕后，酷Q将很快关闭，请不要再通过线程等方式执行其他代码。
-*/
-CQEVENT(int32_t, __eventExit, 0)
-()
+/**
+ * Initialize plugin, called immediately when plugin is enabled.
+ */
+void init()
 {
-    return 0;
+    LOG_D("启用", "初始化");
+
+    // default config
+    httpd_config.host = "0.0.0.0";
+    httpd_config.port = 5700;
+    httpd_config.post_url = "";
+
+    string conf_path = string(CQ_getAppDirectory(ac)) + "config.cfg";
+    FILE *conf_file = NULL;
+    fopen_s(&conf_file, conf_path.c_str(), "r");
+    if (!conf_file)
+    {
+        // first init, save default config
+        LOG_D("启用", "没有找到配置文件，写入默认配置");
+        ofstream file(conf_path);
+        file << "[general]\nhost=0.0.0.0\nport=5700\npost_url=\n";
+    }
+    else
+    {
+        // load from config file
+        LOG_D("启用", "读取配置文件");
+        ini_parse_file(conf_file, parse_conf_handler, &httpd_config);
+        fclose(conf_file);
+    }
 }
 
+/**
+ * Cleanup plugin, called after all other operations when plugin is disabled.
+ */
+void cleanup()
+{
+    // do nothing currently
+}
+
+/**
+ * Portal function of HTTP daemon thread.
+ */
 DWORD WINAPI httpd_thread_func(LPVOID lpParam)
 {
     WSADATA wsa_data;
@@ -78,13 +124,19 @@ DWORD WINAPI httpd_thread_func(LPVOID lpParam)
     httpd_event = evhttp_new(httpd_event_base);
 
     evhttp_set_gencb(httpd_event, cqhttp_main_handler, NULL);
-    evhttp_bind_socket(httpd_event, "0.0.0.0", 5700);
-    LOG_D("HTTP线程", "开始监听 0.0.0.0:5700\n");
+    evhttp_bind_socket(httpd_event, httpd_config.host.c_str(), httpd_config.port);
+
+    stringstream ss;
+    ss << "开始监听 " << httpd_config.host << ":" << httpd_config.port;
+    LOG_D("HTTP线程", ss.str());
 
     event_base_dispatch(httpd_event_base);
     return 0;
 }
 
+/**
+ * Start HTTP daemon thread.
+ */
 void start_httpd()
 {
     httpd_thread_handle = CreateThread(NULL,              // default security attributes
@@ -103,6 +155,9 @@ void start_httpd()
     }
 }
 
+/**
+ * Stop HTTP daemon thread.
+ */
 void stop_httpd()
 {
     if (httpd_thread_handle)
@@ -129,30 +184,26 @@ void stop_httpd()
 }
 
 /*
-* Type=1003 应用已被启用
-* 当应用被启用后，将收到此事件。
-* 如果酷Q载入时应用已被启用，则在_eventStartup(Type=1001,酷Q启动)被调用后，本函数也将被调用一次。
-* 如非必要，不建议在这里加载窗口。（可以添加菜单，让用户手动打开窗口）
+* Event: plugin is enabled.
 */
 CQEVENT(int32_t, __eventEnable, 0)
 ()
 {
     enabled = true;
+    init();
     start_httpd();
     return 0;
 }
 
 /*
-* Type=1004 应用将被停用
-* 当应用被停用前，将收到此事件。
-* 如果酷Q载入时应用已被停用，则本函数*不会*被调用。
-* 无论本应用是否被启用，酷Q关闭前本函数都*不会*被调用。
+* Event: plugin is disabled.
 */
 CQEVENT(int32_t, __eventDisable, 0)
 ()
 {
     enabled = false;
     stop_httpd();
+    cleanup();
     return 0;
 }
 

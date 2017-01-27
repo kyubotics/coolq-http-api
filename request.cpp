@@ -10,7 +10,7 @@
 
 using namespace std;
 
-struct cqhttp_result dispatch_request(const struct cqhttp_request &request);
+static struct cqhttp_result dispatch_request(const struct cqhttp_request &request);
 
 void cqhttp_main_handler(struct evhttp_request *req, void *_)
 {

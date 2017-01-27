@@ -91,6 +91,7 @@
     <ClInclude Include="app.h" />
     <ClInclude Include="base64.h" />
     <ClInclude Include="cqp.h" />
+    <ClInclude Include="ini.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="encoding.h" />
     <ClInclude Include="misc_functions.h" />
@@ -104,6 +105,7 @@
     <ClCompile Include="base64.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="encoding.cpp" />
+    <ClCompile Include="ini.c" />
     <ClCompile Include="misc_functions.cpp" />
     <ClCompile Include="request.cpp" />
     <ClCompile Include="request_handlers.cpp" />
