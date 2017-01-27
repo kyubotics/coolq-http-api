@@ -14,6 +14,7 @@ struct cqhttp_request
     const char *path;
     const struct evkeyvalq *args;
     const struct evkeyvalq *form;
+    json_t *json;
 };
 
 /**

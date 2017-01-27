@@ -2,13 +2,11 @@
 
 #include <jansson.h>
 #include <cstdlib>
+#include <algorithm>
 
 #include "request.h"
 #include "encoding.h"
 #include "base64.h"
-
-#include <algorithm>
-#include <sstream>
 
 using namespace std;
 

@@ -32,6 +32,7 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_)
     struct cqhttp_request request;
     request.args = args;
     request.form = form;
+    request.json = NULL;
 
     const struct evhttp_uri *uri = evhttp_request_get_evhttp_uri(req);
     request.path = evhttp_uri_get_path(uri);
@@ -46,38 +47,50 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_)
     {
         // check content type
         struct evkeyvalq *input_headers = evhttp_request_get_input_headers(req);
-        if (string(evhttp_find_header(input_headers, "Content-Type")) == "application/x-www-form-urlencoded")
+        string content_type = string(evhttp_find_header(input_headers, "Content-Type"));
+        if (content_type == "application/x-www-form-urlencoded" || content_type == "application/json")
         {
-            // read form data as string
+            // read request body as string
             struct evbuffer *input_buffer = evhttp_request_get_input_buffer(req);
-            size_t data_length = evbuffer_get_length(input_buffer);
-            char *encoded_form_data_str;
-            if (data_length > 0)
+            size_t length = evbuffer_get_length(input_buffer);
+            char *request_body;
+            if (length > 0)
             {
-                encoded_form_data_str = (char *)malloc(data_length + 1);
-                memcpy(encoded_form_data_str, evbuffer_pullup(input_buffer, -1), data_length);
-                encoded_form_data_str[data_length] = '\0';
+                request_body = (char *)malloc(length + 1);
+                memcpy(request_body, evbuffer_pullup(input_buffer, -1), length);
+                request_body[length] = '\0';
             }
             else
             {
-                encoded_form_data_str = (char *)malloc(1);
-                encoded_form_data_str[0] = '\0'; // an empty string on heap
+                request_body = (char *)malloc(1);
+                request_body[0] = '\0'; // an empty string on heap
             }
 
-            // parse form
-            evhttp_parse_query_str(encoded_form_data_str, form);
-            free(encoded_form_data_str);
+            if (content_type == "application/x-www-form-urlencoded")
+            {
+                // parse form
+                evhttp_parse_query_str(request_body, form);
+            }
+            else
+            {
+                // parse json
+                request.json = json_loads(request_body, 0, NULL);
+            }
+
+            free(request_body);
         }
     }
 
     // dispatch
     struct cqhttp_result result = dispatch_request(request);
 
-    // clear args and form
+    // clear args, form, and json
     evhttp_clear_headers(args);
     free(args);
     evhttp_clear_headers(form);
     free(form);
+    if (request.json)
+        json_decref(request.json);
 
     // set headers
     struct evkeyvalq *output_headers = evhttp_request_get_output_headers(req);
@@ -100,14 +113,25 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_)
 char *cqhttp_get_param(const struct cqhttp_request &request, const char *key)
 {
     char *value = NULL;
-    const char *encoded_value = evhttp_find_header(request.args, key);
+    const char *encoded_value = evhttp_find_header(request.args, key); // try args
     if (!encoded_value)
-    {
-        encoded_value = evhttp_find_header(request.form, key);
-    }
+        encoded_value = evhttp_find_header(request.form, key); // try form
     if (encoded_value)
-    {
         value = evhttp_uridecode(encoded_value, 0, NULL);
+    if (!value && request.json)
+    {
+        // try json
+        json_t *json_value = json_object_get(request.json, key);
+        if (json_value && json_is_string(json_value))
+        {
+            const char *const_str = json_string_value(json_value);
+            if (const_str)
+            {
+                size_t len = strlen(const_str);
+                value = (char *)malloc(len + 1);
+                memcpy(value, const_str, len + 1);
+            }
+        }
     }
     return value;
 }
@@ -121,6 +145,13 @@ int64_t cqhttp_get_integer_param(const struct cqhttp_request &request, const cha
         if (isnumber(str))
             result = atol(str);
         free(str);
+    }
+    else
+    {
+        // try json
+        json_t *json_value = json_object_get(request.json, key);
+        if (json_value && json_is_integer(json_value))
+            result = json_integer_value(json_value);
     }
     return result;
 }
@@ -136,6 +167,13 @@ bool cqhttp_get_bool_param(const struct cqhttp_request &request, const char *key
         else if (string("false") == str || string("0") == str)
             result = false;
         free(str);
+    }
+    else
+    {
+        // try json
+        json_t *json_value = json_object_get(request.json, key);
+        if (json_value && json_is_boolean(json_value))
+            result = json_boolean_value(json_value);
     }
     return result;
 }
