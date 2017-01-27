@@ -94,7 +94,7 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_)
 
     // set headers
     struct evkeyvalq *output_headers = evhttp_request_get_output_headers(req);
-    evhttp_add_header(output_headers, "Server", "CoolQ HTTP API Plugin v1.0.0");
+    evhttp_add_header(output_headers, "Server", CQAPPFULLNAME);
     evhttp_add_header(output_headers, "Content-Type", "application/json; charset=UTF-8");
     evhttp_add_header(output_headers, "Connection", "close");
 

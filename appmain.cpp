@@ -25,6 +25,7 @@ bool enabled = false;
 HANDLE httpd_thread_handle = NULL;
 struct event_base *httpd_event_base = NULL;
 struct evhttp *httpd_event = NULL;
+const char
 
 /*
 * 返回应用的ApiVer、Appid，打包后将不会调用
@@ -322,22 +323,4 @@ CQEVENT(int32_t, __eventRequest_AddGroup, 32)
     //}
 
     return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
-}
-
-/*
-* 菜单，可在 .json 文件中设置菜单数目、函数名
-* 如果不使用菜单，请在 .json 及此处删除无用菜单
-*/
-CQEVENT(int32_t, __menuA, 0)
-()
-{
-    MessageBoxA(NULL, "这是menuA，在这里载入窗口，或者进行其他工作。", "", 0);
-    return 0;
-}
-
-CQEVENT(int32_t, __menuB, 0)
-()
-{
-    MessageBoxA(NULL, "这是menuB，在这里载入窗口，或者进行其他工作。", "", 0);
-    return 0;
 }
