@@ -112,14 +112,14 @@ CQHTTP_REQUEST_HANDLER(set_group_anonymous_ban)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    char *anonymous = cqhttp_get_param(request, "anonymous");
+    char *anonymous_flag = cqhttp_get_param(request, "flag");
     int64_t duration = cqhttp_get_integer_param(request, "duration", 30 * 60 /* 30 minutes */);
-    if (group_id && anonymous && duration >= 0)
-        CQ_setGroupAnonymousBan(ac, group_id, utf8_to_gbk(anonymous).c_str(), duration);
+    if (group_id && anonymous_flag && duration >= 0)
+        CQ_setGroupAnonymousBan(ac, group_id, utf8_to_gbk(anonymous_flag).c_str(), duration);
     else
         result.status = CQHTTP_STATUS_FAILED;
-    if (anonymous)
-        free(anonymous);
+    if (anonymous_flag)
+        free(anonymous_flag);
     return result;
 }
 
@@ -221,6 +221,57 @@ CQHTTP_REQUEST_HANDLER(set_discuss_leave)
     return result;
 }
 
+CQHTTP_REQUEST_HANDLER(set_friend_add_request)
+(const struct cqhttp_request &request)
+{
+    struct cqhttp_result result;
+    char *flag = cqhttp_get_param(request, "flag");
+    bool approve = cqhttp_get_bool_param(request, "approve", true);
+    char *remark = cqhttp_get_param(request, "remark");
+    if (flag)
+        CQ_setFriendAddRequest(ac,
+                               utf8_to_gbk(flag).c_str(),
+                               approve ? REQUEST_ALLOW : REQUEST_DENY,
+                               remark ? utf8_to_gbk(remark).c_str() : NULL);
+    else
+        result.status = CQHTTP_STATUS_FAILED;
+    if (flag)
+        free(flag);
+    if (remark)
+        free(remark);
+    return result;
+}
+
+CQHTTP_REQUEST_HANDLER(set_group_add_request)
+(const struct cqhttp_request &request)
+{
+    struct cqhttp_result result;
+    char *flag = cqhttp_get_param(request, "flag");
+    char *type = cqhttp_get_param(request, "type");
+    bool approve = cqhttp_get_bool_param(request, "approve", true);
+    char *remark = cqhttp_get_param(request, "remark");
+    int request_type = -1;
+    if (strcmp(type, "add") == 0)
+        request_type = REQUEST_GROUPADD;
+    else if (strcmp(type, "invite") == 0)
+        request_type = REQUEST_GROUPINVITE;
+    if (flag && type && request_type != -1)
+        CQ_setGroupAddRequestV2(ac,
+                                utf8_to_gbk(flag).c_str(),
+                                request_type,
+                                approve ? REQUEST_ALLOW : REQUEST_DENY,
+                                remark ? utf8_to_gbk(remark).c_str() : NULL);
+    else
+        result.status = CQHTTP_STATUS_FAILED;
+    if (flag)
+        free(flag);
+    if (type)
+        free(type);
+    if (remark)
+        free(remark);
+    return result;
+}
+
 void get_integer_from_decoded_bytes(const string &bytes, size_t start, size_t size, void *dst)
 {
     string sub = bytes.substr(start, size);
@@ -290,7 +341,7 @@ struct raw_group_member_info
     }
 };
 
-CQHTTP_REQUEST_HANDLER(get_group_member_info_v2)
+CQHTTP_REQUEST_HANDLER(get_group_member_info)
 (const struct cqhttp_request &request)
 {
     struct cqhttp_result result;

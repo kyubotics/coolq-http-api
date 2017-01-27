@@ -7,6 +7,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <regex>
 #include <curl/curl.h>
 #include <jansson.h>
 #include <event2/event.h>
@@ -76,7 +77,7 @@ static int parse_conf_handler(void *user, const char *section, const char *name,
 /**
  * Initialize plugin, called immediately when plugin is enabled.
  */
-void init()
+static void init()
 {
     LOG_D("启用", "初始化");
 
@@ -107,7 +108,7 @@ void init()
 /**
  * Cleanup plugin, called after all other operations when plugin is disabled.
  */
-void cleanup()
+static void cleanup()
 {
     // do nothing currently
 }
@@ -115,7 +116,7 @@ void cleanup()
 /**
  * Portal function of HTTP daemon thread.
  */
-DWORD WINAPI httpd_thread_func(LPVOID lpParam)
+static DWORD WINAPI httpd_thread_func(LPVOID lpParam)
 {
     WSADATA wsa_data;
     WSAStartup(MAKEWORD(2, 2), &wsa_data);
@@ -137,7 +138,7 @@ DWORD WINAPI httpd_thread_func(LPVOID lpParam)
 /**
  * Start HTTP daemon thread.
  */
-void start_httpd()
+static void start_httpd()
 {
     httpd_thread_handle = CreateThread(NULL,              // default security attributes
                                        0,                 // use default stack size
@@ -158,7 +159,7 @@ void start_httpd()
 /**
  * Stop HTTP daemon thread.
  */
-void stop_httpd()
+static void stop_httpd()
 {
     if (httpd_thread_handle)
     {
@@ -207,72 +208,89 @@ CQEVENT(int32_t, __eventDisable, 0)
     return 0;
 }
 
+#define SHOULD_POST httpd_config.post_url != ""
+
+typedef void (*post_event_callback)(int status_code, const char *response_body);
+
+static bool post_event(json_t *json, const string &event_name, post_event_callback callback)
+{
+    char *json_str = json_dumps(json, 0);
+    bool succeeded = false;
+    CURL *curl = curl_easy_init();
+    if (curl)
+    {
+        curl_easy_setopt(curl, CURLOPT_URL, httpd_config.post_url.c_str());
+
+        stringstream resp_stream;
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_stringstream_callback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp_stream);
+
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json_str);
+
+        struct curl_slist *chunk = NULL;
+        chunk = curl_slist_append(chunk, "User-Agent: " CQAPPFULLNAME);
+        chunk = curl_slist_append(chunk, "Content-Type: application/json");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+
+        CURLcode res = curl_easy_perform(curl);
+        if (res == CURLE_OK)
+        {
+            long status_code;
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
+            if (status_code >= 200 && status_code < 300)
+            {
+                succeeded = true;
+                if (callback)
+                    callback(status_code, resp_stream.str().c_str());
+            }
+        }
+
+        curl_easy_cleanup(curl);
+        curl_slist_free_all(chunk);
+    }
+    free(json_str);
+    LOG_D("HTTP上报", string(event_name) + " 事件上报" + (succeeded ? "成功" : "失败"));
+    return succeeded;
+}
+
 /*
 * Type=21 私聊消息
 * subType 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
 */
 CQEVENT(int32_t, __eventPrivateMsg, 24)
-(int32_t subType, int32_t sendTime, int64_t fromQQ, const char *msg, int32_t font)
+(int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, int32_t font)
 {
-
     //如果要回复消息，请调用酷Q方法发送，并且这里 return EVENT_BLOCK - 截断本条消息，不再继续处理  注意：应用优先级设置为"最高"(10000)时，不得使用本返回值
     //如果不回复消息，交由之后的应用/过滤器处理，这里 return EVENT_IGNORE - 忽略本条消息
 
-    string result = "";
-
-    CURL *curl = curl_easy_init();
-    if (curl)
+    if (SHOULD_POST)
     {
-        curl_easy_setopt(curl, CURLOPT_URL, "http://news-at.zhihu.com/api/4/news/latest");
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_stringstream_callback);
-
-        stringstream resp_stream;
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp_stream);
-
-        CURLcode res;
-        res = curl_easy_perform(curl);
-        if (res == CURLE_OK)
+        const char *sub_type_str = "unknown";
+        switch (sub_type)
         {
-            string json_string = resp_stream.str();
-            LOG8_D("Net>Json", string("Got json string: ") + json_string);
-            json_t *data = json_loads(json_string.c_str(), 0, NULL);
-            if (data)
-            {
-                LOG_D("Net>Json", "Succeeded to parse json data");
-                stringstream ss;
-                const char *date = json_string_value(json_object_get(data, "date"));
-                ss << "Date: " << date << "\n\n";
-                json_t *stories_jarr = json_object_get(data, "stories");
-                for (size_t i = 0; i < json_array_size(stories_jarr); i++)
-                {
-                    const char *title = json_string_value(json_object_get(json_array_get(stories_jarr, i), "title"));
-                    ss << (i == 0 ? "" : "\n") << i << ". " << title;
-                }
-                json_decref(data);
-                result = ss.str();
-            }
-            else
-            {
-                LOG_D("Net>Json", "Failed to load json string");
-            }
+        case 11:
+            sub_type_str = "friend";
+            break;
+        case 1:
+            sub_type_str = "other";
+            break;
+        case 2:
+            sub_type_str = "group";
+            break;
+        case 3:
+            sub_type_str = "discuss";
+            break;
         }
-        else
-        {
-            LOG_D("Net", "Failed to get response");
-        }
-        curl_easy_cleanup(curl);
+        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:s}",
+                                 "post_type", "message",
+                                 "message_type", "private",
+                                 "sub_type", sub_type_str,
+                                 "time", send_time,
+                                 "user_id", from_qq,
+                                 "message", gbk_to_utf8(msg).c_str());
+        post_event(json, "私聊消息", NULL);
+        json_decref(json);
     }
-    else
-    {
-        LOG_D("Net", "Failed to init cURL");
-    }
-
-    if (result != "")
-    {
-        CQ_sendPrivateMsg(ac, fromQQ, utf8_to_gbk(result.c_str()).c_str());
-        CQ_sendPrivateMsg(ac, fromQQ, msg);
-    }
-
     return EVENT_IGNORE;
 }
 
@@ -280,20 +298,55 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)
 * Type=2 群消息
 */
 CQEVENT(int32_t, __eventGroupMsg, 36)
-(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, const char *fromAnonymous, const char *msg, int32_t font)
+(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg, int32_t font)
 {
-
-    return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
+    if (SHOULD_POST)
+    {
+        string utf8_msg = gbk_to_utf8(msg);
+        string utf8_anonymous = "";
+        if (from_anonymous && strlen(from_anonymous) > 0)
+        {
+            smatch match;
+            if (regex_match(utf8_msg, match, regex("&#91;(.+?)&#93;:(.*)")))
+            {
+                utf8_anonymous = match.str(1);
+                utf8_msg = match.str(2);
+            }
+        }
+        json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s}",
+                                 "post_type", "message",
+                                 "message_type", "group",
+                                 "time", send_time,
+                                 "group_id", from_group,
+                                 "user_id", from_qq,
+                                 "anonymous", utf8_anonymous.c_str(),
+                                 "anonymous_flag", gbk_to_utf8(from_anonymous).c_str(),
+                                 "message", utf8_msg.c_str());
+        post_event(json, "群消息", NULL);
+        json_decref(json);
+    }
+    return EVENT_IGNORE;
 }
 
 /*
 * Type=4 讨论组消息
 */
 CQEVENT(int32_t, __eventDiscussMsg, 32)
-(int32_t subType, int32_t sendTime, int64_t fromDiscuss, int64_t fromQQ, const char *msg, int32_t font)
+(int32_t sub_Type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font)
 {
-
-    return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
+    if (SHOULD_POST)
+    {
+        json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s}",
+                                 "post_type", "message",
+                                 "message_type", "discuss",
+                                 "time", send_time,
+                                 "discuss_id", from_discuss,
+                                 "user_id", from_qq,
+                                 "message", gbk_to_utf8(msg).c_str());
+        post_event(json, "讨论组消息", NULL);
+        json_decref(json);
+    }
+    return EVENT_IGNORE;
 }
 
 /*
@@ -301,10 +354,31 @@ CQEVENT(int32_t, __eventDiscussMsg, 32)
 * subType 子类型，1/被取消管理员 2/被设置管理员
 */
 CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
-(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t beingOperateQQ)
+(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq)
 {
-
-    return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
+    if (SHOULD_POST)
+    {
+        const char *sub_type_str = "unknown";
+        switch (sub_type)
+        {
+        case 1:
+            sub_type_str = "unset";
+            break;
+        case 2:
+            sub_type_str = "set";
+            break;
+        }
+        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I}",
+                                 "post_type", "event",
+                                 "event", "group_admin",
+                                 "sub_type", sub_type_str,
+                                 "time", send_time,
+                                 "group_id", from_group,
+                                 "user_id", being_operate_qq);
+        post_event(json, "群管理员变动", NULL);
+        json_decref(json);
+    }
+    return EVENT_IGNORE;
 }
 
 /*
@@ -314,10 +388,35 @@ CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
 * beingOperateQQ 被操作QQ
 */
 CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
-(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, int64_t beingOperateQQ)
+(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq)
 {
-
-    return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
+    if (SHOULD_POST)
+    {
+        const char *sub_type_str = "unknown";
+        switch (sub_type)
+        {
+        case 1:
+            sub_type_str = "leave";
+            break;
+        case 2:
+            sub_type_str = "kick";
+            break;
+        case 3:
+            sub_type_str = "kick_me";
+            break;
+        }
+        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I, s:I}",
+                                 "post_type", "event",
+                                 "event", "group_decrease",
+                                 "sub_type", sub_type_str,
+                                 "time", send_time,
+                                 "group_id", from_group,
+                                 "operator_id", sub_type == 1 ? being_operate_qq /* leave by him/herself */ : from_qq,
+                                 "user_id", being_operate_qq);
+        post_event(json, "群成员减少", NULL);
+        json_decref(json);
+    }
+    return EVENT_IGNORE;
 }
 
 /*
@@ -327,20 +426,51 @@ CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
 * beingOperateQQ 被操作QQ(即加群的QQ)
 */
 CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)
-(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, int64_t beingOperateQQ)
+(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq)
 {
-
-    return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
+    if (SHOULD_POST)
+    {
+        const char *sub_type_str = "unknown";
+        switch (sub_type)
+        {
+        case 1:
+            sub_type_str = "approve";
+            break;
+        case 2:
+            sub_type_str = "invite";
+            break;
+        }
+        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I, s:I}",
+                                 "post_type", "event",
+                                 "event", "group_increase",
+                                 "sub_type", sub_type_str,
+                                 "time", send_time,
+                                 "group_id", from_group,
+                                 "operator_id", from_qq,
+                                 "user_id", being_operate_qq);
+        post_event(json, "群成员增加", NULL);
+        json_decref(json);
+    }
+    return EVENT_IGNORE;
 }
 
 /*
 * Type=201 好友事件-好友已添加
 */
 CQEVENT(int32_t, __eventFriend_Add, 16)
-(int32_t subType, int32_t sendTime, int64_t fromQQ)
+(int32_t sub_type, int32_t send_time, int64_t from_qq)
 {
-
-    return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
+    if (SHOULD_POST)
+    {
+        json_t *json = json_pack("{s:s, s:s, s:i, s:I}",
+                                 "post_type", "event",
+                                 "event", "friend_added",
+                                 "time", send_time,
+                                 "user_id", from_qq);
+        post_event(json, "好友已添加", NULL);
+        json_decref(json);
+    }
+    return EVENT_IGNORE;
 }
 
 /*
@@ -349,12 +479,24 @@ CQEVENT(int32_t, __eventFriend_Add, 16)
 * responseFlag 反馈标识(处理请求用)
 */
 CQEVENT(int32_t, __eventRequest_AddFriend, 24)
-(int32_t subType, int32_t sendTime, int64_t fromQQ, const char *msg, const char *responseFlag)
+(int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, const char *response_flag)
 {
 
     //CQ_setFriendAddRequest(ac, responseFlag, REQUEST_ALLOW, "");
 
-    return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
+    if (SHOULD_POST)
+    {
+        json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:s, s:s}",
+                                 "post_type", "request",
+                                 "request_type", "friend",
+                                 "time", send_time,
+                                 "user_id", from_qq,
+                                 "message", gbk_to_utf8(msg).c_str(),
+                                 "flag", gbk_to_utf8(response_flag).c_str());
+        post_event(json, "好友添加请求", NULL);
+        json_decref(json);
+    }
+    return EVENT_IGNORE;
 }
 
 /*
@@ -364,7 +506,7 @@ CQEVENT(int32_t, __eventRequest_AddFriend, 24)
 * responseFlag 反馈标识(处理请求用)
 */
 CQEVENT(int32_t, __eventRequest_AddGroup, 32)
-(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, const char *msg, const char *responseFlag)
+(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *msg, const char *response_flag)
 {
 
     //if (subType == 1) {
@@ -373,5 +515,28 @@ CQEVENT(int32_t, __eventRequest_AddGroup, 32)
     //	CQ_setGroupAddRequestV2(ac, responseFlag, REQUEST_GROUPINVITE, REQUEST_ALLOW, "");
     //}
 
-    return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
+    if (SHOULD_POST)
+    {
+        const char *sub_type_str = "unknown";
+        switch (sub_type)
+        {
+        case 1:
+            sub_type_str = "add";
+            break;
+        case 2:
+            sub_type_str = "invite";
+            break;
+        }
+        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:s, s:s}",
+                                 "post_type", "request",
+                                 "request_type", "group",
+                                 "sub_type", sub_type_str,
+                                 "time", send_time,
+                                 "user_id", from_qq,
+                                 "message", gbk_to_utf8(msg).c_str(),
+                                 "flag", gbk_to_utf8(response_flag).c_str());
+        post_event(json, "群添加请求", NULL);
+        json_decref(json);
+    }
+    return EVENT_IGNORE;
 }
