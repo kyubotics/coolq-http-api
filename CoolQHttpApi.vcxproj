@@ -111,7 +111,7 @@
     <ClCompile Include="request_handlers.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\..\..\Program Files (x86)\CQA\app\io.github.richardchien.coolqhttpapi.json" />
+    <None Include="io.github.richardchien.coolqhttpapi.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

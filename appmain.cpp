@@ -21,7 +21,7 @@
 
 using namespace std;
 
-int ac = -1; // AuthCode，调用酷Q的方法时需要用到
+int ac = -1; // AuthCode
 bool enabled = false;
 
 HANDLE httpd_thread_handle = NULL;
@@ -32,10 +32,19 @@ struct cqhttp_config
     string host;
     int port;
     string post_url;
+    string token;
 } httpd_config;
 
+/**
+ * For other files to get token.
+ */
+string get_httpd_config_token()
+{
+    return httpd_config.token;
+}
+
 /*
-* 返回应用的ApiVer、Appid，打包后将不会调用
+* Return add info.
 */
 CQEVENT(const char *, AppInfo, 0)
 ()
@@ -43,10 +52,9 @@ CQEVENT(const char *, AppInfo, 0)
     return CQAPPINFO;
 }
 
-/*
-* 接收应用AuthCode，酷Q读取应用信息后，如果接受该应用，将会调用这个函数并传递AuthCode。
-* 不要在本函数处理其他任何代码，以免发生异常情况。如需执行初始化代码请在Startup事件中执行（Type=1001）。
-*/
+/**
+ * Get AuthCode.
+ */
 CQEVENT(int32_t, Initialize, 4)
 (int32_t AuthCode)
 {
@@ -66,11 +74,13 @@ static int parse_conf_handler(void *user, const char *section, const char *name,
             config->port = atoi(value);
         else if (field == "post_url")
             config->post_url = value;
+        else if (field == "token")
+            config->token = value;
         else
-            return 0;
+            return 0; /* unknown name, error */
     }
     else
-        return 0; /* unknown section/name, error */
+        return 0; /* unknown section, error */
     return 1;
 }
 
@@ -85,6 +95,7 @@ static void init()
     httpd_config.host = "0.0.0.0";
     httpd_config.port = 5700;
     httpd_config.post_url = "";
+    httpd_config.token = "";
 
     string conf_path = string(CQ_getAppDirectory(ac)) + "config.cfg";
     FILE *conf_file = NULL;
@@ -94,7 +105,7 @@ static void init()
         // first init, save default config
         LOG_D("启用", "没有找到配置文件，写入默认配置");
         ofstream file(conf_path);
-        file << "[general]\nhost=0.0.0.0\nport=5700\npost_url=\n";
+        file << "[general]\nhost=0.0.0.0\nport=5700\npost_url=\ntoken=\n";
     }
     else
     {
@@ -230,6 +241,8 @@ static bool post_event(json_t *json, const string &event_name, post_event_callba
         struct curl_slist *chunk = NULL;
         chunk = curl_slist_append(chunk, "User-Agent: " CQAPPFULLNAME);
         chunk = curl_slist_append(chunk, "Content-Type: application/json");
+        if (httpd_config.token != "")
+            chunk = curl_slist_append(chunk, (string("Authorization: token ") + httpd_config.token).c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
 
         CURLcode res = curl_easy_perform(curl);
@@ -253,10 +266,10 @@ static bool post_event(json_t *json, const string &event_name, post_event_callba
     return succeeded;
 }
 
-/*
-* Type=21 私聊消息
-* subType 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
-*/
+/**
+ * Type=21 私聊消息
+ * sub_type 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
+ */
 CQEVENT(int32_t, __eventPrivateMsg, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, int32_t font)
 {
@@ -294,9 +307,9 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)
     return EVENT_IGNORE;
 }
 
-/*
-* Type=2 群消息
-*/
+/**
+ * Type=2 群消息
+ */
 CQEVENT(int32_t, __eventGroupMsg, 36)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg, int32_t font)
 {
@@ -328,9 +341,9 @@ CQEVENT(int32_t, __eventGroupMsg, 36)
     return EVENT_IGNORE;
 }
 
-/*
-* Type=4 讨论组消息
-*/
+/**
+ * Type=4 讨论组消息
+ */
 CQEVENT(int32_t, __eventDiscussMsg, 32)
 (int32_t sub_Type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font)
 {
@@ -349,10 +362,10 @@ CQEVENT(int32_t, __eventDiscussMsg, 32)
     return EVENT_IGNORE;
 }
 
-/*
-* Type=101 群事件-管理员变动
-* subType 子类型，1/被取消管理员 2/被设置管理员
-*/
+/**
+ * Type=101 群事件-管理员变动
+ * sub_type 子类型，1/被取消管理员 2/被设置管理员
+ */
 CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq)
 {
@@ -381,12 +394,12 @@ CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
     return EVENT_IGNORE;
 }
 
-/*
-* Type=102 群事件-群成员减少
-* subType 子类型，1/群员离开 2/群员被踢 3/自己(即登录号)被踢
-* fromQQ 操作者QQ(仅subType为2、3时存在)
-* beingOperateQQ 被操作QQ
-*/
+/**
+ * Type=102 群事件-群成员减少
+ * sub_type 子类型，1/群员离开 2/群员被踢 3/自己(即登录号)被踢
+ * from_qq 操作者QQ(仅subType为2、3时存在)
+ * being_operate_qq 被操作QQ
+ */
 CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq)
 {
@@ -419,12 +432,12 @@ CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
     return EVENT_IGNORE;
 }
 
-/*
-* Type=103 群事件-群成员增加
-* subType 子类型，1/管理员已同意 2/管理员邀请
-* fromQQ 操作者QQ(即管理员QQ)
-* beingOperateQQ 被操作QQ(即加群的QQ)
-*/
+/**
+ * Type=103 群事件-群成员增加
+ * sub_type 子类型，1/管理员已同意 2/管理员邀请
+ * from_qq 操作者QQ(即管理员QQ)
+ * being_operate_qq 被操作QQ(即加群的QQ)
+ */
 CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq)
 {
@@ -454,9 +467,9 @@ CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)
     return EVENT_IGNORE;
 }
 
-/*
-* Type=201 好友事件-好友已添加
-*/
+/**
+ * Type=201 好友事件-好友已添加
+ */
 CQEVENT(int32_t, __eventFriend_Add, 16)
 (int32_t sub_type, int32_t send_time, int64_t from_qq)
 {
@@ -473,17 +486,14 @@ CQEVENT(int32_t, __eventFriend_Add, 16)
     return EVENT_IGNORE;
 }
 
-/*
-* Type=301 请求-好友添加
-* msg 附言
-* responseFlag 反馈标识(处理请求用)
-*/
+/**
+ * Type=301 请求-好友添加
+ * msg 附言
+ * response_flag 反馈标识(处理请求用)
+ */
 CQEVENT(int32_t, __eventRequest_AddFriend, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, const char *response_flag)
 {
-
-    //CQ_setFriendAddRequest(ac, responseFlag, REQUEST_ALLOW, "");
-
     if (SHOULD_POST)
     {
         json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:s, s:s}",
@@ -499,22 +509,15 @@ CQEVENT(int32_t, __eventRequest_AddFriend, 24)
     return EVENT_IGNORE;
 }
 
-/*
-* Type=302 请求-群添加
-* subType 子类型，1/他人申请入群 2/自己(即登录号)受邀入群
-* msg 附言
-* responseFlag 反馈标识(处理请求用)
-*/
+/**
+ * Type=302 请求-群添加
+ * sub_type 子类型，1/他人申请入群 2/自己(即登录号)受邀入群
+ * msg 附言
+ * response_flag 反馈标识(处理请求用)
+ */
 CQEVENT(int32_t, __eventRequest_AddGroup, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *msg, const char *response_flag)
 {
-
-    //if (subType == 1) {
-    //	CQ_setGroupAddRequestV2(ac, responseFlag, REQUEST_GROUPADD, REQUEST_ALLOW, "");
-    //} else if (subType == 2) {
-    //	CQ_setGroupAddRequestV2(ac, responseFlag, REQUEST_GROUPINVITE, REQUEST_ALLOW, "");
-    //}
-
     if (SHOULD_POST)
     {
         const char *sub_type_str = "unknown";

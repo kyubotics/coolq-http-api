@@ -12,6 +12,8 @@ using namespace std;
 
 static struct cqhttp_result dispatch_request(const struct cqhttp_request &request);
 
+string get_httpd_config_token(); // implemented in appmain.cpp
+
 void cqhttp_main_handler(struct evhttp_request *req, void *_)
 {
     enum evhttp_cmd_type method = evhttp_request_get_command(req);
@@ -20,6 +22,25 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_)
         // method not supported
         evhttp_send_reply(req, HTTP_BADMETHOD, "Bad Method", NULL);
         return;
+    }
+
+    LOG_D("HTTP请求",
+          string("收到 HTTP 请求，请求方式：") + (method == EVHTTP_REQ_GET ? "GET" : "POST") + "，URI：" + evhttp_request_get_uri(req));
+
+    struct evkeyvalq *input_headers = evhttp_request_get_input_headers(req);
+
+    // check token
+    string token = get_httpd_config_token();
+    if (token != "")
+    {
+        const char *auth = evhttp_find_header(input_headers, "Authorization");
+        if (!auth || "token " + token != auth)
+        {
+            // invalid token
+            LOG_D("HTTP请求", "token 不符，停止响应");
+            evhttp_send_reply(req, HTTP_NOTFOUND, "Not Found", NULL);
+            return;
+        }
     }
 
     // initialize args and form
@@ -37,8 +58,6 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_)
     const struct evhttp_uri *uri = evhttp_request_get_evhttp_uri(req);
     request.path = evhttp_uri_get_path(uri);
 
-    LOG_D("HTTP请求", string("收到 HTTP 请求，请求方式：") + (method == EVHTTP_REQ_GET ? "GET" : "POST") + "，路径：" + request.path);
-
     // parse query arguments
     const char *encoded_args_str = evhttp_uri_get_query(uri);
     evhttp_parse_query_str(encoded_args_str ? encoded_args_str : "", args);
@@ -46,7 +65,6 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_)
     if (method == EVHTTP_REQ_POST)
     {
         // check content type
-        struct evkeyvalq *input_headers = evhttp_request_get_input_headers(req);
         string content_type = string(evhttp_find_header(input_headers, "Content-Type"));
         if (content_type == "application/x-www-form-urlencoded" || content_type == "application/json")
         {

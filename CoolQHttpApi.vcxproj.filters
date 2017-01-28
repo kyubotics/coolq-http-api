@@ -9,31 +9,21 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="源文件\ini">
+      <UniqueIdentifier>{4a20af9e-b39f-4e8f-ad14-88b0102dda0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\encoding">
+      <UniqueIdentifier>{9d9d5b28-e09a-4607-893c-dfe330cebdaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\base64">
+      <UniqueIdentifier>{fe9a3969-a5da-4af0-9501-ca3942b2ef64}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Library Include="CQP.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cqp.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
     <ClInclude Include="log.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="app.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="encoding.h">
       <Filter>源文件</Filter>
     </ClInclude>
     <ClInclude Include="misc_functions.h">
@@ -45,11 +35,26 @@
     <ClInclude Include="request_handlers.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="base64.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
     <ClInclude Include="ini.h">
-      <Filter>源文件</Filter>
+      <Filter>源文件\ini</Filter>
+    </ClInclude>
+    <ClInclude Include="encoding.h">
+      <Filter>源文件\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="base64.h">
+      <Filter>源文件\base64</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="app.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="cqp.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -57,9 +62,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="encoding.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="misc_functions.cpp">
@@ -71,14 +73,17 @@
     <ClCompile Include="request_handlers.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="base64.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ini.c">
-      <Filter>源文件</Filter>
+      <Filter>源文件\ini</Filter>
+    </ClCompile>
+    <ClCompile Include="encoding.cpp">
+      <Filter>源文件\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="base64.cpp">
+      <Filter>源文件\base64</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\..\..\Program Files (x86)\CQA\app\io.github.richardchien.coolqhttpapi.json" />
+    <None Include="io.github.richardchien.coolqhttpapi.json" />
   </ItemGroup>
 </Project>

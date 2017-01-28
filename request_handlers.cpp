@@ -27,7 +27,7 @@ CQHTTP_REQUEST_HANDLER(send_private_msg)
 {
     struct cqhttp_result result;
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    char *msg = cqhttp_get_param(request, "msg");
+    char *msg = cqhttp_get_param(request, "message");
     if (user_id && msg)
         CQ_sendPrivateMsg(ac, user_id, utf8_to_gbk(msg).c_str());
     else
@@ -42,7 +42,7 @@ CQHTTP_REQUEST_HANDLER(send_group_msg)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    char *msg = cqhttp_get_param(request, "msg");
+    char *msg = cqhttp_get_param(request, "message");
     if (group_id && msg)
         CQ_sendGroupMsg(ac, group_id, utf8_to_gbk(msg).c_str());
     else
@@ -57,7 +57,7 @@ CQHTTP_REQUEST_HANDLER(send_discuss_msg)
 {
     struct cqhttp_result result;
     int64_t discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
-    char *msg = cqhttp_get_param(request, "msg");
+    char *msg = cqhttp_get_param(request, "message");
     if (discuss_id && msg)
         CQ_sendDiscussMsg(ac, discuss_id, utf8_to_gbk(msg).c_str());
     else
