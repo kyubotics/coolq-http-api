@@ -18,7 +18,7 @@ CQHTTP_REQUEST_HANDLER(get_login_info)
     struct cqhttp_result result;
     int64_t id = CQ_getLoginQQ(ac);
     const char *nickname = CQ_getLoginNick(ac);
-    result.data = json_pack("{s:I,s:s?}", "id", id, "nickname", gbk_to_utf8(nickname).c_str());
+    result.data = json_pack("{s:I,s:s?}", "user_id", id, "nickname", gbk_to_utf8(nickname).c_str());
     return result;
 }
 
