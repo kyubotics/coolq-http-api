@@ -304,7 +304,7 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | `unfriendly`        | bool    | 是否不良记录成员（不确定）                    |
 | `title`             | string  | 专属头衔                             |
 | `title_expire_time` | number  | 专属头衔过期时间戳                        |
-| `card_changeable`   | boolean | 是否允许修改群名片（不确定）                   |
+| `card_changeable`   | bool | 是否允许修改群名片（不确定）                   |
 
 ### `/get_stranger_info` 获取陌生人信息
 
