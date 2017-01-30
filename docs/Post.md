@@ -79,7 +79,7 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | ------------- | ------ | ------------------------------ | ---------------------------------------- |
 | `post_type`   | string | `"event"`                      | 上报类型                                     |
 | `event`       | string | `"group_decrease"`             | 事件名                                      |
-| `sub_type`    | string | `"leave"`、`"kick"`、`"kick_me"` | 事件子类型，分别表示主动退群、成员被踢、登录号被踢（但是似乎登录号被踢也会表现为 `"kick"` |
+| `sub_type`    | string | `"leave"`、`"kick"`、`"kick_me"` | 事件子类型，分别表示主动退群、成员被踢、登录号被踢（但是似乎登录号被踢也会表现为 `"kick"`） |
 | `group_id`    | number | -                              | 群号                                       |
 | `user_id`     | number | -                              | 离开者 QQ 号                                 |
 | `operator_id` | number | -                              | 操作者 QQ 号（如果是主动退群，则和 `user_id` 相同）        |

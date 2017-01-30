@@ -19,5 +19,6 @@ self.$config = {
             }
         ]
     },
+    tocVisibleDepth: 2,
     plugins: []
 };

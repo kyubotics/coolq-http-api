@@ -8,6 +8,9 @@
 
 直接到 [Releases](https://github.com/richardchien/coolq-http-api/releases) 下载最新的 cpk 文件放到酷 Q 的 app 文件夹，然后启用即可。由于要上报事件、接受调用请求，因此需要所有权限。
 
+注意如果系统中没有装 VC++ 2010 运行库，酷 Q 启动时会报错说插件加载失败，需要去下载 [Microsoft Visual C++ 2010 可再发行组件包 (x86)
+](https://www.microsoft.com/zh-CN/download/details.aspx?id=5555) 安装。
+
 启用后插件将开启一个后台线程用来监听 HTTP，默认监听 `0.0.0.0:5700`，首次启用会生成一个默认配置文件，在酷 Q app 文件夹的 `io.github.richardchien.coolqhttpapi` 文件夹中，文件名 `config.cfg`，使用 ini 格式填写。关于配置项的说明，见 [配置文件说明](https://richardchien.github.io/coolq-http-api/#/Configuration)。
 
 此时通过 `http://192.168.1.123:5700/` 即可调用酷 Q 的函数，例如 `http://192.168.1.123:5700/send_private_msg?user_id=123456&message=你好`，具体的 API 列表见 [API 描述](https://richardchien.github.io/coolq-http-api/#/API)。
