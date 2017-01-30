@@ -21,3 +21,10 @@ bool isnumber(const std::string &s)
         ++it;
     return !s.empty() && it == s.end();
 }
+
+std::string itos(int64_t i)
+{
+    std::stringstream ss;
+    ss << i;
+    return ss.str();
+}

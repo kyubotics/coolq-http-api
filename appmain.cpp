@@ -64,8 +64,10 @@ CQEVENT(int32_t, Initialize, 4)
 
 static int parse_conf_handler(void *user, const char *section, const char *name, const char *value)
 {
+    static string login_qq_atr = itos(CQ_getLoginQQ(ac));
+
     struct cqhttp_config *config = (struct cqhttp_config *)user;
-    if (string(section) == "general")
+    if (string(section) == "general" || (isnumber(section) && login_qq_atr == section))
     {
         string field = name;
         if (field == "host")
