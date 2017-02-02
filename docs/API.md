@@ -284,7 +284,7 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | ---------- | ------ | ------- | ------------------------- |
 | `group_id` | number | -       | 群号                        |
 | `user_id`  | number | -       | QQ 号（不可以是登录号）             |
-| `no_cache` | bool   | `false` | 是否使用缓存（使用缓存可能更新不及时，但响应更快） |
+| `no_cache` | bool   | `false` | 是否不使用缓存（使用缓存可能更新不及时，但响应更快） |
 
 #### 响应数据
 
@@ -313,7 +313,7 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | 字段名        | 数据类型   | 默认值     | 说明                        |
 | ---------- | ------ | ------- | ------------------------- |
 | `user_id`  | number | -       | QQ 号（不可以是登录号）             |
-| `no_cache` | bool   | `false` | 是否使用缓存（使用缓存可能更新不及时，但响应更快） |
+| `no_cache` | bool   | `false` | 是否不使用缓存（使用缓存可能更新不及时，但响应更快） |
 
 #### 响应数据
 
