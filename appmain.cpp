@@ -328,7 +328,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)
                 utf8_msg = match.str(2);
             }
         }
-        json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s}",
+        json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s, s:s}",
                                  "post_type", "message",
                                  "message_type", "group",
                                  "time", send_time,
