@@ -25,7 +25,7 @@
 
 ## 修改、编译
 
-整个项目目录是一个 VC++ 2010 工程，直接打开 `CoolQHttpApi.vcxproj` 即可编译，不过 VC++ 2010 用起来实在是太蛋疼了，不知道更新的版本能不能直接编译成功。用 VS Code 来编辑也是个不错的办法，然后直接调用 MSBuild 编译，大致命令如下：
+整个项目目录是一个 VC++ 2010 工程，直接打开 `CoolQHttpApi.vcxproj` 即可编译（注意项目用到了 [libevent](http://libevent.org/)、[libcurl](https://curl.haxx.se/libcurl/)、[Jansson](http://www.digip.org/jansson/)，需要自行修改一下头文件目录、库目录等指向你系统中相应的这些库的目录），不过 VC++ 2010 用起来实在是太蛋疼了，不知道更新的版本能不能直接编译成功。用 VS Code 来编辑也是个不错的办法，然后直接调用 MSBuild 编译，大致命令如下：
 
 ```bat
 call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\vcvars32.bat"
