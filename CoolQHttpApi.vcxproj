@@ -50,7 +50,7 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>if exist ".\post_buil.bat" (call ".\post_buil.bat")</Command>
+      <Command>if exist ".\post_build.bat" (call ".\post_build.bat")</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
