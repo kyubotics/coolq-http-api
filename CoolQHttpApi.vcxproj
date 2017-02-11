@@ -50,7 +50,7 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>xcopy /s /y "Release\io.github.richardchien.coolqhttpapi.dll" "C:\Program Files (x86)\CQP\app\" &amp;&amp; xcopy /s /y "io.github.richardchien.coolqhttpapi.json" "C:\Program Files (x86)\CQP\app\"</Command>
+      <Command>if exist ".\post_buil.bat" (call ".\post_buil.bat")</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
