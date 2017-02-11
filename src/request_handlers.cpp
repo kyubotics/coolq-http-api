@@ -1,12 +1,12 @@
 #include "request_handlers.h"
 
 #include <jansson.h>
-#include <cstdlib>
-#include <algorithm>
+#include <regex>
 
 #include "request.h"
 #include "encoding.h"
 #include "base64.h"
+#include "cqcode.h"
 
 using namespace std;
 
@@ -28,8 +28,16 @@ CQHTTP_REQUEST_HANDLER(send_private_msg)
     struct cqhttp_result result;
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
     char* msg = cqhttp_get_param(request, "message");
+    bool is_raw = cqhttp_get_bool_param(request, "is_raw", false);
     if (user_id && msg)
-        CQ_sendPrivateMsg(ac, user_id, utf8_to_gbk(msg).c_str());
+    {
+        string final_str;
+        if (is_raw)
+            final_str = message_escape(msg);
+        else
+            final_str = enhance_cq_code(msg);
+        CQ_sendPrivateMsg(ac, user_id, utf8_to_gbk(final_str.c_str()).c_str());
+    }
     else
         result.status = CQHTTP_STATUS_FAILED;
     if (msg)
@@ -43,8 +51,16 @@ CQHTTP_REQUEST_HANDLER(send_group_msg)
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
     char* msg = cqhttp_get_param(request, "message");
+    bool is_raw = cqhttp_get_bool_param(request, "is_raw", false);
     if (group_id && msg)
-        CQ_sendGroupMsg(ac, group_id, utf8_to_gbk(msg).c_str());
+    {
+        string final_str;
+        if (is_raw)
+            final_str = message_escape(msg);
+        else
+            final_str = enhance_cq_code(msg);
+        CQ_sendGroupMsg(ac, group_id, utf8_to_gbk(final_str.c_str()).c_str());
+    }
     else
         result.status = CQHTTP_STATUS_FAILED;
     if (msg)
@@ -58,8 +74,16 @@ CQHTTP_REQUEST_HANDLER(send_discuss_msg)
     struct cqhttp_result result;
     int64_t discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
     char* msg = cqhttp_get_param(request, "message");
+    bool is_raw = cqhttp_get_bool_param(request, "is_raw", false);
     if (discuss_id && msg)
-        CQ_sendDiscussMsg(ac, discuss_id, utf8_to_gbk(msg).c_str());
+    {
+        string final_str;
+        if (is_raw)
+            final_str = message_escape(msg);
+        else
+            final_str = enhance_cq_code(msg);
+        CQ_sendDiscussMsg(ac, discuss_id, utf8_to_gbk(final_str.c_str()).c_str());
+    }
     else
         result.status = CQHTTP_STATUS_FAILED;
     if (msg)

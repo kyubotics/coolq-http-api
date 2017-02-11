@@ -59,6 +59,12 @@
     <ClCompile Include="src\ini.c">
       <Filter>src\ini</Filter>
     </ClCompile>
+    <ClCompile Include="src\cqcode.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\md5.cpp">
+      <Filter>src\encoding</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log.h">
@@ -90,6 +96,12 @@
     </ClInclude>
     <ClInclude Include="src\ini.h">
       <Filter>src\ini</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqcode.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\md5.h">
+      <Filter>src\encoding</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

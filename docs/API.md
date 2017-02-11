@@ -60,10 +60,11 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 #### 参数
 
-| 字段名       | 数据类型   | 默认值  | 说明      |
-| --------- | ------ | ---- | ------- |
-| `user_id` | number | -    | 对方 QQ 号 |
-| `message` | string | -    | 要发送的内容  |
+| 字段名       | 数据类型   | 默认值   | 说明                       |
+| --------- | ------ | ----- | ------------------------ |
+| `user_id` | number | -     | 对方 QQ 号                  |
+| `message` | string | -     | 要发送的内容                   |
+| `is_raw`  | bool   | false | 消息内容是否作为纯文本发送（即不解析 CQ 码） |
 
 #### 响应数据
 
@@ -73,10 +74,11 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 #### 参数
 
-| 字段名        | 数据类型   | 默认值  | 说明     |
-| ---------- | ------ | ---- | ------ |
-| `group_id` | number | -    | 群号     |
-| `message`  | string | -    | 要发送的内容 |
+| 字段名        | 数据类型   | 默认值   | 说明                       |
+| ---------- | ------ | ----- | ------------------------ |
+| `group_id` | number | -     | 群号                       |
+| `message`  | string | -     | 要发送的内容                   |
+| `is_raw`   | bool   | false | 消息内容是否作为纯文本发送（即不解析 CQ 码） |
 
 #### 响应数据
 
@@ -86,10 +88,11 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 #### 参数
 
-| 字段名          | 数据类型   | 默认值  | 说明                                |
-| ------------ | ------ | ---- | --------------------------------- |
-| `discuss_id` | number | -    | 讨论组 ID（正常情况下看不到，需要从讨论组消息上报的数据中获得） |
-| `message`    | string | -    | 要发送的内容                            |
+| 字段名          | 数据类型   | 默认值   | 说明                                |
+| ------------ | ------ | ----- | --------------------------------- |
+| `discuss_id` | number | -     | 讨论组 ID（正常情况下看不到，需要从讨论组消息上报的数据中获得） |
+| `message`    | string | -     | 要发送的内容                            |
+| `is_raw`     | bool   | false | 消息内容是否作为纯文本发送（即不解析 CQ 码）          |
 
 #### 响应数据
 
@@ -280,39 +283,39 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 #### 参数
 
-| 字段名        | 数据类型   | 默认值     | 说明                        |
-| ---------- | ------ | ------- | ------------------------- |
-| `group_id` | number | -       | 群号                        |
-| `user_id`  | number | -       | QQ 号（不可以是登录号）             |
+| 字段名        | 数据类型   | 默认值     | 说明                         |
+| ---------- | ------ | ------- | -------------------------- |
+| `group_id` | number | -       | 群号                         |
+| `user_id`  | number | -       | QQ 号（不可以是登录号）              |
 | `no_cache` | bool   | `false` | 是否不使用缓存（使用缓存可能更新不及时，但响应更快） |
 
 #### 响应数据
 
-| 字段名                 | 数据类型    | 说明                               |
-| ------------------- | ------- | -------------------------------- |
-| `group_id`          | number  | 群号                               |
-| `user_id`           | number  | QQ 号                             |
-| `nickname`          | string  | 昵称                               |
-| `card`              | string  | 群名片／备注                           |
-| `sex`               | string  | 性别，`male` 或 `female` 或 `unknown` |
-| `age`               | number  | 年龄                               |
-| `area`              | string  | 地区                               |
-| `join_time`         | number  | 加群时间戳                            |
-| `last_sent_time`    | number  | 最后发言时间戳                          |
-| `level`             | string  | 成员等级                             |
-| `role`              | string  | 角色，`owner` 或 `admin` 或 `member`  |
-| `unfriendly`        | bool    | 是否不良记录成员（不确定）                    |
-| `title`             | string  | 专属头衔                             |
-| `title_expire_time` | number  | 专属头衔过期时间戳                        |
-| `card_changeable`   | bool | 是否允许修改群名片（不确定）                   |
+| 字段名                 | 数据类型   | 说明                               |
+| ------------------- | ------ | -------------------------------- |
+| `group_id`          | number | 群号                               |
+| `user_id`           | number | QQ 号                             |
+| `nickname`          | string | 昵称                               |
+| `card`              | string | 群名片／备注                           |
+| `sex`               | string | 性别，`male` 或 `female` 或 `unknown` |
+| `age`               | number | 年龄                               |
+| `area`              | string | 地区                               |
+| `join_time`         | number | 加群时间戳                            |
+| `last_sent_time`    | number | 最后发言时间戳                          |
+| `level`             | string | 成员等级                             |
+| `role`              | string | 角色，`owner` 或 `admin` 或 `member`  |
+| `unfriendly`        | bool   | 是否不良记录成员（不确定）                    |
+| `title`             | string | 专属头衔                             |
+| `title_expire_time` | number | 专属头衔过期时间戳                        |
+| `card_changeable`   | bool   | 是否允许修改群名片（不确定）                   |
 
 ### `/get_stranger_info` 获取陌生人信息
 
 #### 参数
 
-| 字段名        | 数据类型   | 默认值     | 说明                        |
-| ---------- | ------ | ------- | ------------------------- |
-| `user_id`  | number | -       | QQ 号（不可以是登录号）             |
+| 字段名        | 数据类型   | 默认值     | 说明                         |
+| ---------- | ------ | ------- | -------------------------- |
+| `user_id`  | number | -       | QQ 号（不可以是登录号）              |
 | `no_cache` | bool   | `false` | 是否不使用缓存（使用缓存可能更新不及时，但响应更快） |
 
 #### 响应数据

@@ -19,6 +19,8 @@
 
 停用插件将会关闭 HTTP 线程，再次启用将重新读取配置文件。
 
+另外，本插件所支持的 CQ 码在原生的基础上进行了一些增强，见 [CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)。
+
 ## 文档
 
 更多文档，见 [CoolQ HTTP API 插件文档](https://richardchien.github.io/coolq-http-api/)。
