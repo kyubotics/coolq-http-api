@@ -4,7 +4,7 @@
 
 #include "request.h"
 
-static bool cqhttp_add_request_handler(cqhttp_request_handler_map &m, const char *name, cqhttp_request_handler handler)
+static bool cqhttp_add_request_handler(cqhttp_request_handler_map& m, const char* name, cqhttp_request_handler handler)
 {
     m[name] = handler;
     return true;

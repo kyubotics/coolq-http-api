@@ -4,9 +4,9 @@
 #include <cctype>
 #include <sstream>
 
-size_t curl_write_stringstream_callback(char *buf, size_t size, size_t nmemb, std::stringstream &ss)
+size_t curl_write_stringstream_callback(char* buf, size_t size, size_t nmemb, std::stringstream& ss)
 {
-    char *tmp = (char *)malloc(nmemb + 1);
+    char* tmp = (char *)malloc(nmemb + 1);
     memcpy(tmp, buf, nmemb);
     tmp[nmemb] = '\0';
     ss << tmp;
@@ -14,7 +14,7 @@ size_t curl_write_stringstream_callback(char *buf, size_t size, size_t nmemb, st
     return size * nmemb;
 }
 
-bool isnumber(const std::string &s)
+bool isnumber(const std::string& s)
 {
     std::string::const_iterator it = s.begin();
     while (it != s.end() && std::isdigit(*it))

@@ -13,21 +13,21 @@ using namespace std;
 extern int ac; // global AuthCode in appmain.cpp
 
 CQHTTP_REQUEST_HANDLER(get_login_info)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t id = CQ_getLoginQQ(ac);
-    const char *nickname = CQ_getLoginNick(ac);
+    const char* nickname = CQ_getLoginNick(ac);
     result.data = json_pack("{s:I,s:s?}", "user_id", id, "nickname", gbk_to_utf8(nickname).c_str());
     return result;
 }
 
 CQHTTP_REQUEST_HANDLER(send_private_msg)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    char *msg = cqhttp_get_param(request, "message");
+    char* msg = cqhttp_get_param(request, "message");
     if (user_id && msg)
         CQ_sendPrivateMsg(ac, user_id, utf8_to_gbk(msg).c_str());
     else
@@ -38,11 +38,11 @@ CQHTTP_REQUEST_HANDLER(send_private_msg)
 }
 
 CQHTTP_REQUEST_HANDLER(send_group_msg)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    char *msg = cqhttp_get_param(request, "message");
+    char* msg = cqhttp_get_param(request, "message");
     if (group_id && msg)
         CQ_sendGroupMsg(ac, group_id, utf8_to_gbk(msg).c_str());
     else
@@ -53,11 +53,11 @@ CQHTTP_REQUEST_HANDLER(send_group_msg)
 }
 
 CQHTTP_REQUEST_HANDLER(send_discuss_msg)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
-    char *msg = cqhttp_get_param(request, "message");
+    char* msg = cqhttp_get_param(request, "message");
     if (discuss_id && msg)
         CQ_sendDiscussMsg(ac, discuss_id, utf8_to_gbk(msg).c_str());
     else
@@ -68,7 +68,7 @@ CQHTTP_REQUEST_HANDLER(send_discuss_msg)
 }
 
 CQHTTP_REQUEST_HANDLER(send_like) // CoolQ Pro only
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
@@ -80,7 +80,7 @@ CQHTTP_REQUEST_HANDLER(send_like) // CoolQ Pro only
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_kick)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
@@ -94,7 +94,7 @@ CQHTTP_REQUEST_HANDLER(set_group_kick)
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_ban)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
@@ -108,11 +108,11 @@ CQHTTP_REQUEST_HANDLER(set_group_ban)
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_anonymous_ban)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    char *anonymous_flag = cqhttp_get_param(request, "flag");
+    char* anonymous_flag = cqhttp_get_param(request, "flag");
     int64_t duration = cqhttp_get_integer_param(request, "duration", 30 * 60 /* 30 minutes */);
     if (group_id && anonymous_flag && duration >= 0)
         CQ_setGroupAnonymousBan(ac, group_id, utf8_to_gbk(anonymous_flag).c_str(), duration);
@@ -124,7 +124,7 @@ CQHTTP_REQUEST_HANDLER(set_group_anonymous_ban)
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_whole_ban)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
@@ -137,7 +137,7 @@ CQHTTP_REQUEST_HANDLER(set_group_whole_ban)
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_admin)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
@@ -151,7 +151,7 @@ CQHTTP_REQUEST_HANDLER(set_group_admin)
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_anonymous) // CoolQ Pro only
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
@@ -164,12 +164,12 @@ CQHTTP_REQUEST_HANDLER(set_group_anonymous) // CoolQ Pro only
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_card)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    char *card = cqhttp_get_param(request, "card");
+    char* card = cqhttp_get_param(request, "card");
     if (group_id && user_id)
         CQ_setGroupCard(ac, group_id, user_id, card ? utf8_to_gbk(card).c_str() : NULL);
     else
@@ -180,7 +180,7 @@ CQHTTP_REQUEST_HANDLER(set_group_card)
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_leave)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
@@ -193,12 +193,12 @@ CQHTTP_REQUEST_HANDLER(set_group_leave)
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_special_title)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    char *special_title = cqhttp_get_param(request, "special_title");
+    char* special_title = cqhttp_get_param(request, "special_title");
     int64_t duration = cqhttp_get_integer_param(request, "duration", -1 /* permanent */); // seems to be no effect
     if (group_id && user_id)
         CQ_setGroupSpecialTitle(ac, group_id, user_id, special_title ? utf8_to_gbk(special_title).c_str() : NULL, duration);
@@ -210,7 +210,7 @@ CQHTTP_REQUEST_HANDLER(set_group_special_title)
 }
 
 CQHTTP_REQUEST_HANDLER(set_discuss_leave)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
@@ -222,12 +222,12 @@ CQHTTP_REQUEST_HANDLER(set_discuss_leave)
 }
 
 CQHTTP_REQUEST_HANDLER(set_friend_add_request)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
-    char *flag = cqhttp_get_param(request, "flag");
+    char* flag = cqhttp_get_param(request, "flag");
     bool approve = cqhttp_get_bool_param(request, "approve", true);
-    char *remark = cqhttp_get_param(request, "remark");
+    char* remark = cqhttp_get_param(request, "remark");
     if (flag)
         CQ_setFriendAddRequest(ac,
                                utf8_to_gbk(flag).c_str(),
@@ -243,13 +243,13 @@ CQHTTP_REQUEST_HANDLER(set_friend_add_request)
 }
 
 CQHTTP_REQUEST_HANDLER(set_group_add_request)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
-    char *flag = cqhttp_get_param(request, "flag");
-    char *type = cqhttp_get_param(request, "type");
+    char* flag = cqhttp_get_param(request, "flag");
+    char* type = cqhttp_get_param(request, "type");
     bool approve = cqhttp_get_bool_param(request, "approve", true);
-    char *remark = cqhttp_get_param(request, "remark");
+    char* remark = cqhttp_get_param(request, "remark");
     int request_type = -1;
     if (strcmp(type, "add") == 0)
         request_type = REQUEST_GROUPADD;
@@ -272,14 +272,14 @@ CQHTTP_REQUEST_HANDLER(set_group_add_request)
     return result;
 }
 
-void get_integer_from_decoded_bytes(const string &bytes, size_t start, size_t size, void *dst)
+void get_integer_from_decoded_bytes(const string& bytes, size_t start, size_t size, void* dst)
 {
     string sub = bytes.substr(start, size);
     reverse(sub.begin(), sub.end());
     memcpy(dst, sub.data(), size);
 }
 
-void get_string_from_decoded_bytes(const string &bytes, size_t start, size_t *size, string *dst)
+void get_string_from_decoded_bytes(const string& bytes, size_t start, size_t* size, string* dst)
 {
     int16_t str_length = 0;
     get_integer_from_decoded_bytes(bytes, start, 2, &str_length);
@@ -319,9 +319,9 @@ struct raw_group_member_info
     int32_t title_expire_time;
     int32_t card_changeable;
 
-    json_t *json()
+    json_t* json()
     {
-        json_t *data = json_object();
+        json_t* data = json_object();
         json_object_set_new(data, "group_id", json_integer(group_id));
         json_object_set_new(data, "user_id", json_integer(user_id));
         json_object_set_new(data, "nickname", json_string(nickname.c_str()));
@@ -342,7 +342,7 @@ struct raw_group_member_info
 };
 
 CQHTTP_REQUEST_HANDLER(get_group_member_info)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
@@ -387,9 +387,9 @@ struct raw_stranger_info
     int32_t sex;
     int32_t age;
 
-    json_t *json()
+    json_t* json()
     {
-        json_t *data = json_object();
+        json_t* data = json_object();
         json_object_set_new(data, "user_id", json_integer(user_id));
         json_object_set_new(data, "nickname", json_string(nickname.c_str()));
         json_object_set_new(data, "sex", json_string(sex == 0 ? "male" : (sex == 1 ? "female" : "unknown")));
@@ -399,7 +399,7 @@ struct raw_stranger_info
 };
 
 CQHTTP_REQUEST_HANDLER(get_stranger_info)
-(const struct cqhttp_request &request)
+(const struct cqhttp_request& request)
 {
     struct cqhttp_result result;
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
