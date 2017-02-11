@@ -2,3 +2,7 @@
 Release
 Debug
 build.bat
+*.sdf
+*.opensdf
+*.suo
+ipch

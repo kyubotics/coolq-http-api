@@ -1,89 +1,95 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="lib">
+      <UniqueIdentifier>{4484984e-ba90-4490-99cc-69017f1413c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="src">
+      <UniqueIdentifier>{e9d2496b-c51e-406e-8ab9-2e01eb0bc8b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\ini">
-      <UniqueIdentifier>{4a20af9e-b39f-4e8f-ad14-88b0102dda0e}</UniqueIdentifier>
+    <Filter Include="src\encoding">
+      <UniqueIdentifier>{091cd5a8-266c-4d90-982d-1906b5e346cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\encoding">
-      <UniqueIdentifier>{9d9d5b28-e09a-4607-893c-dfe330cebdaf}</UniqueIdentifier>
+    <Filter Include="src\ini">
+      <UniqueIdentifier>{465f1c21-e329-4ab1-8508-7dd3322b8fe2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\base64">
-      <UniqueIdentifier>{fe9a3969-a5da-4af0-9501-ca3942b2ef64}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="CQP.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="log.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="misc_functions.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="request.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="request_handlers.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ini.h">
-      <Filter>源文件\ini</Filter>
-    </ClInclude>
-    <ClInclude Include="encoding.h">
-      <Filter>源文件\encoding</Filter>
-    </ClInclude>
-    <ClInclude Include="base64.h">
-      <Filter>源文件\base64</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="app.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="cqp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="appmain.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="misc_functions.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="request.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="request_handlers.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ini.c">
-      <Filter>源文件\ini</Filter>
-    </ClCompile>
-    <ClCompile Include="encoding.cpp">
-      <Filter>源文件\encoding</Filter>
-    </ClCompile>
-    <ClCompile Include="base64.cpp">
-      <Filter>源文件\base64</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\CQP.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="lib\jansson.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="lib\libcurl.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="lib\libevent_core.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="lib\libevent_extras.lib">
+      <Filter>lib</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\appmain.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dllmain.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\misc_functions.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\request.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\request_handlers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoding.cpp">
+      <Filter>src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base64.cpp">
+      <Filter>src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ini.c">
+      <Filter>src\ini</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\log.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc_functions.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\request.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\request_handlers.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\targetver.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\encoding.h">
+      <Filter>src\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base64.h">
+      <Filter>src\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ini.h">
+      <Filter>src\ini</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
