@@ -16,6 +16,9 @@ self.$config = {
             },
             {
                 title: '上报数据格式', path: '/Post'
+            },
+            {
+                title: 'CQ 码', path: '/CQCode'
             }
         ]
     },
