@@ -50,6 +50,8 @@ string enhance_cq_code(const string& msg)
 
         search_iter += match.position() + match.length();
     }
+    if (result == "")
+        result = msg;
     return result;
 }
 
