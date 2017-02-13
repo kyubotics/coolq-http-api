@@ -164,7 +164,7 @@ int64_t cqhttp_get_integer_param(const struct cqhttp_request& request, const cha
     if (str)
     {
         if (isnumber(str))
-            result = atol(str);
+            result = stoll(str);
         free(str);
     }
     else

@@ -8,7 +8,7 @@ size_t curl_write_stringstream_callback(char* buf, size_t size, size_t nmemb, st
 
 size_t curl_write_file_callback(char* buf, size_t size, size_t nmemb, FILE* fp);
 
-bool isnumber(const std::string& s);
+bool isnumber(const std::string& s); // act as "is_positive_integer", actually
 
 std::string itos(int64_t i);
 
