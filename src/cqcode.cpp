@@ -47,11 +47,12 @@ string enhance_cq_code(const string& msg)
         string function = match.str(1);
         if (function == "image")
             result += enhance_cq_code_function_image(match);
+        else
+            result += match.str();
 
         search_iter += match.position() + match.length();
     }
-    if (result == "")
-        result = msg;
+    result += string(search_iter, msg.cend()); // add the rest plain text
     return result;
 }
 
