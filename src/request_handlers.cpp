@@ -18,6 +18,7 @@ CQHTTP_REQUEST_HANDLER(get_login_info)
     struct cqhttp_result result;
     int64_t id = CQ_getLoginQQ(ac);
     const char* nickname = CQ_getLoginNick(ac);
+    result.retcode = nickname ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_ERROR_DEFAULT;
     result.data = json_pack("{s:I,s:s?}", "user_id", id, "nickname", gbk_to_utf8(nickname).c_str());
     return result;
 }
@@ -36,10 +37,8 @@ CQHTTP_REQUEST_HANDLER(send_private_msg)
             final_str = message_escape(msg);
         else
             final_str = enhance_cq_code(msg);
-        CQ_sendPrivateMsg(ac, user_id, utf8_to_gbk(final_str.c_str()).c_str());
+        result.retcode = CQ_sendPrivateMsg(ac, user_id, utf8_to_gbk(final_str.c_str()).c_str());
     }
-    else
-        result.status = CQHTTP_STATUS_FAILED;
     if (msg)
         free(msg);
     return result;
@@ -59,10 +58,10 @@ CQHTTP_REQUEST_HANDLER(send_group_msg)
             final_str = message_escape(msg);
         else
             final_str = enhance_cq_code(msg);
-        CQ_sendGroupMsg(ac, group_id, utf8_to_gbk(final_str.c_str()).c_str());
+        result.retcode = CQ_sendGroupMsg(ac, group_id, utf8_to_gbk(final_str.c_str()).c_str());
     }
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+    //    else
+    //        result.status = CQHTTP_STATUS_FAILED;
     if (msg)
         free(msg);
     return result;
@@ -82,10 +81,8 @@ CQHTTP_REQUEST_HANDLER(send_discuss_msg)
             final_str = message_escape(msg);
         else
             final_str = enhance_cq_code(msg);
-        CQ_sendDiscussMsg(ac, discuss_id, utf8_to_gbk(final_str.c_str()).c_str());
+        result.retcode = CQ_sendDiscussMsg(ac, discuss_id, utf8_to_gbk(final_str.c_str()).c_str());
     }
-    else
-        result.status = CQHTTP_STATUS_FAILED;
     if (msg)
         free(msg);
     return result;
@@ -97,9 +94,7 @@ CQHTTP_REQUEST_HANDLER(send_like) // CoolQ Pro only
     struct cqhttp_result result;
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
     if (user_id)
-        CQ_sendLike(ac, user_id);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_sendLike(ac, user_id);
     return result;
 }
 
@@ -111,9 +106,7 @@ CQHTTP_REQUEST_HANDLER(set_group_kick)
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
     bool reject_add_request = cqhttp_get_bool_param(request, "reject_add_request", false);
     if (group_id && user_id)
-        CQ_setGroupKick(ac, group_id, user_id, reject_add_request);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupKick(ac, group_id, user_id, reject_add_request);
     return result;
 }
 
@@ -125,9 +118,7 @@ CQHTTP_REQUEST_HANDLER(set_group_ban)
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
     int64_t duration = cqhttp_get_integer_param(request, "duration", 30 * 60 /* 30 minutes */);
     if (group_id && user_id && duration >= 0)
-        CQ_setGroupBan(ac, group_id, user_id, duration);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupBan(ac, group_id, user_id, duration);
     return result;
 }
 
@@ -139,9 +130,7 @@ CQHTTP_REQUEST_HANDLER(set_group_anonymous_ban)
     char* anonymous_flag = cqhttp_get_param(request, "flag");
     int64_t duration = cqhttp_get_integer_param(request, "duration", 30 * 60 /* 30 minutes */);
     if (group_id && anonymous_flag && duration >= 0)
-        CQ_setGroupAnonymousBan(ac, group_id, utf8_to_gbk(anonymous_flag).c_str(), duration);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupAnonymousBan(ac, group_id, utf8_to_gbk(anonymous_flag).c_str(), duration);
     if (anonymous_flag)
         free(anonymous_flag);
     return result;
@@ -154,9 +143,7 @@ CQHTTP_REQUEST_HANDLER(set_group_whole_ban)
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
     bool enable = cqhttp_get_bool_param(request, "enable", true);
     if (group_id)
-        CQ_setGroupWholeBan(ac, group_id, enable);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupWholeBan(ac, group_id, enable);
     return result;
 }
 
@@ -168,9 +155,7 @@ CQHTTP_REQUEST_HANDLER(set_group_admin)
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
     bool enable = cqhttp_get_bool_param(request, "enable", true);
     if (group_id && user_id)
-        CQ_setGroupAdmin(ac, group_id, user_id, enable);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupAdmin(ac, group_id, user_id, enable);
     return result;
 }
 
@@ -181,9 +166,7 @@ CQHTTP_REQUEST_HANDLER(set_group_anonymous) // CoolQ Pro only
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
     bool enable = cqhttp_get_bool_param(request, "enable", true);
     if (group_id)
-        CQ_setGroupAnonymous(ac, group_id, enable);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupAnonymous(ac, group_id, enable);
     return result;
 }
 
@@ -195,9 +178,7 @@ CQHTTP_REQUEST_HANDLER(set_group_card)
     int64_t user_id = cqhttp_get_integer_param(request, "user_id", 0);
     char* card = cqhttp_get_param(request, "card");
     if (group_id && user_id)
-        CQ_setGroupCard(ac, group_id, user_id, card ? utf8_to_gbk(card).c_str() : NULL);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupCard(ac, group_id, user_id, card ? utf8_to_gbk(card).c_str() : NULL);
     if (card)
         free(card);
     return result;
@@ -210,9 +191,7 @@ CQHTTP_REQUEST_HANDLER(set_group_leave)
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
     bool is_dismiss = cqhttp_get_bool_param(request, "is_dismiss", false);
     if (group_id)
-        CQ_setGroupLeave(ac, group_id, is_dismiss);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupLeave(ac, group_id, is_dismiss);
     return result;
 }
 
@@ -225,9 +204,7 @@ CQHTTP_REQUEST_HANDLER(set_group_special_title)
     char* special_title = cqhttp_get_param(request, "special_title");
     int64_t duration = cqhttp_get_integer_param(request, "duration", -1 /* permanent */); // seems to be no effect
     if (group_id && user_id)
-        CQ_setGroupSpecialTitle(ac, group_id, user_id, special_title ? utf8_to_gbk(special_title).c_str() : NULL, duration);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupSpecialTitle(ac, group_id, user_id, special_title ? utf8_to_gbk(special_title).c_str() : NULL, duration);
     if (special_title)
         free(special_title);
     return result;
@@ -239,9 +216,7 @@ CQHTTP_REQUEST_HANDLER(set_discuss_leave)
     struct cqhttp_result result;
     int64_t discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
     if (discuss_id)
-        CQ_setDiscussLeave(ac, discuss_id);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setDiscussLeave(ac, discuss_id);
     return result;
 }
 
@@ -253,12 +228,10 @@ CQHTTP_REQUEST_HANDLER(set_friend_add_request)
     bool approve = cqhttp_get_bool_param(request, "approve", true);
     char* remark = cqhttp_get_param(request, "remark");
     if (flag)
-        CQ_setFriendAddRequest(ac,
-                               utf8_to_gbk(flag).c_str(),
-                               approve ? REQUEST_ALLOW : REQUEST_DENY,
-                               remark ? utf8_to_gbk(remark).c_str() : NULL);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setFriendAddRequest(ac,
+                                                utf8_to_gbk(flag).c_str(),
+                                                approve ? REQUEST_ALLOW : REQUEST_DENY,
+                                                remark ? utf8_to_gbk(remark).c_str() : NULL);
     if (flag)
         free(flag);
     if (remark)
@@ -280,13 +253,11 @@ CQHTTP_REQUEST_HANDLER(set_group_add_request)
     else if (strcmp(type, "invite") == 0)
         request_type = REQUEST_GROUPINVITE;
     if (flag && type && request_type != -1)
-        CQ_setGroupAddRequestV2(ac,
-                                utf8_to_gbk(flag).c_str(),
-                                request_type,
-                                approve ? REQUEST_ALLOW : REQUEST_DENY,
-                                remark ? utf8_to_gbk(remark).c_str() : NULL);
-    else
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQ_setGroupAddRequestV2(ac,
+                                                 utf8_to_gbk(flag).c_str(),
+                                                 request_type,
+                                                 approve ? REQUEST_ALLOW : REQUEST_DENY,
+                                                 remark ? utf8_to_gbk(remark).c_str() : NULL);
     if (flag)
         free(flag);
     if (type)
@@ -395,12 +366,9 @@ CQHTTP_REQUEST_HANDLER(get_group_member_info)
             INTEGER(member_info.title_expire_time);
             INTEGER(member_info.card_changeable);
             result.data = member_info.json();
+            result.retcode = CQHTTP_RETCODE_OK;
         }
-        else
-            result.status = CQHTTP_STATUS_FAILED;
     }
-    else
-        result.status = CQHTTP_STATUS_FAILED;
     return result;
 }
 
@@ -440,12 +408,9 @@ CQHTTP_REQUEST_HANDLER(get_stranger_info)
             INTEGER(stranger_info.sex);
             INTEGER(stranger_info.age);
             result.data = stranger_info.json();
+            result.retcode = CQHTTP_RETCODE_OK;
         }
-        else
-            result.status = CQHTTP_STATUS_FAILED;
     }
-    else
-        result.status = CQHTTP_STATUS_FAILED;
     return result;
 }
 

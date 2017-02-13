@@ -118,7 +118,10 @@ void cqhttp_main_handler(struct evhttp_request* req, void* _)
 
     // write response
     struct evbuffer* buf = evbuffer_new();
-    json_t* json = json_pack("{s:s,s:o?}", "status", cqhttp_status_strings[result.status], "data", result.data);
+    json_t* json = json_pack("{s:s,s:i,s:o?}",
+                             "status", result.retcode == CQHTTP_RETCODE_OK ? "ok" : "failed",
+                             "retcode", result.retcode,
+                             "data", result.data);
     char* json_str = json_dumps(json, JSON_COMPACT);
     json_decref(json);
     evbuffer_add_printf(buf, "%s", json_str);
@@ -212,7 +215,7 @@ struct cqhttp_result dispatch_request(const struct cqhttp_request& request)
         // the corresponding handler does not exist
         LOG_D("HTTP请求", string("没有找到 handler：") + path_without_slash);
         struct cqhttp_result result;
-        result.status = CQHTTP_STATUS_FAILED;
+        result.retcode = CQHTTP_RETCODE_NO_SUCH_API;
         return result;
     }
 }

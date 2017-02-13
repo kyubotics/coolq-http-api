@@ -22,20 +22,19 @@ struct cqhttp_request
  */
 void cqhttp_main_handler(struct evhttp_request* req, void* _);
 
-enum cqhttp_status
+enum cqhttp_retcode
 {
-    CQHTTP_STATUS_OK = 0,
-    CQHTTP_STATUS_FAILED
+    CQHTTP_RETCODE_OK = 0,
+    CQHTTP_RETCODE_ERROR_DEFAULT = 100,
+    CQHTTP_RETCODE_NO_SUCH_API = 101
 };
-
-static const char* cqhttp_status_strings[] = {"ok", "failed"};
 
 struct cqhttp_result
 {
-    cqhttp_result() : status(CQHTTP_STATUS_OK), data(NULL)
+    cqhttp_result() : retcode(CQHTTP_RETCODE_ERROR_DEFAULT), data(NULL)
     {
     };
-    enum cqhttp_status status;
+    int retcode; // succeeded: 0, lack of parameters or invalid ones: 1, CQ error code: -11, -23, etc... (< 0)
     json_t* data;
 };
 
