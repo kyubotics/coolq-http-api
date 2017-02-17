@@ -1,6 +1,8 @@
 # CoolQ HTTP API 插件
 
 [![License](https://img.shields.io/badge/license-MIT%20License-blue.svg)](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/LICENSE)
+[![Release](https://img.shields.io/github/release/richardchien/coolq-http-api.svg)](https://github.com/richardchien/coolq-http-api/releases)
+[![Download Count](https://img.shields.io/github/downloads/richardchien/coolq-http-api/total.svg)](https://github.com/richardchien/coolq-http-api/releases)
 
 通过 HTTP 对酷 Q 的事件进行上报以及接收 HTTP 请求来调用酷 Q 的 C++ 接口，从而可以使用其它语言编写酷 Q 插件。
 
