@@ -26,7 +26,7 @@ enum cqhttp_retcode
 {
     CQHTTP_RETCODE_OK = 0,
     CQHTTP_RETCODE_ERROR_DEFAULT = 100,
-    CQHTTP_RETCODE_NO_SUCH_API = 101
+    CQHTTP_RETCODE_NO_SUCH_API = 101 // will be converted to 404 Not Found http error
 };
 
 struct cqhttp_result
@@ -60,7 +60,7 @@ typedef struct cqhttp_result (*cqhttp_request_handler)(const struct cqhttp_reque
 
 struct c_str_comparator
 {
-    bool operator()(char const* a, char const* b)
+    bool operator()(char const* a, char const* b) const
     {
         return strcmp(a, b) < 0;
     }

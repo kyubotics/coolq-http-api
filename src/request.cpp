@@ -38,7 +38,7 @@ void cqhttp_main_handler(struct evhttp_request* req, void* _)
         {
             // invalid token
             LOG_D("HTTPÇëÇó", "token ²»·û£¬Í£Ö¹ÏìÓ¦");
-            evhttp_send_reply(req, HTTP_NOTFOUND, "Not Found", NULL);
+            evhttp_send_reply(req, 401, "Unauthorized", NULL);
             return;
         }
     }
@@ -109,6 +109,13 @@ void cqhttp_main_handler(struct evhttp_request* req, void* _)
     free(form);
     if (request.json)
         json_decref(request.json);
+
+    if (result.retcode == CQHTTP_RETCODE_NO_SUCH_API)
+    {
+        // no such API, should return 404 Not Found
+        evhttp_send_reply(req, 404, "Not Found", NULL);
+        return;
+    }
 
     // set headers
     struct evkeyvalq* output_headers = evhttp_request_get_output_headers(req);
