@@ -60,8 +60,6 @@ CQHTTP_REQUEST_HANDLER(send_group_msg)
             final_str = enhance_cq_code(msg);
         result.retcode = CQ_sendGroupMsg(ac, group_id, utf8_to_gbk(final_str.c_str()).c_str());
     }
-    //    else
-    //        result.status = CQHTTP_STATUS_FAILED;
     if (msg)
         free(msg);
     return result;
@@ -296,6 +294,10 @@ void get_string_from_decoded_bytes(const string& bytes, size_t start, size_t* si
     get_string_from_decoded_bytes(_bytes, _start, &_size, &field); \
     _start += _size;
 
+/**
+* See https://cqp.cc/forum.php?mod=viewthread&tid=28730&page=2#pid1010363
+* for the structures of stranger and group member info.
+*/
 struct raw_group_member_info
 {
     int64_t group_id;
@@ -314,7 +316,7 @@ struct raw_group_member_info
     int32_t title_expire_time;
     int32_t card_changeable;
 
-    json_t* json()
+    json_t* json() const
     {
         json_t* data = json_object();
         json_object_set_new(data, "group_id", json_integer(group_id));
@@ -336,6 +338,9 @@ struct raw_group_member_info
     }
 };
 
+/**
+* See https://cqp.cc/t/26287 for how to parse the encoded data.
+*/
 CQHTTP_REQUEST_HANDLER(get_group_member_info)
 (const struct cqhttp_request& request)
 {
@@ -379,7 +384,7 @@ struct raw_stranger_info
     int32_t sex;
     int32_t age;
 
-    json_t* json()
+    json_t* json() const
     {
         json_t* data = json_object();
         json_object_set_new(data, "user_id", json_integer(user_id));
@@ -417,3 +422,23 @@ CQHTTP_REQUEST_HANDLER(get_stranger_info)
 #undef INIT
 #undef INTEGER
 #undef STRING
+
+CQHTTP_REQUEST_HANDLER(get_cookies)
+(const struct cqhttp_request& request)
+{
+    struct cqhttp_result result;
+    const char* cookies = CQ_getCookies(ac);
+    result.retcode = cookies ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_ERROR_DEFAULT;
+    result.data = json_pack("{s:s?}", "cookies", gbk_to_utf8(cookies).c_str());
+    return result;
+}
+
+CQHTTP_REQUEST_HANDLER(get_csrf_token)
+(const struct cqhttp_request& request)
+{
+    struct cqhttp_result result;
+    int32_t token = CQ_getCsrfToken(ac);
+    result.retcode = token ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_ERROR_DEFAULT;
+    result.data = json_pack("{s:I}", "token", (int64_t)token);
+    return result;
+}
