@@ -1,14 +1,11 @@
-version: {build}
-
-clone_folder: c:\projects\coolq-http-api
-
+version: build-{build}
+configuration: Release
+platform: Win32
 environment:
-  - TOOLCHAIN_VERSION: 10.0
-
-platform:
-  - Win32
-
-configuration:
-  - Release
-
-build_script: .appveyor.bat
+  TOOLCHAIN_VER: 10.0
+before_build:
+  - cmd: >-
+      set PATH=C:\Program Files (x86)\MSBuild\%TOOLCHAIN_VER%\Bin;%PATH%
+      call "C:\Program Files (x86)\Microsoft Visual Studio %TOOLCHAIN_VER%\VC\vcvarsall.bat"
+build:
+  project: CoolQHttpApi.sln
