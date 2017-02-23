@@ -1,0 +1,14 @@
+version: {build}
+
+clone_folder: c:\projects\coolq-http-api
+
+environment:
+  - TOOLCHAIN_VERSION: 10.0
+
+platform:
+  - Win32
+
+configuration:
+  - Release
+
+build_script: .appveyor.bat
