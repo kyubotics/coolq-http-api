@@ -12,12 +12,20 @@ CQ 码的使用方式和酷 Q 原生相同，在要发送的消息中插入相�
 
 ## 增强功能列表
 
-目前只有一个增强功能。
+### 发送网络图片或语音
 
-### 发送网络图片
-
-酷 Q 原生的 CQ 码只能发送 `data\image` 文件夹里的图片，增强 CQ 码支持设置 `file` 为图片链接，内部会首先把图片下载到 `data\image` 文件夹，然后把 `file` 替换成下载好的本地文件。例如：
+酷 Q 原生的 CQ 码只能发送 `data\image` 文件夹里的图片、`data\record` 里的语音，增强 CQ 码支持设置 `file` 为网络链接，内部会首先把图片或语音下载到 `data` 中相应的文件夹，然后把 `file` 替换成下载好的本地文件名。例如：
 
 ```
 [CQ:image,file=http://i1.piimg.com/567571/fdd6e7b6d93f1ef0.jpg]
+[CQ:record,file=http://doora.qiniudn.com/35aIm.silk]
+```
+
+### 发送文件系统中另一个地方的图片或语音
+
+除了发送网络上的图片、语音，还可以发送本地文件系统中其它地方的图片、语音，使用 `file://` 加文件的绝对路径，例如：
+
+```
+[CQ:image,file=file://C:\Users\richard\Pictures\1.png]
+[CQ:record,file=file://C:\Users\richard\Music\1.mp3]
 ```

@@ -2,10 +2,10 @@
 
 #include <regex>
 #include <curl/curl.h>
+#include <event2/event.h>
 
 #include "md5.h"
 #include "misc_functions.h"
-#include <event2/event.h>
 
 using namespace std;
 
@@ -29,7 +29,9 @@ string message_unescape(const string& msg)
     return tmp;
 }
 
-string enhance_cq_code_function_image(smatch& match);
+//string enhance_cq_code_function_image(smatch& match);
+//string enhance_cq_code_function_record(smatch& match);
+string enhance_cq_code_remote_file(string data_dir, smatch& match);
 
 string enhance_cq_code(const string& msg)
 {
@@ -46,7 +48,9 @@ string enhance_cq_code(const string& msg)
 
         string function = match.str(1);
         if (function == "image")
-            result += enhance_cq_code_function_image(match);
+            result += enhance_cq_code_remote_file("image", match);
+        else if (function == "record")
+            result += enhance_cq_code_remote_file("record", match);
         else
             result += match.str();
 
@@ -56,9 +60,9 @@ string enhance_cq_code(const string& msg)
     return result;
 }
 
-string enhance_cq_code_function_image(smatch& match)
+string enhance_cq_code_remote_file(string data_dir, smatch& match)
 {
-    // enhance image function to support file from the internet
+    // enhance CQ functions to support file from the internet or a different directory in filesystem
     string cqcode_call = match.str(0); // full CQ code function message
     string params = match.str(2);
     smatch m;
@@ -71,7 +75,7 @@ string enhance_cq_code_function_image(smatch& match)
         string hash = md5.toStr();
         string filename = hash + ext;
 
-        string filepath = get_cq_root_path() + "data\\image\\" + filename;
+        string filepath = get_cq_root_path() + "data\\" + data_dir + "\\" + filename;
         FILE* fp = NULL;
         fopen_s(&fp, filepath.c_str(), "wb");
         if (fp)
@@ -89,13 +93,29 @@ string enhance_cq_code_function_image(smatch& match)
                                       "Chrome/56.0.2924.87 Safari/537.36");
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
 
-            curl_easy_perform(curl); // download image file
+            curl_easy_perform(curl); // download remote file
 
             fclose(fp);
             curl_easy_cleanup(curl);
             curl_slist_free_all(chunk);
         }
         string_replace(cqcode_call, raw_url, filename);
+    }
+    else if (regex_search(params, m, regex("file=file:\\/\\/([^,\\?]+(\\.[^\\s,\\?]+))")))
+    {
+        string raw_path = m.str(1);
+        string path = message_unescape(raw_path);
+        string ext = m.str(2);
+        MD5 md5(path);
+        string hash = md5.toStr();
+        string new_filename = hash + ext;
+
+        string new_filepath = get_cq_root_path() + "data\\" + data_dir + "\\" + new_filename;
+        wstring path_wstr = utf8_to_wstr(path.c_str());
+        wstring new_filepath_wstr = utf8_to_wstr(new_filepath.c_str());
+        CopyFileW(path_wstr.c_str(), new_filepath_wstr.c_str(), false); // copy remote file
+
+        string_replace(cqcode_call, "file://" + raw_path, new_filename);
     }
     return cqcode_call;
 }
