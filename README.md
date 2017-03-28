@@ -41,6 +41,18 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe CoolQHttpApi.vcxproj /
 
 除了与编译无关的 `README.md`、`LICENSE` 等文件使用 UTF-8 编码，其它代码文件、JSON 文件都使用 GBK 编码，以便在中文 Windows 上正常运行。
 
-## Issues
+## 问题、Bug 反馈、意见和建议
 
-如果使用过程中遇到任何问题，欢迎提 issue。
+如果使用过程中遇到任何问题、Bug，或有其它意见或建议，欢迎提 [issue](https://github.com/richardchien/coolq-http-api/issues/new)。
+
+## 捐助
+
+由于酷 Q 的一些功能只有 Pro 付费版才有，而我在编写插件时需要对每个可能的功能进行测试，我自己的使用中也没有对 Pro 版的需求，因此这将成为额外开销。如果你觉得本插件挺好用的，或对酷 Q Pro 的功能有需求，不妨进行捐助。你的捐助将用于开通酷 Q Pro 以测试功能，同时也会让我更加有动力完善插件。感谢你的支持！
+
+### 支付宝
+
+![AliPay](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/alipay.png)
+
+### 微信支付
+
+![WeChat](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/wechat.png)
