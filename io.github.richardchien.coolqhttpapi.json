@@ -5,8 +5,8 @@
   "ret": 1, // 返回码，固定为1
   "apiver": 9, // Api版本，本SDK为9
   "name": "HTTP API", // 应用名称
-  "version": "1.0.5", // 应用版本
-  "version_id": 9, // 应用顺序版本（每次发布时至少+1）
+  "version": "1.1.0", // 应用版本
+  "version_id": 10, // 应用顺序版本（每次发布时至少+1）
   "author": "Richard Chien", // 应用作者
   "description": "使酷 Q 支持通过 HTTP 上报事件信息及调用接口",
   "event": [// 事件列表，同一事件类型可重复定义（发布前请删除无用事件）
@@ -15,90 +15,90 @@
       "type": 21, // 事件类型
       "name": "私聊消息处理", // 事件名称
       "function": "_eventPrivateMsg", // 事件对应函数
-      "priority": 30000 // 事件优先级(参见 cqp.im/deveventpriority)
+      "priority": 20000 // 事件优先级(参见 cqp.im/deveventpriority)
     },
     {
       "id": 2,
       "type": 2,
       "name": "群消息处理",
       "function": "_eventGroupMsg",
-      "priority": 30000
+      "priority": 20000
     },
     {
       "id": 3,
       "type": 4,
       "name": "讨论组消息处理",
       "function": "_eventDiscussMsg",
-      "priority": 30000
+      "priority": 20000
     },
     {
       "id": 5,
       "type": 101,
       "name": "群管理变动事件处理",
       "function": "_eventSystem_GroupAdmin",
-      "priority": 30000
+      "priority": 20000
     },
     {
       "id": 6,
       "type": 102,
       "name": "群成员减少事件处理",
       "function": "_eventSystem_GroupMemberDecrease",
-      "priority": 30000
+      "priority": 20000
     },
     {
       "id": 7,
       "type": 103,
       "name": "群成员增加事件处理",
       "function": "_eventSystem_GroupMemberIncrease",
-      "priority": 30000
+      "priority": 20000
     },
     {
       "id": 10,
       "type": 201,
       "name": "好友已添加事件处理",
       "function": "_eventFriend_Add",
-      "priority": 30000
+      "priority": 20000
     },
     {
       "id": 8,
       "type": 301,
       "name": "好友添加请求处理",
       "function": "_eventRequest_AddFriend",
-      "priority": 30000
+      "priority": 20000
     },
     {
       "id": 9,
       "type": 302,
       "name": "群添加请求处理",
       "function": "_eventRequest_AddGroup",
-      "priority": 30000
+      "priority": 20000
     },
     {
       "id": 1001,
       "type": 1001,
       "name": "酷Q启动事件",
-      "priority": 30000,
+      "priority": 20000,
       "function": "_eventStartup"
     },
     {
       "id": 1002,
       "type": 1002,
       "name": "酷Q关闭事件",
-      "priority": 30000,
+      "priority": 20000,
       "function": "_eventExit"
     },
     {
       "id": 1003,
       "type": 1003,
       "name": "应用已被启用",
-      "priority": 30000,
+      "priority": 20000,
       "function": "_eventEnable"
     },
     {
       "id": 1004,
       "type": 1004,
       "name": "应用将被停用",
-      "priority": 30000,
+      "priority": 20000,
       "function": "_eventDisable"
     }
   ],

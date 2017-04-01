@@ -155,11 +155,11 @@ static DWORD WINAPI httpd_thread_func(LPVOID lpParam)
 static void start_httpd()
 {
     httpd_thread_handle = CreateThread(NULL, // default security attributes
-                                           0, // use default stack size
-                                           httpd_thread_func, // thread function name
-                                           NULL, // argument to thread function
-                                           0, // use default creation flags
-                                           NULL); // returns the thread identifier
+                                       0, // use default stack size
+                                       httpd_thread_func, // thread function name
+                                       NULL, // argument to thread function
+                                       0, // use default creation flags
+                                       NULL); // returns the thread identifier
     if (!httpd_thread_handle)
     {
         LOG_E("启用", "启动 HTTP 守护线程失败");
@@ -198,9 +198,9 @@ static void stop_httpd()
     }
 }
 
-/*
-* Event: plugin is enabled.
-*/
+/**
+ * Event: plugin is enabled.
+ */
 CQEVENT(int32_t, __eventEnable, 0)
 ()
 {
@@ -210,9 +210,9 @@ CQEVENT(int32_t, __eventEnable, 0)
     return 0;
 }
 
-/*
-* Event: plugin is disabled.
-*/
+/**
+ * Event: plugin is disabled.
+ */
 CQEVENT(int32_t, __eventDisable, 0)
 ()
 {
@@ -224,13 +224,18 @@ CQEVENT(int32_t, __eventDisable, 0)
 
 #define SHOULD_POST httpd_config.post_url != ""
 
-typedef void (*post_event_callback)(int status_code, const char* response_body);
+struct cqhttp_post_response
+{
+    bool succeeded; // post event succeeded or not (the server returning 2xx means success)
+    json_t* json; // response json of the post request, is NULL if response body is empty
+    cqhttp_post_response() : succeeded(false), json(NULL) {};
+};
 
-static bool post_event(json_t* json, const string& event_name, post_event_callback callback)
+static cqhttp_post_response post_event(json_t* json, const string& event_name)
 {
     char* json_str = json_dumps(json, 0);
-    bool succeeded = false;
     CURL* curl = curl_easy_init();
+    cqhttp_post_response response;
     if (curl)
     {
         curl_easy_setopt(curl, CURLOPT_URL, httpd_config.post_url.c_str());
@@ -255,9 +260,8 @@ static bool post_event(json_t* json, const string& event_name, post_event_callba
             curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &status_code);
             if (status_code >= 200 && status_code < 300)
             {
-                succeeded = true;
-                if (callback)
-                    callback(status_code, resp_stream.str().c_str());
+                response.succeeded = true;
+                response.json = json_loads(resp_stream.str().c_str(), 0, NULL);
             }
         }
 
@@ -265,8 +269,26 @@ static bool post_event(json_t* json, const string& event_name, post_event_callba
         curl_slist_free_all(chunk);
     }
     free(json_str);
-    LOG_D("HTTP上报", string(event_name) + " 事件上报" + (succeeded ? "成功" : "失败"));
-    return succeeded;
+    LOG_D("HTTP上报", string(event_name) + " 事件上报" + (response.succeeded ? "成功" : "失败"));
+
+    if (response.json != NULL)
+    {
+        char* tmp = json_dumps(response.json, 0);
+        if (tmp != NULL)
+        {
+            LOG_D("HTTP上报", string("收到响应数据：") + utf8_to_gbk(tmp));
+            free(tmp);
+        }
+    }
+
+    return response;
+}
+
+static int release_response(cqhttp_post_response &response)
+{
+    bool block = json_is_true(json_object_get(response.json, "block"));
+    json_decref(response.json);
+    return block ? EVENT_BLOCK : EVENT_IGNORE;
 }
 
 /**
@@ -304,8 +326,20 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)
                                  "time", send_time,
                                  "user_id", from_qq,
                                  "message", gbk_to_utf8(msg).c_str());
-        post_event(json, "私聊消息", NULL);
+        cqhttp_post_response response = post_event(json, "私聊消息");
         json_decref(json);
+
+        if (response.json != NULL)
+        {
+            const char* reply_cstr = json_string_value(json_object_get(response.json, "reply"));
+            if (reply_cstr != NULL)
+            {
+                string reply_gbk = utf8_to_gbk(reply_cstr);
+                CQ_sendPrivateMsg(ac, from_qq, reply_gbk.c_str());
+            }
+
+            return release_response(response);
+        }
     }
     return EVENT_IGNORE;
 }
@@ -320,8 +354,10 @@ CQEVENT(int32_t, __eventGroupMsg, 36)
     {
         string utf8_msg = gbk_to_utf8(msg);
         string utf8_anonymous = "";
+        bool is_anonymous = false;
         if (from_anonymous && strlen(from_anonymous) > 0)
         {
+            is_anonymous = true;
             smatch match;
             if (regex_match(utf8_msg, match, regex("&#91;(.+?)&#93;:(.*)")))
             {
@@ -338,8 +374,46 @@ CQEVENT(int32_t, __eventGroupMsg, 36)
                                  "anonymous", utf8_anonymous.c_str(),
                                  "anonymous_flag", gbk_to_utf8(from_anonymous).c_str(),
                                  "message", utf8_msg.c_str());
-        post_event(json, "群消息", NULL);
+        cqhttp_post_response response = post_event(json, "群消息");
         json_decref(json);
+
+        if (response.json != NULL)
+        {
+            const char* reply_cstr = json_string_value(json_object_get(response.json, "reply"));
+            string reply = reply_cstr ? reply_cstr : "";
+
+            // check if should at sender
+            json_t* at_sender_json = json_object_get(response.json, "at_sender");
+            bool at_sender = true;
+            if (json_is_boolean(at_sender_json) && !json_boolean_value(at_sender_json))
+                at_sender = false;
+            if (at_sender && !is_anonymous)
+                reply = "[CQ:at,qq=" + itos(from_qq) + "] " + reply;
+
+            // send reply if needed
+            if (reply_cstr != NULL)
+            {
+                string reply_gbk = utf8_to_gbk(reply.c_str());
+                CQ_sendGroupMsg(ac, from_group, reply_gbk.c_str());
+            }
+
+            // kick sender if needed
+            bool kick = json_is_true(json_object_get(response.json, "kick"));
+            if (kick && !is_anonymous)
+                CQ_setGroupKick(ac, from_group, from_qq, 0);
+
+            // ban sender if needed
+            bool ban = json_is_true(json_object_get(response.json, "ban"));
+            if (ban)
+            {
+                if (is_anonymous)
+                    CQ_setGroupAnonymousBan(ac, from_group, from_anonymous, 30 * 60);
+                else
+                    CQ_setGroupBan(ac, from_group, from_qq, 30 * 60);
+            }
+
+            return release_response(response);
+        }
     }
     return EVENT_IGNORE;
 }
@@ -359,8 +433,31 @@ CQEVENT(int32_t, __eventDiscussMsg, 32)
                                  "discuss_id", from_discuss,
                                  "user_id", from_qq,
                                  "message", gbk_to_utf8(msg).c_str());
-        post_event(json, "讨论组消息", NULL);
+        cqhttp_post_response response = post_event(json, "讨论组消息");
         json_decref(json);
+
+        if (response.json != NULL)
+        {
+            const char* reply_cstr = json_string_value(json_object_get(response.json, "reply"));
+            string reply = reply_cstr ? reply_cstr : "";
+
+            // check if should at sender
+            json_t* at_sender_json = json_object_get(response.json, "at_sender");
+            bool at_sender = true;
+            if (json_is_boolean(at_sender_json) && !json_boolean_value(at_sender_json))
+                at_sender = false;
+            if (at_sender)
+                reply = "[CQ:at,qq=" + itos(from_qq) + "] " + reply;
+
+            // send reply if needed
+            if (reply_cstr != NULL)
+            {
+                string reply_gbk = utf8_to_gbk(reply.c_str());
+                CQ_sendDiscussMsg(ac, from_discuss, reply_gbk.c_str());
+            }
+
+            return release_response(response);
+        }
     }
     return EVENT_IGNORE;
 }
@@ -391,8 +488,13 @@ CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
                                  "time", send_time,
                                  "group_id", from_group,
                                  "user_id", being_operate_qq);
-        post_event(json, "群管理员变动", NULL);
+        cqhttp_post_response response = post_event(json, "群管理员变动");
         json_decref(json);
+
+        if (response.json != NULL)
+        {
+            return release_response(response);
+        }
     }
     return EVENT_IGNORE;
 }
@@ -429,8 +531,13 @@ CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
                                  "group_id", from_group,
                                  "operator_id", sub_type == 1 ? being_operate_qq /* leave by him/herself */ : from_qq,
                                  "user_id", being_operate_qq);
-        post_event(json, "群成员减少", NULL);
+        cqhttp_post_response response = post_event(json, "群成员减少");
         json_decref(json);
+
+        if (response.json != NULL)
+        {
+            return release_response(response);
+        }
     }
     return EVENT_IGNORE;
 }
@@ -464,8 +571,13 @@ CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)
                                  "group_id", from_group,
                                  "operator_id", from_qq,
                                  "user_id", being_operate_qq);
-        post_event(json, "群成员增加", NULL);
+        cqhttp_post_response response = post_event(json, "群成员增加");
         json_decref(json);
+
+        if (response.json != NULL)
+        {
+            return release_response(response);
+        }
     }
     return EVENT_IGNORE;
 }
@@ -483,8 +595,13 @@ CQEVENT(int32_t, __eventFriend_Add, 16)
                                  "event", "friend_added",
                                  "time", send_time,
                                  "user_id", from_qq);
-        post_event(json, "好友已添加", NULL);
+        cqhttp_post_response response = post_event(json, "好友已添加");
         json_decref(json);
+
+        if (response.json != NULL)
+        {
+            return release_response(response);
+        }
     }
     return EVENT_IGNORE;
 }
@@ -506,8 +623,25 @@ CQEVENT(int32_t, __eventRequest_AddFriend, 24)
                                  "user_id", from_qq,
                                  "message", gbk_to_utf8(msg).c_str(),
                                  "flag", gbk_to_utf8(response_flag).c_str());
-        post_event(json, "好友添加请求", NULL);
+        cqhttp_post_response response = post_event(json, "好友添加请求");
         json_decref(json);
+
+        if (response.json != NULL)
+        {
+            // approve or reject request if needed
+            json_t* approve_json = json_object_get(response.json, "approve");
+            if (json_is_boolean(approve_json))
+            {
+                // the action is specified
+                bool approve = json_boolean_value(approve_json);
+                const char* remark_cstr = json_string_value(json_object_get(response.json, "remark"));
+                string remark = remark_cstr ? remark_cstr : "";
+                string remark_gbk = utf8_to_gbk(remark.c_str());
+                CQ_setFriendAddRequest(ac, response_flag, approve ? REQUEST_ALLOW : REQUEST_DENY, remark_gbk.c_str());
+            }
+
+            return release_response(response);
+        }
     }
     return EVENT_IGNORE;
 }
@@ -541,8 +675,25 @@ CQEVENT(int32_t, __eventRequest_AddGroup, 32)
                                  "user_id", from_qq,
                                  "message", gbk_to_utf8(msg).c_str(),
                                  "flag", gbk_to_utf8(response_flag).c_str());
-        post_event(json, "群添加请求", NULL);
+        cqhttp_post_response response = post_event(json, "群添加请求");
         json_decref(json);
+
+        if (response.json != NULL)
+        {
+            // approve or reject request if needed
+            json_t* approve_json = json_object_get(response.json, "approve");
+            if (json_is_boolean(approve_json))
+            {
+                // the action is specified
+                bool approve = json_boolean_value(approve_json);
+                const char* remark_cstr = json_string_value(json_object_get(response.json, "remark"));
+                string remark = remark_cstr ? remark_cstr : "";
+                string remark_gbk = utf8_to_gbk(remark.c_str());
+                CQ_setGroupAddRequestV2(ac, response_flag, sub_type, approve ? REQUEST_ALLOW : REQUEST_DENY, remark_gbk.c_str());
+            }
+
+            return release_response(response);
+        }
     }
     return EVENT_IGNORE;
 }
