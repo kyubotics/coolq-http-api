@@ -13,7 +13,7 @@ docute.init({
             title: 'API 列表', path: '/API'
         },
         {
-            title: '上报数据格式', path: '/Post'
+            title: '事件上报', path: '/Post'
         },
         {
             title: 'CQ 码', path: '/CQCode'
