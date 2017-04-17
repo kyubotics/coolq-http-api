@@ -189,6 +189,7 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | `post_type`    | string | `"request"`        | 上报类型                       |
 | `request_type` | string | `"group"`          | 请求类型                       |
 | `sub_type`     | string | `"add"`、`"invite"` | 请求子类型，分别表示加群请求、邀请登录号入群     |
+| `group_id`     | number | -                  | 群号                         |
 | `user_id`      | number | -                  | 发送请求的 QQ 号                 |
 | `message`      | string | -                  | 验证信息                       |
 | `flag`         | string | -                  | 请求 flag，在调用处理请求的 API 时需要传入 |

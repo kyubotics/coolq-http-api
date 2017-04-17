@@ -602,11 +602,12 @@ CQEVENT(int32_t, __eventRequest_AddGroup, 32)
             sub_type_str = "invite";
             break;
         }
-        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:s, s:s}",
+        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I, s:s, s:s}",
                                  "post_type", "request",
                                  "request_type", "group",
                                  "sub_type", sub_type_str,
                                  "time", send_time,
+                                 "group_id", from_group,
                                  "user_id", from_qq,
                                  "message", gbk_to_utf8(msg).c_str(),
                                  "flag", gbk_to_utf8(response_flag).c_str());
