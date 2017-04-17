@@ -36,7 +36,7 @@ CQHTTP_REQUEST_HANDLER(send_private_msg)
         if (is_raw)
             final_str = message_escape(msg);
         else
-            final_str = enhance_cq_code(msg);
+            final_str = enhance_cq_code(msg, CQCODE_ENHANCE_OUTCOMING);
         result.retcode = CQ_sendPrivateMsg(ac, user_id, utf8_to_gbk(final_str.c_str()).c_str());
     }
     if (msg)
@@ -57,7 +57,7 @@ CQHTTP_REQUEST_HANDLER(send_group_msg)
         if (is_raw)
             final_str = message_escape(msg);
         else
-            final_str = enhance_cq_code(msg);
+            final_str = enhance_cq_code(msg, CQCODE_ENHANCE_OUTCOMING);
         result.retcode = CQ_sendGroupMsg(ac, group_id, utf8_to_gbk(final_str.c_str()).c_str());
     }
     if (msg)
@@ -78,7 +78,7 @@ CQHTTP_REQUEST_HANDLER(send_discuss_msg)
         if (is_raw)
             final_str = message_escape(msg);
         else
-            final_str = enhance_cq_code(msg);
+            final_str = enhance_cq_code(msg, CQCODE_ENHANCE_OUTCOMING);
         result.retcode = CQ_sendDiscussMsg(ac, discuss_id, utf8_to_gbk(final_str.c_str()).c_str());
     }
     if (msg)

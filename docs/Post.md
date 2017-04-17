@@ -67,9 +67,9 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 #### 响应数据
 
-| 字段名     | 数据类型   | 允许的值 | 说明     |
-| ------- | ------ | ---- | ------ |
-| `reply` | string | -    | 要回复的内容 |
+| 字段名     | 数据类型   | 允许的值 | 说明                                       |
+| ------- | ------ | ---- | ---------------------------------------- |
+| `reply` | string | -    | 要回复的内容（不支持 [增强 CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)） |
 
 ### 群消息
 
@@ -89,7 +89,7 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 | 字段名         | 数据类型    | 允许的值            | 说明                                       |
 | ----------- | ------- | --------------- | ---------------------------------------- |
-| `reply`     | string  | -               | 要回复的内容                                   |
+| `reply`     | string  | -               | 要回复的内容（不支持 [增强 CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)） |
 | `at_sender` | boolean | `true`, `false` | 是否要在回复开头 at 发送者（自动添加），默认为 `true`，发送者是匿名用户时无效 |
 | `kick`      | boolean | `true`, `false` | 把发送者踢出群组（需要登录号权限足够），**不拒绝**此人后续加群请求，默认为 `false`，发送者是匿名用户时无效 |
 | `ban`       | boolean | `true`, `false` | 把发送者禁言 30 分钟（需要登录号权限足够），对匿名用户也有效，不支持指定禁言时长（如需指定，请调用相应 API），默认为 `false` |
@@ -108,10 +108,10 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 #### 响应数据
 
-| 字段名         | 数据类型    | 允许的值            | 说明                               |
-| ----------- | ------- | --------------- | -------------------------------- |
-| `reply`     | string  | -               | 要回复的内容                           |
-| `at_sender` | boolean | `true`, `false` | 是否要在回复开头 at 发送者（自动添加），默认为 `true` |
+| 字段名         | 数据类型    | 允许的值            | 说明                                       |
+| ----------- | ------- | --------------- | ---------------------------------------- |
+| `reply`     | string  | -               | 要回复的内容（不支持 [增强 CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)） |
+| `at_sender` | boolean | `true`, `false` | 是否要在回复开头 at 发送者（自动添加），默认为 `true`         |
 
 ### 群管理员变动
 

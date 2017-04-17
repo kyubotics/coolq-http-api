@@ -5,8 +5,8 @@
   "ret": 1, // 返回码，固定为1
   "apiver": 9, // Api版本，本SDK为9
   "name": "HTTP API", // 应用名称
-  "version": "1.1.0", // 应用版本
-  "version_id": 10, // 应用顺序版本（每次发布时至少+1）
+  "version": "1.1.1", // 应用版本
+  "version_id": 11, // 应用顺序版本（每次发布时至少+1）
   "author": "Richard Chien", // 应用作者
   "description": "使酷 Q 支持通过 HTTP 上报事件信息及调用接口",
   "event": [// 事件列表，同一事件类型可重复定义（发布前请删除无用事件）
