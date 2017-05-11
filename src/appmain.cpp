@@ -467,8 +467,11 @@ CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
             sub_type_str = "leave";
             break;
         case 2:
-            sub_type_str = "kick";
-            break;
+            if (being_operate_qq != CQ_getLoginQQ(ac)) {
+                // the one been kicked out is not me
+                sub_type_str = "kick";
+                break;
+            }
         case 3:
             sub_type_str = "kick_me";
             break;
