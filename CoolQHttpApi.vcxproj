@@ -76,6 +76,7 @@
     <ClCompile Include="src\request_handlers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lib\include\cqp.h" />
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\base64.h" />
     <ClInclude Include="src\cqcode.h" />

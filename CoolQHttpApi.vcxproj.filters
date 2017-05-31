@@ -13,6 +13,9 @@
     <Filter Include="src\ini">
       <UniqueIdentifier>{465f1c21-e329-4ab1-8508-7dd3322b8fe2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\include">
+      <UniqueIdentifier>{19227b5a-b47b-473b-85b3-a38e3b6a30d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
@@ -102,6 +105,9 @@
     </ClInclude>
     <ClInclude Include="src\md5.h">
       <Filter>src\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\cqp.h">
+      <Filter>lib\include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

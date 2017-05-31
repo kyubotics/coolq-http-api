@@ -26,7 +26,8 @@ enum cqhttp_retcode
 {
     CQHTTP_RETCODE_OK = 0,
     CQHTTP_RETCODE_ERROR_DEFAULT = 100,
-    CQHTTP_RETCODE_NO_SUCH_API = 101 // will be converted to 404 Not Found http error
+    CQHTTP_RETCODE_NO_SUCH_API = 101, // will be converted to 404 Not Found http error
+    CQHTTP_RETCODE_INVALID_DATA = 102 // the data that CoolQ returns is invalid
 };
 
 struct cqhttp_result
