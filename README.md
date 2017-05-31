@@ -4,6 +4,7 @@
 [![Build Status](https://ci.appveyor.com/api/projects/status/9c4c6inmsdk3gbou?svg=true)](https://ci.appveyor.com/project/richardchien/coolq-http-api)
 [![Release](https://img.shields.io/github/release/richardchien/coolq-http-api.svg)](https://github.com/richardchien/coolq-http-api/releases)
 [![Download Count](https://img.shields.io/github/downloads/richardchien/coolq-http-api/total.svg)](https://github.com/richardchien/coolq-http-api/releases)
+![QQ群](https://img.shields.io/badge/qq%E7%BE%A4-201865589-orange.svg)
 
 通过 HTTP 对酷 Q 的事件进行上报以及接收 HTTP 请求来调用酷 Q 的 C++ 接口，从而可以使用其它语言编写酷 Q 插件。
 
@@ -44,6 +45,8 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe CoolQHttpApi.vcxproj /
 ## 问题、Bug 反馈、意见和建议
 
 如果使用过程中遇到任何问题、Bug，或有其它意见或建议，欢迎提 [issue](https://github.com/richardchien/coolq-http-api/issues/new)。
+
+也欢迎加入 QQ 交流群 201865589 来和大家讨论～
 
 ## 捐助
 
