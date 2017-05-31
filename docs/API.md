@@ -322,10 +322,10 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | `last_sent_time`    | number | 最后发言时间戳                          |
 | `level`             | string | 成员等级                             |
 | `role`              | string | 角色，`owner` 或 `admin` 或 `member`  |
-| `unfriendly`        | bool   | 是否不良记录成员（不确定）                    |
+| `unfriendly`        | bool   | 是否不良记录成员 |
 | `title`             | string | 专属头衔                             |
 | `title_expire_time` | number | 专属头衔过期时间戳                        |
-| `card_changeable`   | bool   | 是否允许修改群名片（不确定）                   |
+| `card_changeable`   | bool   | 是否允许修改群名片 |
 
 ### `/get_group_member_list` 获取群成员列表
 
@@ -337,7 +337,7 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 #### 响应数据
 
-相应内容为 JSON 数组，每个元素的内容和上面的 `/get_group_member_info` 接口相同。
+相应内容为 JSON 数组，每个元素的内容和上面的 `/get_group_member_info` 接口相同，但对于同一个群组的同一个成员，获取列表时和获取单独的成员信息时，某些字段可能有所不同，例如 `area`、`title` 等字段在获取列表时无法获得，具体应以单独的成员信息为准。
 
 ### `/get_stranger_info` 获取陌生人信息
 
