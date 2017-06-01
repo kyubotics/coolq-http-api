@@ -623,8 +623,11 @@ CQEVENT(int32_t, __eventRequest_AddGroup, 32)
             if (json_is_boolean(approve_json)) {
                 // the action is specified
                 bool approve = json_boolean_value(approve_json);
-                const char *remark_cstr = json_string_value(json_object_get(response.json, "remark"));
-                string remark = remark_cstr ? remark_cstr : "";
+                const char *reason_cstr = json_string_value(json_object_get(response.json, "reason"));
+                if (!reason_cstr) {
+                    reason_cstr = json_string_value(json_object_get(response.json, "remark")); // for compatibility with v1.1.3 and before
+                }
+                string remark = reason_cstr ? reason_cstr : "";
                 string remark_gbk = utf8_to_gbk(remark.c_str());
                 CQ_setGroupAddRequestV2(ac, response_flag, sub_type, approve ? REQUEST_ALLOW : REQUEST_DENY, remark_gbk.c_str());
             }

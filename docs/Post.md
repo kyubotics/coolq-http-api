@@ -199,4 +199,4 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | 字段名       | 数据类型    | 允许的值            | 说明        |
 | --------- | ------- | --------------- | --------- |
 | `approve` | boolean | `true`, `false` | 是否同意请求／邀请 |
-| `remark`  | string  | -               | 拒绝理由      |
+| `reason`  | string  | - | 拒绝理由（仅在拒绝时有效） |
