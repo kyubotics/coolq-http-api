@@ -230,7 +230,10 @@ CQHTTP_REQUEST_HANDLER(set_group_add_request)
     char *flag = cqhttp_get_param(request, "flag");
     char *type = cqhttp_get_param(request, "type");
     bool approve = cqhttp_get_bool_param(request, "approve", true);
-    char *remark = cqhttp_get_param(request, "remark");
+    char *reason = cqhttp_get_param(request, "reason");
+    if (!reason) {
+        reason = cqhttp_get_param(request, "remark"); // for compatibility with v1.1.3 and before
+    }
     int request_type = -1;
     if (strcmp(type, "add") == 0)
         request_type = REQUEST_GROUPADD;
@@ -241,13 +244,13 @@ CQHTTP_REQUEST_HANDLER(set_group_add_request)
                                                  utf8_to_gbk(flag).c_str(),
                                                  request_type,
                                                  approve ? REQUEST_ALLOW : REQUEST_DENY,
-                                                 remark ? utf8_to_gbk(remark).c_str() : NULL);
+                                                 reason ? utf8_to_gbk(reason).c_str() : NULL);
     if (flag)
         free(flag);
     if (type)
         free(type);
-    if (remark)
-        free(remark);
+    if (reason)
+        free(reason);
     return result;
 }
 
