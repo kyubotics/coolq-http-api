@@ -35,9 +35,11 @@ struct cqhttp_config {
     string post_url;
     string token;
     regex pattern;
+    string post_message_format;
 
     cqhttp_config() : host("0.0.0.0"), port(5700),
-                      post_url(""), token(""), pattern(regex("")) {}
+                      post_url(""), token(""), pattern(regex("")),
+                      post_message_format("string") {}
 } httpd_config;
 
 /**
@@ -67,7 +69,7 @@ CQEVENT(int32_t, Initialize, 4)
 static int parse_conf_handler(void *user, const char *section, const char *name, const char *value) {
     static string login_qq_atr = itos(CQ_getLoginQQ(ac));
 
-    struct cqhttp_config *config = (struct cqhttp_config *)user;
+    struct cqhttp_config *config = (struct cqhttp_config *) user;
     if (string(section) == "general" || (isnumber(section) && login_qq_atr == section)) {
         string field = name;
         if (field == "host")
@@ -80,6 +82,8 @@ static int parse_conf_handler(void *user, const char *section, const char *name,
             config->token = value;
         else if (field == "pattern")
             config->pattern = regex(value);
+        else if (field == "post_message_format")
+            config->post_message_format = value;
         else
             return 0; /* unknown name, error */
     } else
@@ -262,6 +266,53 @@ static int release_response(cqhttp_post_response &response) {
     return block ? EVENT_BLOCK : EVENT_IGNORE;
 }
 
+static json_t *convert_to_msg_array_if_needed(string &msg /* utf-8 */) {
+    if (httpd_config.post_message_format == "array") {
+        // 0: full CQ code function message, 1: function name, 2: params string
+        regex exp("\\[CQ:([\\._\\-0-9A-Za-z]+?)(?:\\s*\\]|\\s*,\\s*((?:.|\\r?\\n)*?)\\])");
+
+        auto result = json_array();
+        smatch match;
+        auto search_iter(msg.cbegin());
+        while (regex_search(search_iter, msg.cend(), match, exp)) {
+            auto tmp = string(search_iter, search_iter + match.position()); // normal message before this current CQ code
+            if (tmp.length() > 0) {
+                json_array_append_new(result, json_pack("[s,s]", "plain", message_unescape(tmp).c_str())); // ["plain", "the plain text message"]
+            }
+
+            auto function = match.str(1);
+            auto params = match.str(2);
+
+            json_t *params_json = NULL;
+            if (params.length() > 0) {
+                // has parameters
+                params_json = json_object();
+                stringstream params_ss(params);
+                while (params_ss.good()) {
+                    // split key and value
+                    string key, value;
+                    getline(params_ss, key, '=');
+                    getline(params_ss, value, ',');
+
+                    if (key.length() > 0 && value.length() > 0) {
+                        json_object_set_new(params_json, key.c_str(), json_string(message_unescape(value).c_str()));
+                    }
+                }
+            }
+
+            json_array_append_new(result, json_pack("[s,o?]", function.c_str(), params_json));
+            search_iter += match.position() + match.length();
+        }
+        auto tmp = string(search_iter, msg.cend()); // add the rest plain text
+        if (tmp.length() > 0) {
+            json_array_append_new(result, json_pack("[s,s]", "text", message_unescape(tmp).c_str()));
+        }
+
+        return result;
+    }
+    return json_string(msg.c_str());
+}
+
 /**
  * Type=21 私聊消息
  * sub_type 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
@@ -286,13 +337,13 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)
             break;
         }
         utf8_msg = enhance_cq_code(utf8_msg, CQCODE_ENHANCE_INCOMING);
-        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:s}",
+        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I}",
                                  "post_type", "message",
                                  "message_type", "private",
                                  "sub_type", sub_type_str,
                                  "time", send_time,
-                                 "user_id", from_qq,
-                                 "message", utf8_msg.c_str());
+                                 "user_id", from_qq);
+        json_object_set(json, "message", convert_to_msg_array_if_needed(utf8_msg));
         cqhttp_post_response response = post_event(json, "私聊消息");
         json_decref(json);
 

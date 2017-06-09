@@ -3,6 +3,7 @@
 #include "stdafx.h"
 
 #include <string>
+#include <vector>
 
 size_t curl_write_stringstream_callback(char* buf, size_t size, size_t nmemb, std::stringstream& ss);
 
@@ -15,3 +16,5 @@ std::string itos(int64_t i);
 void string_replace(std::string& str, const std::string& search, const std::string& replace);
 
 std::string get_cq_root_path();
+
+void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = ",");
