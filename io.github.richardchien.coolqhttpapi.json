@@ -1,127 +1,128 @@
 {
-    "ret": 1, // 锟斤拷锟斤拷锟诫，锟教讹拷为 1
-    "apiver": 9, // Api 锟芥本
-    "name": "HTTP API", // 应锟斤拷锟斤拷锟斤拷
-    "version": "1.1.4", // 应锟矫版本
-    "version_id": 14, // 应锟斤拷顺锟斤拷锟芥本锟斤拷每锟轿凤拷锟斤拷时锟斤拷锟斤拷锟接ｏ拷
-    "author": "Richard Chien", // 应锟斤拷锟斤拷锟斤拷
-    "description": "使锟斤拷 Q 支锟斤拷通锟斤拷 HTTP 锟较憋拷锟铰硷拷锟斤拷息锟斤拷锟斤拷锟矫接匡拷",
-    "event": [ // 锟铰硷拷锟叫憋拷锟斤拷同一锟铰硷拷锟斤拷锟酵匡拷锟截革拷锟斤拷锟斤拷
+    "ret": 1, // 返回码，固定为 1
+    "apiver": 9, // Api 版本
+    "name": "HTTP API", // 应用名称
+    "version": "1.1.5", // 应用版本
+    "version_id": 14, // 应用顺序版本（每次发布时增加）
+    "author": "Richard Chien", // 应用作者
+    "description": "使酷 Q 支持通过 HTTP 上报事件信息及调用接口",
+    "event": [ // 事件列表，同一事件类型可重复定义
         {
-            "id": 1, // 锟铰硷拷ID
-            "type": 21, // 锟铰硷拷锟斤拷锟斤拷
-            "name": "私锟斤拷锟斤拷息锟斤拷锟斤拷", // 锟铰硷拷锟斤拷锟斤拷
-            "function": "_eventPrivateMsg", // 锟铰硷拷锟斤拷锟斤拷锟斤拷锟斤拷
-            "priority": 20000 // 锟铰硷拷锟斤拷锟饺硷拷锟斤拷锟斤拷 https://d.cqp.me/Pro/%E5%BC%80%E5%8F%91/%E4%BA%8B%E4%BB%B6%E4%BF%A1%E6%81%AF#priority锟斤拷
+            "id": 1, // 事件 ID
+            "type": 21, // 事件类型
+            "name": "私聊消息处理", // 事件名称
+            "function": "_eventPrivateMsg", // 事件处理函数
+            "priority": 20000 // 事件优先级
         },
         {
             "id": 2,
             "type": 2,
-            "name": "群锟斤拷息锟斤拷锟斤拷",
+            "name": "群消息处理",
             "function": "_eventGroupMsg",
             "priority": 20000
         },
         {
             "id": 3,
             "type": 4,
-            "name": "锟斤拷锟斤拷锟斤拷锟斤拷息锟斤拷锟斤拷",
+            "name": "讨论组消息处理",
             "function": "_eventDiscussMsg",
             "priority": 20000
         },
         {
             "id": 5,
             "type": 101,
-            "name": "群锟斤拷锟斤拷锟戒动锟铰硷拷锟斤拷锟斤拷",
+            "name": "群管理变动事件处理",
             "function": "_eventSystem_GroupAdmin",
             "priority": 20000
         },
         {
             "id": 6,
             "type": 102,
-            "name": "群锟斤拷员锟斤拷锟斤拷锟铰硷拷锟斤拷锟斤拷",
+            "name": "群成员减少事件处理",
             "function": "_eventSystem_GroupMemberDecrease",
             "priority": 20000
         },
         {
             "id": 7,
             "type": 103,
-            "name": "群锟斤拷员锟斤拷锟斤拷锟铰硷拷锟斤拷锟斤拷",
+            "name": "群成员增加事件处理",
             "function": "_eventSystem_GroupMemberIncrease",
             "priority": 20000
         },
         {
             "id": 10,
             "type": 201,
-            "name": "锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟铰硷拷锟斤拷锟斤拷",
+            "name": "好友已添加事件处理",
             "function": "_eventFriend_Add",
             "priority": 20000
         },
         {
             "id": 8,
             "type": 301,
-            "name": "锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷",
+            "name": "好友添加请求处理",
             "function": "_eventRequest_AddFriend",
             "priority": 20000
         },
         {
             "id": 9,
             "type": 302,
-            "name": "群锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷",
+            "name": "群添加请求处理",
             "function": "_eventRequest_AddGroup",
             "priority": 20000
         },
         {
             "id": 1001,
             "type": 1001,
-            "name": "锟斤拷Q锟斤拷锟斤拷锟铰硷拷",
+            "name": "酷Q启动事件",
             "priority": 20000,
             "function": "_eventStartup"
         },
         {
             "id": 1002,
             "type": 1002,
-            "name": "锟斤拷Q锟截憋拷锟铰硷拷",
+            "name": "酷Q关闭事件",
             "priority": 20000,
             "function": "_eventExit"
         },
         {
             "id": 1003,
             "type": 1003,
-            "name": "应锟斤拷锟窖憋拷锟斤拷锟斤拷",
+            "name": "应用已被启用",
             "priority": 20000,
             "function": "_eventEnable"
         },
         {
             "id": 1004,
             "type": 1004,
-            "name": "应锟矫斤拷锟斤拷停锟斤拷",
+            "name": "应用将被停用",
             "priority": 20000,
             "function": "_eventDisable"
         }
     ],
     "menu": [],
     "status": [],
-    "auth": [ // 应锟斤拷权锟斤拷
-        20, //[锟斤拷锟斤拷]取Cookies getCookies / getCsrfToken
-        30, //锟斤拷锟斤拷锟斤拷锟斤拷 getRecord
-        101, //锟斤拷锟斤拷群锟斤拷息 sendGroupMsg
-        103, //锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷息 sendDiscussMsg
-        106, //锟斤拷锟斤拷私锟斤拷锟斤拷息 sendPrivateMsg
-        110, //锟斤拷锟斤拷锟斤拷 sendLikeV2 / sendLike
-        120, //锟斤拷群员锟狡筹拷 setGroupKick
-        121, //锟斤拷群员锟斤拷锟斤拷 setGroupBan
-        122, //锟斤拷群锟斤拷锟斤拷员 setGroupAdmin
-        123, //锟斤拷全群锟斤拷锟斤拷 setGroupWholeBan
-        124, //锟斤拷锟斤拷锟斤拷群员锟斤拷锟斤拷 setGroupAnonymousBan
-        125, //锟斤拷群锟斤拷锟斤拷锟斤拷锟斤拷 setGroupAnonymous
-        126, //锟斤拷群锟斤拷员锟斤拷片 setGroupCard
-        127, //[锟斤拷锟斤拷]锟斤拷群锟剿筹拷 setGroupLeave
-        128, //锟斤拷群锟斤拷员专锟斤拷头锟斤拷 setGroupSpecialTitle
-        130, //取群锟斤拷员锟斤拷息 getGroupMemberInfoV2 / getGroupMemberInfo
-        131, //取陌锟斤拷锟斤拷锟斤拷息 getStrangerInfo
-        140, //锟斤拷锟斤拷锟斤拷锟斤拷锟剿筹拷 setDiscussLeave
-        150, //锟矫猴拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷 setFriendAddRequest
-        151, //锟斤拷群锟斤拷锟斤拷锟斤拷锟斤拷 setGroupAddRequest
-        160 //取群锟斤拷员锟叫憋拷 getGroupMemberList
+    "auth": [ // 应用权限
+        20, //[敏感]取Cookies getCookies / getCsrfToken
+        30, //接收语音 getRecord
+        101, //发送群消息 sendGroupMsg
+        103, //发送讨论组消息 sendDiscussMsg
+        106, //发送私聊消息 sendPrivateMsg
+        110, //发送赞 sendLikeV2 / sendLike
+        120, //置群员移除 setGroupKick
+        121, //置群员禁言 setGroupBan
+        122, //置群管理员 setGroupAdmin
+        123, //置全群禁言 setGroupWholeBan
+        124, //置匿名群员禁言 setGroupAnonymousBan
+        125, //置群匿名设置 setGroupAnonymous
+        126, //置群成员名片 setGroupCard
+        127, //[敏感]置群退出 setGroupLeave
+        128, //置群成员专属头衔 setGroupSpecialTitle
+        130, //取群成员信息 getGroupMemberInfoV2 / getGroupMemberInfo
+        131, //取陌生人信息 getStrangerInfo
+        140, //置讨论组退出 setDiscussLeave
+        150, //置好友添加请求 setFriendAddRequest
+        151, //置群添加请求 setGroupAddRequest
+        160, //取群成员列表 getGroupMemberList
+        161 //获取群列表 getGroupList
     ]
 }
