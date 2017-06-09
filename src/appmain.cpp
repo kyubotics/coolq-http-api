@@ -2,7 +2,7 @@
  * CoolQ HTTP API core.
  */
 
-#include "stdafx.h"
+#include "common.h"
 
 #include <string>
 #include <sstream>
@@ -14,10 +14,10 @@
 #include <event2/http.h>
 #include <WinSock2.h>
 
-#include "encoding.h"
+#include "encoding/encoding.h"
 #include "misc_functions.h"
 #include "request.h"
-#include "ini.h"
+#include "ini/ini.h"
 #include "cqcode.h"
 
 using namespace std;
@@ -52,7 +52,7 @@ string get_httpd_config_token() {
 */
 CQEVENT(const char *, AppInfo, 0)
 () {
-    return CQAPPINFO;
+    return CQ_APP_INFO;
 }
 
 /**
@@ -67,7 +67,7 @@ CQEVENT(int32_t, Initialize, 4)
 static int parse_conf_handler(void *user, const char *section, const char *name, const char *value) {
     static string login_qq_atr = itos(CQ_getLoginQQ(ac));
 
-    struct cqhttp_config *config = (struct cqhttp_config *)user;
+    struct cqhttp_config *config = (struct cqhttp_config *) user;
     if (string(section) == "general" || (isnumber(section) && login_qq_atr == section)) {
         string field = name;
         if (field == "host")
@@ -141,12 +141,15 @@ static DWORD WINAPI httpd_thread_func(LPVOID lpParam) {
  * Start HTTP daemon thread.
  */
 static void start_httpd() {
-    httpd_thread_handle = CreateThread(NULL, // default security attributes
-                                           0, // use default stack size
-                                           httpd_thread_func, // thread function name
-                                           NULL, // argument to thread function
-                                           0, // use default creation flags
-                                           NULL); // returns the thread identifier
+    httpd_thread_handle = CreateThread(
+        NULL, // default security attributes
+        0, // use default stack size
+        httpd_thread_func, // thread function name
+        NULL, // argument to thread function
+        0, // use default creation flags
+        NULL
+    ); // returns the thread identifier
+
     if (!httpd_thread_handle) {
         LOG_E("启用", "启动 HTTP 守护线程失败");
     } else {
@@ -223,7 +226,7 @@ static cqhttp_post_response post_event(json_t *json, const string &event_name) {
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json_str);
 
         struct curl_slist *chunk = NULL;
-        chunk = curl_slist_append(chunk, "User-Agent: " CQAPPFULLNAME);
+        chunk = curl_slist_append(chunk, "User-Agent: " CQ_APP_FULLNAME);
         chunk = curl_slist_append(chunk, "Content-Type: application/json");
         if (httpd_config.token != "")
             chunk = curl_slist_append(chunk, (string("Authorization: token ") + httpd_config.token).c_str());

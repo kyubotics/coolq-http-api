@@ -4,8 +4,8 @@
 #include <regex>
 
 #include "request.h"
-#include "encoding.h"
-#include "base64.h"
+#include "encoding/encoding.h"
+#include "encoding/base64.h"
 #include "cqcode.h"
 
 using namespace std;

@@ -5,7 +5,7 @@
 #include <curl/curl.h>
 #include <event2/event.h>
 
-#include "md5.h"
+#include "encoding/md5.h"
 #include "misc_functions.h"
 
 using namespace std;

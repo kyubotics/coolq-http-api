@@ -3,7 +3,7 @@
 #include <string>
 
 #include "cqp.h"
-#include "encoding.h"
+#include "encoding/encoding.h"
 
 extern int ac;
 
