@@ -52,6 +52,8 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe CoolQHttpApi.vcxproj /
 
 由于酷 Q 的一些功能只有 Pro 付费版才有，而我在编写插件时需要对每个可能的功能进行测试，我自己的使用中也没有对 Pro 版的需求，因此这将成为额外开销。如果你觉得本插件挺好用的，或对酷 Q Pro 的功能有需求，不妨进行捐助。你的捐助将用于开通酷 Q Pro 以测试功能，同时也会让我更加有动力完善插件。感谢你的支持！
 
+[这里](https://github.com/richardchien/thanks) 列出了捐助者名单，由于一些收款渠道无法知道对方是谁，如有遗漏请联系我修改。
+
 ### 支付宝
 
 ![AliPay](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/alipay.png)
