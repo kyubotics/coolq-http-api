@@ -297,6 +297,21 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 无
 
+### `/get_group_list` 获取群列表
+
+#### 参数
+
+无
+
+#### 响应数据
+
+响应内容为 JSON 数组，每个元素如下：
+
+| 字段名 | 数据类型 | 说明 |
+| ----- | ------- | --- |
+| `group_id` | number | 群号 |
+| `group_name` | string | 群名称 |
+
 ### `/get_group_member_info` 获取群成员信息
 
 #### 参数
