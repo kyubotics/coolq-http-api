@@ -11,10 +11,6 @@
 #define CQAPIVER 9
 #define CQAPIVERTEXT "9"
 
-#ifndef CQAPI
-#define CQAPI(ReturnType) extern "C" __declspec(dllimport) ReturnType __stdcall
-#endif
-
 #define CQEVENT(ReturnType, Name, Size) __pragma(comment(linker, "/EXPORT:" #Name "=_" #Name "@" #Size)) extern "C" __declspec(dllexport) ReturnType __stdcall Name
 
 typedef int32_t cq_bool_t;
@@ -36,6 +32,8 @@ typedef int32_t cq_bool_t;
 #define CQLOG_WARNING 20
 #define CQLOG_ERROR 30
 #define CQLOG_FATAL 40
+
+#define CQAPI(ReturnType) extern "C" __declspec(dllimport) ReturnType __stdcall
 
 // Send Message
 CQAPI(int32_t)
@@ -89,6 +87,8 @@ CQ_getLoginNick(int32_t auth_code);
 CQAPI(const char *)
 CQ_getStrangerInfo(int32_t auth_code, int64_t qq, cq_bool_t no_cache);
 CQAPI(const char *)
+CQ_getGroupList(int32_t auth_code);
+CQAPI(const char *)
 CQ_getGroupMemberList(int32_t auth_code, int64_t group_id);
 CQAPI(const char *)
 CQ_getGroupMemberInfoV2(int32_t auth_code, int64_t group_id, int64_t qq, cq_bool_t no_cache);
@@ -110,3 +110,5 @@ CQAPI(int32_t)
 CQ_setFatal(int32_t auth_code, const char *error_info);
 CQAPI(int32_t)
 CQ_setRestart(int32_t auth_code); // currently banned by CQ
+
+#undef CQAPI

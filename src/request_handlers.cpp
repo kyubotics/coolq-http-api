@@ -445,6 +445,47 @@ CQHTTP_REQUEST_HANDLER(get_stranger_info)
     return result;
 }
 
+struct raw_group_info {
+    int64_t group_id;
+    string group_name;
+
+    json_t *json() const {
+        json_t *data = json_object();
+        json_object_set_new(data, "group_id", json_integer(group_id));
+        json_object_set_new(data, "group_name", json_string(group_name.c_str()));
+        return data;
+    }
+};
+
+CQHTTP_REQUEST_HANDLER(get_group_list)
+(const struct cqhttp_request &request) {
+    struct cqhttp_result result;
+    string bytes = base64_decode(gbk_to_utf8(CQ_getGroupList(ac)));
+    if (bytes.size() >= 10 /* minimum valid bytes size */) {
+        INIT(bytes);
+        int32_t count;
+        INTEGER(count); // get number of groups
+
+        auto group_list = json_array();
+
+        for (auto i = 0; i < count; i++) {
+            int16_t token_len;
+            INTEGER(token_len); // no use
+
+            struct raw_group_info group_info;
+            INTEGER(group_info.group_id);
+            STRING(group_info.group_name);
+            json_array_append_new(group_list, group_info.json());
+        }
+
+        result.data = group_list;
+        result.retcode = CQHTTP_RETCODE_OK;
+    } else {
+        result.retcode = CQHTTP_RETCODE_INVALID_DATA;
+    }
+    return result;
+}
+
 #undef INIT
 #undef INTEGER
 #undef STRING
