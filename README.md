@@ -31,12 +31,7 @@
 
 ## 修改、编译
 
-整个项目目录是一个 VC++ 2010 工程，直接打开 `CoolQHttpApi.vcxproj` 即可修改、编译。我测试用 VS 2017 RC 来编译工程似乎是不能直接编译成功的，因此如果你使用较新的 VS，可能需要同时安装一个 VC++ 2010，在选择工具集的时候选择 VC++ 2010 的工具集。另外，用 VS Code 来编辑也是个不错的办法，然后直接调用 MSBuild 编译（注意这依然需要安装 VC++ 2010），大致命令如下：
-
-```bat
-call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\vcvars32.bat"
-C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe CoolQHttpApi.vcxproj /t:Build /p:Configuration=Release
-```
+整个项目目录是一个 VS 2017 工程，直接打开 `CoolQHttpApi.sln` 即可修改、编译。项目根目录也提供了 `build.bat` 脚本，可以直接 `cmd /k build.bat` 来编译，不过请注意查看脚本中的 VS 路径是否和你系统中的路径相符。
 
 工程属性中配置了一个自定义的「后期生成事件」命令，也就是编译成功后执行的脚本，默认情况下什么都不做，你可以在项目根目录加一个文件 `post_build.bat` 在里面进行你需要的操作（比如移动 dll 文件到酷 Q 的 app 文件夹），这个文件被 Git 忽略掉了，因此不会影响 Git 仓库上的内容。
 

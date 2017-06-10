@@ -2,7 +2,6 @@
 .vscode
 Release
 Debug
-build.bat
 post_build.bat
 *.sdf
 *.opensdf
