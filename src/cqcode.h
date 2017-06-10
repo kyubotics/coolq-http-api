@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include "app.h"
 
 enum cqcode_enhance_mode {
     CQCODE_ENHANCE_INCOMING,

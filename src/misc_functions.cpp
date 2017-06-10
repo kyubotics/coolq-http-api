@@ -1,10 +1,7 @@
 #include "misc_functions.h"
 
-#include <cstdlib>
 #include <cctype>
 #include <sstream>
-
-#include "app.h"
 
 using namespace std;
 

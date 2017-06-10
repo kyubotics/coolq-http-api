@@ -2,7 +2,7 @@
  * CoolQ HTTP API core.
  */
 
-#include "common.h"
+#include "app.h"
 
 #include <string>
 #include <sstream>

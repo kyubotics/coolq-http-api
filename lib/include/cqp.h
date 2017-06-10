@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #define CQAPIVER 9
 #define CQAPIVERTEXT "9"
 

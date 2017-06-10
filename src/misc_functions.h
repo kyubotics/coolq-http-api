@@ -1,8 +1,6 @@
 #pragma once
 
-#include "common.h"
-
-#include <string>
+#include "app.h"
 
 size_t curl_write_stringstream_callback(char* buf, size_t size, size_t nmemb, std::stringstream& ss);
 
