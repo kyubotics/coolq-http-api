@@ -24,3 +24,6 @@
 #include <SDKDDKVer.h>
 
 #include <cpputils/cpputils.h>
+#include <cpputils/win32_bytes.h>
+using namespace rc;
+using namespace win32;

@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>io.github.richardchien.coolqhttpapi</TargetName>
     <ExtensionsToDeleteOnClean>$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
-    <IncludePath>$(ProjectDir)lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)lib\include;$(ProjectDir)src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -45,6 +45,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -67,13 +68,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\appmain.cpp" />
+    <ClCompile Include="src\conf\ini.c" />
+    <ClCompile Include="src\conf\loader.cpp" />
+    <ClCompile Include="src\CoolQWrapper.cpp" />
     <ClCompile Include="src\cqcode.cpp" />
-    <ClCompile Include="src\dll_entry.cpp" />
+    <ClCompile Include="src\dllentry.cpp" />
     <ClCompile Include="src\encoding\base64.cpp" />
     <ClCompile Include="src\encoding\encoding.cpp" />
     <ClCompile Include="src\encoding\md5.cpp" />
-    <ClCompile Include="src\ini\ini.c" />
-    <ClCompile Include="src\misc_functions.cpp" />
+    <ClCompile Include="src\httpd.cpp" />
+    <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\request.cpp" />
     <ClCompile Include="src\request_handlers.cpp" />
   </ItemGroup>
@@ -87,13 +91,17 @@
     <ClInclude Include="lib\include\cpputils\win32_encoding.h" />
     <ClInclude Include="lib\include\cqp.h" />
     <ClInclude Include="src\app.h" />
+    <ClInclude Include="src\conf\Config.h" />
+    <ClInclude Include="src\conf\ini.h" />
+    <ClInclude Include="src\conf\loader.h" />
+    <ClInclude Include="src\CoolQWrapper.h" />
     <ClInclude Include="src\cqcode.h" />
     <ClInclude Include="src\encoding\base64.h" />
     <ClInclude Include="src\encoding\encoding.h" />
     <ClInclude Include="src\encoding\md5.h" />
-    <ClInclude Include="src\ini\ini.h" />
+    <ClInclude Include="src\httpd.h" />
     <ClInclude Include="src\log.h" />
-    <ClInclude Include="src\misc_functions.h" />
+    <ClInclude Include="src\helpers.h" />
     <ClInclude Include="src\request.h" />
     <ClInclude Include="src\request_handlers.h" />
     <ClInclude Include="src\common.h" />

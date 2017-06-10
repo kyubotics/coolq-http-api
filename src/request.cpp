@@ -6,7 +6,7 @@
 #include <event2/keyvalq_struct.h>
 #include <jansson/jansson.h>
 
-#include "misc_functions.h"
+#include "helpers.h"
 
 using namespace std;
 

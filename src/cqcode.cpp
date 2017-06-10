@@ -6,7 +6,7 @@
 
 #include "encoding/md5.h"
 #include "encoding/encoding.h"
-#include "misc_functions.h"
+#include "helpers.h"
 
 using namespace std;
 

@@ -10,14 +10,14 @@
     <Filter Include="src\encoding">
       <UniqueIdentifier>{091cd5a8-266c-4d90-982d-1906b5e346cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\ini">
-      <UniqueIdentifier>{465f1c21-e329-4ab1-8508-7dd3322b8fe2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib\include">
       <UniqueIdentifier>{19227b5a-b47b-473b-85b3-a38e3b6a30d6}</UniqueIdentifier>
     </Filter>
     <Filter Include="lib\include\cpputils">
       <UniqueIdentifier>{df01a1e8-ad82-4127-82cb-398e067a5486}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\conf">
+      <UniqueIdentifier>{465f1c21-e329-4ab1-8508-7dd3322b8fe2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -47,9 +47,6 @@
     <ClCompile Include="src\appmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\misc_functions.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\request.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -57,9 +54,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\cqcode.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dll_entry.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\encoding\base64.cpp">
@@ -71,15 +65,27 @@
     <ClCompile Include="src\encoding\md5.cpp">
       <Filter>src\encoding</Filter>
     </ClCompile>
-    <ClCompile Include="src\ini\ini.c">
-      <Filter>src\ini</Filter>
+    <ClCompile Include="src\CoolQWrapper.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\httpd.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\helpers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dllentry.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conf\ini.c">
+      <Filter>src\conf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conf\loader.cpp">
+      <Filter>src\conf</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\misc_functions.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\request.h">
@@ -109,9 +115,6 @@
     <ClInclude Include="src\encoding\md5.h">
       <Filter>src\encoding</Filter>
     </ClInclude>
-    <ClInclude Include="src\ini\ini.h">
-      <Filter>src\ini</Filter>
-    </ClInclude>
     <ClInclude Include="lib\include\cpputils\cpputils.h">
       <Filter>lib\include\cpputils</Filter>
     </ClInclude>
@@ -132,6 +135,24 @@
     </ClInclude>
     <ClInclude Include="lib\include\cpputils\win32_encoding.h">
       <Filter>lib\include\cpputils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CoolQWrapper.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\httpd.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\helpers.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conf\ini.h">
+      <Filter>src\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conf\loader.h">
+      <Filter>src\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conf\Config.h">
+      <Filter>src\conf</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

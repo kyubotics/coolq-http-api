@@ -4,41 +4,24 @@
 
 #include "app.h"
 
-#include <string>
 #include <sstream>
-#include <fstream>
 #include <regex>
 #include <curl/curl.h>
 #include <jansson/jansson.h>
-#include <event2/event.h>
-#include <event2/http.h>
-#include <WinSock2.h>
 
 #include "encoding/encoding.h"
-#include "misc_functions.h"
-#include "request.h"
-#include "ini/ini.h"
+#include "helpers.h"
 #include "cqcode.h"
+#include "httpd.h"
+#include "conf/Config.h"
+#include "conf/loader.h"
 
 using namespace std;
 
 int ac = -1; // AuthCode
 bool enabled = false;
 
-HANDLE httpd_thread_handle = NULL;
-struct event_base *httpd_event_base = NULL;
-struct evhttp *httpd_event = NULL;
-
-struct cqhttp_config {
-    string host;
-    int port;
-    string post_url;
-    string token;
-    regex pattern;
-
-    cqhttp_config() : host("0.0.0.0"), port(5700),
-                      post_url(""), token(""), pattern(regex("")) {}
-} httpd_config;
+Config httpd_config; // init 函数中读取，在启动 HTTP 线程之前，只写入一次（读取 cfg 时），后续只读取，因此线程安全
 
 /**
  * For other files to get token.
@@ -48,8 +31,8 @@ string get_httpd_config_token() {
 }
 
 /*
-* Return add info.
-*/
+ * Return add info.
+ */
 CQEVENT(const char *, AppInfo, 0)
 () {
     return CQ_APP_INFO;
@@ -64,142 +47,54 @@ CQEVENT(int32_t, Initialize, 4)
     return 0;
 }
 
-static int parse_conf_handler(void *user, const char *section, const char *name, const char *value) {
-    static string login_qq_atr = itos(CQ_getLoginQQ(ac));
-
-    struct cqhttp_config *config = (struct cqhttp_config *) user;
-    if (string(section) == "general" || (isnumber(section) && login_qq_atr == section)) {
-        string field = name;
-        if (field == "host")
-            config->host = value;
-        else if (field == "port")
-            config->port = atoi(value);
-        else if (field == "post_url")
-            config->post_url = value;
-        else if (field == "token")
-            config->token = value;
-        else if (field == "pattern")
-            config->pattern = regex(value);
-        else
-            return 0; /* unknown name, error */
-    } else
-        return 0; /* unknown section, error */
-    return 1;
-}
-
 /**
  * Initialize plugin, called immediately when plugin is enabled.
  */
 static void init() {
     LOG_D("启用", "初始化");
-
-    string conf_path = string(CQ_getAppDirectory(ac)) + "config.cfg";
-    FILE *conf_file = NULL;
-    fopen_s(&conf_file, conf_path.c_str(), "r");
-    if (!conf_file) {
-        // first init, save default config
-        LOG_D("启用", "没有找到配置文件，写入默认配置");
-        ofstream file(conf_path);
-        file << "[general]\nhost=0.0.0.0\nport=5700\npost_url=\ntoken=\n";
-    } else {
-        // load from config file
-        LOG_D("启用", "读取配置文件");
-        ini_parse_file(conf_file, parse_conf_handler, &httpd_config);
-        fclose(conf_file);
-    }
+    auto conf_path = string(CQ_getAppDirectory(ac)) + "config.cfg";
+    httpd_config = load_configuration(conf_path);
 }
 
 /**
- * Cleanup plugin, called after all other operations when plugin is disabled.
- */
-static void cleanup() {
-    // do nothing currently
-}
-
-/**
- * Portal function of HTTP daemon thread.
- */
-static DWORD WINAPI httpd_thread_func(LPVOID lpParam) {
-    WSADATA wsa_data;
-    WSAStartup(MAKEWORD(2, 2), &wsa_data);
-
-    httpd_event_base = event_base_new();
-    httpd_event = evhttp_new(httpd_event_base);
-
-    evhttp_set_gencb(httpd_event, cqhttp_main_handler, NULL);
-    evhttp_bind_socket(httpd_event, httpd_config.host.c_str(), httpd_config.port);
-
-    stringstream ss;
-    ss << "开始监听 " << httpd_config.host << ":" << httpd_config.port;
-    LOG_D("HTTP线程", ss.str());
-
-    event_base_dispatch(httpd_event_base);
-    return 0;
-}
-
-/**
- * Start HTTP daemon thread.
- */
-static void start_httpd() {
-    httpd_thread_handle = CreateThread(
-        NULL, // default security attributes
-        0, // use default stack size
-        httpd_thread_func, // thread function name
-        NULL, // argument to thread function
-        0, // use default creation flags
-        NULL
-    ); // returns the thread identifier
-
-    if (!httpd_thread_handle) {
-        LOG_E("启用", "启动 HTTP 守护线程失败");
-    } else {
-        LOG_D("启用", "启动 HTTP 守护线程成功");
-    }
-}
-
-/**
- * Stop HTTP daemon thread.
- */
-static void stop_httpd() {
-    if (httpd_thread_handle) {
-        if (httpd_event_base) {
-            event_base_loopbreak(httpd_event_base);
-        }
-        if (httpd_event) {
-            evhttp_free(httpd_event);
-        }
-        // if (httpd_event_base)
-        // {
-        //     event_base_free(httpd_event_base);
-        // }
-        WSACleanup();
-        CloseHandle(httpd_thread_handle);
-        httpd_thread_handle = NULL;
-        httpd_event_base = NULL;
-        httpd_event = NULL;
-        LOG_D("停用", "已关闭后台 HTTP 守护线程")
-    }
-}
-
-/**
- * Event: plugin is enabled.
+ * Event: Plugin is enabled.
  */
 CQEVENT(int32_t, __eventEnable, 0)
 () {
     enabled = true;
     init();
     start_httpd();
+    LOG_I("启用", "HTTP API 插件已启用");
     return 0;
 }
 
 /**
- * Event: plugin is disabled.
+ * Event: Plugin is disabled.
  */
 CQEVENT(int32_t, __eventDisable, 0)
 () {
     enabled = false;
     stop_httpd();
-    cleanup();
+    LOG_I("停用", "HTTP API 插件已停用");
+    return 0;
+}
+
+/**
+* Event: CoolQ is starting.
+*/
+CQEVENT(int32_t, __eventStartup, 0)
+() {
+    // do nothing
+    return 0;
+}
+
+/**
+* Event: CoolQ is exiting.
+*/
+CQEVENT(int32_t, __eventExit, 0)
+() {
+    stop_httpd();
+    LOG_I("停止", "HTTP API 插件已停止");
     return 0;
 }
 
