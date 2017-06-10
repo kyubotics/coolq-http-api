@@ -1,11 +1,6 @@
 version: build-{build}
 configuration: Release
 platform: Win32
-environment:
-  TOOLCHAIN_VER: 10.0
-before_build:
-  - cmd: >-
-      set PATH=C:\Program Files (x86)\MSBuild\%TOOLCHAIN_VER%\Bin;%PATH%
-      call "C:\Program Files (x86)\Microsoft Visual Studio %TOOLCHAIN_VER%\VC\vcvarsall.bat"
+image: Visual Studio 2017
 build:
   project: CoolQHttpApi.sln
