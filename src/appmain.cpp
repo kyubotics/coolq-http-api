@@ -9,7 +9,7 @@
 #include <fstream>
 #include <regex>
 #include <curl/curl.h>
-#include <jansson.h>
+#include <jansson/jansson.h>
 #include <event2/event.h>
 #include <event2/http.h>
 #include <WinSock2.h>

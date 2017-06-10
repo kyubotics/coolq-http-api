@@ -4,7 +4,7 @@
 #include <event2/http.h>
 #include <event2/buffer.h>
 #include <event2/keyvalq_struct.h>
-#include <jansson.h>
+#include <jansson/jansson.h>
 
 #include "misc_functions.h"
 

@@ -1,6 +1,6 @@
 #include "request_handlers.h"
 
-#include <jansson.h>
+#include <jansson/jansson.h>
 #include <regex>
 
 #include "request.h"
