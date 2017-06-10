@@ -1,5 +1,5 @@
+/* -*- Mode: C; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*- */
 /*
- * Copyright (c) 2000-2007 Niels Provos <provos@citi.umich.edu>
  * Copyright (c) 2007-2012 Niels Provos and Nick Mathewson
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,57 +24,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef EVENT2_DNS_STRUCT_H_INCLUDED_
-#define EVENT2_DNS_STRUCT_H_INCLUDED_
-
-/** @file event2/dns_struct.h
-
-  Data structures for dns.  Using these structures may hurt forward
-  compatibility with later versions of Libevent: be careful!
-
- */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef EVENT2_VISIBILITY_H_INCLUDED_
+#define EVENT2_VISIBILITY_H_INCLUDED_
 
 #include <event2/event-config.h>
-#ifdef EVENT__HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef EVENT__HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
 
-/* For int types. */
-#include <event2/util.h>
-
-/*
- * Structures used to implement a DNS server.
- */
-
-struct evdns_server_request {
-	int flags;
-	int nquestions;
-	struct evdns_server_question **questions;
-};
-struct evdns_server_question {
-	int type;
-#ifdef __cplusplus
-	int dns_question_class;
+#if defined(event_EXPORTS) || defined(event_extra_EXPORTS) || defined(event_core_EXPORTS)
+# if defined (__SUNPRO_C) && (__SUNPRO_C >= 0x550)
+#  define EVENT2_EXPORT_SYMBOL __global
+# elif defined __GNUC__
+#  define EVENT2_EXPORT_SYMBOL __attribute__ ((visibility("default")))
+# elif defined(_MSC_VER)
+#  define EVENT2_EXPORT_SYMBOL extern __declspec(dllexport)
+# else
+#  define EVENT2_EXPORT_SYMBOL /* unknown compiler */
+# endif
 #else
-	/* You should refer to this field as "dns_question_class".  The
-	 * name "class" works in C for backward compatibility, and will be
-	 * removed in a future version. (1.5 or later). */
-	int class;
-#define dns_question_class class
-#endif
-	char name[1];
-};
-
-#ifdef __cplusplus
-}
+# if defined(EVENT__NEED_DLLIMPORT) && defined(_MSC_VER) && !defined(EVENT_BUILDING_REGRESS_TEST)
+#  define EVENT2_EXPORT_SYMBOL extern __declspec(dllimport)
+# else
+#  define EVENT2_EXPORT_SYMBOL
+# endif
 #endif
 
-#endif /* EVENT2_DNS_STRUCT_H_INCLUDED_ */
-
+#endif /* EVENT2_VISIBILITY_H_INCLUDED_ */
