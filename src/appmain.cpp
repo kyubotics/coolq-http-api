@@ -279,6 +279,7 @@ static json_t *convert_to_msg_array_if_needed(string &msg /* utf-8 */) {
             if (tmp.length() > 0) {
                 json_array_append_new(result, json_pack("[s,s]", "plain", message_unescape(tmp).c_str())); // ["plain", "the plain text message"]
             }
+            search_iter += match.position() + match.length(); // move to next
 
             auto function = match.str(1);
             auto params = match.str(2);
@@ -300,8 +301,20 @@ static json_t *convert_to_msg_array_if_needed(string &msg /* utf-8 */) {
                 }
             }
 
+            // special cases
+            if (function == "bface") {
+                // format on CoolQ Air: "[CQ:bface]&#91;bface title&#93;the rest part of message"
+                smatch m;
+                if (regex_search(search_iter, msg.cend(), m, regex("^&#91;(.+?)&#93;"))) {
+                    params_json = json_object();
+                    auto bface_text = m.str(1);
+                    json_object_set_new(params_json, "text", json_string(message_unescape(bface_text).c_str()));
+                    search_iter += m.length();
+                }
+            }
+
             json_array_append_new(result, json_pack("[s,o?]", function.c_str(), params_json));
-            search_iter += match.position() + match.length();
+            
         }
         auto tmp = string(search_iter, msg.cend()); // add the rest plain text
         if (tmp.length() > 0) {
@@ -378,15 +391,15 @@ CQEVENT(int32_t, __eventGroupMsg, 36)
             }
         }
         utf8_msg = enhance_cq_code(utf8_msg, CQCODE_ENHANCE_INCOMING);
-        json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s, s:s}",
+        json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s}",
                                  "post_type", "message",
                                  "message_type", "group",
                                  "time", send_time,
                                  "group_id", from_group,
                                  "user_id", from_qq,
                                  "anonymous", utf8_anonymous.c_str(),
-                                 "anonymous_flag", gbk_to_utf8(from_anonymous).c_str(),
-                                 "message", utf8_msg.c_str());
+                                 "anonymous_flag", gbk_to_utf8(from_anonymous).c_str());
+        json_object_set(json, "message", convert_to_msg_array_if_needed(utf8_msg));
         cqhttp_post_response response = post_event(json, "群消息");
         json_decref(json);
 
@@ -436,13 +449,13 @@ CQEVENT(int32_t, __eventDiscussMsg, 32)
     string utf8_msg = gbk_to_utf8(msg);
     if (SHOULD_POST && MATCH_PATTERN(utf8_msg)) {
         utf8_msg = enhance_cq_code(utf8_msg, CQCODE_ENHANCE_INCOMING);
-        json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s}",
+        json_t *json = json_pack("{s:s, s:s, s:i, s:I, s:I}",
                                  "post_type", "message",
                                  "message_type", "discuss",
                                  "time", send_time,
                                  "discuss_id", from_discuss,
-                                 "user_id", from_qq,
-                                 "message", utf8_msg.c_str());
+                                 "user_id", from_qq);
+        json_object_set(json, "message", convert_to_msg_array_if_needed(utf8_msg));
         cqhttp_post_response response = post_event(json, "讨论组消息");
         json_decref(json);
 

@@ -1,21 +1,18 @@
-// 酷Q 的Json文件支持以 // 开头的注释。
-// 打包前，应用的 .dll, .json 的文件名须以appid命名，应用AppInfo返回的内容须改为appid
-// 如 appid=com.example.democ, 则dll及json文件需分别命名为 com.example.democ.dll、com.example.democ.json
 {
-    "ret": 1, // 返回码，固定为1
-    "apiver": 9, // Api版本，本SDK为9
+    "ret": 1, // 返回码，固定为 1
+    "apiver": 9, // Api 版本
     "name": "HTTP API", // 应用名称
-    "version": "1.1.5", // 应用版本
-    "version_id": 14, // 应用顺序版本（每次发布时至少+1）
+    "version": "1.1.6 beta", // 应用版本
+    "version_id": 16, // 应用顺序版本（每次发布时需增加）
     "author": "Richard Chien", // 应用作者
     "description": "使酷 Q 支持通过 HTTP 上报事件信息及调用接口",
-    "event": [ // 事件列表，同一事件类型可重复定义（发布前请删除无用事件）
+    "event": [ // 事件列表，同一事件类型可重复定义
         {
-            "id": 1, // 事件ID
+            "id": 1, // 事件 ID
             "type": 21, // 事件类型
             "name": "私聊消息处理", // 事件名称
-            "function": "_eventPrivateMsg", // 事件对应函数
-            "priority": 20000 // 事件优先级(参见 cqp.im/deveventpriority)
+            "function": "_eventPrivateMsg", // 事件处理函数
+            "priority": 20000 // 事件优先级
         },
         {
             "id": 2,
@@ -103,9 +100,8 @@
         }
     ],
     "menu": [],
-    "status": [ // 悬浮窗状态（见 com.example.status 样例）
-    ],
-    "auth": [ // 应用权限（发布前请删除无用权限）
+    "status": [],
+    "auth": [ // 应用权限
         20, //[敏感]取Cookies getCookies / getCsrfToken
         30, //接收语音 getRecord
         101, //发送群消息 sendGroupMsg
