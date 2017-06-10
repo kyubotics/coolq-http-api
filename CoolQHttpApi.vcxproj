@@ -58,6 +58,7 @@
     <None Include="io.github.richardchien.coolqhttpapi.json" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="lib\cpputils.lib" />
     <Library Include="lib\CQP.lib" />
     <Library Include="lib\jansson.lib" />
     <Library Include="lib\libcurl.lib" />
@@ -77,6 +78,13 @@
     <ClCompile Include="src\request_handlers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lib\include\cpputils\cpputils.h" />
+    <ClInclude Include="lib\include\cpputils\exceptions.h" />
+    <ClInclude Include="lib\include\cpputils\regex_helpers.h" />
+    <ClInclude Include="lib\include\cpputils\simple_types.h" />
+    <ClInclude Include="lib\include\cpputils\str.h" />
+    <ClInclude Include="lib\include\cpputils\win32_bytes.h" />
+    <ClInclude Include="lib\include\cpputils\win32_encoding.h" />
     <ClInclude Include="lib\include\cqp.h" />
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\cqcode.h" />

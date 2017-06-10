@@ -16,6 +16,9 @@
     <Filter Include="lib\include">
       <UniqueIdentifier>{19227b5a-b47b-473b-85b3-a38e3b6a30d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\include\cpputils">
+      <UniqueIdentifier>{df01a1e8-ad82-4127-82cb-398e067a5486}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
@@ -34,6 +37,9 @@
       <Filter>lib</Filter>
     </Library>
     <Library Include="lib\libevent_extras.lib">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="lib\cpputils.lib">
       <Filter>lib</Filter>
     </Library>
   </ItemGroup>
@@ -105,6 +111,27 @@
     </ClInclude>
     <ClInclude Include="src\ini\ini.h">
       <Filter>src\ini</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\cpputils\cpputils.h">
+      <Filter>lib\include\cpputils</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\cpputils\exceptions.h">
+      <Filter>lib\include\cpputils</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\cpputils\regex_helpers.h">
+      <Filter>lib\include\cpputils</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\cpputils\simple_types.h">
+      <Filter>lib\include\cpputils</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\cpputils\str.h">
+      <Filter>lib\include\cpputils</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\cpputils\win32_bytes.h">
+      <Filter>lib\include\cpputils</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\include\cpputils\win32_encoding.h">
+      <Filter>lib\include\cpputils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
