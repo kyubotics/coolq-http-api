@@ -318,7 +318,7 @@ static json_t *convert_to_msg_array_if_needed(string &msg /* utf-8 */) {
         }
         auto tmp = string(search_iter, msg.cend()); // add the rest plain text
         if (tmp.length() > 0) {
-            json_array_append_new(result, json_pack("[s,s]", "text", message_unescape(tmp).c_str()));
+            json_array_append_new(result, json_pack("[s,s]", "plain", message_unescape(tmp).c_str()));
         }
 
         return result;
