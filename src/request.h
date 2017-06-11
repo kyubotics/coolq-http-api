@@ -10,16 +10,16 @@ typedef struct json_t json_t;
  * Wrapper of path, args and form.
  */
 struct cqhttp_request {
-    const char* path;
-    const struct evkeyvalq* args;
-    const struct evkeyvalq* form;
-    json_t* json;
+    const char *path;
+    const struct evkeyvalq *args;
+    const struct evkeyvalq *form;
+    json_t *json;
 };
 
 /**
  * Generic handler for evhttp.
  */
-void cqhttp_main_handler(struct evhttp_request* req, void* _);
+void cqhttp_main_handler(struct evhttp_request *req, void *_);
 
 enum cqhttp_retcode {
     CQHTTP_RETCODE_OK = 0,
@@ -31,7 +31,7 @@ enum cqhttp_retcode {
 struct cqhttp_result {
     cqhttp_result() : retcode(CQHTTP_RETCODE_ERROR_DEFAULT), data(NULL) {};
     int retcode; // succeeded: 0, lack of parameters or invalid ones: 1, CQ error code: -11, -23, etc... (< 0)
-    json_t* data;
+    json_t *data;
 };
 
 /**
@@ -55,12 +55,12 @@ int64_t cqhttp_get_integer_param(const struct cqhttp_request &request, const cha
  */
 bool cqhttp_get_bool_param(const struct cqhttp_request &request, const char *key, bool default_val = false);
 
-typedef struct cqhttp_result(*cqhttp_request_handler)(const struct cqhttp_request& request);
+typedef void (*cqhttp_request_handler)(const struct cqhttp_request &request, struct cqhttp_result &result);
 
 #include <cstring>
 
 struct c_str_comparator {
-    bool operator()(char const* a, char const* b) const {
+    bool operator()(char const *a, char const *b) const {
         return strcmp(a, b) < 0;
     }
 };

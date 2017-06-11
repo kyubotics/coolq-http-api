@@ -3,6 +3,8 @@
 #include "app.h"
 
 #include "conf/Config.h"
+#include "Structs.h"
+#include "encoding/base64.h"
 
 class CQApp {
 public:
@@ -110,32 +112,30 @@ public:
 
     str getLoginNick() const {
         auto nick = CQ_getLoginNick(this->ac_);
-        if (!nick) {
-            return str();
-        }
-        return decode(nick, Encoding::GBK);
+        return nick ? decode(nick, Encoding::GBK) : str();
     }
 
-    const char *getStrangerInfo(int64_t qq, cq_bool_t no_cache) const {
-        return CQ_getStrangerInfo(this->ac_, qq, no_cache);
+    bytes getStrangerInfoRaw(int64_t qq, cq_bool_t no_cache) const {
+        return base64_decode(CQ_getStrangerInfo(this->ac_, qq, no_cache));
     }
 
-    const char *getGroupList() const {
-        return CQ_getGroupList(this->ac_);
+    bytes getGroupListRaw() const {
+        return base64_decode(CQ_getGroupList(this->ac_));
     }
 
-    const char *getGroupMemberList(int64_t group_id) const {
-        return CQ_getGroupMemberList(this->ac_, group_id);
+    bytes getGroupMemberListRaw(int64_t group_id) const {
+        return base64_decode(CQ_getGroupMemberList(this->ac_, group_id));
     }
 
-    const char *getGroupMemberInfoV2(int64_t group_id, int64_t qq, cq_bool_t no_cache) const {
-        return CQ_getGroupMemberInfoV2(this->ac_, group_id, qq, no_cache);
+    bytes getGroupMemberInfoRawV2(int64_t group_id, int64_t qq, cq_bool_t no_cache) const {
+        return base64_decode(CQ_getGroupMemberInfoV2(this->ac_, group_id, qq, no_cache));
     }
 
     #pragma endregion
 
-    const char *getCookies() const {
-        return CQ_getCookies(this->ac_);
+    str getCookies() const {
+        auto cookies = CQ_getCookies(this->ac_);
+        return cookies ? decode(cookies, Encoding::GBK) : str();
     }
 
     int32_t getCsrfToken() const {
