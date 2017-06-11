@@ -9,10 +9,11 @@
 #include "request.h"
 #include "helpers.h"
 #include "conf/Config.h"
+#include "CQApp.h"
 
 using namespace std;
 
-extern Config httpd_config; // in appmain.cpp
+extern CQApp *CQ;
 
 static thread httpd_thread;
 static atomic<bool> httpd_thread_running = false;
@@ -26,26 +27,26 @@ void start_httpd() {
     // try to stop httpd first, in case of error
     stop_httpd();
 
-    auto thread_func = []() {
-        httpd_thread_running = true;
+    httpd_thread = thread([]() { // TODO: bug when enable after disable
+            httpd_thread_running = true;
 
-        WSADATA wsa_data;
-        WSAStartup(MAKEWORD(2, 2), &wsa_data);
+            auto &config = CQ->config;
 
-        httpd_event_base = event_base_new();
-        httpd_event = evhttp_new(httpd_event_base);
+            // WSADATA wsa_data;
+            // WSAStartup(MAKEWORD(2, 2), &wsa_data);
 
-        evhttp_set_gencb(httpd_event, cqhttp_main_handler, nullptr);
-        evhttp_bind_socket(httpd_event, httpd_config.host.c_str(), httpd_config.port);
+            httpd_event_base = event_base_new();
+            httpd_event = evhttp_new(httpd_event_base);
 
-        LOG_D("监听", string("开始监听 http://") + httpd_config.host + ":" + itos(httpd_config.port));
+            evhttp_set_gencb(httpd_event, cqhttp_main_handler, nullptr);
+            evhttp_bind_socket(httpd_event, config.host.c_str(), config.port);
 
-        event_base_dispatch(httpd_event_base);
+            LOG_D("监听", string("开始监听 http://") + config.host + ":" + itos(config.port));
 
-        httpd_thread_running = false;
-    };
+            event_base_dispatch(httpd_event_base); // infinite event loop
 
-    httpd_thread = thread(thread_func);
+            httpd_thread_running = false;
+        });
     LOG_D("开启", "开启 HTTP 守护线程成功");
 }
 
@@ -53,7 +54,6 @@ void start_httpd() {
  * Stop HTTP daemon thread.
  */
 void stop_httpd() {
-    //    if (httpd_thread_handle) {
     if (httpd_thread_running) {
         if (httpd_event_base) {
             event_base_loopbreak(httpd_event_base);
@@ -65,9 +65,10 @@ void stop_httpd() {
         // if (httpd_event_base) {
         //     event_base_free(httpd_event_base);
         // }
-        WSACleanup();
+        // WSACleanup();
         httpd_event_base = nullptr;
         httpd_event = nullptr;
-        LOG_D("关闭", "已关闭后台 HTTP 守护线程")
+        httpd_thread_running = false;
+        LOG_D("关闭", "已关闭后台 HTTP 守护线程");
     }
 }

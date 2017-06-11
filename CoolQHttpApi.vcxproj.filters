@@ -65,9 +65,6 @@
     <ClCompile Include="src\encoding\md5.cpp">
       <Filter>src\encoding</Filter>
     </ClCompile>
-    <ClCompile Include="src\CoolQWrapper.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\httpd.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -83,6 +80,15 @@
     <ClCompile Include="src\conf\loader.cpp">
       <Filter>src\conf</Filter>
     </ClCompile>
+    <ClCompile Include="src\CQ.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CQApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\log.h">
@@ -92,9 +98,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\request_handlers.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\app.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\cqcode.h">
@@ -136,9 +139,6 @@
     <ClInclude Include="lib\include\cpputils\win32_encoding.h">
       <Filter>lib\include\cpputils</Filter>
     </ClInclude>
-    <ClInclude Include="src\CoolQWrapper.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\httpd.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -153,6 +153,18 @@
     </ClInclude>
     <ClInclude Include="src\conf\Config.h">
       <Filter>src\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CQApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pack.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Structs.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

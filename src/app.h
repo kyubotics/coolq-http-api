@@ -29,3 +29,8 @@
 
 #include "common.h"
 #include "log.h"
+
+class CQApp;
+extern CQApp *CQ;
+
+#include "CQApp.h"

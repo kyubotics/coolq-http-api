@@ -13,22 +13,11 @@
 #include "helpers.h"
 #include "cqcode.h"
 #include "httpd.h"
-#include "conf/Config.h"
 #include "conf/loader.h"
 
 using namespace std;
 
 int ac = -1; // AuthCode
-bool enabled = false;
-
-Config httpd_config; // init 函数中读取，在启动 HTTP 线程之前，只写入一次（读取 cfg 时），后续只读取，因此线程安全
-
-/**
- * For other files to get token.
- */
-string get_httpd_config_token() {
-    return httpd_config.token;
-}
 
 /*
  * Return add info.
@@ -42,8 +31,9 @@ CQEVENT(const char *, AppInfo, 0)
  * Get AuthCode.
  */
 CQEVENT(int32_t, Initialize, 4)
-(int32_t AuthCode) {
-    ac = AuthCode;
+(int32_t auth_code) {
+    ac = auth_code;
+    CQ = new CQApp(auth_code);
     return 0;
 }
 
@@ -51,9 +41,12 @@ CQEVENT(int32_t, Initialize, 4)
  * Initialize plugin, called immediately when plugin is enabled.
  */
 static void init() {
-    LOG_D("启用", "初始化");
-    auto conf_path = string(CQ_getAppDirectory(ac)) + "config.cfg";
-    httpd_config = load_configuration(conf_path);
+    LOG_D("初始化", "尝试加载配置文件");
+    if (load_configuration(CQ->getAppDirectory() + "config.cfg", CQ->config)) {
+        LOG_D("初始化", "加载配置文件成功");
+    } else {
+        LOG_E("初始化", "加载配置文件失败，请确定配置文件格式和访问权限是否正确");
+    }
 }
 
 /**
@@ -61,7 +54,8 @@ static void init() {
  */
 CQEVENT(int32_t, __eventEnable, 0)
 () {
-    enabled = true;
+    CQ->enabled = true;
+    LOG_D("启用", "开始初始化");
     init();
     start_httpd();
     LOG_I("启用", "HTTP API 插件已启用");
@@ -73,7 +67,7 @@ CQEVENT(int32_t, __eventEnable, 0)
  */
 CQEVENT(int32_t, __eventDisable, 0)
 () {
-    enabled = false;
+    CQ->enabled = false;
     stop_httpd();
     LOG_I("停用", "HTTP API 插件已停用");
     return 0;
@@ -94,12 +88,14 @@ CQEVENT(int32_t, __eventStartup, 0)
 CQEVENT(int32_t, __eventExit, 0)
 () {
     stop_httpd();
+    delete CQ;
+    CQ = nullptr;
     LOG_I("停止", "HTTP API 插件已停止");
     return 0;
 }
 
-#define SHOULD_POST (httpd_config.post_url.length() > 0)
-#define MATCH_PATTERN(utf8_msg) regex_search(utf8_msg, httpd_config.pattern)
+#define SHOULD_POST (CQ->config.post_url.length() > 0)
+#define MATCH_PATTERN(utf8_msg) regex_search(utf8_msg, CQ->config.pattern)
 
 struct cqhttp_post_response {
     bool succeeded; // post event succeeded or not (the server returning 2xx means success)
@@ -112,7 +108,7 @@ static cqhttp_post_response post_event(json_t *json, const string &event_name) {
     CURL *curl = curl_easy_init();
     cqhttp_post_response response;
     if (curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, httpd_config.post_url.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, CQ->config.post_url.c_str());
 
         stringstream resp_stream;
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_stringstream_callback);
@@ -123,8 +119,8 @@ static cqhttp_post_response post_event(json_t *json, const string &event_name) {
         struct curl_slist *chunk = NULL;
         chunk = curl_slist_append(chunk, "User-Agent: " CQ_APP_FULLNAME);
         chunk = curl_slist_append(chunk, "Content-Type: application/json");
-        if (httpd_config.token != "")
-            chunk = curl_slist_append(chunk, (string("Authorization: token ") + httpd_config.token).c_str());
+        if (CQ->config.token != "")
+            chunk = curl_slist_append(chunk, (string("Authorization: token ") + CQ->config.token).c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
 
         CURLcode res = curl_easy_perform(curl);
@@ -165,42 +161,38 @@ static int release_response(cqhttp_post_response &response) {
  * sub_type 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
  */
 CQEVENT(int32_t, __eventPrivateMsg, 24)
-(int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, int32_t font) {
-    string utf8_msg = gbk_to_utf8(msg);
-    if (SHOULD_POST && MATCH_PATTERN(utf8_msg)) {
-        const char *sub_type_str = "unknown";
-        switch (sub_type) {
-        case 11:
-            sub_type_str = "friend";
-            break;
-        case 1:
-            sub_type_str = "other";
-            break;
-        case 2:
-            sub_type_str = "group";
-            break;
-        case 3:
-            sub_type_str = "discuss";
-            break;
-        }
-        utf8_msg = enhance_cq_code(utf8_msg, CQCODE_ENHANCE_INCOMING);
-        json_t *json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:s}",
-                                 "post_type", "message",
-                                 "message_type", "private",
-                                 "sub_type", sub_type_str,
-                                 "time", send_time,
-                                 "user_id", from_qq,
-                                 "message", utf8_msg.c_str());
-        cqhttp_post_response response = post_event(json, "私聊消息");
+(int32_t sub_type, int32_t send_time, int64_t from_qq, const char *gbk_msg, int32_t font) {
+    auto msg = decode(gbk_msg, Encoding::GBK);
+    if (SHOULD_POST && MATCH_PATTERN(encode(msg))) {
+        msg = enhance_cq_code(msg, CQCODE_ENHANCE_INCOMING);
+        auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:s}",
+                              "post_type", "message",
+                              "message_type", "private",
+                              "sub_type", [&sub_type]() {
+                                  switch (sub_type) {
+                                  case 11:
+                                      return "friend";
+                                  case 1:
+                                      return "other";
+                                  case 2:
+                                      return "group";
+                                  case 3:
+                                      return "discuss";
+                                  default:
+                                      return "unknown";
+                                  }
+                              }(),
+                              "time", send_time,
+                              "user_id", from_qq,
+                              "message", encode(msg).c_str());
+        auto response = post_event(json, "私聊消息");
         json_decref(json);
 
-        if (response.json != NULL) {
-            const char *reply_cstr = json_string_value(json_object_get(response.json, "reply"));
-            if (reply_cstr != NULL) {
-                string reply_gbk = utf8_to_gbk(reply_cstr);
-                CQ_sendPrivateMsg(ac, from_qq, reply_gbk.c_str());
+        if (response.json != nullptr) {
+            auto reply_str_json = json_object_get(response.json, "reply");
+            if (reply_str_json && !json_is_null(reply_str_json)) {
+                CQ->sendPrivateMsg(from_qq, json_string_value(reply_str_json));
             }
-
             return release_response(response);
         }
     }
