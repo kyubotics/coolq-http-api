@@ -1,3 +1,3 @@
 #include "Log.h"
 
-Log L;
+Log L; // a global logger

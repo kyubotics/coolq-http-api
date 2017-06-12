@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|Win32">
@@ -85,6 +85,8 @@
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\L.cpp" />
     <ClCompile Include="src\Pack.cpp" />
+    <ClCompile Include="src\events.cpp" />
+    <ClCompile Include="src\post_json.cpp" />
     <ClCompile Include="src\request.cpp" />
     <ClCompile Include="src\request_handlers.cpp" />
   </ItemGroup>
@@ -110,6 +112,8 @@
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\helpers.h" />
     <ClInclude Include="src\Pack.h" />
+    <ClInclude Include="src\events.h" />
+    <ClInclude Include="src\post_json.h" />
     <ClInclude Include="src\request.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\Structs.h" />

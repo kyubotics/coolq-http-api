@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="lib">
@@ -92,6 +92,12 @@
     <ClCompile Include="src\L.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\events.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\post_json.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\request.h">
@@ -164,6 +170,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Log.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\post_json.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
