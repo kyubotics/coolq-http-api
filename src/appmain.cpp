@@ -277,7 +277,10 @@ static json_t *convert_to_msg_array_if_needed(string &msg /* utf-8 */) {
         while (regex_search(search_iter, msg.cend(), match, exp)) {
             auto tmp = string(search_iter, search_iter + match.position()); // normal message before this current CQ code
             if (tmp.length() > 0) {
-                json_array_append_new(result, json_pack("[s,s]", "plain", message_unescape(tmp).c_str())); // ["plain", "the plain text message"]
+                // {"type": "text", "data": {"text": "the plain text message"}}
+                json_array_append_new(result, json_pack("{s:s, s:o}",
+                                                        "type", "text",
+                                                        "data", json_pack("{s:s}", "text", message_unescape(tmp).c_str())));
             }
             search_iter += match.position() + match.length(); // move to next
 
@@ -313,12 +316,17 @@ static json_t *convert_to_msg_array_if_needed(string &msg /* utf-8 */) {
                 }
             }
 
-            json_array_append_new(result, json_pack("[s,o?]", function.c_str(), params_json));
-            
+            json_array_append_new(result, json_pack("{s:s, s:o?}",
+                                                    "type", function.c_str(),
+                                                    "data", params_json));
+
         }
         auto tmp = string(search_iter, msg.cend()); // add the rest plain text
         if (tmp.length() > 0) {
-            json_array_append_new(result, json_pack("[s,s]", "plain", message_unescape(tmp).c_str()));
+            // {"type": "text", "data": {"text": "the plain text message"}}
+            json_array_append_new(result, json_pack("{s:s, s:o}",
+                                                    "type", "text",
+                                                    "data", json_pack("{s:s}", "text", message_unescape(tmp).c_str())));
         }
 
         return result;
