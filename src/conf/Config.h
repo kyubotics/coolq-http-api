@@ -1,7 +1,5 @@
 #pragma once
 
-#include "app.h"
-
 struct Config {
     std::string host;
     int port;

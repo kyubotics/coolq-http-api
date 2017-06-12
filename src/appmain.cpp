@@ -41,11 +41,11 @@ CQEVENT(int32_t, Initialize, 4)
  * Initialize plugin, called immediately when plugin is enabled.
  */
 static void init() {
-    LOG_D("³õÊ¼»¯", "³¢ÊÔ¼ÓÔØÅäÖÃÎÄ¼ş");
+    L.d("åˆå§‹åŒ–", "å°è¯•åŠ è½½é…ç½®æ–‡ä»¶");
     if (load_configuration(CQ->getAppDirectory() + "config.cfg", CQ->config)) {
-        LOG_D("³õÊ¼»¯", "¼ÓÔØÅäÖÃÎÄ¼ş³É¹¦");
+        L.d("åˆå§‹åŒ–", "åŠ è½½é…ç½®æ–‡ä»¶æˆåŠŸ");
     } else {
-        LOG_E("³õÊ¼»¯", "¼ÓÔØÅäÖÃÎÄ¼şÊ§°Ü£¬ÇëÈ·¶¨ÅäÖÃÎÄ¼ş¸ñÊ½ºÍ·ÃÎÊÈ¨ÏŞÊÇ·ñÕıÈ·");
+        L.e("åˆå§‹åŒ–", "åŠ è½½é…ç½®æ–‡ä»¶å¤±è´¥ï¼Œè¯·ç¡®å®šé…ç½®æ–‡ä»¶æ ¼å¼å’Œè®¿é—®æƒé™æ˜¯å¦æ­£ç¡®");
     }
 }
 
@@ -55,10 +55,10 @@ static void init() {
 CQEVENT(int32_t, __eventEnable, 0)
 () {
     CQ->enabled = true;
-    LOG_D("ÆôÓÃ", "¿ªÊ¼³õÊ¼»¯");
+    L.d("å¯ç”¨", "å¼€å§‹åˆå§‹åŒ–");
     init();
     start_httpd();
-    LOG_I("ÆôÓÃ", "HTTP API ²å¼şÒÑÆôÓÃ");
+    L.i("å¯ç”¨", "HTTP API æ’ä»¶å·²å¯ç”¨");
     return 0;
 }
 
@@ -69,7 +69,7 @@ CQEVENT(int32_t, __eventDisable, 0)
 () {
     CQ->enabled = false;
     stop_httpd();
-    LOG_I("Í£ÓÃ", "HTTP API ²å¼şÒÑÍ£ÓÃ");
+    L.i("åœç”¨", "HTTP API æ’ä»¶å·²åœç”¨");
     return 0;
 }
 
@@ -90,7 +90,7 @@ CQEVENT(int32_t, __eventExit, 0)
     stop_httpd();
     delete CQ;
     CQ = nullptr;
-    LOG_I("Í£Ö¹", "HTTP API ²å¼şÒÑÍ£Ö¹");
+    L.i("åœæ­¢", "HTTP API æ’ä»¶å·²åœæ­¢");
     return 0;
 }
 
@@ -137,12 +137,12 @@ static cqhttp_post_response post_event(json_t *json, const string &event_name) {
         curl_slist_free_all(chunk);
     }
     free(json_str);
-    LOG_D("HTTPÉÏ±¨", string(event_name) + " ÊÂ¼şÉÏ±¨" + (response.succeeded ? "³É¹¦" : "Ê§°Ü"));
+    L.d("HTTPä¸ŠæŠ¥", string(event_name) + " äº‹ä»¶ä¸ŠæŠ¥" + (response.succeeded ? "æˆåŠŸ" : "å¤±è´¥"));
 
     if (response.json != NULL) {
         char *tmp = json_dumps(response.json, 0);
         if (tmp != NULL) {
-            LOG_D("HTTPÉÏ±¨", string("ÊÕµ½ÏìÓ¦Êı¾İ£º") + utf8_to_gbk(tmp));
+            L.d("HTTPä¸ŠæŠ¥", string("æ”¶åˆ°å“åº”æ•°æ®ï¼š") + utf8_to_gbk(tmp));
             free(tmp);
         }
     }
@@ -157,8 +157,8 @@ static int release_response(cqhttp_post_response &response) {
 }
 
 /**
- * Type=21 Ë½ÁÄÏûÏ¢
- * sub_type ×ÓÀàĞÍ£¬11/À´×ÔºÃÓÑ 1/À´×ÔÔÚÏß×´Ì¬ 2/À´×ÔÈº 3/À´×ÔÌÖÂÛ×é
+ * Type=21 ç§èŠæ¶ˆæ¯
+ * sub_type å­ç±»å‹ï¼Œ11/æ¥è‡ªå¥½å‹ 1/æ¥è‡ªåœ¨çº¿çŠ¶æ€ 2/æ¥è‡ªç¾¤ 3/æ¥è‡ªè®¨è®ºç»„
  */
 CQEVENT(int32_t, __eventPrivateMsg, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *gbk_msg, int32_t font) {
@@ -185,7 +185,7 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)
                               "time", send_time,
                               "user_id", from_qq,
                               "message", msg.c_str());
-        auto response = post_event(json, "Ë½ÁÄÏûÏ¢");
+        auto response = post_event(json, "ç§èŠæ¶ˆæ¯");
         json_decref(json);
 
         if (response.json != nullptr) {
@@ -200,7 +200,7 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)
 }
 
 /**
- * Type=2 ÈºÏûÏ¢
+ * Type=2 ç¾¤æ¶ˆæ¯
  */
 CQEVENT(int32_t, __eventGroupMsg, 36)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg, int32_t font) {
@@ -226,7 +226,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)
                                  "anonymous", utf8_anonymous.c_str(),
                                  "anonymous_flag", gbk_to_utf8(from_anonymous).c_str(),
                                  "message", utf8_msg.c_str());
-        cqhttp_post_response response = post_event(json, "ÈºÏûÏ¢");
+        cqhttp_post_response response = post_event(json, "ç¾¤æ¶ˆæ¯");
         json_decref(json);
 
         if (response.json != NULL) {
@@ -268,7 +268,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)
 }
 
 /**
- * Type=4 ÌÖÂÛ×éÏûÏ¢
+ * Type=4 è®¨è®ºç»„æ¶ˆæ¯
  */
 CQEVENT(int32_t, __eventDiscussMsg, 32)
 (int32_t sub_Type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font) {
@@ -282,7 +282,7 @@ CQEVENT(int32_t, __eventDiscussMsg, 32)
                                  "discuss_id", from_discuss,
                                  "user_id", from_qq,
                                  "message", utf8_msg.c_str());
-        cqhttp_post_response response = post_event(json, "ÌÖÂÛ×éÏûÏ¢");
+        cqhttp_post_response response = post_event(json, "è®¨è®ºç»„æ¶ˆæ¯");
         json_decref(json);
 
         if (response.json != NULL) {
@@ -310,8 +310,8 @@ CQEVENT(int32_t, __eventDiscussMsg, 32)
 }
 
 /**
- * Type=101 ÈºÊÂ¼ş-¹ÜÀíÔ±±ä¶¯
- * sub_type ×ÓÀàĞÍ£¬1/±»È¡Ïû¹ÜÀíÔ± 2/±»ÉèÖÃ¹ÜÀíÔ±
+ * Type=101 ç¾¤äº‹ä»¶-ç®¡ç†å‘˜å˜åŠ¨
+ * sub_type å­ç±»å‹ï¼Œ1/è¢«å–æ¶ˆç®¡ç†å‘˜ 2/è¢«è®¾ç½®ç®¡ç†å‘˜
  */
 CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq) {
@@ -332,7 +332,7 @@ CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
                                  "time", send_time,
                                  "group_id", from_group,
                                  "user_id", being_operate_qq);
-        cqhttp_post_response response = post_event(json, "Èº¹ÜÀíÔ±±ä¶¯");
+        cqhttp_post_response response = post_event(json, "ç¾¤ç®¡ç†å‘˜å˜åŠ¨");
         json_decref(json);
 
         if (response.json != NULL) {
@@ -343,10 +343,10 @@ CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
 }
 
 /**
- * Type=102 ÈºÊÂ¼ş-Èº³ÉÔ±¼õÉÙ
- * sub_type ×ÓÀàĞÍ£¬1/ÈºÔ±Àë¿ª 2/ÈºÔ±±»Ìß 3/×Ô¼º(¼´µÇÂ¼ºÅ)±»Ìß
- * from_qq ²Ù×÷ÕßQQ(½ösubTypeÎª2¡¢3Ê±´æÔÚ)
- * being_operate_qq ±»²Ù×÷QQ
+ * Type=102 ç¾¤äº‹ä»¶-ç¾¤æˆå‘˜å‡å°‘
+ * sub_type å­ç±»å‹ï¼Œ1/ç¾¤å‘˜ç¦»å¼€ 2/ç¾¤å‘˜è¢«è¸¢ 3/è‡ªå·±(å³ç™»å½•å·)è¢«è¸¢
+ * from_qq æ“ä½œè€…QQ(ä»…subTypeä¸º2ã€3æ—¶å­˜åœ¨)
+ * being_operate_qq è¢«æ“ä½œQQ
  */
 CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
@@ -374,7 +374,7 @@ CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
                                  "group_id", from_group,
                                  "operator_id", sub_type == 1 ? being_operate_qq /* leave by him/herself */ : from_qq,
                                  "user_id", being_operate_qq);
-        cqhttp_post_response response = post_event(json, "Èº³ÉÔ±¼õÉÙ");
+        cqhttp_post_response response = post_event(json, "ç¾¤æˆå‘˜å‡å°‘");
         json_decref(json);
 
         if (response.json != NULL) {
@@ -385,10 +385,10 @@ CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
 }
 
 /**
- * Type=103 ÈºÊÂ¼ş-Èº³ÉÔ±Ôö¼Ó
- * sub_type ×ÓÀàĞÍ£¬1/¹ÜÀíÔ±ÒÑÍ¬Òâ 2/¹ÜÀíÔ±ÑûÇë
- * from_qq ²Ù×÷ÕßQQ(¼´¹ÜÀíÔ±QQ)
- * being_operate_qq ±»²Ù×÷QQ(¼´¼ÓÈºµÄQQ)
+ * Type=103 ç¾¤äº‹ä»¶-ç¾¤æˆå‘˜å¢åŠ 
+ * sub_type å­ç±»å‹ï¼Œ1/ç®¡ç†å‘˜å·²åŒæ„ 2/ç®¡ç†å‘˜é‚€è¯·
+ * from_qq æ“ä½œè€…QQ(å³ç®¡ç†å‘˜QQ)
+ * being_operate_qq è¢«æ“ä½œQQ(å³åŠ ç¾¤çš„QQ)
  */
 CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
@@ -410,7 +410,7 @@ CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)
                                  "group_id", from_group,
                                  "operator_id", from_qq,
                                  "user_id", being_operate_qq);
-        cqhttp_post_response response = post_event(json, "Èº³ÉÔ±Ôö¼Ó");
+        cqhttp_post_response response = post_event(json, "ç¾¤æˆå‘˜å¢åŠ ");
         json_decref(json);
 
         if (response.json != NULL) {
@@ -421,7 +421,7 @@ CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)
 }
 
 /**
- * Type=201 ºÃÓÑÊÂ¼ş-ºÃÓÑÒÑÌí¼Ó
+ * Type=201 å¥½å‹äº‹ä»¶-å¥½å‹å·²æ·»åŠ 
  */
 CQEVENT(int32_t, __eventFriend_Add, 16)
 (int32_t sub_type, int32_t send_time, int64_t from_qq) {
@@ -431,7 +431,7 @@ CQEVENT(int32_t, __eventFriend_Add, 16)
                                  "event", "friend_added",
                                  "time", send_time,
                                  "user_id", from_qq);
-        cqhttp_post_response response = post_event(json, "ºÃÓÑÒÑÌí¼Ó");
+        cqhttp_post_response response = post_event(json, "å¥½å‹å·²æ·»åŠ ");
         json_decref(json);
 
         if (response.json != NULL) {
@@ -442,9 +442,9 @@ CQEVENT(int32_t, __eventFriend_Add, 16)
 }
 
 /**
- * Type=301 ÇëÇó-ºÃÓÑÌí¼Ó
- * msg ¸½ÑÔ
- * response_flag ·´À¡±êÊ¶(´¦ÀíÇëÇóÓÃ)
+ * Type=301 è¯·æ±‚-å¥½å‹æ·»åŠ 
+ * msg é™„è¨€
+ * response_flag åé¦ˆæ ‡è¯†(å¤„ç†è¯·æ±‚ç”¨)
  */
 CQEVENT(int32_t, __eventRequest_AddFriend, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, const char *response_flag) {
@@ -456,7 +456,7 @@ CQEVENT(int32_t, __eventRequest_AddFriend, 24)
                                  "user_id", from_qq,
                                  "message", gbk_to_utf8(msg).c_str(),
                                  "flag", gbk_to_utf8(response_flag).c_str());
-        cqhttp_post_response response = post_event(json, "ºÃÓÑÌí¼ÓÇëÇó");
+        cqhttp_post_response response = post_event(json, "å¥½å‹æ·»åŠ è¯·æ±‚");
         json_decref(json);
 
         if (response.json != NULL) {
@@ -478,10 +478,10 @@ CQEVENT(int32_t, __eventRequest_AddFriend, 24)
 }
 
 /**
- * Type=302 ÇëÇó-ÈºÌí¼Ó
- * sub_type ×ÓÀàĞÍ£¬1/ËûÈËÉêÇëÈëÈº 2/×Ô¼º(¼´µÇÂ¼ºÅ)ÊÜÑûÈëÈº
- * msg ¸½ÑÔ
- * response_flag ·´À¡±êÊ¶(´¦ÀíÇëÇóÓÃ)
+ * Type=302 è¯·æ±‚-ç¾¤æ·»åŠ 
+ * sub_type å­ç±»å‹ï¼Œ1/ä»–äººç”³è¯·å…¥ç¾¤ 2/è‡ªå·±(å³ç™»å½•å·)å—é‚€å…¥ç¾¤
+ * msg é™„è¨€
+ * response_flag åé¦ˆæ ‡è¯†(å¤„ç†è¯·æ±‚ç”¨)
  */
 CQEVENT(int32_t, __eventRequest_AddGroup, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *msg, const char *response_flag) {
@@ -504,7 +504,7 @@ CQEVENT(int32_t, __eventRequest_AddGroup, 32)
                                  "user_id", from_qq,
                                  "message", gbk_to_utf8(msg).c_str(),
                                  "flag", gbk_to_utf8(response_flag).c_str());
-        cqhttp_post_response response = post_event(json, "ÈºÌí¼ÓÇëÇó");
+        cqhttp_post_response response = post_event(json, "ç¾¤æ·»åŠ è¯·æ±‚");
         json_decref(json);
 
         if (response.json != NULL) {

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|Win32">
@@ -38,6 +38,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -77,8 +78,12 @@
     <ClCompile Include="src\encoding\base64.cpp" />
     <ClCompile Include="src\encoding\encoding.cpp" />
     <ClCompile Include="src\encoding\md5.cpp" />
-    <ClCompile Include="src\httpd.cpp" />
+    <ClCompile Include="src\httpd.cpp">
+      <UseUnicodeForAssemblerListing Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </UseUnicodeForAssemblerListing>
+    </ClCompile>
     <ClCompile Include="src\helpers.cpp" />
+    <ClCompile Include="src\L.cpp" />
     <ClCompile Include="src\Pack.cpp" />
     <ClCompile Include="src\request.cpp" />
     <ClCompile Include="src\request_handlers.cpp" />
@@ -102,11 +107,10 @@
     <ClInclude Include="src\encoding\encoding.h" />
     <ClInclude Include="src\encoding\md5.h" />
     <ClInclude Include="src\httpd.h" />
-    <ClInclude Include="src\log.h" />
+    <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\helpers.h" />
     <ClInclude Include="src\Pack.h" />
     <ClInclude Include="src\request.h" />
-    <ClInclude Include="src\request_handlers.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\Structs.h" />
   </ItemGroup>

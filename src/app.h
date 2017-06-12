@@ -28,9 +28,11 @@
 #define CQ_APP_FULLNAME CQ_APP_NAME " " CQ_APP_VERSION
 
 #include "common.h"
-#include "log.h"
 
 class CQApp;
 extern CQApp *CQ;
-
 #include "CQApp.h"
+
+class Log;
+extern Log L;
+#include "Log.h"

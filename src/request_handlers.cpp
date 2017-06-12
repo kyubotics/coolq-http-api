@@ -1,5 +1,3 @@
-#include "request_handlers.h"
-
 #include <jansson/jansson.h>
 
 #include "request.h"
@@ -9,7 +7,21 @@
 
 using namespace std;
 
-CQHTTP_REQUEST_HANDLER(send_private_msg) {
+extern cqhttp_request_handler_map request_handler_map; // global handler map in request.cpp
+
+static bool add_handler(const char *name, cqhttp_request_handler handler) {
+    request_handler_map[name] = handler;
+    return true;
+}
+
+#define HANDLER(handler_name) \
+    static void _##handler_name(const struct cqhttp_request &, struct cqhttp_result &); \
+    static bool _dummy_##handler_name = add_handler(#handler_name, _##handler_name); \
+    static void _##handler_name(const struct cqhttp_request &request, struct cqhttp_result &result)
+
+#pragma region Send Message
+
+HANDLER(send_private_msg) {
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
     auto msg = cqhttp_get_str_param(request, "message", "");
     auto is_raw = cqhttp_get_bool_param(request, "is_raw", false);
@@ -24,7 +36,7 @@ CQHTTP_REQUEST_HANDLER(send_private_msg) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(send_group_msg) {
+HANDLER(send_group_msg) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto msg = cqhttp_get_str_param(request, "message", "");
     auto is_raw = cqhttp_get_bool_param(request, "is_raw", false);
@@ -38,7 +50,7 @@ CQHTTP_REQUEST_HANDLER(send_group_msg) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(send_discuss_msg) {
+HANDLER(send_discuss_msg) {
     auto discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
     auto msg = cqhttp_get_str_param(request, "message", "");
     auto is_raw = cqhttp_get_bool_param(request, "is_raw", false);
@@ -52,7 +64,11 @@ CQHTTP_REQUEST_HANDLER(send_discuss_msg) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(send_like) { // CoolQ Pro only
+#pragma endregion
+
+#pragma region Send Like
+
+HANDLER(send_like) { // CoolQ Pro only
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
     auto times = static_cast<int32_t>(cqhttp_get_integer_param(request, "times", 1));
     if (user_id && times > 0) {
@@ -64,7 +80,11 @@ CQHTTP_REQUEST_HANDLER(send_like) { // CoolQ Pro only
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_kick) {
+#pragma endregion
+
+#pragma region Group & Discuss Operation
+
+HANDLER(set_group_kick) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
     auto reject_add_request = cqhttp_get_bool_param(request, "reject_add_request", false);
@@ -73,7 +93,7 @@ CQHTTP_REQUEST_HANDLER(set_group_kick) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_ban) {
+HANDLER(set_group_ban) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
     auto duration = cqhttp_get_integer_param(request, "duration", 30 * 60 /* 30 minutes */);
@@ -82,7 +102,7 @@ CQHTTP_REQUEST_HANDLER(set_group_ban) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_anonymous_ban) {
+HANDLER(set_group_anonymous_ban) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto anonymous_flag = cqhttp_get_str_param(request, "flag", "");
     auto duration = cqhttp_get_integer_param(request, "duration", 30 * 60 /* 30 minutes */);
@@ -91,7 +111,7 @@ CQHTTP_REQUEST_HANDLER(set_group_anonymous_ban) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_whole_ban) {
+HANDLER(set_group_whole_ban) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto enable = cqhttp_get_bool_param(request, "enable", true);
     if (group_id) {
@@ -99,7 +119,7 @@ CQHTTP_REQUEST_HANDLER(set_group_whole_ban) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_admin) {
+HANDLER(set_group_admin) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
     auto enable = cqhttp_get_bool_param(request, "enable", true);
@@ -108,7 +128,7 @@ CQHTTP_REQUEST_HANDLER(set_group_admin) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_anonymous) { // CoolQ Pro only
+HANDLER(set_group_anonymous) { // CoolQ Pro only
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto enable = cqhttp_get_bool_param(request, "enable", true);
     if (group_id) {
@@ -116,7 +136,7 @@ CQHTTP_REQUEST_HANDLER(set_group_anonymous) { // CoolQ Pro only
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_card) {
+HANDLER(set_group_card) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
     auto card = cqhttp_get_str_param(request, "card", "");
@@ -125,7 +145,7 @@ CQHTTP_REQUEST_HANDLER(set_group_card) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_leave) {
+HANDLER(set_group_leave) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto is_dismiss = cqhttp_get_bool_param(request, "is_dismiss", false);
     if (group_id) {
@@ -133,7 +153,7 @@ CQHTTP_REQUEST_HANDLER(set_group_leave) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_special_title) {
+HANDLER(set_group_special_title) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
     auto special_title = cqhttp_get_str_param(request, "special_title", "");
@@ -143,14 +163,18 @@ CQHTTP_REQUEST_HANDLER(set_group_special_title) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_discuss_leave) {
+HANDLER(set_discuss_leave) {
     auto discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
     if (discuss_id) {
         result.retcode = CQ_setDiscussLeave(ac, discuss_id);
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_friend_add_request) {
+#pragma endregion
+
+#pragma region Request Operation
+
+HANDLER(set_friend_add_request) {
     auto flag = cqhttp_get_str_param(request, "flag", "");
     auto approve = cqhttp_get_bool_param(request, "approve", true);
     auto remark = cqhttp_get_str_param(request, "remark", "");
@@ -159,7 +183,7 @@ CQHTTP_REQUEST_HANDLER(set_friend_add_request) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(set_group_add_request) {
+HANDLER(set_group_add_request) {
     auto flag = cqhttp_get_str_param(request, "flag", "");
     auto type = cqhttp_get_str_param(request, "type", "");
     auto approve = cqhttp_get_bool_param(request, "approve", true);
@@ -178,14 +202,18 @@ CQHTTP_REQUEST_HANDLER(set_group_add_request) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(get_login_info) {
+#pragma endregion
+
+#pragma region Get QQ Information
+
+HANDLER(get_login_info) {
     auto id = CQ->getLoginQQ();
     auto nickname = CQ->getLoginNick();
     result.retcode = nickname ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_INVALID_DATA;
     result.data = json_pack("{s:I,s:s?}", "user_id", id, "nickname", nickname.c_str());
 }
 
-CQHTTP_REQUEST_HANDLER(get_stranger_info) {
+HANDLER(get_stranger_info) {
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
     auto no_cache = cqhttp_get_bool_param(request, "no_cache", false);
     if (user_id) {
@@ -200,7 +228,7 @@ CQHTTP_REQUEST_HANDLER(get_stranger_info) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(get_group_list) {
+HANDLER(get_group_list) {
     auto bytes = CQ->getGroupListRaw();
     if (bytes.size() >= 4 /* at least has a count */) {
         auto pack = Pack(bytes);
@@ -221,7 +249,7 @@ CQHTTP_REQUEST_HANDLER(get_group_list) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(get_group_member_list) {
+HANDLER(get_group_member_list) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     if (group_id) {
         auto bytes = CQ->getGroupMemberListRaw(group_id);
@@ -245,7 +273,7 @@ CQHTTP_REQUEST_HANDLER(get_group_member_list) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(get_group_member_info) {
+HANDLER(get_group_member_info) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
     auto no_cache = cqhttp_get_bool_param(request, "no_cache", false);
@@ -261,14 +289,18 @@ CQHTTP_REQUEST_HANDLER(get_group_member_info) {
     }
 }
 
-CQHTTP_REQUEST_HANDLER(get_cookies) {
+#pragma region Get CoolQ Information
+
+HANDLER(get_cookies) {
     auto cookies = CQ->getCookies();
     result.retcode = cookies ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_INVALID_DATA;
     result.data = json_pack("{s:s?}", "cookies", cookies.c_str());
 }
 
-CQHTTP_REQUEST_HANDLER(get_csrf_token) {
+HANDLER(get_csrf_token) {
     auto token = CQ->getCsrfToken();
     result.retcode = token ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_INVALID_DATA;
     result.data = json_pack("{s:i}", "token", token);
 }
+
+#pragma endregion

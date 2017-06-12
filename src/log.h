@@ -1,20 +1,49 @@
 #pragma once
 
-#include <string>
+#include "common.h"
 
-#include "cqp.h"
-#include "encoding/encoding.h"
+#include "CQApp.h"
 
-extern int ac;
+extern CQApp *CQ;
 
-#define LOG8(level, tag, msg) CQ_addLog(ac, level, tag, utf8_to_gbk(std::string(msg).c_str()).c_str());
-#define LOG8_I(tag, msg) CQ_addLog(ac, CQLOG_INFO, tag, utf8_to_gbk(std::string(msg).c_str()).c_str());
-#define LOG8_D(tag, msg) CQ_addLog(ac, CQLOG_DEBUG, tag, utf8_to_gbk(std::string(msg).c_str()).c_str());
-#define LOG8_W(tag, msg) CQ_addLog(ac, CQLOG_WARNING, tag, utf8_to_gbk(std::string(msg).c_str()).c_str());
-#define LOG8_E(tag, msg) CQ_addLog(ac, CQLOG_ERROR, tag, utf8_to_gbk(std::string(msg).c_str()).c_str());
+class Log {
+public:
+    Log() : app_(CQ) { }
 
-#define LOG(level, tag, msg) CQ_addLog(ac, level, tag, std::string(msg).c_str());
-#define LOG_I(tag, msg) CQ_addLog(ac, CQLOG_INFO, tag, std::string(msg).c_str());
-#define LOG_D(tag, msg) CQ_addLog(ac, CQLOG_DEBUG, tag, std::string(msg).c_str());
-#define LOG_W(tag, msg) CQ_addLog(ac, CQLOG_WARNING, tag, std::string(msg).c_str());
-#define LOG_E(tag, msg) CQ_addLog(ac, CQLOG_ERROR, tag, std::string(msg).c_str());
+    Log(CQApp *&app) : app_(app) {}
+
+    void i(const str &tag, const str &msg) const {
+        this->app_->addLog(CQLOG_INFO, tag, msg);
+    }
+
+    void i_succ(const str &tag, const str &msg) const {
+        this->app_->addLog(CQLOG_INFOSUCCESS, tag, msg);
+    }
+
+    void i_recv(const str &tag, const str &msg) const {
+        this->app_->addLog(CQLOG_INFORECV, tag, msg);
+    }
+
+    void i_send(const str &tag, const str &msg) const {
+        this->app_->addLog(CQLOG_INFOSEND, tag, msg);
+    }
+
+    void d(const str &tag, const str &msg) const {
+        this->app_->addLog(CQLOG_DEBUG, tag, msg);
+    }
+
+    void w(const str &tag, const str &msg) const {
+        this->app_->addLog(CQLOG_WARNING, tag, msg);
+    }
+
+    void e(const str &tag, const str &msg) const {
+        this->app_->addLog(CQLOG_ERROR, tag, msg);
+    }
+
+    void f(const str &tag, const str &msg) const {
+        this->app_->addLog(CQLOG_FATAL, tag, msg);
+    }
+
+private:
+    CQApp *&app_;
+};

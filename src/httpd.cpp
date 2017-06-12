@@ -1,5 +1,7 @@
 #include "httpd.h"
 
+#include "app.h"
+
 #include <event2/event.h>
 #include <event2/http.h>
 #include <WinSock2.h>
@@ -9,11 +11,8 @@
 #include "request.h"
 #include "helpers.h"
 #include "conf/Config.h"
-#include "CQApp.h"
 
 using namespace std;
-
-extern CQApp *CQ;
 
 static thread httpd_thread;
 static atomic<bool> httpd_thread_running = false;
@@ -41,13 +40,14 @@ void start_httpd() {
             evhttp_set_gencb(httpd_event, cqhttp_main_handler, nullptr);
             evhttp_bind_socket(httpd_event, config.host.c_str(), config.port);
 
-            LOG_D("¼àÌı", string("¿ªÊ¼¼àÌı http://") + config.host + ":" + itos(config.port));
+            L.d("ç›‘å¬", "å¼€å§‹ç›‘å¬ http://" + config.host + ":" + itos(config.port));
 
             event_base_dispatch(httpd_event_base); // infinite event loop
 
             httpd_thread_running = false;
         });
-    LOG_D("¿ªÆô", "¿ªÆô HTTP ÊØ»¤Ïß³Ì³É¹¦");
+
+    L.d("å¼€å¯", "å¼€å¯ HTTP å®ˆæŠ¤çº¿ç¨‹æˆåŠŸ");
 }
 
 /**
@@ -69,6 +69,6 @@ void stop_httpd() {
         httpd_event_base = nullptr;
         httpd_event = nullptr;
         httpd_thread_running = false;
-        LOG_D("¹Ø±Õ", "ÒÑ¹Ø±ÕºóÌ¨ HTTP ÊØ»¤Ïß³Ì");
+        L.d("å…³é—­", "å·²å…³é—­åå° HTTP å®ˆæŠ¤çº¿ç¨‹");
     }
 }

@@ -20,8 +20,8 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_) {
         return;
     }
 
-    LOG_D("HTTPÇëÇó",
-        string("ÊÕµ½ HTTP ÇëÇó£¬ÇëÇó·½Ê½£º") + (method == EVHTTP_REQ_GET ? "GET" : "POST") + "£¬URI£º" + evhttp_request_get_uri(req));
+    L.d("HTTPè¯·æ±‚",
+        string("æ”¶åˆ° HTTP è¯·æ±‚ï¼Œè¯·æ±‚æ–¹å¼ï¼š") + (method == EVHTTP_REQ_GET ? "GET" : "POST") + "ï¼ŒURIï¼š" + evhttp_request_get_uri(req));
 
     struct evkeyvalq *input_headers = evhttp_request_get_input_headers(req);
 
@@ -31,7 +31,7 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_) {
         const char *auth = evhttp_find_header(input_headers, "Authorization");
         if (!auth || "token " + token != auth) {
             // invalid token
-            LOG_D("HTTPÇëÇó", "token ²»·û£¬Í£Ö¹ÏìÓ¦");
+            L.d("HTTPè¯·æ±‚", "token ä¸ç¬¦ï¼Œåœæ­¢å“åº”");
             evhttp_send_reply(req, 401, "Unauthorized", NULL);
             return;
         }
@@ -120,7 +120,7 @@ void cqhttp_main_handler(struct evhttp_request *req, void *_) {
     free(json_str);
     evhttp_send_reply(req, HTTP_OK, "OK", buf);
     evbuffer_free(buf);
-    LOG_D("HTTPÇëÇó", "ÏìÓ¦ÄÚÈİ·¢ËÍÍê±Ï");
+    L.d("HTTPè¯·æ±‚", "å“åº”å†…å®¹å‘é€å®Œæ¯•");
 }
 
 char *cqhttp_get_param(const struct cqhttp_request &request, const char *key) {
@@ -202,12 +202,12 @@ struct cqhttp_result dispatch_request(const struct cqhttp_request &request) {
     struct cqhttp_result result;
     if (request_handler_map.find(path_without_slash) != request_handler_map.end()) {
         // the corresponding handler exists
-        LOG_D("HTTPÇëÇó", string("ÕÒµ½ handler£º") + path_without_slash);
+        L.d("HTTPè¯·æ±‚", string("æ‰¾åˆ° handlerï¼š") + path_without_slash);
         request_handler_map[path_without_slash](request, result);
         return result;
     }
     // the corresponding handler does not exist
-    LOG_D("HTTPÇëÇó", string("Ã»ÓĞÕÒµ½ handler£º") + path_without_slash);
+    L.d("HTTPè¯·æ±‚", string("æ²¡æœ‰æ‰¾åˆ° handlerï¼š") + path_without_slash);
     result.retcode = CQHTTP_RETCODE_NO_SUCH_API;
     return result;
 }

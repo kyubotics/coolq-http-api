@@ -1,23 +1,25 @@
-// 
+//
 // loader.cpp : Provide function to load configuration.
-// 
+//
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 
 #include "loader.h"
+
+#include "app.h"
 
 #include <fstream>
 
@@ -31,7 +33,7 @@ bool load_configuration(const str &filepath, Config &config) {
     fopen_s(&conf_file, filepath.c_str(), "r");
     if (!conf_file) {
         // first init, save default config
-        LOG_D("ÅäÖÃ", "Ã»ÓĞÕÒµ½ÅäÖÃÎÄ¼ş£¬Ğ´ÈëÄ¬ÈÏÅäÖÃ");
+        L.d("é…ç½®", "æ²¡æœ‰æ‰¾åˆ°é…ç½®æ–‡ä»¶ï¼Œå†™å…¥é»˜è®¤é…ç½®");
         ofstream file(filepath.c_str());
         file << "[general]" << endl
                 << "host=0.0.0.0" << endl

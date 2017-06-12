@@ -1,5 +1,7 @@
 #include "helpers.h"
 
+#include "app.h"
+
 #include <cctype>
 #include <sstream>
 
@@ -60,7 +62,7 @@ void string_replace(string& str, const string& search, const string& replace)
 
 string get_cq_root_path()
 {
-    string app_dir = CQ_getAppDirectory(ac);
-    string suffix = "app\\" CQ_APP_ID "\\";
-    return app_dir.substr(0, app_dir.size() - suffix.size());;
+    auto app_dir = CQ->getAppDirectory();
+    auto suffix = "app\\" CQ_APP_ID "\\";
+    return app_dir[slice(0, app_dir.length() - strlen(suffix))];
 }
