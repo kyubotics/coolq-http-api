@@ -367,7 +367,7 @@ CQHTTP_REQUEST_HANDLER(get_group_member_list)
     int64_t group_id = cqhttp_get_integer_param(request, "group_id", 0);
     if (group_id) {
         string bytes = base64_decode(gbk_to_utf8(CQ_getGroupMemberList(ac, group_id)));
-        if (bytes.size() >= 10 /* minimum valid bytes size */) {
+        if (bytes.size() >= 4 /* minimum valid bytes size */) {
             INIT(bytes);
             int32_t count;
             INTEGER(count); // get number of group members
@@ -461,7 +461,7 @@ CQHTTP_REQUEST_HANDLER(get_group_list)
 (const struct cqhttp_request &request) {
     struct cqhttp_result result;
     string bytes = base64_decode(gbk_to_utf8(CQ_getGroupList(ac)));
-    if (bytes.size() >= 10 /* minimum valid bytes size */) {
+    if (bytes.size() >= 4 /* minimum valid bytes size */) {
         INIT(bytes);
         int32_t count;
         INTEGER(count); // get number of groups
