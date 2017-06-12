@@ -163,7 +163,7 @@ static int release_response(cqhttp_post_response &response) {
 CQEVENT(int32_t, __eventPrivateMsg, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *gbk_msg, int32_t font) {
     auto msg = decode(gbk_msg, Encoding::GBK);
-    if (SHOULD_POST && MATCH_PATTERN(encode(msg))) {
+    if (SHOULD_POST && MATCH_PATTERN(msg.to_bytes())) {
         msg = enhance_cq_code(msg, CQCODE_ENHANCE_INCOMING);
         auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:s}",
                               "post_type", "message",
@@ -184,7 +184,7 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)
                               }(),
                               "time", send_time,
                               "user_id", from_qq,
-                              "message", encode(msg).c_str());
+                              "message", msg.c_str());
         auto response = post_event(json, "Ë½ÁÄÏûÏ¢");
         json_decref(json);
 

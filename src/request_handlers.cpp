@@ -182,7 +182,7 @@ CQHTTP_REQUEST_HANDLER(get_login_info) {
     auto id = CQ->getLoginQQ();
     auto nickname = CQ->getLoginNick();
     result.retcode = nickname ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_INVALID_DATA;
-    result.data = json_pack("{s:I,s:s?}", "user_id", id, "nickname", encode(nickname).c_str());
+    result.data = json_pack("{s:I,s:s?}", "user_id", id, "nickname", nickname.c_str());
 }
 
 CQHTTP_REQUEST_HANDLER(get_stranger_info) {
@@ -264,7 +264,7 @@ CQHTTP_REQUEST_HANDLER(get_group_member_info) {
 CQHTTP_REQUEST_HANDLER(get_cookies) {
     auto cookies = CQ->getCookies();
     result.retcode = cookies ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_INVALID_DATA;
-    result.data = json_pack("{s:s?}", "cookies", encode(cookies).c_str());
+    result.data = json_pack("{s:s?}", "cookies", cookies.c_str());
 }
 
 CQHTTP_REQUEST_HANDLER(get_csrf_token) {
