@@ -166,7 +166,7 @@ HANDLER(set_group_special_title) {
 HANDLER(set_discuss_leave) {
     auto discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
     if (discuss_id) {
-        result.retcode = CQ_setDiscussLeave(ac, discuss_id);
+        result.retcode = CQ->setDiscussLeave(discuss_id);
     }
 }
 

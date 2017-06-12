@@ -7,8 +7,6 @@
 
 using namespace std;
 
-extern int ac;
-
 size_t curl_write_stringstream_callback(char* buf, size_t size, size_t nmemb, stringstream& ss)
 {
     char* tmp = (char *)malloc(nmemb + 1);
