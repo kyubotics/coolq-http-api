@@ -1,12 +1,13 @@
 #pragma once
 
+#include "common.h"
+
 struct Config {
-    std::string host;
+    str host;
     int port;
-    std::string post_url;
-    std::string token;
+    str post_url;
+    str token;
     std::regex pattern;
 
-    Config() : host("0.0.0.0"), port(5700),
-        post_url(""), token(""), pattern(std::regex("")) {}
+    Config() : host("0.0.0.0"), port(5700), post_url(""), token(""), pattern(std::regex("")) {}
 };

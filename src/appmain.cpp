@@ -16,10 +16,8 @@
 
 using namespace std;
 
-int ac = -1; // AuthCode
-
 /*
- * Return add info.
+ * Return app info.
  */
 CQEVENT(const char *, AppInfo, 0)
 () {
@@ -27,11 +25,10 @@ CQEVENT(const char *, AppInfo, 0)
 }
 
 /**
- * Get AuthCode.
+ * Get auth code.
  */
 CQEVENT(int32_t, Initialize, 4)
 (int32_t auth_code) {
-    ac = auth_code;
     CQ = new CQApp(auth_code);
     return 0;
 }

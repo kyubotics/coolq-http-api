@@ -2,7 +2,7 @@
 
 #include "request.h"
 #include "cqcode.h"
-#include "Structs.h"
+#include "structs.h"
 #include "Pack.h"
 
 using namespace std;

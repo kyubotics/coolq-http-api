@@ -116,7 +116,7 @@
     <ClInclude Include="src\post_json.h" />
     <ClInclude Include="src\request.h" />
     <ClInclude Include="src\common.h" />
-    <ClInclude Include="src\Structs.h" />
+    <ClInclude Include="src\structs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

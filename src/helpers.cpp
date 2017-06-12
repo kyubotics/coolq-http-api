@@ -3,7 +3,6 @@
 #include "app.h"
 
 #include <cctype>
-#include <sstream>
 
 using namespace std;
 
@@ -15,16 +14,12 @@ size_t curl_write_file_callback(char *buf, size_t size, size_t nmemb, FILE *fp) 
 }
 
 bool isnumber(const string &s) {
-    string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it))
-        ++it;
-    return !s.empty() && it == s.end();
-}
-
-string itos(int64_t i) {
-    stringstream ss;
-    ss << i;
-    return ss.str();
+    for (auto ch : s) {
+        if (!isdigit(ch)) {
+            return false;
+        }
+    }
+    return !s.empty();
 }
 
 void string_replace(string &str, const string &search, const string &replace) {
@@ -43,7 +38,7 @@ void string_replace(string &str, const string &search, const string &replace) {
     str.swap(ws_ret); // faster than str = wsRet;
 }
 
-string get_cq_root_path() {
+str get_cq_root_path() {
     auto app_dir = CQ->getAppDirectory();
     auto suffix = "app\\" CQ_APP_ID "\\";
     return app_dir[slice(0, app_dir.length() - strlen(suffix))];

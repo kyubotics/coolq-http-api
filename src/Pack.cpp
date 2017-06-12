@@ -5,7 +5,7 @@
 static void check_enough(size_t remained, size_t needed) {
     if (remained < needed) {
         throw BytesNotEnoughError(str("there aren't enough bytes to pop (")
-            + itos(needed) + " bytes needed)");
+            + str(needed) + " bytes needed)");
     }
 }
 

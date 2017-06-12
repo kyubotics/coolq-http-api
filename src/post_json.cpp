@@ -71,8 +71,6 @@ PostResponse post_json(json_t *json, str post_url) {
     return response;
 }
 
-int release_response(PostResponse &response) {
-    auto block = json_is_true(json_object_get(response.json, "block"));
+void release_response(PostResponse &response) {
     json_decref(response.json);
-    return block ? EVENT_BLOCK : EVENT_IGNORE;
 }

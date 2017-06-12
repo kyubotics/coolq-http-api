@@ -4,19 +4,27 @@
 
 #include <jansson/jansson.h>
 
-#include "helpers.h"
 #include "cqcode.h"
 #include "post_json.h"
 
 using namespace std;
 
-#define ENSURE_POST_NEEDED() if (CQ->config.post_url.length() == 0) { return EVENT_IGNORE; }
-#define MATCH_PATTERN(msg) regex_search(msg, CQ->config.pattern)
+#define ENSURE_POST_NEEDED if (CQ->config.post_url.length() == 0) { return EVENT_IGNORE; }
+
+static bool match_pattern(const str &msg) {
+    return regex_search(msg.to_bytes(), CQ->config.pattern);
+}
+
+static int32_t handle_block_response(PostResponse &response) {
+    auto block = json_is_true(json_object_get(response.json, "block"));
+    release_response(response); // the response object should never be used again
+    return block ? EVENT_BLOCK : EVENT_IGNORE;
+}
 
 int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, const str &msg, int32_t font) {
-    ENSURE_POST_NEEDED();
+    ENSURE_POST_NEEDED;
 
-    if (MATCH_PATTERN(msg.to_bytes())) {
+    if (match_pattern(msg)) {
         auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:s}",
                               "post_type", "message",
                               "message_type", "private",
@@ -45,16 +53,16 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
             if (reply_str_json && !json_is_null(reply_str_json)) {
                 CQ->sendPrivateMsg(from_qq, json_string_value(reply_str_json));
             }
-            return release_response(response);
+            return handle_block_response(response);
         }
     }
     return EVENT_IGNORE;
 }
 
 int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const str &from_anonymous, const str &msg, int32_t font) {
-    ENSURE_POST_NEEDED();
+    ENSURE_POST_NEEDED;
 
-    if (MATCH_PATTERN(msg.to_bytes())) {
+    if (match_pattern(msg)) {
         str anonymous = "";
         auto is_anonymous = from_anonymous.length() > 0;
         auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s, s:s}",
@@ -81,7 +89,7 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
                     at_sender = false;
                 }
                 if (at_sender && !is_anonymous) {
-                    reply = "[CQ:at,qq=" + itos(from_qq) + "] " + reply;
+                    reply = "[CQ:at,qq=" + str(from_qq) + "] " + reply;
                 }
 
                 // send reply
@@ -104,16 +112,16 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
                 }
             }
 
-            return release_response(response);
+            return handle_block_response(response);
         }
     }
     return EVENT_IGNORE;
 }
 
-int32_t event_discuss_msg(int32_t sub_Type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const str &msg, int32_t font) {
-    ENSURE_POST_NEEDED();
+int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const str &msg, int32_t font) {
+    ENSURE_POST_NEEDED;
 
-    if (MATCH_PATTERN(msg.to_bytes())) {
+    if (match_pattern(msg)) {
         auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s}",
                               "post_type", "message",
                               "message_type", "discuss",
@@ -136,21 +144,21 @@ int32_t event_discuss_msg(int32_t sub_Type, int32_t send_time, int64_t from_disc
                     at_sender = false;
                 }
                 if (at_sender) {
-                    reply = "[CQ:at,qq=" + itos(from_qq) + "] " + reply;
+                    reply = "[CQ:at,qq=" + str(from_qq) + "] " + reply;
                 }
 
                 // send reply
                 CQ->sendDiscussMsg(from_discuss, reply);
             }
 
-            return release_response(response);
+            return handle_block_response(response);
         }
     }
     return EVENT_IGNORE;
 }
 
 int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq) {
-    ENSURE_POST_NEEDED();
+    ENSURE_POST_NEEDED;
 
     auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I}",
                           "post_type", "event",
@@ -172,14 +180,14 @@ int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_grou
     json_decref(json);
 
     if (response.json) {
-        return release_response(response);
+        return handle_block_response(response);
     }
 
     return EVENT_IGNORE;
 }
 
 int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
-    ENSURE_POST_NEEDED();
+    ENSURE_POST_NEEDED;
 
     auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I, s:I}",
                           "post_type", "event",
@@ -207,14 +215,14 @@ int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t
     json_decref(json);
 
     if (response.json) {
-        return release_response(response);
+        return handle_block_response(response);
     }
 
     return EVENT_IGNORE;
 }
 
 int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
-    ENSURE_POST_NEEDED();
+    ENSURE_POST_NEEDED;
 
     auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I, s:I}",
                           "post_type", "event",
@@ -237,14 +245,14 @@ int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t
     json_decref(json);
 
     if (response.json) {
-        return release_response(response);
+        return handle_block_response(response);
     }
 
     return EVENT_IGNORE;
 }
 
 int32_t event_friend_added(int32_t sub_type, int32_t send_time, int64_t from_qq) {
-    ENSURE_POST_NEEDED();
+    ENSURE_POST_NEEDED;
 
     auto json = json_pack("{s:s, s:s, s:i, s:I}",
                           "post_type", "event",
@@ -255,14 +263,14 @@ int32_t event_friend_added(int32_t sub_type, int32_t send_time, int64_t from_qq)
     json_decref(json);
 
     if (response.json) {
-        return release_response(response);
+        return handle_block_response(response);
     }
 
     return EVENT_IGNORE;
 }
 
 int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t from_qq, const str &msg, const str &response_flag) {
-    ENSURE_POST_NEEDED();
+    ENSURE_POST_NEEDED;
 
     auto json = json_pack("{s:s, s:s, s:i, s:I, s:s, s:s}",
                           "post_type", "request",
@@ -286,14 +294,14 @@ int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t fr
             }
         }
 
-        return release_response(response);
+        return handle_block_response(response);
     }
 
     return EVENT_IGNORE;
 }
 
 int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const str &msg, const str &response_flag) {
-    ENSURE_POST_NEEDED();
+    ENSURE_POST_NEEDED;
 
     auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I, s:s, s:s}",
                           "post_type", "request",
@@ -331,7 +339,7 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
             }
         }
 
-        return release_response(response);
+        return handle_block_response(response);
     }
 
     return EVENT_IGNORE;

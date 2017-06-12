@@ -166,7 +166,7 @@
     <ClInclude Include="src\Pack.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Structs.h">
+    <ClInclude Include="src\structs.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Log.h">

@@ -26,7 +26,7 @@ void start_httpd() {
     // try to stop httpd first, in case of error
     stop_httpd();
 
-    httpd_thread = thread([]() { // TODO: bug when enable after disable
+    httpd_thread = thread([]() { // TODO: bug when enable after disable, likely to be bug of CoolQ 5.8.10
             httpd_thread_running = true;
 
             auto &config = CQ->config;
@@ -40,7 +40,7 @@ void start_httpd() {
             evhttp_set_gencb(httpd_event, cqhttp_main_handler, nullptr);
             evhttp_bind_socket(httpd_event, config.host.c_str(), config.port);
 
-            L.d("监听", "开始监听 http://" + config.host + ":" + itos(config.port));
+            L.d("监听", "开始监听 http://" + config.host + ":" + str(config.port));
 
             event_base_dispatch(httpd_event_base); // infinite event loop
 

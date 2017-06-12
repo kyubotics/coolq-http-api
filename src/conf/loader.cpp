@@ -42,21 +42,20 @@ bool load_configuration(const str &filepath, Config &config) {
                 << "token=" << endl;
     } else {
         // load from config file
-        auto callback = [&](const char *section, const char *name, const char *value) {
-                    static auto login_qq_str = itos(CQ->getLoginQQ());
+        auto callback = [&](const str &section, const str &name, const str &value) {
+                    static auto login_qq_str = str(CQ->getLoginQQ());
 
-                    if (string(section) == "general" || isnumber(section) && login_qq_str == section) {
-                        string field = name;
-                        if (field == "host")
+                    if (section == "general" || isnumber(section) && login_qq_str == section) {
+                        if (name == "host")
                             config.host = value;
-                        else if (field == "port")
-                            config.port = atoi(value);
-                        else if (field == "post_url")
+                        else if (name == "port")
+                            config.port = int(value);
+                        else if (name == "post_url")
                             config.post_url = value;
-                        else if (field == "token")
+                        else if (name == "token")
                             config.token = value;
-                        else if (field == "pattern")
-                            config.pattern = regex(value);
+                        else if (name == "pattern")
+                            config.pattern = regex(value.to_bytes());
                     }
                     return 1;
                 };
