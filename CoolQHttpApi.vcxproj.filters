@@ -56,9 +56,6 @@
     <ClCompile Include="src\encoding\base64.cpp">
       <Filter>src\encoding</Filter>
     </ClCompile>
-    <ClCompile Include="src\encoding\encoding.cpp">
-      <Filter>src\encoding</Filter>
-    </ClCompile>
     <ClCompile Include="src\encoding\md5.cpp">
       <Filter>src\encoding</Filter>
     </ClCompile>
@@ -98,6 +95,9 @@
     <ClCompile Include="src\appmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\message.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\request.h">
@@ -113,9 +113,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\encoding\base64.h">
-      <Filter>src\encoding</Filter>
-    </ClInclude>
-    <ClInclude Include="src\encoding\encoding.h">
       <Filter>src\encoding</Filter>
     </ClInclude>
     <ClInclude Include="src\encoding\md5.h">
@@ -169,13 +166,16 @@
     <ClInclude Include="src\structs.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Log.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\events.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\post_json.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\message.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Logger.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

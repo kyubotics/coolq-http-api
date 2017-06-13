@@ -76,7 +76,6 @@
     <ClCompile Include="src\cqcode.cpp" />
     <ClCompile Include="src\dllentry.cpp" />
     <ClCompile Include="src\encoding\base64.cpp" />
-    <ClCompile Include="src\encoding\encoding.cpp" />
     <ClCompile Include="src\encoding\md5.cpp" />
     <ClCompile Include="src\httpd.cpp">
       <UseUnicodeForAssemblerListing Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,6 +83,7 @@
     </ClCompile>
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\L.cpp" />
+    <ClCompile Include="src\message.cpp" />
     <ClCompile Include="src\Pack.cpp" />
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\post_json.cpp" />
@@ -106,11 +106,11 @@
     <ClInclude Include="src\CQApp.h" />
     <ClInclude Include="src\cqcode.h" />
     <ClInclude Include="src\encoding\base64.h" />
-    <ClInclude Include="src\encoding\encoding.h" />
     <ClInclude Include="src\encoding\md5.h" />
     <ClInclude Include="src\httpd.h" />
-    <ClInclude Include="src\Log.h" />
+    <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\helpers.h" />
+    <ClInclude Include="src\message.h" />
     <ClInclude Include="src\Pack.h" />
     <ClInclude Include="src\events.h" />
     <ClInclude Include="src\post_json.h" />

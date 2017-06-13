@@ -5,12 +5,11 @@
 #include <curl/curl.h>
 
 #include "encoding/md5.h"
-#include "encoding/encoding.h"
 #include "helpers.h"
 
 using namespace std;
 
-string message_escape(const string &msg) {
+str message_escape(const str &msg) {
     string tmp = msg;
     string_replace(tmp, "&", "&amp;");
     string_replace(tmp, "[", "&#91;");
@@ -19,7 +18,7 @@ string message_escape(const string &msg) {
     return tmp;
 }
 
-string message_unescape(const string &msg) {
+str message_unescape(const str &msg) {
     string tmp = msg;
     string_replace(tmp, "&#91;", "[");
     string_replace(tmp, "&#93;", "]");
@@ -28,68 +27,76 @@ string message_unescape(const string &msg) {
     return tmp;
 }
 
-static string enhance_cq_code_remote_file(string data_dir, smatch &match);
-static string enhance_cq_code_parse_cqimg(smatch &match);
+static str enhance_cqcode_remote_file(str data_dir, const smatch &match);
+static str enhance_cqcode_parse_cqimg(const smatch &match);
 
-string enhance_cq_code(const string &msg, cqcode_enhance_mode mode) {
-    string result;
-
-    // 0: full CQ code function message, 1: function name, 2: params string
-    regex exp("\\[CQ:([\\._\\-0-9A-Za-z]+?)(?:\\s*\\]|\\s*,\\s*(.*?)\\])");
-
+str enhance_cqcode(const str &msg, int mode) {
+    vector<string> parts;
     smatch match;
-    string::const_iterator search_iter(msg.cbegin());
-    while (regex_search(search_iter, msg.cend(), match, exp)) {
-        result += string(search_iter, search_iter + match.position()); // normal message before this current CQ code
+    auto search_iter(msg.c_begin());
+    while (regex_search(search_iter, msg.c_end(), match, CQCODE_REGEX)) {
+        // normal message before this current CQ code
+        // NOTE: because "search_iter" is a string::iterator, we are fine to add "search_iter" and "match.position()"
+        // if it's a str::iterator, the following line will break
+        // because "match.position()" is not the real UTF-8 character's position, but the byte's position
+        parts.push_back(string(search_iter, search_iter + match.position()));
 
-        string function = match.str(1);
+        // handle CQ code
+        auto function = match.str(1);
+        string cqcode;
         if (mode == CQCODE_ENHANCE_OUTCOMING) {
-            // messages sent out to others
-            if (function == "image")
-                result += enhance_cq_code_remote_file("image", match);
-            else if (function == "record")
-                result += enhance_cq_code_remote_file("record", match);
-            else
-                result += match.str();
-        } else if (mode == CQCODE_ENHANCE_INCOMING) {
-            // messages received from others
+            // messages to be sent
             if (function == "image") {
-                result += enhance_cq_code_parse_cqimg(match);
+                cqcode = enhance_cqcode_remote_file("image", match);
+            } else if (function == "record") {
+                cqcode = enhance_cqcode_remote_file("record", match);
             } else {
-                result += match.str();
+                cqcode = match.str();
+            }
+
+        } else if (mode == CQCODE_ENHANCE_INCOMING) {
+            // messages received
+            if (function == "image") {
+                cqcode = enhance_cqcode_parse_cqimg(match);
+            } else {
+                cqcode = match.str();
             }
         }
+        parts.push_back(cqcode);
 
         search_iter += match.position() + match.length();
     }
-    result += string(search_iter, msg.cend()); // add the rest plain text
-    return result;
+    parts.push_back(string(search_iter, msg.c_end())); // add the remained plain text
+    return str().join(parts);
 }
 
-static string enhance_cq_code_remote_file(string data_dir, smatch &match) {
-    // enhance CQ functions to support file from the internet or a different directory in filesystem
-    string cqcode_call = match.str(0); // full CQ code function message
-    string params = match.str(2);
+static str enhance_cqcode_remote_file(str data_dir, const smatch &match) {
+    // enhance CQ functions to support file from internet or a different directory in filesystem
+    auto function = match.str(1);
+    auto params = match.str(2);
     smatch m;
-    if (regex_search(params, m, regex("file=(https?:\\/\\/[^,\\?]+\\??[^,\\?]*)"))) {
-        string raw_url = m.str(1);
-        string url = message_unescape(raw_url);
-        //        string ext = m.str(2);
-        MD5 md5(url);
-        string hash = md5.toStr();
-        string filename = hash + ".jpg";
+    if (regex_search(params, m, regex("file=(https?:\\/\\/[^,]+)"))) {
+        auto url = message_unescape(m.str(1));
+        auto filename = MD5(url).toStr() + ".tmp"; // despite of the format, we store all images as ".tmp"
 
-        string filepath = get_cq_root_path() + "data\\" + data_dir + "\\" + filename;
-        FILE *fp = NULL;
+        auto filepath = get_coolq_root() + "data\\" + data_dir + "\\" + filename;
+        FILE *fp = nullptr;
         fopen_s(&fp, filepath.c_str(), "wb");
         if (fp) {
-            CURL *curl = curl_easy_init();
+            auto curl = curl_easy_init();
             curl_easy_setopt(curl, CURLOPT_URL, url);
 
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_file_callback);
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+            auto cb = [](char *buf, size_t size, size_t nmemb, void *fp) {
+                        size_t written_size = 0;
+                        if (fp) {
+                            written_size = fwrite(buf, size, nmemb, static_cast<FILE *>(fp));
+                        }
+                        return written_size;
+                    };
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, static_cast<CURLWriteFunctionPtr>(cb));
 
-            struct curl_slist *chunk = NULL;
+            struct curl_slist *chunk = nullptr;
             chunk = curl_slist_append(chunk,
                                       "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -102,49 +109,43 @@ static string enhance_cq_code_remote_file(string data_dir, smatch &match) {
             curl_easy_cleanup(curl);
             curl_slist_free_all(chunk);
         }
-        string_replace(cqcode_call, raw_url, filename);
-    } else if (regex_search(params, m, regex("file=file:\\/\\/([^,\\?]+(\\.[^\\s,\\?]+))"))) {
-        string raw_path = m.str(1);
-        string path = message_unescape(raw_path);
-        string ext = m.str(2);
-        MD5 md5(path);
-        string hash = md5.toStr();
-        string new_filename = hash + ext;
 
-        string new_filepath = get_cq_root_path() + "data\\" + data_dir + "\\" + new_filename;
-        wstring path_wstr = utf8_to_wstr(path.c_str());
-        wstring new_filepath_wstr = utf8_to_wstr(new_filepath.c_str());
-        CopyFileW(path_wstr.c_str(), new_filepath_wstr.c_str(), false); // copy remote file
+        params = params.substr(0, m.position()) + "file=" + filename + params.substr(m.position() + m.length());
+    } else if (regex_search(params, m, regex("file=file:\\/\\/([^\\r\\n,]+(\\.[^\\s\\r\\n,]+))"))) {
+        auto path = message_unescape(m.str(1));
+        auto new_filename = MD5(path).toStr() + ".tmp";
 
-        string_replace(cqcode_call, "file://" + raw_path, new_filename);
+        auto new_filepath = get_coolq_root() + "data\\" + data_dir + "\\" + new_filename;
+        CopyFileW(path.to_wstring().c_str(), new_filepath.to_wstring().c_str(), false); // copy remote file
+
+        params = params.substr(0, m.position()) + "file=" + new_filename + params.substr(m.position() + m.length());
     }
-    return cqcode_call;
+    return str("[CQ:{},{}]").format(function, params);
 }
 
-static string enhance_cq_code_parse_cqimg(smatch &match) {
-    string cqcode_call = match.str(0); // full CQ code function message
-    string params = match.str(2);
+static str enhance_cqcode_parse_cqimg(const smatch &match) {
+    auto function = match.str(1);
+    auto params = match.str(2);
     smatch m;
     if (regex_search(params, m, regex("file=([a-zA-Z0-9]+\\.[a-zA-Z0-9]+)"))) {
-        string filename = m.str(1);
-        string cqimg_filename = filename + ".cqimg";
-        string cqimg_filepath = get_cq_root_path() + "data\\image\\" + cqimg_filename;
+        auto filename = m.str(1);
+        auto cqimg_filename = filename + ".cqimg";
+        string cqimg_filepath = get_coolq_root() + "data\\image\\" + cqimg_filename;
         ifstream istrm(cqimg_filepath);
         if (istrm.is_open()) {
             string url = "";
             string line;
             while (!istrm.eof()) {
                 istrm >> line;
-                smatch url_match;
-                if (regex_search(line, url_match, regex("url=(.*?)\\?"))) {
-                    url = url_match.str(1);
+                if (str(line).startswith("url=")) {
+                    url = line.substr(4);
                     break;
                 }
             }
             if (url.length() != 0) {
-                string_replace(cqcode_call, filename, filename + ",url=" + message_escape(url));
+                params = params + ",url=" + message_escape(url);
             }
         }
     }
-    return cqcode_call;
+    return str("[CQ:{},{}]").format(function, params);
 }

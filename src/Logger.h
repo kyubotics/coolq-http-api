@@ -6,11 +6,9 @@
 
 extern CQApp *CQ;
 
-class Log {
+class Logger {
 public:
-    Log() : app_(CQ) { }
-
-    Log(CQApp *&app) : app_(app) {}
+    Logger(CQApp *&app = CQ) : app_(app) {}
 
     void i(const str &tag, const str &msg) const {
         this->app_->addLog(CQLOG_INFO, tag, msg);

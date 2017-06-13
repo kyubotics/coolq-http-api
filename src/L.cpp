@@ -1,3 +1,3 @@
-#include "Log.h"
+#include "Logger.h"
 
-Log L; // a global logger
+Logger L; // a global logger

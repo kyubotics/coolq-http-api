@@ -8,7 +8,6 @@
 #include <curl/curl.h>
 #include <jansson/jansson.h>
 
-#include "encoding/encoding.h"
 #include "helpers.h"
 #include "httpd.h"
 #include "conf/loader.h"

@@ -33,6 +33,6 @@ class CQApp;
 extern CQApp *CQ;
 #include "CQApp.h"
 
-class Log;
-extern Log L;
-#include "Log.h"
+class Logger;
+extern Logger L;
+#include "Logger.h"

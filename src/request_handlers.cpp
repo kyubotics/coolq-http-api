@@ -30,7 +30,7 @@ HANDLER(send_private_msg) {
         if (is_raw) {
             msg = message_escape(msg);
         } else {
-            msg = enhance_cq_code(msg, CQCODE_ENHANCE_OUTCOMING);
+            msg = enhance_cqcode(msg, CQCODE_ENHANCE_OUTCOMING);
         }
         result.retcode = CQ->sendPrivateMsg(user_id, msg);
     }
@@ -44,7 +44,7 @@ HANDLER(send_group_msg) {
         if (is_raw) {
             msg = message_escape(msg);
         } else {
-            msg = enhance_cq_code(msg, CQCODE_ENHANCE_OUTCOMING);
+            msg = enhance_cqcode(msg, CQCODE_ENHANCE_OUTCOMING);
         }
         result.retcode = CQ->sendGroupMsg(group_id, msg);
     }
@@ -58,7 +58,7 @@ HANDLER(send_discuss_msg) {
         if (is_raw) {
             msg = message_escape(msg);
         } else {
-            msg = enhance_cq_code(msg, CQCODE_ENHANCE_OUTCOMING);
+            msg = enhance_cqcode(msg, CQCODE_ENHANCE_OUTCOMING);
         }
         result.retcode = CQ->sendDiscussMsg(discuss_id, msg);
     }
@@ -188,9 +188,6 @@ HANDLER(set_group_add_request) {
     auto type = cqhttp_get_str_param(request, "type", "");
     auto approve = cqhttp_get_bool_param(request, "approve", true);
     auto reason = cqhttp_get_str_param(request, "reason", "");
-    if (!reason) {
-        reason = cqhttp_get_str_param(request, "remark", ""); // for compatibility with v1.1.3 and before
-    }
     auto request_type = -1;
     if (type == "add") {
         request_type = REQUEST_GROUPADD;

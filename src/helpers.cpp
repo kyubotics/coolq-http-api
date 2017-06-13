@@ -38,8 +38,12 @@ void string_replace(string &str, const string &search, const string &replace) {
     str.swap(ws_ret); // faster than str = wsRet;
 }
 
-str get_cq_root_path() {
-    auto app_dir = CQ->getAppDirectory();
-    auto suffix = "app\\" CQ_APP_ID "\\";
-    return app_dir[slice(0, app_dir.length() - strlen(suffix))];
+str get_coolq_root() {
+    static str root;
+    if (!root) {
+        auto app_dir = CQ->getAppDirectory();
+        auto suffix = "app\\" CQ_APP_ID "\\";
+        root = app_dir[slice(0, app_dir.length() - strlen(suffix))];
+    }
+    return root;
 }

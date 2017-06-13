@@ -44,7 +44,7 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
                               }(),
                               "time", send_time,
                               "user_id", from_qq,
-                              "message", enhance_cq_code(msg, CQCODE_ENHANCE_INCOMING).c_str());
+                              "message", enhance_cqcode(msg, CQCODE_ENHANCE_INCOMING).c_str());
         auto response = post_json(json);
         json_decref(json);
 
@@ -77,7 +77,7 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
                               "user_id", from_qq,
                               "anonymous", anonymous.c_str(),
                               "anonymous_flag", from_anonymous.c_str(),
-                              "message", enhance_cq_code(msg, CQCODE_ENHANCE_INCOMING).c_str());
+                              "message", enhance_cqcode(msg, CQCODE_ENHANCE_INCOMING).c_str());
         auto response = post_json(json);
         json_decref(json);
 
@@ -132,7 +132,7 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_disc
                               "time", send_time,
                               "discuss_id", from_discuss,
                               "user_id", from_qq,
-                              "message", enhance_cq_code(msg, CQCODE_ENHANCE_INCOMING).c_str());
+                              "message", enhance_cqcode(msg, CQCODE_ENHANCE_INCOMING).c_str());
         auto response = post_json(json);
         json_decref(json);
 
@@ -357,9 +357,6 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
             // the action is specified
             auto approve = json_boolean_value(approve_json);
             auto reason_str_json = json_object_get(response.json, "reason");
-            if (!reason_str_json || json_is_null(reason_str_json)) {
-                reason_str_json = json_object_get(response.json, "remark"); // for compatibility with v1.1.3 and before
-            }
             if (reason_str_json && !json_is_null(reason_str_json)) {
                 CQ->setGroupAddRequestV2(response_flag, sub_type, approve ? REQUEST_ALLOW : REQUEST_DENY, json_string_value(reason_str_json));
             }

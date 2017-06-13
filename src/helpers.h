@@ -10,4 +10,4 @@ bool isnumber(const std::string &s); // act as "is_positive_integer", actually
 
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
 
-str get_cq_root_path();
+str get_coolq_root();
