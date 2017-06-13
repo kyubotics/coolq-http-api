@@ -136,7 +136,7 @@ static str enhance_cqcode_remote_file(str data_dir, const smatch &match) {
 
         params = params.substr(0, m.position()) + "file=" + new_filename + params.substr(m.position() + m.length());
     }
-    return str("[CQ:{},{}]").format(function, params);
+    return make_cqcode(function, params);
 }
 
 static str enhance_cqcode_parse_cqimg(const smatch &match) {
@@ -163,5 +163,5 @@ static str enhance_cqcode_parse_cqimg(const smatch &match) {
             }
         }
     }
-    return str("[CQ:{},{}]").format(function, params);
+    return make_cqcode(function, params);
 }
