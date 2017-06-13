@@ -2,7 +2,6 @@
 
 #include "app.h"
 
-#include <jansson/jansson.h>
 #include <curl/curl.h>
 
 #include "helpers.h"

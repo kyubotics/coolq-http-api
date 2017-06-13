@@ -95,7 +95,7 @@
     <ClCompile Include="src\appmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\message.cpp">
+    <ClCompile Include="src\Message.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -172,10 +172,10 @@
     <ClInclude Include="src\post_json.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\message.h">
+    <ClInclude Include="src\Logger.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Logger.h">
+    <ClInclude Include="src\Message.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

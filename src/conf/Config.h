@@ -8,6 +8,5 @@ struct Config {
     str post_url;
     str token;
     std::regex pattern;
-
-    Config() : host("0.0.0.0"), port(5700), post_url(""), token(""), pattern(std::regex("")) {}
+    str post_message_format;
 };

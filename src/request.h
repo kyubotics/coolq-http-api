@@ -45,6 +45,8 @@ char *cqhttp_get_param(const struct cqhttp_request &request, const char *key);
  */
 str cqhttp_get_str_param(const struct cqhttp_request &request, const char *key, const str &default_val = "");
 
+str cqhttp_get_message_param(const struct cqhttp_request &request, const char *key = "message", const char *is_raw_key = "is_raw");
+
 /**
  * Like cqhttp_get_param, but parse integer if possible. Return default_val if it's not a number.
  */

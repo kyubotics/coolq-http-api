@@ -23,6 +23,8 @@
 #include <Windows.h>
 #include <SDKDDKVer.h>
 
+#include <jansson/jansson.h>
+
 #include <cpputils/cpputils.h>
 #include <cpputils/win32_bytes.h>
 using namespace rc;

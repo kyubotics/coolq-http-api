@@ -25,10 +25,19 @@
 
 #include "conf/ini.h"
 #include "helpers.h"
+#include "Message.h"
 
 using namespace std;
 
 bool load_configuration(const str &filepath, Config &config) {
+    // set default values
+    config.host = "0.0.0.0";
+    config.port = 5700;
+    config.post_url = "";
+    config.token = "";
+    config.pattern = "";
+    config.post_message_format = MSG_FMT_STRING;
+
     FILE *conf_file = nullptr;
     fopen_s(&conf_file, filepath.c_str(), "r");
     if (!conf_file) {
@@ -46,16 +55,19 @@ bool load_configuration(const str &filepath, Config &config) {
                     static auto login_qq_str = str(CQ->getLoginQQ());
 
                     if (section == "general" || isnumber(section) && login_qq_str == section) {
-                        if (name == "host")
+                        if (name == "host") {
                             config.host = value;
-                        else if (name == "port")
+                        } else if (name == "port") {
                             config.port = int(value);
-                        else if (name == "post_url")
+                        } else if (name == "post_url") {
                             config.post_url = value;
-                        else if (name == "token")
+                        } else if (name == "token") {
                             config.token = value;
-                        else if (name == "pattern")
+                        } else if (name == "pattern") {
                             config.pattern = regex(value.to_bytes());
+                        } else if (name == "post_message_format") {
+                            config.post_message_format = value;
+                        }
                     }
                     return 1;
                 };

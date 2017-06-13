@@ -6,7 +6,6 @@
 
 #include <regex>
 #include <curl/curl.h>
-#include <jansson/jansson.h>
 
 #include "helpers.h"
 #include "httpd.h"

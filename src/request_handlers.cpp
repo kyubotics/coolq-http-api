@@ -1,9 +1,9 @@
-#include <jansson/jansson.h>
+#include <app.h>
 
 #include "request.h"
-#include "cqcode.h"
 #include "structs.h"
 #include "Pack.h"
+#include "Message.h"
 
 using namespace std;
 
@@ -23,44 +23,25 @@ static bool add_handler(const char *name, cqhttp_request_handler handler) {
 
 HANDLER(send_private_msg) {
     auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto msg = cqhttp_get_str_param(request, "message", "");
-    auto is_raw = cqhttp_get_bool_param(request, "is_raw", false);
-    if (user_id && msg) {
-        string final_str;
-        if (is_raw) {
-            msg = message_escape(msg);
-        } else {
-            msg = enhance_cqcode(msg, CQCODE_ENHANCE_OUTCOMING);
-        }
-        result.retcode = CQ->sendPrivateMsg(user_id, msg);
+    auto message = cqhttp_get_message_param(request);
+    if (user_id && message) {
+        result.retcode = CQ->sendPrivateMsg(user_id, Message(message).process_outcoming());
     }
 }
 
 HANDLER(send_group_msg) {
     auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto msg = cqhttp_get_str_param(request, "message", "");
-    auto is_raw = cqhttp_get_bool_param(request, "is_raw", false);
-    if (group_id && msg) {
-        if (is_raw) {
-            msg = message_escape(msg);
-        } else {
-            msg = enhance_cqcode(msg, CQCODE_ENHANCE_OUTCOMING);
-        }
-        result.retcode = CQ->sendGroupMsg(group_id, msg);
+    auto message = cqhttp_get_message_param(request);
+    if (group_id && message) {
+        result.retcode = CQ->sendGroupMsg(group_id, message);
     }
 }
 
 HANDLER(send_discuss_msg) {
     auto discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
-    auto msg = cqhttp_get_str_param(request, "message", "");
-    auto is_raw = cqhttp_get_bool_param(request, "is_raw", false);
-    if (discuss_id && msg) {
-        if (is_raw) {
-            msg = message_escape(msg);
-        } else {
-            msg = enhance_cqcode(msg, CQCODE_ENHANCE_OUTCOMING);
-        }
-        result.retcode = CQ->sendDiscussMsg(discuss_id, msg);
+    auto message = cqhttp_get_message_param(request);
+    if (discuss_id && message) {
+        result.retcode = CQ->sendDiscussMsg(discuss_id, message);
     }
 }
 

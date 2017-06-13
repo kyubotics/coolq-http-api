@@ -6,13 +6,6 @@
 
 using namespace std;
 
-size_t curl_write_file_callback(char *buf, size_t size, size_t nmemb, FILE *fp) {
-    size_t written_size = 0;
-    if (fp)
-        written_size = fwrite(buf, size, nmemb, fp);
-    return written_size;
-}
-
 bool isnumber(const string &s) {
     for (auto ch : s) {
         if (!isdigit(ch)) {

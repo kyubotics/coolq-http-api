@@ -2,8 +2,6 @@
 
 #include "common.h"
 
-#include <jansson/jansson.h>
-
 struct PostResponse {
     bool succeeded; // post event succeeded or not (the server returning 2xx means success)
     json_t *json; // response json of the post request, NULL if response body is empty

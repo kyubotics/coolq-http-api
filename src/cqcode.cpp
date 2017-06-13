@@ -27,6 +27,22 @@ str message_unescape(const str &msg) {
     return tmp;
 }
 
+str make_cqcode(const str &function, const str &params_str) {
+    return str("[CQ:{},{}]").format(function, params_str);
+}
+
+str make_cqcode(const str &function, json_t *params_obj) {
+    vector<str> params;
+    const char *key;
+    json_t *value;
+    json_object_foreach(params_obj, key, value) {
+        if (json_is_string(value)) {
+            params.push_back(str(key) + "=" + message_escape(json_string_value(value)));
+        }
+    }
+    return make_cqcode(function, str(",").join(params));
+}
+
 static str enhance_cqcode_remote_file(str data_dir, const smatch &match);
 static str enhance_cqcode_parse_cqimg(const smatch &match);
 
@@ -45,7 +61,7 @@ str enhance_cqcode(const str &msg, int mode) {
         auto function = match.str(1);
         string cqcode;
         if (mode == CQCODE_ENHANCE_OUTCOMING) {
-            // messages to be sent
+            // messages to send
             if (function == "image") {
                 cqcode = enhance_cqcode_remote_file("image", match);
             } else if (function == "record") {

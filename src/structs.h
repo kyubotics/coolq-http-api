@@ -2,8 +2,6 @@
 
 #include "common.h"
 
-#include <jansson/jansson.h>
-
 #include "Pack.h"
 
 struct Stranger {

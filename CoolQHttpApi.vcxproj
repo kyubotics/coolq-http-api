@@ -83,7 +83,7 @@
     </ClCompile>
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\L.cpp" />
-    <ClCompile Include="src\message.cpp" />
+    <ClCompile Include="src\Message.cpp" />
     <ClCompile Include="src\Pack.cpp" />
     <ClCompile Include="src\events.cpp" />
     <ClCompile Include="src\post_json.cpp" />
@@ -110,7 +110,7 @@
     <ClInclude Include="src\httpd.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\helpers.h" />
-    <ClInclude Include="src\message.h" />
+    <ClInclude Include="src\Message.h" />
     <ClInclude Include="src\Pack.h" />
     <ClInclude Include="src\events.h" />
     <ClInclude Include="src\post_json.h" />

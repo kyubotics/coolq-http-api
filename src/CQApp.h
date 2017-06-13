@@ -5,7 +5,6 @@
 #include <cqp.h>
 
 #include "conf/Config.h"
-#include "structs.h"
 #include "encoding/base64.h"
 
 class CQApp {

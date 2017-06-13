@@ -4,9 +4,10 @@
 #include <event2/http.h>
 #include <event2/buffer.h>
 #include <event2/keyvalq_struct.h>
-#include <jansson/jansson.h>
 
 #include "helpers.h"
+#include "Message.h"
+#include "cqcode.h"
 
 using namespace std;
 
@@ -155,6 +156,15 @@ str cqhttp_get_str_param(const struct cqhttp_request &request, const char *key, 
         return tmp;
     }
     return default_val;
+}
+
+str cqhttp_get_message_param(const struct cqhttp_request &request, const char *key, const char *is_raw_key) {
+    auto msg_str = cqhttp_get_str_param(request, key, "");
+    if (msg_str) {
+        auto is_raw = cqhttp_get_bool_param(request, is_raw_key, false);
+        return Message(is_raw ? message_escape(msg_str) : msg_str).process_outcoming();
+    }
+    return Message(json_object_get(request.json, key)).process_outcoming();
 }
 
 int64_t cqhttp_get_integer_param(const struct cqhttp_request &request, const char *key, int64_t default_val) {
