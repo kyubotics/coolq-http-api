@@ -116,3 +116,55 @@ struct GroupMember {
         return member;
     }
 };
+
+struct Anonymous {
+    const static size_t MIN_SIZE = 12;
+
+    int64_t id;
+    str name;
+    bytes token;
+
+    json_t *json() const {
+        auto data = json_object();
+        json_object_set_new(data, "id", json_integer(id));
+        json_object_set_new(data, "name", json_string(name.c_str()));
+        return data;
+    }
+
+    static Anonymous from_bytes(bytes &bytes) {
+        auto pack = Pack(bytes);
+        Anonymous anonymous;
+        anonymous.id = pack.pop_int64();
+        anonymous.name = pack.pop_string();
+        anonymous.token = pack.pop_token();
+        return anonymous;
+    }
+};
+
+struct GroupFile {
+    const static size_t MIN_SIZE = 20;
+
+    str id;
+    str name;
+    int64_t size;
+    int64_t busid;
+
+    json_t *json() const {
+        auto data = json_object();
+        json_object_set_new(data, "id", json_string(id.c_str()));
+        json_object_set_new(data, "name", json_string(name.c_str()));
+        json_object_set_new(data, "size", json_integer(size));
+        json_object_set_new(data, "busid", json_integer(busid));
+        return data;
+    }
+
+    static GroupFile from_bytes(bytes &bytes) {
+        auto pack = Pack(bytes);
+        GroupFile file;
+        file.id = pack.pop_string();
+        file.name = pack.pop_string();
+        file.size = pack.pop_int64();
+        file.busid = pack.pop_int64();
+        return file;
+    }
+};

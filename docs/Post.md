@@ -113,6 +113,27 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | `reply`     | string  | -               | 要回复的内容（不支持 [增强 CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)） |
 | `at_sender` | boolean | `true`, `false` | 是否要在回复开头 at 发送者（自动添加），默认为 `true`         |
 
+### 群文件上传
+
+#### 上报数据
+
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------ | ------- | ---- |
+| `post_type` | string | `"event"` | 上报类型 |
+| `event` | string | `"group_upload"` | 事件名 |
+| `group_id` | number | - | 群号 |
+| `user_id` | number | - | 发送者 QQ 号 |
+| `file` | object | - | 文件信息 |
+
+其中 `file` 字段的内容如下：
+
+| 字段名 | 数据类型 | 说明 |
+| ----- | ------ | ---- |
+| `id` | string | 文件 ID |
+| `name` | string | 文件名 |
+| `size` | number | 文件大小（字节数） |
+| `busid` | number | busid（目前不清楚有什么作用） |
+
 ### 群管理员变动
 
 #### 上报数据
@@ -151,14 +172,14 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | `user_id`     | number | -                      | 加入者 QQ 号                   |
 | `operator_id` | number | -                      | 操作者 QQ 号                   |
 
-### 好友已添加
+### 好友添加
 
 #### 上报数据
 
 | 字段名         | 数据类型   | 可能的值             | 说明         |
 | ----------- | ------ | ---------------- | ---------- |
 | `post_type` | string | `"event"`        | 上报类型       |
-| `event`     | string | `"friend_added"` | 事件名        |
+| `event`     | string | `"friend_add"` | 事件名        |
 | `user_id`   | number | -                | 新添加好友 QQ 号 |
 
 ### 加好友请求

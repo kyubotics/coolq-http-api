@@ -48,10 +48,10 @@ static void init() {
 /**
  * Event: Plugin is enabled.
  */
-CQEVENT(int32_t, __eventEnable, 0)
+CQEVENT(int32_t, __event_enable, 0)
 () {
-    CQ->enabled = true;
     L.d("启用", "开始初始化");
+    CQ->enabled = true;
     init();
     start_httpd();
     L.i("启用", "HTTP API 插件已启用");
@@ -61,7 +61,7 @@ CQEVENT(int32_t, __eventEnable, 0)
 /**
  * Event: Plugin is disabled.
  */
-CQEVENT(int32_t, __eventDisable, 0)
+CQEVENT(int32_t, __event_disable, 0)
 () {
     CQ->enabled = false;
     stop_httpd();
@@ -72,7 +72,7 @@ CQEVENT(int32_t, __eventDisable, 0)
 /**
 * Event: CoolQ is starting.
 */
-CQEVENT(int32_t, __eventStartup, 0)
+CQEVENT(int32_t, __event_start, 0)
 () {
     // do nothing
     return 0;
@@ -81,11 +81,13 @@ CQEVENT(int32_t, __eventStartup, 0)
 /**
 * Event: CoolQ is exiting.
 */
-CQEVENT(int32_t, __eventExit, 0)
+CQEVENT(int32_t, __event_exit, 0)
 () {
     stop_httpd();
-    delete CQ;
-    CQ = nullptr;
+    if (CQ) {
+        delete CQ;
+        CQ = nullptr;
+    }
     L.i("停止", "HTTP API 插件已停止");
     return 0;
 }
@@ -94,7 +96,7 @@ CQEVENT(int32_t, __eventExit, 0)
  * Type=21 私聊消息
  * sub_type 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
  */
-CQEVENT(int32_t, __eventPrivateMsg, 24)
+CQEVENT(int32_t, __event_private_msg, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, int32_t font) {
     return event_private_msg(sub_type, send_time, from_qq, decode(msg, Encoding::GBK), font);
 }
@@ -102,7 +104,7 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)
 /**
  * Type=2 群消息
  */
-CQEVENT(int32_t, __eventGroupMsg, 36)
+CQEVENT(int32_t, __event_group_msg, 36)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg, int32_t font) {
     return event_group_msg(sub_type, send_time, from_group, from_qq, decode(from_anonymous, Encoding::GBK), decode(msg, Encoding::GBK), font);
 }
@@ -110,16 +112,24 @@ CQEVENT(int32_t, __eventGroupMsg, 36)
 /**
  * Type=4 讨论组消息
  */
-CQEVENT(int32_t, __eventDiscussMsg, 32)
+CQEVENT(int32_t, __event_discuss_msg, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font) {
     return event_discuss_msg(sub_type, send_time, from_discuss, from_qq, decode(msg, Encoding::GBK), font);
+}
+
+/**
+ * Type=11 群事件-文件上传
+ */
+CQEVENT(int32_t, __event_group_upload, 28)
+(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *file) {
+    return event_group_upload(sub_type, send_time, from_group, from_qq, decode(file, Encoding::GBK));
 }
 
 /**
  * Type=101 群事件-管理员变动
  * sub_type 子类型，1/被取消管理员 2/被设置管理员
  */
-CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
+CQEVENT(int32_t, __event_group_admin, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq) {
     return event_group_admin(sub_type, send_time, from_group, being_operate_qq);
 }
@@ -130,7 +140,7 @@ CQEVENT(int32_t, __eventSystem_GroupAdmin, 24)
  * from_qq 操作者QQ(仅subType为2、3时存在)
  * being_operate_qq 被操作QQ
  */
-CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
+CQEVENT(int32_t, __event_group_member_decrease, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
     return event_group_member_decrease(sub_type, send_time, from_group, from_qq, being_operate_qq);
 }
@@ -141,7 +151,7 @@ CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)
  * from_qq 操作者QQ(即管理员QQ)
  * being_operate_qq 被操作QQ(即加群的QQ)
  */
-CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)
+CQEVENT(int32_t, __event_group_member_increase, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
     return event_group_member_increase(sub_type, send_time, from_group, from_qq, being_operate_qq);
 }
@@ -149,9 +159,9 @@ CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)
 /**
  * Type=201 好友事件-好友已添加
  */
-CQEVENT(int32_t, __eventFriend_Add, 16)
+CQEVENT(int32_t, __event_friend_add, 16)
 (int32_t sub_type, int32_t send_time, int64_t from_qq) {
-    return event_friend_added(sub_type, send_time, from_qq);
+    return event_friend_add(sub_type, send_time, from_qq);
 }
 
 /**
@@ -159,7 +169,7 @@ CQEVENT(int32_t, __eventFriend_Add, 16)
  * msg 附言
  * response_flag 反馈标识(处理请求用)
  */
-CQEVENT(int32_t, __eventRequest_AddFriend, 24)
+CQEVENT(int32_t, __event_add_friend_request, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, const char *response_flag) {
     return event_add_friend_request(sub_type, send_time, from_qq, decode(msg, Encoding::GBK), decode(response_flag, Encoding::GBK));
 }
@@ -170,7 +180,7 @@ CQEVENT(int32_t, __eventRequest_AddFriend, 24)
  * msg 附言
  * response_flag 反馈标识(处理请求用)
  */
-CQEVENT(int32_t, __eventRequest_AddGroup, 32)
+CQEVENT(int32_t, __event_add_group_request, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *msg, const char *response_flag) {
     return event_add_group_request(sub_type, send_time, from_group, from_qq, decode(msg, Encoding::GBK), decode(response_flag, Encoding::GBK));
 }

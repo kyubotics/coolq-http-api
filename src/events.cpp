@@ -64,6 +64,10 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
 
     if (match_pattern(msg)) {
         str anonymous = "";
+        if (from_qq == 8000000 || from_anonymous) {
+            auto anonymous_bin = base64_decode(from_anonymous);
+            anonymous = Anonymous::from_bytes(anonymous_bin).name;
+        }
         auto is_anonymous = from_anonymous.length() > 0;
         auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s, s:s}",
                               "post_type", "message",
@@ -154,6 +158,28 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_disc
             return handle_block_response(response);
         }
     }
+    return EVENT_IGNORE;
+}
+
+int32_t event_group_upload(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const str &file) {
+    ENSURE_POST_NEEDED;
+
+    auto file_bin = base64_decode(file);
+    auto file_json = file_bin.size() >= GroupFile::MIN_SIZE ? GroupFile::from_bytes(file_bin).json() : nullptr;
+    auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:o?}",
+                          "post_type", "event",
+                          "event", "group_upload",
+                          "time", send_time,
+                          "group_id", from_group,
+                          "user_id", from_qq,
+                          "file", file_json);
+    auto response = post_json(json);
+    json_decref(json);
+
+    if (response.json) {
+        return handle_block_response(response);
+    }
+
     return EVENT_IGNORE;
 }
 
@@ -251,12 +277,12 @@ int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t
     return EVENT_IGNORE;
 }
 
-int32_t event_friend_added(int32_t sub_type, int32_t send_time, int64_t from_qq) {
+int32_t event_friend_add(int32_t sub_type, int32_t send_time, int64_t from_qq) {
     ENSURE_POST_NEEDED;
 
     auto json = json_pack("{s:s, s:s, s:i, s:I}",
                           "post_type", "event",
-                          "event", "friend_added",
+                          "event", "friend_add",
                           "time", send_time,
                           "user_id", from_qq);
     auto response = post_json(json);

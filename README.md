@@ -35,7 +35,9 @@
 
 工程属性中配置了一个自定义的「后期生成事件」命令，也就是编译成功后执行的脚本，默认情况下什么都不做，你可以在项目根目录加一个文件 `post_build.bat` 在里面进行你需要的操作（比如移动 dll 文件到酷 Q 的 app 文件夹），这个文件被 Git 忽略掉了，因此不会影响 Git 仓库上的内容。
 
-除了 `io.github.richardchien.coolqhttpapi.json` 使用 GBK 编码（否则酷 Q 无法识别），其它所有文件均使用 UTF-8 编码，并且编译命令加入了 `/utf-8` 选项，因此如果你要修改代码，也请使用 UTF-8 编码，以便正常通过编译（注意，VS 创建文件之后输入中文可能会默认使用 GBK 编码，需要手动另存为到 UTF-8）。
+除了 `io.github.richardchien.coolqhttpapi.json`，其它所有文件均使用 UTF-8 编码，并且编译命令加入了 `/utf-8` 选项，因此如果你要修改代码，也请使用 UTF-8 编码，以便正常通过编译（注意，VS 创建文件之后输入中文可能会默认使用 GBK 编码，需要手动另存为到 UTF-8）。
+
+`io.github.richardchien.coolqhttpapi.json` 文件中不应出现中文，如果因为一些原因必须加入中文，请使用 GBK 编码，否则酷 Q 无法识别。
 
 ## 问题、Bug 反馈、意见和建议
 

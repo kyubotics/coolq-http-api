@@ -1,0 +1,135 @@
+{
+    "ret": 1, // 返回码，固定为 1
+    "apiver": 9, // Api 版本，目前为 9
+    "name": "示例应用", // 应用名称
+    "version": "1.0.0", // 应用版本
+    "version_id": 1, // 应用顺序版本（每次发布时增加）
+    "author": "名字", // 应用作者
+    "description": "应用描述",
+    "event": [ // 事件列表，同一事件类型可重复定义
+        {
+            "id": 1003, // 事件 ID
+            "type": 1003, // 事件类型
+            "name": "应用已被启用", // 事件名称
+            "function": "_event_enable", // 事件处理函数
+            "priority": 20000 // 事件优先级
+        },
+        {
+            "id": 1004,
+            "type": 1004,
+            "name": "应用将被停用",
+            "function": "_event_disable",
+            "priority": 20000
+        },
+        {
+            "id": 1001,
+            "type": 1001,
+            "name": "酷Q启动事件",
+            "priority": 20000,
+            "function": "_event_start"
+        },
+        {
+            "id": 1002,
+            "type": 1002,
+            "name": "酷Q关闭事件",
+            "priority": 20000,
+            "function": "_event_exit"
+        },
+        {
+            "id": 1,
+            "type": 21,
+            "name": "私聊消息处理",
+            "function": "_event_private_msg",
+            "priority": 20000
+        },
+        {
+            "id": 2,
+            "type": 2,
+            "name": "群消息处理",
+            "function": "_event_group_msg",
+            "priority": 20000
+        },
+        {
+            "id": 3,
+            "type": 4,
+            "name": "讨论组消息处理",
+            "function": "_event_discuss_msg",
+            "priority": 20000
+        },
+        {
+            "id": 4,
+            "type": 11,
+            "name": "群文件上传处理",
+            "function": "_event_group_upload",
+            "priority": 20000
+        },
+        {
+            "id": 5,
+            "type": 101,
+            "name": "群管理变动事件处理",
+            "function": "_event_group_admin",
+            "priority": 20000
+        },
+        {
+            "id": 6,
+            "type": 102,
+            "name": "群成员减少事件处理",
+            "function": "_event_group_member_decrease",
+            "priority": 20000
+        },
+        {
+            "id": 7,
+            "type": 103,
+            "name": "群成员增加事件处理",
+            "function": "_event_group_member_increase",
+            "priority": 20000
+        },
+        {
+            "id": 10,
+            "type": 201,
+            "name": "好友已添加事件处理",
+            "function": "_event_friend_add",
+            "priority": 20000
+        },
+        {
+            "id": 8,
+            "type": 301,
+            "name": "好友添加请求处理",
+            "function": "_event_add_friend_request",
+            "priority": 20000
+        },
+        {
+            "id": 9,
+            "type": 302,
+            "name": "群添加请求处理",
+            "function": "_event_add_group_request",
+            "priority": 20000
+        }
+    ],
+    "menu": [],
+    "status": [],
+    "auth": [ // 应用权限
+        20, //取 Cookies getCookies / getCsrfToken
+        30, //接收语音 getRecord
+        101, //发送群消息 sendGroupMsg
+        103, //发送讨论组消息 sendDiscussMsg
+        106, //发送私聊消息 sendPrivateMsg
+        110, //发送赞 sendLikeV2 / sendLike
+        120, //置群员移除 setGroupKick
+        121, //置群员禁言 setGroupBan
+        122, //置群管理员 setGroupAdmin
+        123, //置全群禁言 setGroupWholeBan
+        124, //置匿名群员禁言 setGroupAnonymousBan
+        125, //置群匿名设置 setGroupAnonymous
+        126, //置群成员名片 setGroupCard
+        127, //[敏感]置群退出 setGroupLeave
+        128, //置群成员专属头衔 setGroupSpecialTitle
+        130, //取群成员信息 getGroupMemberInfoV2 / getGroupMemberInfo
+        131, //取陌生人信息 getStrangerInfo
+        140, //置讨论组退出 setDiscussLeave
+        150, //置好友添加请求 setFriendAddRequest
+        151, //置群添加请求 setGroupAddRequest
+        160, //取群成员列表 getGroupMemberList
+        161 //获取群列表 getGroupList
+    ]
+}

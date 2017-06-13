@@ -44,9 +44,6 @@
     </Library>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\appmain.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\request.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -96,6 +93,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\post_json.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\appmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

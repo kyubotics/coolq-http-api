@@ -19,6 +19,7 @@ public:
     int64_t pop_int64();
     str pop_string();
     bytes pop_bytes(size_t len);
+    bytes pop_token();
     bool pop_bool();
 
 private:

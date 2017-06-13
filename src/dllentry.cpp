@@ -1,5 +1,5 @@
 // 
-// dll_entry.cpp : Define the entry point of the DLL.
+// dllentry.cpp : Define the entry point of the DLL.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 

@@ -237,7 +237,7 @@ HANDLER(get_group_list) {
 
         auto count = pack.pop_int32(); // get number of groups
         for (auto i = 0; i < count; i++) {
-            auto token = pack.pop_bytes(pack.pop_int16());
+            auto token = pack.pop_token();
             auto group = Group::from_bytes(token);
             json_array_append_new(group_list, group.json());
         }
@@ -260,7 +260,7 @@ HANDLER(get_group_member_list) {
 
             auto count = pack.pop_int32();
             for (auto i = 0; i < count; i++) {
-                auto token = pack.pop_bytes(pack.pop_int16());
+                auto token = pack.pop_token();
                 auto member = GroupMember::from_bytes(token);
                 json_array_append_new(member_list, member.json());
             }

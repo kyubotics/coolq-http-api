@@ -61,6 +61,10 @@ bytes Pack::pop_bytes(size_t len) {
     return result;
 }
 
+bytes Pack::pop_token() {
+    return this->pop_bytes(this->pop_int16());
+}
+
 bool Pack::pop_bool() {
     return static_cast<bool>(pop_int32());
 }
