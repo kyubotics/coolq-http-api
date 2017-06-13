@@ -48,9 +48,9 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
         json_decref(json);
 
         if (response.json) {
-            auto reply_str_json = json_object_get(response.json, "reply");
-            if (reply_str_json && !json_is_null(reply_str_json)) {
-                CQ->sendPrivateMsg(from_qq, json_string_value(reply_str_json));
+            auto reply_json = json_object_get(response.json, "reply");
+            if (reply_json && !json_is_null(reply_json)) {
+                CQ->sendPrivateMsg(from_qq, Message(reply_json).process_outcoming());
             }
             return handle_block_response(response);
         }
@@ -81,9 +81,9 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
         json_decref(json);
 
         if (response.json) {
-            auto reply_str_json = json_object_get(response.json, "reply");
-            if (reply_str_json && !json_is_null(reply_str_json)) {
-                str reply = json_string_value(reply_str_json);
+            auto reply_json = json_object_get(response.json, "reply");
+            if (reply_json && !json_is_null(reply_json)) {
+                auto reply = Message(reply_json).process_outcoming();
 
                 // check if should at sender
                 auto at_sender_json = json_object_get(response.json, "at_sender");
@@ -136,9 +136,9 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_disc
         json_decref(json);
 
         if (response.json) {
-            auto reply_str_json = json_object_get(response.json, "reply");
-            if (reply_str_json && !json_is_null(reply_str_json)) {
-                str reply = json_string_value(reply_str_json);
+            auto reply_json = json_object_get(response.json, "reply");
+            if (reply_json && !json_is_null(reply_json)) {
+                auto reply = Message(reply_json).process_outcoming();
 
                 // check if should at sender
                 auto at_sender_json = json_object_get(response.json, "at_sender");
