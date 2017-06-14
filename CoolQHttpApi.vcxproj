@@ -106,7 +106,6 @@
     <ClCompile Include="src\appmain.cpp" />
     <ClCompile Include="src\conf\ini.c" />
     <ClCompile Include="src\conf\loader.cpp" />
-    <ClCompile Include="src\CQApp.cpp" />
     <ClCompile Include="src\CQ.cpp" />
     <ClCompile Include="src\cqcode.cpp" />
     <ClCompile Include="src\dllentry.cpp" />

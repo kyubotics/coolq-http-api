@@ -35,8 +35,8 @@ str get_coolq_root() {
     static str root;
     if (!root) {
         auto app_dir = CQ->get_app_directory();
-        auto suffix = "app\\" CQ_APP_ID "\\";
-        root = app_dir[slice(0, app_dir.length() - strlen(suffix))];
+        auto suffix = str("app\\" CQ_APP_ID "\\");
+        root = app_dir[slice(0, app_dir.length() - suffix.length())];
     }
     return root;
 }

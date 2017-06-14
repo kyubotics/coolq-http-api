@@ -51,9 +51,6 @@
     <ClCompile Include="src\CQ.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\CQApp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Pack.cpp">
       <Filter>src</Filter>
     </ClCompile>
