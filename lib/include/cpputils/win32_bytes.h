@@ -45,6 +45,12 @@ namespace rc {
          * Decode a bytes object into str, using the encoding specified.
          */
         static str decode(const bytes &b, int encoding = Encoding::UTF8) {
+            // special case
+            if (encoding == Encoding::ANSI && GetACP() == Encoding::GB2312) {
+                // encoding rise
+                encoding = Encoding::GB18030;
+            }
+
             auto ws = multibyte_to_widechar(encoding, b.c_str());
             return str(ws.get());
         }

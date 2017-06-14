@@ -50,7 +50,7 @@ str Pack::pop_string() {
         return str();
     }
     check_enough(this->size(), len);
-    auto result = decode(this->bytes_.substr(this->curr_, len), Encoding::GBK);
+    auto result = decode(this->bytes_.substr(this->curr_, len), Encoding::ANSI);
     this->curr_ += len;
     return result;
 }
