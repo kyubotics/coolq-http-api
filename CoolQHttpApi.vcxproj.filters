@@ -19,6 +19,9 @@
     <Filter Include="src\conf">
       <UniqueIdentifier>{465f1c21-e329-4ab1-8508-7dd3322b8fe2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\api">
+      <UniqueIdentifier>{8c648fe8-04e0-48a9-a306-0dce4362340b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
@@ -44,12 +47,6 @@
     </Library>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\request.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\request_handlers.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\cqcode.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -58,9 +55,6 @@
     </ClCompile>
     <ClCompile Include="src\encoding\md5.cpp">
       <Filter>src\encoding</Filter>
-    </ClCompile>
-    <ClCompile Include="src\httpd.cpp">
-      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\helpers.cpp">
       <Filter>src</Filter>
@@ -98,11 +92,20 @@
     <ClCompile Include="src\Message.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\api\httpd.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\ApiRequest.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\main_handler.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\handlers.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\request.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\cqcode.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -139,9 +142,6 @@
     <ClInclude Include="lib\include\cpputils\win32_encoding.h">
       <Filter>lib\include\cpputils</Filter>
     </ClInclude>
-    <ClInclude Include="src\httpd.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\helpers.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -177,6 +177,18 @@
     </ClInclude>
     <ClInclude Include="src\Message.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\httpd.h">
+      <Filter>src\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\ApiRequest.h">
+      <Filter>src\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\types.h">
+      <Filter>src\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\main_handler.h">
+      <Filter>src\api</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

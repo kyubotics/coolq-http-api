@@ -1,45 +1,46 @@
-#include <app.h>
+#include "app.h"
 
-#include "request.h"
+#include "ApiRequest.h"
 #include "structs.h"
 #include "Pack.h"
 #include "Message.h"
+#include "types.h"
 
 using namespace std;
 
-extern cqhttp_request_handler_map request_handler_map; // global handler map in request.cpp
+ApiHandlerMap api_handlers;
 
-static bool add_handler(const char *name, cqhttp_request_handler handler) {
-    request_handler_map[name] = handler;
+static bool add_handler(const char *name, ApiHandler handler) {
+    api_handlers[name] = handler;
     return true;
 }
 
 #define HANDLER(handler_name) \
-    static void _##handler_name(const struct cqhttp_request &, struct cqhttp_result &); \
+    static void _##handler_name(const ApiRequest &, ApiResult &); \
     static bool _dummy_##handler_name = add_handler(#handler_name, _##handler_name); \
-    static void _##handler_name(const struct cqhttp_request &request, struct cqhttp_result &result)
+    static void _##handler_name(const ApiRequest &request, ApiResult &result)
 
 #pragma region Send Message
 
 HANDLER(send_private_msg) {
-    auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto message = cqhttp_get_message_param(request);
+    auto user_id = request.get_int_param("user_id", 0);
+    auto message = request.get_msg_param();
     if (user_id && message) {
         result.retcode = CQ->sendPrivateMsg(user_id, Message(message).process_outcoming());
     }
 }
 
 HANDLER(send_group_msg) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto message = cqhttp_get_message_param(request);
+    auto group_id = request.get_int_param("group_id", 0);
+    auto message = request.get_msg_param();
     if (group_id && message) {
         result.retcode = CQ->sendGroupMsg(group_id, message);
     }
 }
 
 HANDLER(send_discuss_msg) {
-    auto discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
-    auto message = cqhttp_get_message_param(request);
+    auto discuss_id = request.get_int_param("discuss_id", 0);
+    auto message = request.get_msg_param();
     if (discuss_id && message) {
         result.retcode = CQ->sendDiscussMsg(discuss_id, message);
     }
@@ -50,8 +51,8 @@ HANDLER(send_discuss_msg) {
 #pragma region Send Like
 
 HANDLER(send_like) { // CoolQ Pro only
-    auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto times = static_cast<int32_t>(cqhttp_get_integer_param(request, "times", 1));
+    auto user_id = request.get_int_param("user_id", 0);
+    auto times = static_cast<int32_t>(request.get_int_param("times", 1));
     if (user_id && times > 0) {
         if (times == 1) {
             result.retcode = CQ->sendLike(user_id);
@@ -66,86 +67,86 @@ HANDLER(send_like) { // CoolQ Pro only
 #pragma region Group & Discuss Operation
 
 HANDLER(set_group_kick) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto reject_add_request = cqhttp_get_bool_param(request, "reject_add_request", false);
+    auto group_id = request.get_int_param("group_id", 0);
+    auto user_id = request.get_int_param("user_id", 0);
+    auto reject_add_request = request.get_bool_param("reject_add_request", false);
     if (group_id && user_id) {
         result.retcode = CQ->setGroupKick(group_id, user_id, reject_add_request);
     }
 }
 
 HANDLER(set_group_ban) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto duration = cqhttp_get_integer_param(request, "duration", 30 * 60 /* 30 minutes */);
+    auto group_id = request.get_int_param("group_id", 0);
+    auto user_id = request.get_int_param("user_id", 0);
+    auto duration = request.get_int_param("duration", 30 * 60 /* 30 minutes */);
     if (group_id && user_id && duration >= 0) {
         result.retcode = CQ->setGroupBan(group_id, user_id, duration);
     }
 }
 
 HANDLER(set_group_anonymous_ban) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto anonymous_flag = cqhttp_get_str_param(request, "flag", "");
-    auto duration = cqhttp_get_integer_param(request, "duration", 30 * 60 /* 30 minutes */);
+    auto group_id = request.get_int_param("group_id", 0);
+    auto anonymous_flag = request.get_str_param("flag", "");
+    auto duration = request.get_int_param("duration", 30 * 60 /* 30 minutes */);
     if (group_id && anonymous_flag && duration >= 0) {
         result.retcode = CQ->setGroupAnonymousBan(group_id, anonymous_flag, duration);
     }
 }
 
 HANDLER(set_group_whole_ban) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto enable = cqhttp_get_bool_param(request, "enable", true);
+    auto group_id = request.get_int_param("group_id", 0);
+    auto enable = request.get_bool_param("enable", true);
     if (group_id) {
         result.retcode = CQ->setGroupWholeBan(group_id, enable);
     }
 }
 
 HANDLER(set_group_admin) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto enable = cqhttp_get_bool_param(request, "enable", true);
+    auto group_id = request.get_int_param("group_id", 0);
+    auto user_id = request.get_int_param("user_id", 0);
+    auto enable = request.get_bool_param("enable", true);
     if (group_id && user_id) {
         result.retcode = CQ->setGroupAdmin(group_id, user_id, enable);
     }
 }
 
 HANDLER(set_group_anonymous) { // CoolQ Pro only
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto enable = cqhttp_get_bool_param(request, "enable", true);
+    auto group_id = request.get_int_param("group_id", 0);
+    auto enable = request.get_bool_param("enable", true);
     if (group_id) {
         result.retcode = CQ->setGroupAnonymous(group_id, enable);
     }
 }
 
 HANDLER(set_group_card) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto card = cqhttp_get_str_param(request, "card", "");
+    auto group_id = request.get_int_param("group_id", 0);
+    auto user_id = request.get_int_param("user_id", 0);
+    auto card = request.get_str_param("card", "");
     if (group_id && user_id) {
         result.retcode = CQ->setGroupCard(group_id, user_id, card);
     }
 }
 
 HANDLER(set_group_leave) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto is_dismiss = cqhttp_get_bool_param(request, "is_dismiss", false);
+    auto group_id = request.get_int_param("group_id", 0);
+    auto is_dismiss = request.get_bool_param("is_dismiss", false);
     if (group_id) {
         result.retcode = CQ->setGroupLeave(group_id, is_dismiss);
     }
 }
 
 HANDLER(set_group_special_title) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto special_title = cqhttp_get_str_param(request, "special_title", "");
-    auto duration = cqhttp_get_integer_param(request, "duration", -1 /* permanent */); // seems to have no effect
+    auto group_id = request.get_int_param("group_id", 0);
+    auto user_id = request.get_int_param("user_id", 0);
+    auto special_title = request.get_str_param("special_title", "");
+    auto duration = request.get_int_param("duration", -1 /* permanent */); // seems to have no effect
     if (group_id && user_id) {
         result.retcode = CQ->setGroupSpecialTitle(group_id, user_id, special_title, duration);
     }
 }
 
 HANDLER(set_discuss_leave) {
-    auto discuss_id = cqhttp_get_integer_param(request, "discuss_id", 0);
+    auto discuss_id = request.get_int_param("discuss_id", 0);
     if (discuss_id) {
         result.retcode = CQ->setDiscussLeave(discuss_id);
     }
@@ -156,19 +157,19 @@ HANDLER(set_discuss_leave) {
 #pragma region Request Operation
 
 HANDLER(set_friend_add_request) {
-    auto flag = cqhttp_get_str_param(request, "flag", "");
-    auto approve = cqhttp_get_bool_param(request, "approve", true);
-    auto remark = cqhttp_get_str_param(request, "remark", "");
+    auto flag = request.get_str_param("flag", "");
+    auto approve = request.get_bool_param("approve", true);
+    auto remark = request.get_str_param("remark", "");
     if (flag) {
         result.retcode = CQ->setFriendAddRequest(flag, approve ? REQUEST_ALLOW : REQUEST_DENY, remark);
     }
 }
 
 HANDLER(set_group_add_request) {
-    auto flag = cqhttp_get_str_param(request, "flag", "");
-    auto type = cqhttp_get_str_param(request, "type", "");
-    auto approve = cqhttp_get_bool_param(request, "approve", true);
-    auto reason = cqhttp_get_str_param(request, "reason", "");
+    auto flag = request.get_str_param("flag", "");
+    auto type = request.get_str_param("type", "");
+    auto approve = request.get_bool_param("approve", true);
+    auto reason = request.get_str_param("reason", "");
     auto request_type = -1;
     if (type == "add") {
         request_type = REQUEST_GROUPADD;
@@ -187,21 +188,21 @@ HANDLER(set_group_add_request) {
 HANDLER(get_login_info) {
     auto id = CQ->getLoginQQ();
     auto nickname = CQ->getLoginNick();
-    result.retcode = nickname ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_INVALID_DATA;
+    result.retcode = nickname ? ApiRetCode::OK : ApiRetCode::INVALID_DATA;
     result.data = json_pack("{s:I,s:s?}", "user_id", id, "nickname", nickname.c_str());
 }
 
 HANDLER(get_stranger_info) {
-    auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto no_cache = cqhttp_get_bool_param(request, "no_cache", false);
+    auto user_id = request.get_int_param("user_id", 0);
+    auto no_cache = request.get_bool_param("no_cache", false);
     if (user_id) {
         auto bytes = CQ->getStrangerInfoRaw(user_id, no_cache);
         if (bytes.size() >= Stranger::MIN_SIZE) {
             auto stranger = Stranger::from_bytes(bytes);
             result.data = stranger.json();
-            result.retcode = CQHTTP_RETCODE_OK;
+            result.retcode = ApiRetCode::OK;
         } else {
-            result.retcode = CQHTTP_RETCODE_INVALID_DATA;
+            result.retcode = ApiRetCode::INVALID_DATA;
         }
     }
 }
@@ -221,14 +222,14 @@ HANDLER(get_group_list) {
         }
 
         result.data = group_list;
-        result.retcode = CQHTTP_RETCODE_OK;
+        result.retcode = ApiRetCode::OK;
     } else {
-        result.retcode = CQHTTP_RETCODE_INVALID_DATA;
+        result.retcode = ApiRetCode::INVALID_DATA;
     }
 }
 
 HANDLER(get_group_member_list) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
+    auto group_id = request.get_int_param("group_id", 0);
     if (group_id) {
         auto bytes = CQ->getGroupMemberListRaw(group_id);
         if (bytes.size() >= 4 /* at least has a count */) {
@@ -244,25 +245,25 @@ HANDLER(get_group_member_list) {
             }
 
             result.data = member_list;
-            result.retcode = CQHTTP_RETCODE_OK;
+            result.retcode = ApiRetCode::OK;
         } else {
-            result.retcode = CQHTTP_RETCODE_INVALID_DATA;
+            result.retcode = ApiRetCode::INVALID_DATA;
         }
     }
 }
 
 HANDLER(get_group_member_info) {
-    auto group_id = cqhttp_get_integer_param(request, "group_id", 0);
-    auto user_id = cqhttp_get_integer_param(request, "user_id", 0);
-    auto no_cache = cqhttp_get_bool_param(request, "no_cache", false);
+    auto group_id = request.get_int_param("group_id", 0);
+    auto user_id = request.get_int_param("user_id", 0);
+    auto no_cache = request.get_bool_param("no_cache", false);
     if (group_id && user_id) {
         auto bytes = CQ->getGroupMemberInfoRawV2(group_id, user_id, no_cache);
         if (bytes.size() >= GroupMember::MIN_SIZE) {
             auto member = GroupMember::from_bytes(bytes);
             result.data = member.json();
-            result.retcode = CQHTTP_RETCODE_OK;
+            result.retcode = ApiRetCode::OK;
         } else {
-            result.retcode = CQHTTP_RETCODE_INVALID_DATA;
+            result.retcode = ApiRetCode::INVALID_DATA;
         }
     }
 }
@@ -271,13 +272,13 @@ HANDLER(get_group_member_info) {
 
 HANDLER(get_cookies) {
     auto cookies = CQ->getCookies();
-    result.retcode = cookies ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_INVALID_DATA;
+    result.retcode = cookies ? ApiRetCode::OK : ApiRetCode::INVALID_DATA;
     result.data = json_pack("{s:s?}", "cookies", cookies.c_str());
 }
 
 HANDLER(get_csrf_token) {
     auto token = CQ->getCsrfToken();
-    result.retcode = token ? CQHTTP_RETCODE_OK : CQHTTP_RETCODE_INVALID_DATA;
+    result.retcode = token ? ApiRetCode::OK : ApiRetCode::INVALID_DATA;
     result.data = json_pack("{s:i}", "token", token);
 }
 

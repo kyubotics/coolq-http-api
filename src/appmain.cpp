@@ -8,7 +8,7 @@
 #include <curl/curl.h>
 
 #include "helpers.h"
-#include "httpd.h"
+#include "api/httpd.h"
 #include "conf/loader.h"
 #include "events.h"
 

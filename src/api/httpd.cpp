@@ -8,8 +8,7 @@
 #include <thread>
 #include <atomic>
 
-#include "request.h"
-#include "helpers.h"
+#include "main_handler.h"
 #include "conf/Config.h"
 
 using namespace std;
@@ -37,7 +36,7 @@ void start_httpd() {
             httpd_event_base = event_base_new();
             httpd_event = evhttp_new(httpd_event_base);
 
-            evhttp_set_gencb(httpd_event, cqhttp_main_handler, nullptr);
+            evhttp_set_gencb(httpd_event, api_main_handler, nullptr);
             evhttp_bind_socket(httpd_event, config.host.c_str(), config.port);
 
             L.d("监听", "开始监听 http://" + config.host + ":" + str(config.port));
