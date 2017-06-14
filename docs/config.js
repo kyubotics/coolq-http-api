@@ -10,10 +10,13 @@ docute.init({
             title: '配置文件说明', path: '/Configuration'
         },
         {
-            title: 'API 列表', path: '/API'
+            title: 'API 描述', path: '/API'
         },
         {
             title: '事件上报', path: '/Post'
+        },
+        {
+            title: '消息格式', path: '/Message'
         },
         {
             title: 'CQ 码', path: '/CQCode'

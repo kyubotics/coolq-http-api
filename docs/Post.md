@@ -17,11 +17,11 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 每次上报的数据中必有的一个字段是 `post_type`，数据类型为字符串，用来指示此次上报的类型，有如下三种：
 
-| 上报类型      | 说明             |
-| --------- | -------------- |
-| `message` | 收到消息           |
-| `event`   | 群、讨论组变动等非消息类事件 |
-| `request` | 加好友请求、加群请求／邀请  |
+| 上报类型 | 说明 |
+| ------- | --- |
+| `message` | 收到消息 |
+| `event` | 群、讨论组变动等非消息类事件 |
+| `request` | 加好友请求、加群请求／邀请 |
 
 其它字段随上报类型不同而有所不同，下面将在事件列表的「上报数据」标题下一一给出。
 
@@ -51,67 +51,73 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 另外，`post_type` 为 `event` 的上报请求，都只支持响应 `block` 字段，而不支持其它操作。
 
+## 上报和回复消息格式
+
+从 2.0.0 版本开始上报和回复消息格式有了较大变化（向下兼容），具体请查看 [消息格式](https://richardchien.github.io/coolq-http-api/#/Message)。
+
+本页后面提到消息的地方（消息事件的 `message` 字段和响应的 `reply` 字段），将不再具体解释其格式。
+
 ## 事件列表
 
 ### 私聊消息
 
 #### 上报数据
 
-| 字段名            | 数据类型   | 可能的值                                     | 说明                                       |
-| -------------- | ------ | ---------------------------------------- | ---------------------------------------- |
-| `post_type`    | string | `"message"`                              | 上报类型                                     |
-| `message_type` | string | `"private"`                              | 消息类型                                     |
-| `sub_type`     | string | `"friend"`、`"group"`、`"discuss"`、`"other"` | 消息子类型，如果是好友则是 `"friend"`，如果从群或讨论组来的临时会话则分别是 `"group"`、`"discuss"` |
-| `user_id`      | number | -                                        | 发送者 QQ 号                                 |
-| `message`      | string | -                                        | 消息内容                                     |
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------- | ------- | ---- |
+| `post_type` | string | `"message"` | 上报类型 |
+| `message_type` | string | `"private"` | 消息类型 |
+| `sub_type` | string | `"friend"`、`"group"`、`"discuss"`、`"other"` | 消息子类型，如果是好友则是 `"friend"`，如果从群或讨论组来的临时会话则分别是 `"group"`、`"discuss"` |
+| `user_id` | number | - | 发送者 QQ 号 |
+| `message` | string/array | - | 消息内容 |
 
 #### 响应数据
 
-| 字段名     | 数据类型   | 允许的值 | 说明                                       |
-| ------- | ------ | ---- | ---------------------------------------- |
-| `reply` | string | -    | 要回复的内容（不支持 [增强 CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)） |
+| 字段名 | 数据类型 | 允许的值 | 说明 |
+| ----- | ------- | ------ | ---- |
+| `reply` | string/array | - | 要回复的内容 |
 
 ### 群消息
 
 #### 上报数据
 
-| 字段名              | 数据类型   | 可能的值        | 说明                        |
-| ---------------- | ------ | ----------- | ------------------------- |
-| `post_type`      | string | `"message"` | 上报类型                      |
-| `message_type`   | string | `"group"`   | 消息类型                      |
-| `group_id`       | number | -           | 群号                        |
-| `user_id`        | number | -           | 发送者 QQ 号                  |
-| `anonymous`      | string | -           | 匿名用户显示名                   |
-| `anonymous_flag` | string | -           | 匿名用户 flag，在调用禁言 API 时需要传入 |
-| `message`        | string | -           | 消息内容                      |
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------- | ------- | --- |
+| `post_type` | string | `"message"` | 上报类型 |
+| `message_type` | string | `"group"` | 消息类型 |
+| `group_id` | number | - | 群号 |
+| `user_id` | number | - | 发送者 QQ 号 |
+| `anonymous` | string | - | 匿名用户显示名 |
+| `anonymous_flag` | string | - | 匿名用户 flag，在调用禁言 API 时需要传入 |
+| `message` | string/array | - | 消息内容 |
 
 #### 响应数据
 
-| 字段名         | 数据类型    | 允许的值            | 说明                                       |
-| ----------- | ------- | --------------- | ---------------------------------------- |
-| `reply`     | string  | -               | 要回复的内容（不支持 [增强 CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)） |
+| 字段名 | 数据类型 | 允许的值 | 说明 |
+| ----- | ------- | ------- | --- |
+| `reply` | string/array | - | 要回复的内容 |
 | `at_sender` | boolean | `true`, `false` | 是否要在回复开头 at 发送者（自动添加），默认为 `true`，发送者是匿名用户时无效 |
-| `kick`      | boolean | `true`, `false` | 把发送者踢出群组（需要登录号权限足够），**不拒绝**此人后续加群请求，默认为 `false`，发送者是匿名用户时无效 |
-| `ban`       | boolean | `true`, `false` | 把发送者禁言 30 分钟（需要登录号权限足够），对匿名用户也有效，不支持指定禁言时长（如需指定，请调用相应 API），默认为 `false` |
+| `kick` | boolean | `true`, `false` | 把发送者踢出群组（需要登录号权限足够），**不拒绝**此人后续加群请求，默认为 `false`，发送者是匿名用户时无效 |
+| `ban` | boolean | `true`, `false` | 把发送者禁言 30 分钟（需要登录号权限足够），对匿名用户也有效，不支持指定禁言时长（如需指定，请调用相应 API），默认为 `false` |
 
 ### 讨论组消息
 
 #### 上报数据
 
-| 字段名            | 数据类型   | 可能的值        | 说明       |
-| -------------- | ------ | ----------- | -------- |
-| `post_type`    | string | `"message"` | 上报类型     |
-| `message_type` | string | `"discuss"` | 消息类型     |
-| `discuss_id`   | number | -           | 讨论组 ID   |
-| `user_id`      | number | -           | 发送者 QQ 号 |
-| `message`      | string | -           | 消息内容     |
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------- | ------- | --- |
+| `post_type` | string | `"message"` | 上报类型 |
+| `message_type` | string | `"discuss"` | 消息类型 |
+| `discuss_id` | number | - | 讨论组 ID |
+| `user_id` | number | - | 发送者 QQ 号 |
+| `message` | string/array | - | 消息内容 |
 
 #### 响应数据
 
-| 字段名         | 数据类型    | 允许的值            | 说明                                       |
-| ----------- | ------- | --------------- | ---------------------------------------- |
-| `reply`     | string  | -               | 要回复的内容（不支持 [增强 CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)） |
-| `at_sender` | boolean | `true`, `false` | 是否要在回复开头 at 发送者（自动添加），默认为 `true`         |
+| 字段名 | 数据类型 | 允许的值 | 说明 |
+| ----- | ------- | ------- | --- |
+| `reply` | string/array  | - | 要回复的内容 |
+| `at_sender` | boolean | `true`, `false` | 是否要在回复开头 at 发送者（自动添加），默认为 `true` |
 
 ### 群文件上传
 
@@ -138,86 +144,86 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 #### 上报数据
 
-| 字段名         | 数据类型   | 可能的值              | 说明                 |
-| ----------- | ------ | ----------------- | ------------------ |
-| `post_type` | string | `"event"`         | 上报类型               |
-| `event`     | string | `"group_admin"`   | 事件名                |
-| `sub_type`  | string | `"set"`、`"unset"` | 事件子类型，分别表示设置和取消管理员 |
-| `group_id`  | number | -                 | 群号                 |
-| `user_id`   | number | -                 | 发送者 QQ 号           |
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------ | -------- | --- |
+| `post_type` | string | `"event"` | 上报类型 |
+| `event` | string | `"group_admin"` | 事件名 |
+| `sub_type` | string | `"set"`、`"unset"` | 事件子类型，分别表示设置和取消管理员 |
+| `group_id` | number | - | 群号 |
+| `user_id` | number | - | 发送者 QQ 号 |
 
 ### 群成员减少
 
 #### 上报数据
 
-| 字段名           | 数据类型   | 可能的值                           | 说明                                       |
-| ------------- | ------ | ------------------------------ | ---------------------------------------- |
-| `post_type`   | string | `"event"`                      | 上报类型                                     |
-| `event`       | string | `"group_decrease"`             | 事件名                                      |
-| `sub_type`    | string | `"leave"`、`"kick"`、`"kick_me"` | 事件子类型，分别表示主动退群、成员被踢、登录号被踢 |
-| `group_id`    | number | -                              | 群号                                       |
-| `user_id`     | number | -                              | 离开者 QQ 号                                 |
-| `operator_id` | number | -                              | 操作者 QQ 号（如果是主动退群，则和 `user_id` 相同）        |
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------ | -------- | --- |
+| `post_type` | string | `"event"` | 上报类型 |
+| `event` | string | `"group_decrease"` | 事件名 |
+| `sub_type` | string | `"leave"`、`"kick"`、`"kick_me"` | 事件子类型，分别表示主动退群、成员被踢、登录号被踢 |
+| `group_id` | number | - | 群号 |
+| `user_id` | number | - | 离开者 QQ 号 |
+| `operator_id` | number | - | 操作者 QQ 号（如果是主动退群，则和 `user_id` 相同） |
 
 ### 群成员增加
 
 #### 上报数据
 
-| 字段名           | 数据类型   | 可能的值                   | 说明                         |
-| ------------- | ------ | ---------------------- | -------------------------- |
-| `post_type`   | string | `"event"`              | 上报类型                       |
-| `event`       | string | `"group_increase"`     | 事件名                        |
-| `sub_type`    | string | `"approve"`、`"invite"` | 事件子类型，分别表示管理员已同意入群、管理员邀请入群 |
-| `group_id`    | number | -                      | 群号                         |
-| `user_id`     | number | -                      | 加入者 QQ 号                   |
-| `operator_id` | number | -                      | 操作者 QQ 号                   |
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------ | -------- | --- |
+| `post_type` | string | `"event"` | 上报类型 |
+| `event` | string | `"group_increase"` | 事件名 |
+| `sub_type` | string | `"approve"`、`"invite"` | 事件子类型，分别表示管理员已同意入群、管理员邀请入群 |
+| `group_id` | number | - | 群号 |
+| `user_id` | number | - | 加入者 QQ 号 |
+| `operator_id` | number | - | 操作者 QQ 号 |
 
 ### 好友添加
 
 #### 上报数据
 
-| 字段名         | 数据类型   | 可能的值             | 说明         |
-| ----------- | ------ | ---------------- | ---------- |
-| `post_type` | string | `"event"`        | 上报类型       |
-| `event`     | string | `"friend_add"` | 事件名        |
-| `user_id`   | number | -                | 新添加好友 QQ 号 |
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------ | -------- | --- |
+| `post_type` | string | `"event"` | 上报类型 |
+| `event` | string | `"friend_add"` | 事件名 |
+| `user_id` | number | - | 新添加好友 QQ 号 |
 
 ### 加好友请求
 
 #### 上报数据
 
-| 字段名            | 数据类型   | 可能的值        | 说明                         |
-| -------------- | ------ | ----------- | -------------------------- |
-| `post_type`    | string | `"request"` | 上报类型                       |
-| `request_type` | string | `"friend"`  | 请求类型                       |
-| `user_id`      | number | -           | 发送请求的 QQ 号                 |
-| `message`      | string | -           | 验证信息                       |
-| `flag`         | string | -           | 请求 flag，在调用处理请求的 API 时需要传入 |
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------ | -------- | --- |
+| `post_type` | string | `"request"` | 上报类型 |
+| `request_type` | string | `"friend"`  | 请求类型 |
+| `user_id` | number | - | 发送请求的 QQ 号 |
+| `message` | string | - | 验证信息 |
+| `flag` | string | - | 请求 flag，在调用处理请求的 API 时需要传入 |
 
 #### 响应数据
 
-| 字段名       | 数据类型    | 允许的值            | 说明       |
-| --------- | ------- | --------------- | -------- |
-| `approve` | boolean | `true`, `false` | 是否同意请求   |
-| `remark`  | string  | -               | 添加后的好友备注 |
+| 字段名 | 数据类型 | 允许的值 | 说明 |
+| ----- | ------- | ------- | --- |
+| `approve` | boolean | `true`, `false` | 是否同意请求 |
+| `remark` | string  | - | 添加后的好友备注 |
 
 ### 加群请求／邀请
 
 #### 上报数据
 
-| 字段名            | 数据类型   | 可能的值               | 说明                         |
-| -------------- | ------ | ------------------ | -------------------------- |
-| `post_type`    | string | `"request"`        | 上报类型                       |
-| `request_type` | string | `"group"`          | 请求类型                       |
-| `sub_type`     | string | `"add"`、`"invite"` | 请求子类型，分别表示加群请求、邀请登录号入群     |
-| `group_id`     | number | -                  | 群号                         |
-| `user_id`      | number | -                  | 发送请求的 QQ 号                 |
-| `message`      | string | -                  | 验证信息                       |
-| `flag`         | string | -                  | 请求 flag，在调用处理请求的 API 时需要传入 |
+| 字段名 | 数据类型 | 可能的值 | 说明 |
+| ----- | ------ | -------- | --- |
+| `post_type` | string | `"request"` | 上报类型 |
+| `request_type` | string | `"group"` | 请求类型 |
+| `sub_type` | string | `"add"`、`"invite"` | 请求子类型，分别表示加群请求、邀请登录号入群 |
+| `group_id` | number | - | 群号 |
+| `user_id` | number | - | 发送请求的 QQ 号 |
+| `message` | string | - | 验证信息 |
+| `flag` | string | - | 请求 flag，在调用处理请求的 API 时需要传入 |
 
 #### 响应数据
 
-| 字段名       | 数据类型    | 允许的值            | 说明        |
-| --------- | ------- | --------------- | --------- |
+| 字段名 | 数据类型 | 允许的值 | 说明 |
+| ----- | ------- | ------- | --- |
 | `approve` | boolean | `true`, `false` | 是否同意请求／邀请 |
-| `reason`  | string  | - | 拒绝理由（仅在拒绝时有效） |
+| `reason` | string | - | 拒绝理由（仅在拒绝时有效） |
