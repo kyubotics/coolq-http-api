@@ -34,7 +34,7 @@ void string_replace(string &str, const string &search, const string &replace) {
 str get_coolq_root() {
     static str root;
     if (!root) {
-        auto app_dir = CQ->getAppDirectory();
+        auto app_dir = CQ->get_app_directory();
         auto suffix = "app\\" CQ_APP_ID "\\";
         root = app_dir[slice(0, app_dir.length() - strlen(suffix))];
     }

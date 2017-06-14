@@ -27,26 +27,6 @@
     <None Include="io.github.richardchien.coolqhttpapi.json" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="lib\CQP.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\jansson.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\libcurl.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\libevent_core.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\libevent_extras.lib">
-      <Filter>lib</Filter>
-    </Library>
-    <Library Include="lib\cpputils.lib">
-      <Filter>lib</Filter>
-    </Library>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\cqcode.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -190,5 +170,10 @@
     <ClInclude Include="src\api\main_handler.h">
       <Filter>src\api</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\CQP.lib">
+      <Filter>lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>

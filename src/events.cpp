@@ -50,7 +50,7 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
         if (response.json) {
             auto reply_json = json_object_get(response.json, "reply");
             if (reply_json && !json_is_null(reply_json)) {
-                CQ->sendPrivateMsg(from_qq, Message(reply_json).process_outcoming());
+                CQ->send_private_msg(from_qq, Message(reply_json).process_outcoming());
             }
             return handle_block_response(response);
         }
@@ -96,22 +96,22 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
                 }
 
                 // send reply
-                CQ->sendGroupMsg(from_group, reply);
+                CQ->send_group_msg(from_group, reply);
             }
 
             // kick sender if needed
             auto kick = json_is_true(json_object_get(response.json, "kick"));
             if (kick && !is_anonymous) {
-                CQ->setGroupKick(from_group, from_qq, false);
+                CQ->set_group_kick(from_group, from_qq, false);
             }
 
             // ban sender if needed
             auto ban = json_is_true(json_object_get(response.json, "ban"));
             if (ban) {
                 if (is_anonymous) {
-                    CQ->setGroupAnonymousBan(from_group, from_anonymous, 30 * 60);
+                    CQ->set_group_anonymous_ban(from_group, from_anonymous, 30 * 60);
                 } else {
-                    CQ->setGroupBan(from_group, from_qq, 30 * 60);
+                    CQ->set_group_ban(from_group, from_qq, 30 * 60);
                 }
             }
 
@@ -151,7 +151,7 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_disc
                 }
 
                 // send reply
-                CQ->sendDiscussMsg(from_discuss, reply);
+                CQ->send_discuss_msg(from_discuss, reply);
             }
 
             return handle_block_response(response);
@@ -222,7 +222,7 @@ int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t
                               case 1:
                                   return "leave";
                               case 2:
-                                  if (being_operate_qq != CQ->getLoginQQ()) {
+                                  if (being_operate_qq != CQ->get_login_qq()) {
                                       // the one been kicked out is not me
                                       return "kick";
                                   }
@@ -315,7 +315,7 @@ int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t fr
             auto approve = json_boolean_value(approve_json);
             auto remark_str_json = json_object_get(response.json, "remark");
             if (remark_str_json && !json_is_null(remark_str_json)) {
-                CQ->setFriendAddRequest(response_flag, approve ? REQUEST_ALLOW : REQUEST_DENY, json_string_value(remark_str_json));
+                CQ->set_friend_add_request(response_flag, approve ? REQUEST_ALLOW : REQUEST_DENY, json_string_value(remark_str_json));
             }
         }
 
@@ -357,7 +357,7 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
             auto approve = json_boolean_value(approve_json);
             auto reason_str_json = json_object_get(response.json, "reason");
             if (reason_str_json && !json_is_null(reason_str_json)) {
-                CQ->setGroupAddRequestV2(response_flag, sub_type, approve ? REQUEST_ALLOW : REQUEST_DENY, json_string_value(reason_str_json));
+                CQ->set_group_add_request(response_flag, sub_type, approve ? REQUEST_ALLOW : REQUEST_DENY, json_string_value(reason_str_json));
             }
         }
 

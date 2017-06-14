@@ -36,7 +36,7 @@ CQEVENT(int32_t, Initialize, 4)
  */
 static void init() {
     L.d("初始化", "尝试加载配置文件");
-    if (load_configuration(CQ->getAppDirectory() + "config.cfg", CQ->config)) {
+    if (load_configuration(CQ->get_app_directory() + "config.cfg", CQ->config)) {
         L.d("初始化", "加载配置文件成功");
     } else {
         L.e("初始化", "加载配置文件失败，请确定配置文件格式和访问权限是否正确");
@@ -82,11 +82,11 @@ CQEVENT(int32_t, __event_start, 0)
 CQEVENT(int32_t, __event_exit, 0)
 () {
     stop_httpd();
+    L.i("停止", "HTTP API 插件已停止");
     if (CQ) {
         delete CQ;
         CQ = nullptr;
     }
-    L.i("停止", "HTTP API 插件已停止");
     return 0;
 }
 

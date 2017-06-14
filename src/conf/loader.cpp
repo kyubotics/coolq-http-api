@@ -52,7 +52,7 @@ bool load_configuration(const str &filepath, Config &config) {
     } else {
         // load from config file
         auto callback = [&](const str &section, const str &name, const str &value) {
-                    static auto login_qq_str = str(CQ->getLoginQQ());
+                    static auto login_qq_str = str(CQ->get_login_qq());
 
                     if (section == "general" || isnumber(section) && login_qq_str == section) {
                         if (name == "host") {
