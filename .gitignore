@@ -4,6 +4,7 @@ Release
 Debug
 build.bat
 post_build.bat
+post_build.d.bat
 *.sdf
 *.opensdf
 *.suo
