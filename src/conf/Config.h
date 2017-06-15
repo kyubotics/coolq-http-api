@@ -28,4 +28,5 @@ struct Config {
     str token;
     std::regex pattern;
     str post_message_format;
+    bool serve_data_file;
 };

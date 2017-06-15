@@ -63,7 +63,7 @@ void api_main_handler(evhttp_request *req, void *_) {
     auto uri = evhttp_request_get_evhttp_uri(req);
 
     auto path = str(evhttp_uri_get_path(uri));
-    if (path.startswith("/data/")) {
+    if (path.startswith("/data/") && CQ->config.serve_data_file) {
         // let static_file_handler take care of this
         static_file_handler(req, path);
         return;

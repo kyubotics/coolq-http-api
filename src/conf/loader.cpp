@@ -37,6 +37,7 @@ bool load_configuration(const str &filepath, Config &config) {
     config.token = "";
     config.pattern = "";
     config.post_message_format = MSG_FMT_STRING;
+    config.serve_data_file = false;
 
     FILE *conf_file = nullptr;
     fopen_s(&conf_file, filepath.c_str(), "r");
@@ -48,7 +49,9 @@ bool load_configuration(const str &filepath, Config &config) {
                 << "host=0.0.0.0" << endl
                 << "port=5700" << endl
                 << "post_url=" << endl
-                << "token=" << endl;
+                << "pattern=" << endl
+                << "post_message_format=string" << endl
+                << "serve_data_file=no" << endl;
     } else {
         // load from config file
         auto callback = [&](const str &section, const str &name, const str &value) {
@@ -67,6 +70,11 @@ bool load_configuration(const str &filepath, Config &config) {
                             config.pattern = regex(value.to_bytes());
                         } else if (name == "post_message_format") {
                             config.post_message_format = value;
+                        } else if (name == "serve_data_file") {
+                            auto v = value.lower();
+                            if (v == "yes" || v == "true" || v == "1") {
+                                config.serve_data_file = true;
+                            }
                         }
                     }
                     return 1;
