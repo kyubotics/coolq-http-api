@@ -32,7 +32,7 @@ struct ApiRetCode {
 
 struct ApiResult {
     ApiResult() : retcode(ApiRetCode::DEFAULT_ERROR), data(nullptr) {};
-    int retcode; // succeeded: 0, lack of parameters or invalid ones: 1, CQ error code: -11, -23, etc... (< 0)
+    int retcode; // succeeded: 0, lack of parameters or invalid ones: 1xx, CQ error code: -11, -23, etc... (< 0)
     json_t *data;
 };
 

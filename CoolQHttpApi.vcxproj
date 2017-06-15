@@ -103,6 +103,7 @@
     <ClCompile Include="src\api\ApiRequest.cpp" />
     <ClCompile Include="src\api\handlers.cpp" />
     <ClCompile Include="src\api\httpd.cpp" />
+    <ClCompile Include="src\api\static_file_handler.cpp" />
     <ClCompile Include="src\appmain.cpp" />
     <ClCompile Include="src\conf\ini.c" />
     <ClCompile Include="src\conf\loader.cpp" />

@@ -30,15 +30,16 @@
 
 using namespace std;
 
-extern ApiHandlerMap api_handlers; // global handler map in api/handlers.cpp
+extern ApiHandlerMap api_handlers; // global handler map in handlers.cpp
 
+void static_file_handler(evhttp_request *req, str path); // implemented in static_file_handler.cpp
 static ApiResult dispatch_request(const ApiRequest &request);
 
 void api_main_handler(evhttp_request *req, void *_) {
     auto method = evhttp_request_get_command(req);
     if (!(method & (EVHTTP_REQ_GET | EVHTTP_REQ_POST))) {
         // method not supported
-        evhttp_send_reply(req, HTTP_BADMETHOD, "Bad Method", nullptr);
+        evhttp_send_error(req, HTTP_BADMETHOD, nullptr);
         return;
     }
 
@@ -54,9 +55,18 @@ void api_main_handler(evhttp_request *req, void *_) {
             // invalid token
             L.d("API请求", "token 不符，停止响应");
             L.i("API请求", "有未经授权的 API 请求，已拒绝");
-            evhttp_send_reply(req, 401, "Unauthorized", nullptr);
+            evhttp_send_error(req, 401, nullptr);
             return;
         }
+    }
+
+    auto uri = evhttp_request_get_evhttp_uri(req);
+
+    auto path = str(evhttp_uri_get_path(uri));
+    if (path.startswith("/data/")) {
+        // let static_file_handler take care of this
+        static_file_handler(req, path);
+        return;
     }
 
     // initialize args and form
@@ -70,9 +80,7 @@ void api_main_handler(evhttp_request *req, void *_) {
     request.args = args;
     request.form = form;
     request.json = nullptr;
-
-    auto uri = evhttp_request_get_evhttp_uri(req);
-    request.path = evhttp_uri_get_path(uri);
+    request.path = path;
 
     // parse query arguments
     auto encoded_args_c_str = evhttp_uri_get_query(uri);
@@ -124,7 +132,7 @@ void api_main_handler(evhttp_request *req, void *_) {
 
     if (result.retcode == ApiRetCode::NO_SUCH_API) {
         // no such API, should return 404 Not Found
-        evhttp_send_reply(req, 404, "Not Found", nullptr);
+        evhttp_send_error(req, HTTP_NOTFOUND, nullptr);
         return;
     }
 
@@ -143,17 +151,17 @@ void api_main_handler(evhttp_request *req, void *_) {
     auto json_str = json_dumps(json, JSON_COMPACT);
 
     evbuffer_add_printf(buf, "%s", json_str);
-    evhttp_send_reply(req, HTTP_OK, "OK", buf);
+    evhttp_send_reply(req, HTTP_OK, nullptr, buf);
     L.d("API请求", "响应内容发送完毕");
 
-    free(json_str); // free the memory that "json_pack" allocated
+    free(json_str); // free the memory that "json_dumps" allocated
     json_decref(json);
     evbuffer_free(buf);
 
     L.i("API请求", "已成功处理一个 API 请求：" + request.path);
 }
 
-ApiResult dispatch_request(const ApiRequest &request) {
+static ApiResult dispatch_request(const ApiRequest &request) {
     auto path_without_slash = request.path[slice(1)];
     ApiResult result;
     if (api_handlers.find(path_without_slash.c_str()) != api_handlers.end()) {

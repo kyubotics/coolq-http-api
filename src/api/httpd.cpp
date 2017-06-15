@@ -53,6 +53,7 @@ void start_httpd() {
             httpd_event_base = event_base_new();
             httpd_event = evhttp_new(httpd_event_base);
 
+//            evhttp_set_cb(httpd_event, "/data", static_file_handler, nullptr);
             evhttp_set_gencb(httpd_event, api_main_handler, nullptr);
             evhttp_bind_socket(httpd_event, config.host.c_str(), config.port);
 

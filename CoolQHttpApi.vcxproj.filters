@@ -81,6 +81,9 @@
     <ClCompile Include="src\api\handlers.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
+    <ClCompile Include="src\api\static_file_handler.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqcode.h">
