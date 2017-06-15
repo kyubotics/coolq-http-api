@@ -21,7 +21,6 @@
 
 #include <event2/buffer.h>
 #include <event2/http.h>
-#include <filesystem>
 #include <io.h>
 #include <fcntl.h>
 
@@ -90,7 +89,7 @@ void static_file_handler(evhttp_request *req, str path) {
     }
 
     auto full_path = (get_coolq_root() + decoded_path).replace("/", "\\");
-    if (!experimental::filesystem::is_regular_file(full_path.c_str())) {
+    if (!isfile(full_path)) {
         // is not a file
         L.d("文件请求", "URI 为非文件类型，不支持传送");
         evhttp_send_error(req, HTTP_NOTFOUND, nullptr);
@@ -110,7 +109,7 @@ void static_file_handler(evhttp_request *req, str path) {
     evhttp_add_header(evhttp_request_get_output_headers(req), "Content-Type", guess_content_type(full_path.c_str()));
 
     auto buf = evbuffer_new();
-    evbuffer_add_file(buf, fd, 0, experimental::filesystem::file_size(full_path.c_str()));
+    evbuffer_add_file(buf, fd, 0, filesize(full_path));
     evhttp_send_reply(req, 200, nullptr, buf);
     L.d("文件请求", "文件内容已传送完毕");
 

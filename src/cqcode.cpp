@@ -22,7 +22,6 @@
 #include <regex>
 #include <fstream>
 #include <curl/curl.h>
-#include <filesystem>
 
 #include "encoding/md5.h"
 #include "helpers.h"
@@ -121,7 +120,7 @@ static str enhance_cqcode_remote_file(str data_dir, const smatch &match) {
         if (regex_search(params, regex("cache=0"))) {
             use_cache = false;
         }
-        auto cached = experimental::filesystem::is_regular_file(filepath.c_str());
+        auto cached = isfile(filepath);
 
         if (!cached || !use_cache) {
             // perform download

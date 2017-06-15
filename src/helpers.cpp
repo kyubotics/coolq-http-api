@@ -34,6 +34,22 @@ bool isnumber(const string &s) {
     return !s.empty();
 }
 
+bool isfile(const str &path) {
+    struct stat st;
+    if (stat(path.c_str(), &st) < 0) {
+        return false;
+    }
+    return (st.st_mode & S_IFMT) != S_IFDIR;
+}
+
+long long filesize(const str &path) {
+    struct stat st;
+    if (stat(path.c_str(), &st) < 0 || (st.st_mode & S_IFMT) == S_IFDIR) {
+        return -1;
+    }
+    return st.st_size;
+}
+
 void string_replace(string &str, const string &search, const string &replace) {
     if (search.empty())
         return;
