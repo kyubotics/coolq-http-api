@@ -45,7 +45,7 @@ HANDLER(send_private_msg) {
     auto user_id = request.get_int_param("user_id", 0);
     auto message = request.get_msg_param();
     if (user_id && message) {
-        result.retcode = CQ->send_private_msg(user_id, Message(message).process_outcoming());
+        result.retcode = CQ->send_private_msg(user_id, message);
     }
 }
 
