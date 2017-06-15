@@ -1,6 +1,6 @@
 # CoolQ HTTP API 插件
 
-[![License](https://img.shields.io/badge/license-MIT%20License-blue.svg)](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/LICENSE)
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/LICENSE)
 [![Build Status](https://ci.appveyor.com/api/projects/status/9c4c6inmsdk3gbou?svg=true)](https://ci.appveyor.com/project/richardchien/coolq-http-api)
 [![Release](https://img.shields.io/github/release/richardchien/coolq-http-api.svg)](https://github.com/richardchien/coolq-http-api/releases)
 [![Download Count](https://img.shields.io/github/downloads/richardchien/coolq-http-api/total.svg)](https://github.com/richardchien/coolq-http-api/releases)
