@@ -22,6 +22,7 @@
 #include <regex>
 #include <fstream>
 #include <curl/curl.h>
+#include <filesystem>
 
 #include "encoding/md5.h"
 #include "helpers.h"
@@ -113,36 +114,47 @@ static str enhance_cqcode_remote_file(str data_dir, const smatch &match) {
     if (regex_search(params, m, regex("file=(https?:\\/\\/[^,]+)"))) {
         auto url = message_unescape(m.str(1));
         auto filename = MD5(url).toStr() + ".tmp"; // despite of the format, we store all images as ".tmp"
-
         auto filepath = get_coolq_root() + "data\\" + data_dir + "\\" + filename;
-        FILE *fp = nullptr;
-        fopen_s(&fp, filepath.c_str(), "wb");
-        if (fp) {
-            auto curl = curl_easy_init();
-            curl_easy_setopt(curl, CURLOPT_URL, url);
 
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-            auto cb = [](char *buf, size_t size, size_t nmemb, void *fp) {
-                        size_t written_size = 0;
-                        if (fp) {
-                            written_size = fwrite(buf, size, nmemb, static_cast<FILE *>(fp));
-                        }
-                        return written_size;
-                    };
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, static_cast<CURLWriteFunctionPtr>(cb));
+        // check if to use cache
+        auto use_cache = true; // use cache by default
+        if (regex_search(params, regex("cache=0"))) {
+            use_cache = false;
+        }
+        auto cached = experimental::filesystem::is_regular_file(filepath.c_str());
 
-            struct curl_slist *chunk = nullptr;
-            chunk = curl_slist_append(chunk,
-                                      "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                                      "AppleWebKit/537.36 (KHTML, like Gecko) "
-                                      "Chrome/56.0.2924.87 Safari/537.36");
-            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+        if (!cached || !use_cache) {
+            // perform download
 
-            curl_easy_perform(curl); // download remote file
+            FILE *fp = nullptr;
+            fopen_s(&fp, filepath.c_str(), "wb");
+            if (fp) {
+                auto curl = curl_easy_init();
+                curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
-            fclose(fp);
-            curl_easy_cleanup(curl);
-            curl_slist_free_all(chunk);
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+                auto cb = [](char *buf, size_t size, size_t nmemb, void *fp) {
+                            size_t written_size = 0;
+                            if (fp) {
+                                written_size = fwrite(buf, size, nmemb, static_cast<FILE *>(fp));
+                            }
+                            return written_size;
+                        };
+                curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, static_cast<CURLWriteFunctionPtr>(cb));
+
+                struct curl_slist *chunk = nullptr;
+                chunk = curl_slist_append(chunk,
+                                          "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                                          "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                          "Chrome/56.0.2924.87 Safari/537.36");
+                curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+
+                curl_easy_perform(curl); // download remote file
+
+                fclose(fp);
+                curl_easy_cleanup(curl);
+                curl_slist_free_all(chunk);
+            }
         }
 
         params = params.substr(0, m.position()) + "file=" + filename + params.substr(m.position() + m.length());
