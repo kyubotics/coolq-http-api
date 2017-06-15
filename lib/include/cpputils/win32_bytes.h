@@ -45,6 +45,26 @@ namespace rc {
          * Decode a bytes object into str, using the encoding specified.
          */
         static str decode(const bytes &b, int encoding = Encoding::UTF8) {
+            // check if in WinNT (not Wine)
+            static auto in_nt = false;
+
+            if (!in_nt) {
+                auto hntdll = GetModuleHandle(L"ntdll.dll");
+                if (hntdll) {
+                    auto pwine_get_version = GetProcAddress(hntdll, "wine_get_version");
+                    if (!pwine_get_version) {
+                        // has ntdll.dll but not Wine, we assume it is NT
+                        in_nt = true;
+                    }
+                }
+            }
+
+            // special case for Windows NT
+            if (in_nt && encoding == Encoding::ANSI && GetACP() == Encoding::GB2312) {
+                // do encoding rise
+                encoding = Encoding::GB18030;
+            }
+
             auto ws = multibyte_to_widechar(encoding, b.c_str());
             return str(ws.get());
         }
