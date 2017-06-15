@@ -43,3 +43,4 @@ pattern=通知|公告
 | `token` | 空 | 验证 token，如果不为空，则会在接收到请求时验证 `Authorization` 请求头是否为 `token xxxxxxxx`，`xxxxxxxx` 为 token，并在上报数据时在请求中加入同样的 `Authorization` 请求头 |
 | `pattern` | 空 | 正则匹配模式，对于消息类型的事件，如果此项不为空，则对消息进行正则搜索，若搜索到指定的模式，则上报事件，否则不上报 |
 | `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](https://richardchien.github.io/coolq-http-api/#/Message) |
+| `serve_data_file` | `no` | 是否提供请求 `data` 目录的文件的功能，`yes` 或 `true` 表示启用，否则不启用 |

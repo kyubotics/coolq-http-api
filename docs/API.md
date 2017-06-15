@@ -397,3 +397,13 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | 字段名 | 数据类型 | 说明 |
 | ----- | ------- | --- |
 | `token` | number | CSRF Token |
+
+## 获取 `data` 目录中的文件的接口
+
+2.1.0 版本开始提供一个简单的静态文件获取服务，请求方式只支持 GET，URL 路径为 `/data/` 加上要请求的文件相对于酷 Q `data` 目录的路径。例如，假设酷 Q 主目录在 `C:\Apps\CQA`，则要获取 `C:\Apps\CQA\data\image\ABCD.jpg.cqimg` 的话，只需请求 `/data/image/ABCD.jpg.cqimg`，响应内容即为要请求的文件。
+
+和上面的其它请求一样，如果配置文件中指定了 token，则每次请求需要在请求头中加入验证头 `Authorization: token your-token`。
+
+另外，请求的路径中不允许出现 `..`，即上级目录的标记，以防止恶意或错误的请求到系统中的其它文件。
+
+本功能默认情况下不开启，在配置文件中将 `serve_data_file` 设置为 `yes` 或 `true` 即可开启，见 [配置文件说明](https://richardchien.github.io/coolq-http-api/#/Configuration)。
