@@ -21,10 +21,6 @@
 
 #include "common.h"
 
-#include "CQApp.h"
-
-extern CQApp *CQ;
-
 #define MSG_FMT_STRING "string"
 #define MSG_FMT_ARRAY "array"
 
@@ -52,7 +48,7 @@ public:
      * 
      * \param msg_fmt: the desired message format, if not passed in, use the one in config file
      */
-    json_t *process_incoming(const str &msg_fmt = CQ->config.post_message_format) const;
+    json_t *process_incoming(str msg_fmt = "") const;
 
 private:
     str msg_str_;

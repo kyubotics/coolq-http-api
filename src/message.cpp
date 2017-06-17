@@ -64,7 +64,11 @@ str Message::process_outcoming() const {
     return msg;
 }
 
-json_t *Message::process_incoming(const str &msg_fmt) const {
+json_t *Message::process_incoming(str msg_fmt) const {
+    if (!msg_fmt) {
+        msg_fmt = CQ->config.post_message_format;
+    }
+
     str msg_str;
     if (this->msg_str_) {
         msg_str = this->msg_str_;
