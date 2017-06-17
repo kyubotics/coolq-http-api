@@ -170,6 +170,9 @@
     <ClInclude Include="src\api\main_handler.h">
       <Filter>src\api</Filter>
     </ClInclude>
+    <ClInclude Include="src\curl_wrapper.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\CQP.lib">

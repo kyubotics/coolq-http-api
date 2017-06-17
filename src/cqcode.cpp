@@ -21,10 +21,10 @@
 
 #include <regex>
 #include <fstream>
-#include <curl/curl.h>
 
 #include "encoding/md5.h"
 #include "helpers.h"
+#include "curl_wrapper.h"
 
 using namespace std;
 
@@ -124,35 +124,19 @@ static str enhance_cqcode_remote_file(str data_dir, const smatch &match) {
 
         if (!cached || !use_cache) {
             // perform download
-
-            FILE *fp = nullptr;
-            fopen_s(&fp, filepath.c_str(), "wb");
-            if (fp) {
-                auto curl = curl_easy_init();
-                curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-
-                curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-                auto cb = [](char *buf, size_t size, size_t nmemb, void *fp) {
-                            size_t written_size = 0;
-                            if (fp) {
-                                written_size = fwrite(buf, size, nmemb, static_cast<FILE *>(fp));
-                            }
-                            return written_size;
+            ofstream file(filepath.c_str(), ofstream::out | ofstream::binary);
+            if (file.is_open()) {
+                auto req = curl::Request(url, curl::Headers{{"User-Agent",
+                                             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                                             "AppleWebKit/537.36 (KHTML, like Gecko) "
+                                             "Chrome/56.0.2924.87 Safari/537.36"}});
+                req.write_data = &file;
+                req.write_func = [](char *buf, size_t size, size_t count, void *file) {
+                            *static_cast<ofstream *>(file) << string(buf, count);
+                            return size * count;
                         };
-                curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, static_cast<CURLWriteFunctionPtr>(cb));
-
-                struct curl_slist *chunk = nullptr;
-                chunk = curl_slist_append(chunk,
-                                          "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                                          "AppleWebKit/537.36 (KHTML, like Gecko) "
-                                          "Chrome/56.0.2924.87 Safari/537.36");
-                curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-
-                curl_easy_perform(curl); // download remote file
-
-                fclose(fp);
-                curl_easy_cleanup(curl);
-                curl_slist_free_all(chunk);
+                req.get();
+                file.close();
             }
         }
 
@@ -191,6 +175,7 @@ static str enhance_cqcode_parse_cqimg(const smatch &match) {
             if (url.length() != 0) {
                 params = params + ",url=" + message_escape(url);
             }
+            istrm.close();
         }
     }
     return make_cqcode(function, params);

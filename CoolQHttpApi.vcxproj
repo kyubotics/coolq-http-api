@@ -147,6 +147,7 @@
     <ClInclude Include="src\events.h" />
     <ClInclude Include="src\post_json.h" />
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\curl_wrapper.h" />
     <ClInclude Include="src\structs.h" />
   </ItemGroup>
   <ItemGroup>

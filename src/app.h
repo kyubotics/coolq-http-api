@@ -24,8 +24,9 @@
 #define CQ_APP_ID "io.github.richardchien.coolqhttpapi"
 #define CQ_APP_INFO CQAPIVERTEXT "," CQ_APP_ID
 #define CQ_APP_NAME "CoolQ HTTP API Plugin"
-#define CQ_APP_VERSION "v2.1.0"
-#define CQ_APP_FULLNAME CQ_APP_NAME " " CQ_APP_VERSION
+#define CQ_APP_VERSION "2.1.0"
+#define CQ_APP_FULLNAME CQ_APP_NAME " v" CQ_APP_VERSION
+#define CQ_APP_USER_AGENT "CoolQHttpApi/" CQ_APP_VERSION
 
 #include "common.h"
 

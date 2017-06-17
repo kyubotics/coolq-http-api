@@ -138,7 +138,6 @@ void api_main_handler(evhttp_request *req, void *_) {
 
     // set headers
     auto output_headers = evhttp_request_get_output_headers(req);
-    evhttp_add_header(output_headers, "Server", CQ_APP_FULLNAME);
     evhttp_add_header(output_headers, "Content-Type", "application/json; charset=UTF-8");
     evhttp_add_header(output_headers, "Connection", "close");
 

@@ -22,7 +22,6 @@
 #include "ApiRequest.h"
 #include "structs.h"
 #include "Pack.h"
-#include "Message.h"
 #include "types.h"
 
 using namespace std;
