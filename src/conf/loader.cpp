@@ -45,13 +45,16 @@ bool load_configuration(const str &filepath, Config &config) {
         // first init, save default config
         L.d("配置", "没有找到配置文件，写入默认配置");
         ofstream file(filepath.c_str());
-        file << "[general]" << endl
-                << "host=0.0.0.0" << endl
-                << "port=5700" << endl
-                << "post_url=" << endl
-                << "pattern=" << endl
-                << "post_message_format=string" << endl
-                << "serve_data_file=no" << endl;
+        if (file.is_open()) {
+            file << "[general]" << endl
+                    << "host=0.0.0.0" << endl
+                    << "port=5700" << endl
+                    << "post_url=" << endl
+                    << "pattern=" << endl
+                    << "post_message_format=string" << endl
+                    << "serve_data_file=no" << endl;
+            file.close();
+        }
     } else {
         // load from config file
         auto callback = [&](const str &section, const str &name, const str &value) {
