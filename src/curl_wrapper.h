@@ -23,19 +23,15 @@
 
 #include <curl/curl.h>
 #include <map>
-#include <algorithm>
 
 namespace curl {
     struct CaseInsensitiveCompare {
-        bool operator()(const std::string &a, const std::string &b) const noexcept {
-            auto a_ = a, b_ = b;
-            transform(a_.begin(), a_.end(), a_.begin(), tolower);
-            transform(b_.begin(), b_.end(), b_.begin(), tolower);
-            return a_ < b_;
+        bool operator()(const str &a, const str &b) const noexcept {
+            return a.lower() < b.lower();
         }
     };
 
-    using Headers = std::map<std::string, std::string, CaseInsensitiveCompare>;
+    using Headers = std::map<str, str, CaseInsensitiveCompare>;
     typedef size_t (*WriteFunction)(char *, size_t, size_t, void *);
 
     struct Response {
