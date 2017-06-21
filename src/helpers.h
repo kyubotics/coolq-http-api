@@ -30,3 +30,5 @@ long long filesize(const str &path);
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
 
 str get_coolq_root();
+
+bytes ansi(const str &s);

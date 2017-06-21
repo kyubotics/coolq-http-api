@@ -36,7 +36,7 @@ bool isnumber(const string &s) {
 
 bool isfile(const str &path) {
     struct stat st;
-    if (stat(path.c_str(), &st) < 0) {
+    if (stat(ansi(path).c_str(), &st) < 0) {
         return false;
     }
     return (st.st_mode & S_IFMT) != S_IFDIR;
@@ -44,7 +44,7 @@ bool isfile(const str &path) {
 
 long long filesize(const str &path) {
     struct stat st;
-    if (stat(path.c_str(), &st) < 0 || (st.st_mode & S_IFMT) == S_IFDIR) {
+    if (stat(ansi(path).c_str(), &st) < 0 || (st.st_mode & S_IFMT) == S_IFDIR) {
         return -1;
     }
     return st.st_size;
@@ -74,4 +74,8 @@ str get_coolq_root() {
         root = app_dir[slice(0, app_dir.length() - suffix.length())];
     }
     return root;
+}
+
+bytes ansi(const str &s) {
+    return encode(s, Encoding::ANSI);
 }

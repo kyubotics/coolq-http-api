@@ -39,12 +39,13 @@ bool load_configuration(const str &filepath, Config &config) {
     config.post_message_format = MSG_FMT_STRING;
     config.serve_data_file = false;
 
+    auto ansi_filepath = ansi(filepath);
     FILE *conf_file = nullptr;
-    fopen_s(&conf_file, filepath.c_str(), "r");
+    fopen_s(&conf_file, ansi_filepath.c_str(), "r");
     if (!conf_file) {
         // first init, save default config
         L.d("配置", "没有找到配置文件，写入默认配置");
-        ofstream file(filepath.c_str());
+        ofstream file(ansi_filepath);
         if (file.is_open()) {
             file << "[general]" << endl
                     << "host=0.0.0.0" << endl
@@ -59,7 +60,6 @@ bool load_configuration(const str &filepath, Config &config) {
         // load from config file
         auto callback = [&](const str &section, const str &name, const str &value) {
                     static auto login_qq_str = str(CQ->get_login_qq());
-
                     if (section == "general" || isnumber(section) && login_qq_str == section) {
                         if (name == "host") {
                             config.host = value;
