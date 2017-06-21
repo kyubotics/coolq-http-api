@@ -161,7 +161,7 @@ static str enhance_cqcode_parse_cqimg(const smatch &match) {
         auto filename = m.str(1);
         auto cqimg_filename = filename + ".cqimg";
         auto cqimg_filepath = get_coolq_root() + "data\\image\\" + cqimg_filename;
-        ifstream istrm(ansi(cqimg_filepath));
+        ifstream istrm(ansi(cqimg_filepath), ios::in | ios::binary);
         if (istrm.is_open()) {
             string url = "";
             string line;
