@@ -124,7 +124,7 @@ static str enhance_cqcode_remote_file(str data_dir, const smatch &match) {
 
         if (!cached || !use_cache) {
             // perform download
-            ofstream file(ansi(filepath), ios::out | ios::binary);
+            ofstream file(ansi(filepath), ios::binary);
             if (file.is_open()) {
                 auto req = curl::Request(url, curl::Headers{{"User-Agent",
                                              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -161,7 +161,7 @@ static str enhance_cqcode_parse_cqimg(const smatch &match) {
         auto filename = m.str(1);
         auto cqimg_filename = filename + ".cqimg";
         auto cqimg_filepath = get_coolq_root() + "data\\image\\" + cqimg_filename;
-        ifstream istrm(ansi(cqimg_filepath), ios::in | ios::binary);
+        ifstream istrm(ansi(cqimg_filepath), ios::binary);
         if (istrm.is_open()) {
             string url = "";
             string line;
