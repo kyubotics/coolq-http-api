@@ -64,7 +64,9 @@ void check_update(bool manual) {
                               }).get();
     if (resp.status_code != 200) {
         output("检查更新失败，请检查你的网络连接", manual);
+        return;
     }
+
     json json = json::parse(resp.body.begin(), resp.body.end());
     auto latest_version = str(json["tag_name"].get<string>()).lstrip("v");
     L.d("更新", "当前最新版：" + latest_version);
@@ -75,7 +77,7 @@ void check_update(bool manual) {
     if (latest_semantic_version.size() != 3 || curr_semantic_version.size() < 3) {
         // something went wrong
         output("当前或最新版本号无法识别，检查更新失败", manual);
-        need_update = false;
+        return;
     }
 
     auto i = 0;
