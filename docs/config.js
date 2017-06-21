@@ -22,6 +22,9 @@ docute.init({
             title: 'CQ 码', path: '/CQCode'
         },
         {
+            title: 'HTTPS', path: '/HTTPS'
+        },
+        {
             title: 'FAQ', path: '/FAQ'
         }
     ],
