@@ -106,7 +106,12 @@
             "priority": 20000
         }
     ],
-    "menu": [],
+    "menu": [
+        {
+            "name": "¼ì²é¸üÐÂ",
+            "function": "_menu_check_update"
+        }
+    ],
     "status": [],
     "auth": [
         20, // getCookies / getCsrfToken

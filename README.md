@@ -59,7 +59,7 @@ $ docker run -ti --rm --name cqhttp-test \
 
 除了 `io.github.richardchien.coolqhttpapi.json`，其它所有文件均使用 UTF-8 编码，并且编译命令加入了 `/utf-8` 选项，因此如果你要修改代码，也请使用 UTF-8 编码，以便正常通过编译（注意，VS 创建文件之后输入中文可能会默认使用 GBK 编码，需要手动另存为到 UTF-8）。
 
-`io.github.richardchien.coolqhttpapi.json` 文件中不应出现中文，如果因为一些原因必须加入中文，请使用 GBK 编码，否则酷 Q 无法识别。
+`io.github.richardchien.coolqhttpapi.json` 文件使用 GBK 编码，否则酷 Q 无法识别。
 
 ## 开源许可证、重新分发
 

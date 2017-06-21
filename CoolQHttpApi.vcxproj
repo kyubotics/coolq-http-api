@@ -105,6 +105,7 @@
     <ClCompile Include="src\api\httpd.cpp" />
     <ClCompile Include="src\api\static_file_handler.cpp" />
     <ClCompile Include="src\appmain.cpp" />
+    <ClCompile Include="src\check_update.cpp" />
     <ClCompile Include="src\conf\ini.c" />
     <ClCompile Include="src\conf\loader.cpp" />
     <ClCompile Include="src\CQ.cpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="src\api\httpd.h" />
     <ClInclude Include="src\api\types.h" />
     <ClInclude Include="src\app.h" />
+    <ClInclude Include="src\check_update.h" />
     <ClInclude Include="src\conf\Config.h" />
     <ClInclude Include="src\conf\ini.h" />
     <ClInclude Include="src\conf\loader.h" />

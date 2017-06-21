@@ -84,6 +84,9 @@
     <ClCompile Include="src\api\static_file_handler.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
+    <ClCompile Include="src\check_update.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqcode.h">
@@ -171,6 +174,9 @@
       <Filter>src\api</Filter>
     </ClInclude>
     <ClInclude Include="src\curl_wrapper.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\check_update.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

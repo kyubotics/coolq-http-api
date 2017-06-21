@@ -26,6 +26,7 @@
 #include "api/httpd.h"
 #include "conf/loader.h"
 #include "events.h"
+#include "check_update.h"
 
 using namespace std;
 
@@ -68,6 +69,10 @@ CQEVENT(int32_t, __event_enable, 0)
     init();
     start_httpd();
     L.i("启用", "HTTP API 插件已启用");
+
+    if (CQ->config.auto_check_update) {
+        check_update(false);
+    }
     return 0;
 }
 
@@ -196,4 +201,12 @@ CQEVENT(int32_t, __event_add_friend_request, 24)
 CQEVENT(int32_t, __event_add_group_request, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *msg, const char *response_flag) {
     return event_add_group_request(sub_type, send_time, from_group, from_qq, decode(msg, Encoding::ANSI), decode(response_flag, Encoding::ANSI));
+}
+
+/**
+ * 检查更新菜单项
+ */
+CQEVENT(int32_t, __menu_check_update, 0)() {
+    check_update(true);
+    return 0;
 }

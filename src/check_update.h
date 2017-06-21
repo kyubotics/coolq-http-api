@@ -1,5 +1,5 @@
 // 
-// Config.h : Define the Config structure.
+// check_update.h : Define functions to update CPK file.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -19,15 +19,4 @@
 
 #pragma once
 
-#include "common.h"
-
-struct Config {
-    str host;
-    int port;
-    str post_url;
-    str token;
-    std::regex pattern;
-    str post_message_format;
-    bool serve_data_file;
-    bool auto_check_update;
-};
+void check_update(bool manual);

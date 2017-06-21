@@ -38,6 +38,7 @@ bool load_configuration(const str &filepath, Config &config) {
     config.pattern = "";
     config.post_message_format = MSG_FMT_STRING;
     config.serve_data_file = false;
+    config.auto_check_update = false;
 
     auto ansi_filepath = ansi(filepath);
     FILE *conf_file = nullptr;
@@ -53,7 +54,8 @@ bool load_configuration(const str &filepath, Config &config) {
                     << "post_url=" << endl
                     << "pattern=" << endl
                     << "post_message_format=string" << endl
-                    << "serve_data_file=no" << endl;
+                    << "serve_data_file=no" << endl
+                    << "auto_check_update=no" << endl;
             file.close();
         }
     } else {
@@ -77,6 +79,11 @@ bool load_configuration(const str &filepath, Config &config) {
                             auto v = value.lower();
                             if (v == "yes" || v == "true" || v == "1") {
                                 config.serve_data_file = true;
+                            }
+                        } else if (name == "auto_check_update") {
+                            auto v = value.lower();
+                            if (v == "yes" || v == "true" || v == "1") {
+                                config.auto_check_update = true;
                             }
                         }
                     }

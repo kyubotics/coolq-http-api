@@ -80,7 +80,9 @@ void stop_httpd() {
             event_base_free(httpd_event_base);
             httpd_event_base = nullptr;
         }
-        httpd_thread.join();
+        if (httpd_thread.joinable()) {
+            httpd_thread.join();
+        }
         L.d("关闭", "已关闭后台 HTTP 守护线程");
     }
 }
