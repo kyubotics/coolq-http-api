@@ -20,6 +20,9 @@ docute.init({
         },
         {
             title: 'CQ 码', path: '/CQCode'
+        },
+        {
+            title: 'FAQ', path: '/FAQ'
         }
     ],
     tocVisibleDepth: 2,

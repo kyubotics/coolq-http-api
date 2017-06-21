@@ -28,6 +28,8 @@
 
 另外，本插件所支持的 CQ 码在原生的基础上进行了一些增强，见 [CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)，并且支持以字符串或数组格式表示消息，见 [消息格式](https://richardchien.github.io/coolq-http-api/#/Message)。
 
+对于其它可能比较容易遇到的问题，见 [FAQ](https://richardchien.github.io/coolq-http-api/#/FAQ)。
+
 ### 使用 Docker
 
 如果你使用 docker 来部署服务，可以直接运行已制作好的 docker 镜像，容器将会按照环境变量的配置来下载或更新插件到指定或最新版本，并自动修改配置文件，例如：
