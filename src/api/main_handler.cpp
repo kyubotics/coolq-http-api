@@ -88,7 +88,8 @@ void api_main_handler(evhttp_request *req, void *_) {
 
     if (method == EVHTTP_REQ_POST) {
         // check content type
-        auto content_type = string(evhttp_find_header(input_headers, "Content-Type"));
+        auto content_type_c_str = evhttp_find_header(input_headers, "Content-Type");
+        auto content_type = string(content_type_c_str ? content_type_c_str : "");
         if (content_type == "application/x-www-form-urlencoded" || content_type == "application/json") {
             // read request body as string
             auto input_buffer = evhttp_request_get_input_buffer(req);
