@@ -333,9 +333,8 @@ int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t fr
             // the action is specified
             auto approve = json_boolean_value(approve_json);
             auto remark_str_json = json_object_get(response.json, "remark");
-            if (remark_str_json && !json_is_null(remark_str_json)) {
-                CQ->set_friend_add_request(response_flag, approve ? REQUEST_ALLOW : REQUEST_DENY, json_string_value(remark_str_json));
-            }
+            auto remark_c_str = remark_str_json && !json_is_null(remark_str_json) ? json_string_value(remark_str_json) : "";
+            CQ->set_friend_add_request(response_flag, approve ? REQUEST_ALLOW : REQUEST_DENY, remark_c_str);
         }
 
         return handle_block_response(response);
@@ -375,9 +374,8 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
             // the action is specified
             auto approve = json_boolean_value(approve_json);
             auto reason_str_json = json_object_get(response.json, "reason");
-            if (reason_str_json && !json_is_null(reason_str_json)) {
-                CQ->set_group_add_request(response_flag, sub_type, approve ? REQUEST_ALLOW : REQUEST_DENY, json_string_value(reason_str_json));
-            }
+            auto reason_c_str = reason_str_json && !json_is_null(reason_str_json) ? json_string_value(reason_str_json) : "";
+            CQ->set_group_add_request(response_flag, sub_type, approve ? REQUEST_ALLOW : REQUEST_DENY, reason_c_str);
         }
 
         return handle_block_response(response);
