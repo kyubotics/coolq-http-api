@@ -49,6 +49,14 @@ $ docker run -ti --rm --name cqhttp-test \
 
 更多文档，见 [CoolQ HTTP API 插件文档](https://richardchien.github.io/coolq-http-api/)。
 
+## SDK
+
+对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK：
+
+| 语言 | 地址 | 作者 |
+| --- | ---- | --- |
+| PHP | https://github.com/slight-sky/coolq-sdk-php | slight-sky |
+
 ## 修改、编译
 
 整个项目目录是一个 VS 2017 工程，使用了 VS 2017 (v141) 工具集，直接打开 `CoolQHttpApi.sln` 即可修改、编译。项目根目录也提供了 `build.bat` 脚本，可以直接 `cmd /k build.bat` 来编译，不过请注意查看脚本中的 VS 路径是否和你系统中的路径相符。
