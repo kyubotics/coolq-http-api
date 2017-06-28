@@ -55,6 +55,8 @@ namespace curl {
         bytes body;
         void *write_data = nullptr;
         WriteFunction write_func = nullptr;
+        long connect_timeout = 0;
+        long timeout = 0;
 
         Request() {}
 
@@ -110,6 +112,9 @@ namespace curl {
             if (body.size()) {
                 curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
             }
+
+            curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, connect_timeout);
+            curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
 
             response.curl_code = curl_easy_perform(curl);
 

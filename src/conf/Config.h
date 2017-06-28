@@ -25,6 +25,7 @@ struct Config {
     str host;
     int port;
     str post_url;
+    long post_timeout;
     str token;
     std::regex pattern;
     str post_message_format;

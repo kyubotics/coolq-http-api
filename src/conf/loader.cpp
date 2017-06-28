@@ -34,6 +34,7 @@ bool load_configuration(const str &filepath, Config &config) {
     config.host = "0.0.0.0";
     config.port = 5700;
     config.post_url = "";
+    config.post_timeout = 20;
     config.token = "";
     config.pattern = "";
     config.post_message_format = MSG_FMT_STRING;
@@ -52,6 +53,8 @@ bool load_configuration(const str &filepath, Config &config) {
                     << "host=0.0.0.0" << endl
                     << "port=5700" << endl
                     << "post_url=" << endl
+                    << "post_timeout=20" << endl
+                    << "token=" << endl
                     << "pattern=" << endl
                     << "post_message_format=string" << endl
                     << "serve_data_file=no" << endl
@@ -69,6 +72,10 @@ bool load_configuration(const str &filepath, Config &config) {
                             config.port = int(value);
                         } else if (name == "post_url") {
                             config.post_url = value;
+                        } else if (name == "post_timeout") {
+                            if (value) {
+                                config.post_timeout = long(long long(value));
+                            }
                         } else if (name == "token") {
                             config.token = value;
                         } else if (name == "pattern") {

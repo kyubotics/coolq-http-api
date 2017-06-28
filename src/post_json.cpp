@@ -40,6 +40,7 @@ PostResponse post_json(json_t *json, str post_url) {
         req.headers["Authorization"] = "token " + CQ->config.token;
     }
     req.user_agent = CQ_APP_USER_AGENT;
+    req.timeout = CQ->config.post_timeout;
     auto resp = req.post();
     if (resp.status_code >= 200 && resp.status_code < 300) {
         response.succeeded = true;
