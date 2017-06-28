@@ -22,10 +22,10 @@ docute.init({
             title: 'CQ 码', path: '/CQCode'
         },
         {
-            title: 'HTTPS', path: '/HTTPS'
+            title: 'HTTPS', path: 'https://github.com/richardchien/coolq-http-api/wiki/HTTPS'
         },
         {
-            title: 'FAQ', path: '/FAQ'
+            title: 'FAQ', path: 'https://github.com/richardchien/coolq-http-api/wiki/FAQ'
         }
     ],
     tocVisibleDepth: 2,
