@@ -35,6 +35,20 @@ extern ApiHandlerMap api_handlers; // global handler map in handlers.cpp
 void static_file_handler(evhttp_request *req, str path); // implemented in static_file_handler.cpp
 static ApiResult dispatch_request(const ApiRequest &request);
 
+static void cleanup_request(ApiRequest &request) {
+    // clear args, form, and json
+    evhttp_clear_headers(request.args);
+    delete request.args;
+    request.args = nullptr;
+    evhttp_clear_headers(request.form);
+    delete request.form;
+    request.form = nullptr;
+    if (request.json) {
+        json_decref(request.json);
+        request.json = nullptr;
+    }
+}
+
 void api_main_handler(evhttp_request *req, void *_) {
     auto method = evhttp_request_get_command(req);
     if (!(method & (EVHTTP_REQ_GET | EVHTTP_REQ_POST))) {
@@ -69,22 +83,19 @@ void api_main_handler(evhttp_request *req, void *_) {
         return;
     }
 
-    // initialize args and form
-    auto evkeyvalq_size = sizeof(struct evkeyvalq);
-    auto args = new evkeyvalq;
-    memset(args, 0, evkeyvalq_size);
-    auto form = new evkeyvalq;
-    memset(form, 0, evkeyvalq_size);
-
+    // initialize request
     struct ApiRequest request;
-    request.args = args;
-    request.form = form;
+    auto evkeyvalq_size = sizeof(struct evkeyvalq);
+    request.args = new evkeyvalq;
+    memset(request.args, 0, evkeyvalq_size);
+    request.form = new evkeyvalq;
+    memset(request.form, 0, evkeyvalq_size);
     request.json = nullptr;
     request.path = path;
 
     // parse query arguments
     auto encoded_args_c_str = evhttp_uri_get_query(uri);
-    evhttp_parse_query_str(encoded_args_c_str ? encoded_args_c_str : "", args);
+    evhttp_parse_query_str(encoded_args_c_str ? encoded_args_c_str : "", request.args);
 
     if (method == EVHTTP_REQ_POST) {
         // check content type
@@ -106,30 +117,25 @@ void api_main_handler(evhttp_request *req, void *_) {
 
             if (content_type == "application/x-www-form-urlencoded") {
                 // parse form
-                evhttp_parse_query_str(request_body, form);
+                evhttp_parse_query_str(request_body, request.form);
             } else {
                 // parse json
                 request.json = json_loads(request_body, 0, nullptr);
             }
 
             delete[] request_body;
+        } else {
+            // no content-type or unrecognized content-type
+            L.d("API请求", "API 请求未指定或指定了不支持的 Content-Type");
+            evhttp_send_error(req, HTTP_BADREQUEST, nullptr);
+            cleanup_request(request);
+            return;
         }
     }
 
     // dispatch
     auto result = dispatch_request(request);
-
-    // clear args, form, and json
-    evhttp_clear_headers(args);
-    delete args;
-    request.args = nullptr;
-    evhttp_clear_headers(form);
-    delete form;
-    request.form = nullptr;
-    if (request.json) {
-        json_decref(request.json);
-        request.json = nullptr;
-    }
+    cleanup_request(request);
 
     if (result.retcode == ApiRetCode::NO_SUCH_API) {
         // no such API, should return 404 Not Found
