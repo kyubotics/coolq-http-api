@@ -35,6 +35,13 @@ PostResponse post_json(json_t *json, str post_url) {
 
     PostResponse response;
 
+    if (post_url.startswith("https://maker.ifttt.com/trigger/")) {
+        // convert to the format that IFTTT can recognize
+        auto ifttt_json = json_pack("{s:s}", "value1", json_c_str);
+        free(json_c_str);
+        json_c_str = json_dumps(ifttt_json, 0);
+    }
+
     auto req = curl::Request(post_url, "application/json", json_c_str);
     if (CQ->config.token != "") {
         req.headers["Authorization"] = "token " + CQ->config.token;
