@@ -19,12 +19,19 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 
 `kSLuTF2GC2Q4q4ugm3` 换成你填写的 token。
 
+从 2.1.3 版本开始支持以 query 参数 `access_token` 的形式传入 token，以便在无法修改请求头的情况下使用，例如：
+
+```http
+GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hello HTTP/1.1
+```
+
 ## 响应说明
 
 对于任何请求:
 
 - 如果请求方式不支持，状态码为 405；
 - 如果 token 不符合，状态码为 401；
+- 如果 POST 请求的 Content-Type 不正确，状态码为 400；
 - 如果 API 不存在，状态码为 404；
 - 剩下的所有情况，无论操作失败还是成功，状态码都是 200。
 
@@ -397,6 +404,19 @@ Authorization: token kSLuTF2GC2Q4q4ugm3
 | 字段名 | 数据类型 | 说明 |
 | ----- | ------- | --- |
 | `token` | number | CSRF Token |
+
+### `/get_version_info` 获取酷 Q 及 HTTP API 插件的版本信息
+
+#### 参数
+
+无
+
+#### 响应数据
+
+| 字段名 | 数据类型 | 说明 |
+| ----- | ------- | --- |
+| `coolq_edition` | string | 酷 Q 版本，`air` 或 `pro` |
+| `plugin_version` | string | HTTP API 插件版本，例如 `2.1.3` |
 
 ## 获取 `data` 目录中的文件的接口
 
