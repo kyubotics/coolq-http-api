@@ -35,14 +35,29 @@ extern ApiHandlerMap api_handlers; // global handler map in handlers.cpp
 void static_file_handler(evhttp_request *req, str path); // implemented in static_file_handler.cpp
 static ApiResult dispatch_request(const ApiRequest &request);
 
+static ApiRequest new_request() {
+    ApiRequest request;
+    auto evkeyvalq_size = sizeof(evkeyvalq);
+    request.args = new evkeyvalq;
+    memset(request.args, 0, evkeyvalq_size);
+    request.form = new evkeyvalq;
+    memset(request.form, 0, evkeyvalq_size);
+    request.json = nullptr;
+    return request;
+}
+
 static void cleanup_request(ApiRequest &request) {
     // clear args, form, and json
-    evhttp_clear_headers(request.args);
-    delete request.args;
-    request.args = nullptr;
-    evhttp_clear_headers(request.form);
-    delete request.form;
-    request.form = nullptr;
+    if (request.args) {
+        evhttp_clear_headers(request.args);
+        delete request.args;
+        request.args = nullptr;
+    }
+    if (request.form) {
+        evhttp_clear_headers(request.form);
+        delete request.form;
+        request.form = nullptr;
+    }
     if (request.json) {
         json_decref(request.json);
         request.json = nullptr;
@@ -61,18 +76,31 @@ void api_main_handler(evhttp_request *req, void *_) {
 
     auto input_headers = evhttp_request_get_input_headers(req);
 
-    // check token
-    auto token = CQ->config.token;
-    if (token) {
-        auto auth = evhttp_find_header(input_headers, "Authorization");
-        if (!auth || "token " + token != auth) {
-            // invalid token
-            L.d("API请求", "token 不符，停止响应");
-            L.i("API请求", "有未经授权的 API 请求，已拒绝");
-            evhttp_send_error(req, 401, nullptr);
-            return;
+    auto expected_token = CQ->config.token;
+    str token = "";
+
+    // try to get token from headers
+    auto auth = evhttp_find_header(input_headers, "Authorization");
+    if (auth) {
+        token = auth;
+        if (token.startswith("token ")) {
+            // it's a valid token
+            token = token[slice(strlen("token "))].strip();
+        } else {
+            token = "";
         }
     }
+
+    //    if (expected_token) {
+    //        auto auth = evhttp_find_header(input_headers, "Authorization");
+    //        if (!auth || "token " + expected_token != auth) {
+    //            // invalid token
+    //            L.d("API请求", "token 不符，停止响应");
+    //            L.i("API请求", "有未经授权的 API 请求，已拒绝");
+    //            evhttp_send_error(req, 401, nullptr);
+    //            return;
+    //        }
+    //    }
 
     auto uri = evhttp_request_get_evhttp_uri(req);
 
@@ -84,18 +112,25 @@ void api_main_handler(evhttp_request *req, void *_) {
     }
 
     // initialize request
-    struct ApiRequest request;
-    auto evkeyvalq_size = sizeof(struct evkeyvalq);
-    request.args = new evkeyvalq;
-    memset(request.args, 0, evkeyvalq_size);
-    request.form = new evkeyvalq;
-    memset(request.form, 0, evkeyvalq_size);
-    request.json = nullptr;
+    auto request = new_request();
     request.path = path;
 
     // parse query arguments
     auto encoded_args_c_str = evhttp_uri_get_query(uri);
     evhttp_parse_query_str(encoded_args_c_str ? encoded_args_c_str : "", request.args);
+
+    // try to get token from query params
+    if (!token) {
+        token = request.get_str_param("access_token", "");
+    }
+    if (expected_token && token != expected_token) {
+        // we expect a token, but the given token does not match
+        L.d("API请求", "token 不符，停止响应");
+        L.i("API请求", "有未经授权的 API 请求，已拒绝");
+        evhttp_send_error(req, 401, nullptr);
+        cleanup_request(request);
+        return;
+    }
 
     if (method == EVHTTP_REQ_POST) {
         // check content type

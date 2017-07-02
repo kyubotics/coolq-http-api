@@ -32,8 +32,11 @@ using namespace std;
 
 char *ApiRequest::get_param(const char *key) const {
     char *value = nullptr;
-    auto encoded_value = evhttp_find_header(this->args, key); // try args
-    if (!encoded_value) {
+    const char *encoded_value = nullptr;
+    if (this->args) {
+        encoded_value = evhttp_find_header(this->args, key); // try args
+    }
+    if (!encoded_value && this->form) {
         encoded_value = evhttp_find_header(this->form, key); // try form
     }
     if (encoded_value) {
