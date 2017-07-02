@@ -91,17 +91,6 @@ void api_main_handler(evhttp_request *req, void *_) {
         }
     }
 
-    //    if (expected_token) {
-    //        auto auth = evhttp_find_header(input_headers, "Authorization");
-    //        if (!auth || "token " + expected_token != auth) {
-    //            // invalid token
-    //            L.d("API请求", "token 不符，停止响应");
-    //            L.i("API请求", "有未经授权的 API 请求，已拒绝");
-    //            evhttp_send_error(req, 401, nullptr);
-    //            return;
-    //        }
-    //    }
-
     auto uri = evhttp_request_get_evhttp_uri(req);
 
     auto path = str(evhttp_uri_get_path(uri));
