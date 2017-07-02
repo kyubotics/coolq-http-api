@@ -23,6 +23,7 @@
 #include "structs.h"
 #include "Pack.h"
 #include "types.h"
+#include "helpers.h"
 
 using namespace std;
 
@@ -298,6 +299,19 @@ HANDLER(get_csrf_token) {
     auto token = CQ->get_csrf_token();
     result.retcode = token ? ApiRetCode::OK : ApiRetCode::INVALID_DATA;
     result.data = json_pack("{s:i}", "token", token);
+}
+
+HANDLER(get_version_info) {
+    auto root_dir = get_coolq_root();
+    auto coolq_edition = "air";
+    if (isfile(root_dir + "CQP.exe")) {
+        coolq_edition = "pro";
+    }
+    auto plugin_version = CQ_APP_VERSION;
+    result.retcode = ApiRetCode::OK;
+    result.data = json_pack("{s:s,s:s}",
+                            "coolq_edition", coolq_edition,
+                            "plugin_version", plugin_version);
 }
 
 #pragma endregion

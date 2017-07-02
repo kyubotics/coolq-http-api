@@ -32,7 +32,7 @@ using namespace std;
 
 extern ApiHandlerMap api_handlers; // global handler map in handlers.cpp
 
-void static_file_handler(evhttp_request *req, str path); // implemented in static_file_handler.cpp
+extern void static_file_handler(evhttp_request *req, str path); // implemented in static_file_handler.cpp
 static ApiResult dispatch_request(const ApiRequest &request);
 
 static ApiRequest new_request() {

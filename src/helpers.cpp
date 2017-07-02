@@ -66,6 +66,9 @@ void string_replace(string &str, const string &search, const string &replace) {
     str.swap(ws_ret); // faster than str = wsRet;
 }
 
+/**
+ * Get root directory of CoolQ, including the trailing "\".
+ */
 str get_coolq_root() {
     static str root;
     if (!root) {
