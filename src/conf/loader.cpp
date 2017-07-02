@@ -46,7 +46,7 @@ bool load_configuration(const str &filepath, Config &config) {
     fopen_s(&conf_file, ansi_filepath.c_str(), "r");
     if (!conf_file) {
         // first init, save default config
-        L.d("配置", "没有找到配置文件，写入默认配置");
+        L.i("配置", "没有找到配置文件，写入默认配置");
         ofstream file(ansi_filepath);
         if (file.is_open()) {
             file << "[general]" << endl
@@ -105,5 +105,16 @@ bool load_configuration(const str &filepath, Config &config) {
         }
         fclose(conf_file);
     }
+
+    #define PRINT_CONFIG(key) L.d("配置", #key ": " + str(CQ->config.key))
+    PRINT_CONFIG(host);
+    PRINT_CONFIG(port);
+    PRINT_CONFIG(post_url);
+    PRINT_CONFIG(post_timeout);
+    PRINT_CONFIG(token);
+    PRINT_CONFIG(post_message_format);
+    PRINT_CONFIG(serve_data_file);
+    PRINT_CONFIG(auto_check_update);
+
     return true;
 }
