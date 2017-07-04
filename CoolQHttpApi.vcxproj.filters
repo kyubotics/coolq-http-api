@@ -87,6 +87,9 @@
     <ClCompile Include="src\MessageSegment.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\json_helper.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\include\cqp.h">

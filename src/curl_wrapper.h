@@ -36,10 +36,24 @@ namespace curl {
 
     struct Response {
         CURLcode curl_code;
-        int32_t status_code;
+        int32_t status_code = 0;
         Headers headers;
         str content_type;
+        size_t content_length = 0;
         bytes body;
+
+        json json() {
+            if (content_length == 0) {
+                return nullptr;
+            }
+            if (!json_.is_null()) {
+                return json_;
+            }
+            return json::parse(body.begin(), body.end());
+        }
+
+    private:
+        nlohmann::json json_;
     };
 
     using Method = int32_t;
@@ -124,6 +138,9 @@ namespace curl {
                 response.status_code = static_cast<int32_t>(status_code);
                 if (response.headers.find("Content-Type") != response.headers.end()) {
                     response.content_type = response.headers["Content-Type"];
+                }
+                if (response.headers.find("Content-Length") != response.headers.end()) {
+                    response.content_length = size_t(long long(response.headers["Content-Length"]));
                 }
             } else {
                 response.status_code = -1;

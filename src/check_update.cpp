@@ -67,7 +67,7 @@ void check_update(bool manual) {
         return;
     }
 
-    json json = json::parse(resp.body.begin(), resp.body.end());
+    json json = resp.json();
     auto latest_version = str(json["tag_name"].get<string>()).lstrip("v");
     L.d("更新", "当前最新版：" + latest_version);
     auto latest_semantic_version = latest_version.split(".");

@@ -29,3 +29,11 @@
 #include <cpputils/win32_bytes.h>
 using namespace rc;
 using namespace win32;
+
+#include <json.hpp>
+using json = nlohmann::json;
+
+namespace rc {
+    void to_json(nlohmann::json &j, const str &s);
+    void from_json(const nlohmann::json &j, str &s);
+}

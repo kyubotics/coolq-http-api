@@ -25,42 +25,32 @@
 
 using namespace std;
 
-PostResponse post_json(json_t *json, str post_url) {
+curl::Response post_json(nlohmann::json json, str post_url) {
     post_url = post_url ? post_url : CQ->config.post_url;
     if (!post_url) {
-        return PostResponse();
+        return curl::Response();
     }
 
-    auto json_c_str = json_dumps(json, 0);
+    auto body = json.dump(0);
 
-    PostResponse response;
-
-    auto req = curl::Request(post_url, "application/json", json_c_str);
+    auto req = curl::Request(post_url, "application/json", body);
     if (CQ->config.token != "") {
         req.headers["Authorization"] = "token " + CQ->config.token;
     }
     req.user_agent = CQ_APP_USER_AGENT;
     req.timeout = CQ->config.post_timeout;
     auto resp = req.post();
+
+    auto succeeded = false;
     if (resp.status_code >= 200 && resp.status_code < 300) {
-        response.succeeded = true;
-        response.json = json_loads(resp.body.c_str(), 0, nullptr);
+        succeeded = true;
     }
 
-    free(json_c_str);
-    L.d("HTTP上报", "上报数据到 " + post_url + (response.succeeded ? " 成功" : " 失败"));
+    L.d("HTTP上报", "上报数据到 " + post_url + (succeeded ? " 成功" : " 失败"));
 
-    if (response.json) {
-        auto tmp = json_dumps(response.json, 0);
-        if (tmp) {
-            L.d("HTTP上报", str("收到响应数据 ") + tmp);
-            free(tmp);
-        }
+    if (resp.content_length) {
+        L.d("HTTP上报", str("收到响应数据 ") + resp.body);
     }
 
-    return response;
-}
-
-void release_response(PostResponse &response) {
-    json_decref(response.json);
+    return resp;
 }

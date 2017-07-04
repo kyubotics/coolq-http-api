@@ -113,6 +113,7 @@
     <ClCompile Include="src\encoding\base64.cpp" />
     <ClCompile Include="src\encoding\md5.cpp" />
     <ClCompile Include="src\helpers.cpp" />
+    <ClCompile Include="src\json_helper.cpp" />
     <ClCompile Include="src\L.cpp" />
     <ClCompile Include="src\Message.cpp" />
     <ClCompile Include="src\MessageSegment.cpp" />

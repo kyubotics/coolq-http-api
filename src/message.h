@@ -33,6 +33,7 @@ public:
 
     Message(const str &msg_str);
     Message(json_t *msg_json);
+    Message(const json &msg_json);
 
     /**
      * Convert message to a string, which can be sent directly (CQ codes will be enhanced as OUTCOMING).
@@ -44,7 +45,9 @@ public:
      * 
      * \param msg_fmt: the desired message format, if not passed in, use the one in config file
      */
-    json_t *process_incoming(str msg_fmt = "") const;
+    //json_t *process_incoming(str msg_fmt = "") const;
+
+    json Message::process_incoming(str msg_fmt = "") const;
 
     struct Segment {
         str type;
@@ -58,6 +61,7 @@ public:
 
 private:
     std::vector<Segment> segments_;
-//    str msg_str_;
-//    json_t *msg_json_;
 };
+
+void to_json(json &j, const Message::Segment &seg);
+void from_json(const json &j, Message::Segment &seg);

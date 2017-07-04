@@ -166,13 +166,13 @@ struct GroupFile {
     int64_t size;
     int64_t busid;
 
-    json_t *json() const {
-        auto data = json_object();
-        json_object_set_new(data, "id", json_string(id.c_str()));
-        json_object_set_new(data, "name", json_string(name.c_str()));
-        json_object_set_new(data, "size", json_integer(size));
-        json_object_set_new(data, "busid", json_integer(busid));
-        return data;
+    json json() const {
+        return {
+            {"id", id},
+            {"name", name},
+            {"size", size},
+            {"busid", busid}
+        };
     }
 
     static GroupFile from_bytes(bytes &bytes) {

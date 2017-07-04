@@ -33,9 +33,13 @@ static bool match_pattern(const str &msg) {
     return regex_search(msg.to_bytes(), CQ->config.pattern);
 }
 
-static int32_t handle_block_response(PostResponse &response) {
-    auto block = json_is_true(json_object_get(response.json, "block"));
-    release_response(response); // the response object should never be used again
+static int32_t handle_block_response(const json &resp_json) {
+    auto block = false;
+    if (resp_json.find("block") != resp_json.end()
+        && resp_json["block"].is_boolean()
+        && resp_json["block"]) {
+        block = true;
+    }
     return block ? EVENT_BLOCK : EVENT_IGNORE;
 }
 
@@ -43,35 +47,35 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
     ENSURE_POST_NEEDED;
 
     if (match_pattern(msg)) {
-        auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:o?}",
-                              "post_type", "message",
-                              "message_type", "private",
-                              "sub_type", [&]() {
-                                  switch (sub_type) {
-                                  case 11:
-                                      return "friend";
-                                  case 1:
-                                      return "other";
-                                  case 2:
-                                      return "group";
-                                  case 3:
-                                      return "discuss";
-                                  default:
-                                      return "unknown";
-                                  }
-                              }(),
-                              "time", send_time,
-                              "user_id", from_qq,
-                              "message", Message(msg).process_incoming());
-        auto response = post_json(json);
-        json_decref(json);
+        json json = {
+            {"post_type", "message"},
+            {"message_type", "private"},
+            {"sub_type", [&]() {
+                    switch (sub_type) {
+                    case 11:
+                        return "friend";
+                    case 1:
+                        return "other";
+                    case 2:
+                        return "group";
+                    case 3:
+                        return "discuss";
+                    default:
+                        return "unknown";
+                    }
+                }()},
+            {"time", send_time},
+            {"user_id", from_qq},
+            {"message", Message(msg).process_incoming()}
+        };
+        auto resp = post_json(json);
 
-        if (response.json) {
-            auto reply_json = json_object_get(response.json, "reply");
-            if (reply_json && !json_is_null(reply_json)) {
-                CQ->send_private_msg(from_qq, Message(reply_json).process_outcoming());
+        auto resp_json = resp.json();
+        if (resp.json().is_object()) {
+            if (resp_json.find("reply") != resp_json.end()) {
+                CQ->send_private_msg(from_qq, Message(resp_json["reply"]).process_outcoming());
             }
-            return handle_block_response(response);
+            return handle_block_response(resp_json);
         }
     }
     return EVENT_IGNORE;
@@ -87,46 +91,56 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
             anonymous = Anonymous::from_bytes(anonymous_bin).name;
         }
         auto is_anonymous = from_anonymous.length() > 0;
-        auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s, s:o?}",
-                              "post_type", "message",
-                              "message_type", "group",
-                              "time", send_time,
-                              "group_id", from_group,
-                              "user_id", from_qq,
-                              "anonymous", anonymous.c_str(),
-                              "anonymous_flag", from_anonymous.c_str(),
-                              "message", Message(msg).process_incoming());
-        auto response = post_json(json);
-        json_decref(json);
+        json json = {
+            {"post_type", "message"},
+            {"message_type", "group"},
+            {"time", send_time},
+            {"group_id", from_group},
+            {"user_id", from_qq},
+            {"anonymous", anonymous},
+            {"anonymous_flag", from_anonymous},
+            {"message", Message(msg).process_incoming()}
+        };
+        auto resp = post_json(json);
 
-        if (response.json) {
-            auto reply_json = json_object_get(response.json, "reply");
-            if (reply_json && !json_is_null(reply_json)) {
-                auto reply = Message(reply_json).process_outcoming();
+        auto resp_json = resp.json();
+        if (resp_json.is_object()) {
+            if (resp_json.find("reply") != resp_json.end()) {
+                auto reply = Message(resp_json["reply"]).process_outcoming();
 
-                // check if should at sender
-                auto at_sender_json = json_object_get(response.json, "at_sender");
-                auto at_sender = true;
-                if (json_is_boolean(at_sender_json) && json_is_false(at_sender_json)) {
-                    at_sender = false;
+                if (reply) {
+                    // check if should at sender
+                    auto at_sender = true;
+                    if (resp_json.find("at_sender") != resp_json.end()
+                        && resp_json["at_sender"].is_boolean()
+                        && resp_json["at_sender"] == false) {
+                        at_sender = false;
+                    }
+                    if (at_sender) {
+                        if (is_anonymous) {
+                            reply = "@" + anonymous + " " + reply;
+                        } else {
+                            reply = "[CQ:at,qq=" + str(from_qq) + "] " + reply;
+                        }
+                    }
+
+                    // send reply
+                    CQ->send_group_msg(from_group, reply);
                 }
-                if (at_sender && !is_anonymous) {
-                    reply = "[CQ:at,qq=" + str(from_qq) + "] " + reply;
-                }
-
-                // send reply
-                CQ->send_group_msg(from_group, reply);
             }
 
             // kick sender if needed
-            auto kick = json_is_true(json_object_get(response.json, "kick"));
-            if (kick && !is_anonymous) {
+            if (resp_json.find("kick") != resp_json.end()
+                && resp_json["kick"].is_boolean()
+                && resp_json["kick"]
+                && !is_anonymous) {
                 CQ->set_group_kick(from_group, from_qq, false);
             }
 
             // ban sender if needed
-            auto ban = json_is_true(json_object_get(response.json, "ban"));
-            if (ban) {
+            if (resp_json.find("ban") != resp_json.end()
+                && resp_json["ban"].is_boolean()
+                && resp_json["ban"]) {
                 if (is_anonymous) {
                     CQ->set_group_anonymous_ban(from_group, from_anonymous, 30 * 60);
                 } else {
@@ -134,7 +148,7 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
                 }
             }
 
-            return handle_block_response(response);
+            return handle_block_response(resp_json);
         }
     }
     return EVENT_IGNORE;
@@ -144,36 +158,38 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_disc
     ENSURE_POST_NEEDED;
 
     if (match_pattern(msg)) {
-        auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:o?}",
-                              "post_type", "message",
-                              "message_type", "discuss",
-                              "time", send_time,
-                              "discuss_id", from_discuss,
-                              "user_id", from_qq,
-                              "message", Message(msg).process_incoming());
-        auto response = post_json(json);
-        json_decref(json);
+        json json = {
+            {"post_type", "message"},
+            {"message_type", "discuss"},
+            {"time", send_time},
+            {"discuss_id", from_discuss},
+            {"user_id", from_qq},
+            {"message", Message(msg).process_incoming()}
+        };
+        auto resp = post_json(json);
 
-        if (response.json) {
-            auto reply_json = json_object_get(response.json, "reply");
-            if (reply_json && !json_is_null(reply_json)) {
-                auto reply = Message(reply_json).process_outcoming();
+        auto resp_json = resp.json();
+        if (resp_json.is_object()) {
+            if (resp_json.find("reply") != resp_json.end()) {
+                auto reply = Message(resp_json["reply"]).process_outcoming();
+                if (reply) {
+                    // check if should at sender
+                    auto at_sender = true;
+                    if (resp_json.find("at_sender") != resp_json.end()
+                        && resp_json["at_sender"].is_boolean()
+                        && resp_json["at_sender"] == false) {
+                        at_sender = false;
+                    }
+                    if (at_sender) {
+                        reply = "[CQ:at,qq=" + str(from_qq) + "] " + reply;
+                    }
 
-                // check if should at sender
-                auto at_sender_json = json_object_get(response.json, "at_sender");
-                auto at_sender = true;
-                if (json_is_boolean(at_sender_json) && json_is_false(at_sender_json)) {
-                    at_sender = false;
+                    // send reply
+                    CQ->send_discuss_msg(from_discuss, reply);
                 }
-                if (at_sender) {
-                    reply = "[CQ:at,qq=" + str(from_qq) + "] " + reply;
-                }
-
-                // send reply
-                CQ->send_discuss_msg(from_discuss, reply);
             }
 
-            return handle_block_response(response);
+            return handle_block_response(resp_json);
         }
     }
     return EVENT_IGNORE;
@@ -183,19 +199,18 @@ int32_t event_group_upload(int32_t sub_type, int32_t send_time, int64_t from_gro
     ENSURE_POST_NEEDED;
 
     auto file_bin = base64_decode(file);
-    auto file_json = file_bin.size() >= GroupFile::MIN_SIZE ? GroupFile::from_bytes(file_bin).json() : nullptr;
-    auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:o?}",
-                          "post_type", "event",
-                          "event", "group_upload",
-                          "time", send_time,
-                          "group_id", from_group,
-                          "user_id", from_qq,
-                          "file", file_json);
-    auto response = post_json(json);
-    json_decref(json);
+    json json = {
+        {"post_type", "event"},
+        {"event", "group_upload"},
+        {"time", send_time},
+        {"group_id", from_group},
+        {"user_id", from_qq},
+        {"file", file_bin.size() >= GroupFile::MIN_SIZE ? GroupFile::from_bytes(file_bin).json() : nullptr}
+    };
+    auto resp = post_json(json);
 
-    if (response.json) {
-        return handle_block_response(response);
+    if (resp.json().is_object()) {
+        return handle_block_response(resp.json());
     }
 
     return EVENT_IGNORE;
@@ -204,27 +219,27 @@ int32_t event_group_upload(int32_t sub_type, int32_t send_time, int64_t from_gro
 int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq) {
     ENSURE_POST_NEEDED;
 
-    auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I}",
-                          "post_type", "event",
-                          "event", "group_admin",
-                          "sub_type", [&]() {
-                              switch (sub_type) {
-                              case 1:
-                                  return "unset";
-                              case 2:
-                                  return "set";
-                              default:
-                                  return "unknown";
-                              }
-                          }(),
-                          "time", send_time,
-                          "group_id", from_group,
-                          "user_id", being_operate_qq);
-    auto response = post_json(json);
-    json_decref(json);
+    json json = {
+        {"post_type", "event"},
+        {"event", "group_admin"},
+        {"sub_type", [&]() {
+                switch (sub_type) {
+                case 1:
+                    return "unset";
+                case 2:
+                    return "set";
+                default:
+                    return "unknown";
+                }
+            }()},
+        {"time", send_time},
+        {"group_id", from_group},
+        {"user_id", being_operate_qq}
+    };
+    auto resp = post_json(json);
 
-    if (response.json) {
-        return handle_block_response(response);
+    if (resp.json().is_object()) {
+        return handle_block_response(resp.json());
     }
 
     return EVENT_IGNORE;
@@ -233,33 +248,33 @@ int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_grou
 int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
     ENSURE_POST_NEEDED;
 
-    auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I, s:I}",
-                          "post_type", "event",
-                          "event", "group_decrease",
-                          "sub_type", [&]() {
-                              switch (sub_type) {
-                              case 1:
-                                  return "leave";
-                              case 2:
-                                  if (being_operate_qq != CQ->get_login_qq()) {
-                                      // the one been kicked out is not me
-                                      return "kick";
-                                  }
-                              case 3:
-                                  return "kick_me";
-                              default:
-                                  return "unknown";
-                              }
-                          }(),
-                          "time", send_time,
-                          "group_id", from_group,
-                          "operator_id", sub_type == 1 ? being_operate_qq /* leave by him/herself */ : from_qq,
-                          "user_id", being_operate_qq);
-    auto response = post_json(json);
-    json_decref(json);
+    json json = {
+        {"post_type", "event"},
+        {"event", "group_decrease"},
+        {"sub_type", [&]() {
+                switch (sub_type) {
+                case 1:
+                    return "leave";
+                case 2:
+                    if (being_operate_qq != CQ->get_login_qq()) {
+                        // the one been kicked out is not me
+                        return "kick";
+                    }
+                case 3:
+                    return "kick_me";
+                default:
+                    return "unknown";
+                }
+            }()},
+        {"time", send_time},
+        {"group_id", from_group},
+        {"operator_id", sub_type == 1 ? being_operate_qq /* leave by him/herself */ : from_qq},
+        {"user_id", being_operate_qq}
+    };
+    auto resp = post_json(json);
 
-    if (response.json) {
-        return handle_block_response(response);
+    if (resp.json().is_object()) {
+        return handle_block_response(resp.json());
     }
 
     return EVENT_IGNORE;
@@ -268,28 +283,28 @@ int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t
 int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
     ENSURE_POST_NEEDED;
 
-    auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I, s:I}",
-                          "post_type", "event",
-                          "event", "group_increase",
-                          "sub_type", [&]() {
-                              switch (sub_type) {
-                              case 1:
-                                  return "approve";
-                              case 2:
-                                  return "invite";
-                              default:
-                                  return "unknown";
-                              }
-                          }(),
-                          "time", send_time,
-                          "group_id", from_group,
-                          "operator_id", from_qq,
-                          "user_id", being_operate_qq);
-    auto response = post_json(json);
-    json_decref(json);
+    json json = {
+        {"post_type", "event"},
+        {"event", "group_increase"},
+        {"sub_type", [&]() {
+                switch (sub_type) {
+                case 1:
+                    return "approve";
+                case 2:
+                    return "invite";
+                default:
+                    return "unknown";
+                }
+            }()},
+        {"time", send_time},
+        {"group_id", from_group},
+        {"operator_id", from_qq},
+        {"user_id", being_operate_qq}
+    };
+    auto resp = post_json(json);
 
-    if (response.json) {
-        return handle_block_response(response);
+    if (resp.json().is_object()) {
+        return handle_block_response(resp.json());
     }
 
     return EVENT_IGNORE;
@@ -298,16 +313,16 @@ int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t
 int32_t event_friend_add(int32_t sub_type, int32_t send_time, int64_t from_qq) {
     ENSURE_POST_NEEDED;
 
-    auto json = json_pack("{s:s, s:s, s:i, s:I}",
-                          "post_type", "event",
-                          "event", "friend_add",
-                          "time", send_time,
-                          "user_id", from_qq);
-    auto response = post_json(json);
-    json_decref(json);
+    json json = {
+        {"post_type", "event"},
+        {"event", "friend_add"},
+        {"time", send_time},
+        {"user_id", from_qq}
+    };
+    auto resp = post_json(json);
 
-    if (response.json) {
-        return handle_block_response(response);
+    if (resp.json().is_object()) {
+        return handle_block_response(resp.json());
     }
 
     return EVENT_IGNORE;
@@ -316,28 +331,32 @@ int32_t event_friend_add(int32_t sub_type, int32_t send_time, int64_t from_qq) {
 int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t from_qq, const str &msg, const str &response_flag) {
     ENSURE_POST_NEEDED;
 
-    auto json = json_pack("{s:s, s:s, s:i, s:I, s:s, s:s}",
-                          "post_type", "request",
-                          "request_type", "friend",
-                          "time", send_time,
-                          "user_id", from_qq,
-                          "message", msg.c_str(),
-                          "flag", response_flag.c_str());
-    auto response = post_json(json);
-    json_decref(json);
+    json json = {
+        {"post_type", "request"},
+        {"request_type", "friend"},
+        {"time", send_time},
+        {"user_id", from_qq},
+        {"message", msg},
+        {"flag", response_flag}
+    };
+    auto resp = post_json(json);
 
-    if (response.json) {
+    auto resp_json = resp.json();
+    if (resp_json.is_object()) {
         // approve or reject request if needed
-        auto approve_json = json_object_get(response.json, "approve");
-        if (json_is_boolean(approve_json)) {
+        if (resp_json.find("approve") != resp_json.end()
+            && resp_json["approve"].is_boolean()) {
             // the action is specified
-            auto approve = json_boolean_value(approve_json);
-            auto remark_str_json = json_object_get(response.json, "remark");
-            auto remark_c_str = remark_str_json && !json_is_null(remark_str_json) ? json_string_value(remark_str_json) : "";
-            CQ->set_friend_add_request(response_flag, approve ? REQUEST_ALLOW : REQUEST_DENY, remark_c_str);
+            auto approve = resp_json["approve"].get<bool>();
+            str remark;
+            if (resp_json.find("remark") != resp_json.end()
+                && resp_json["remark"].is_string()) {
+                remark = resp_json["remark"].get<str>();
+            }
+            CQ->set_friend_add_request(response_flag, approve ? REQUEST_ALLOW : REQUEST_DENY, remark);
         }
 
-        return handle_block_response(response);
+        return handle_block_response(resp_json);
     }
 
     return EVENT_IGNORE;
@@ -346,39 +365,43 @@ int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t fr
 int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const str &msg, const str &response_flag) {
     ENSURE_POST_NEEDED;
 
-    auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:I, s:s, s:s}",
-                          "post_type", "request",
-                          "request_type", "group",
-                          "sub_type", [&]() {
-                              switch (sub_type) {
-                              case 1:
-                                  return "add";
-                              case 2:
-                                  return "invite";
-                              default:
-                                  return "unknown";
-                              }
-                          }(),
-                          "time", send_time,
-                          "group_id", from_group,
-                          "user_id", from_qq,
-                          "message", msg.c_str(),
-                          "flag", response_flag.c_str());
-    auto response = post_json(json);
-    json_decref(json);
+    json json = {
+        {"post_type", "request"},
+        {"request_type", "group"},
+        {"sub_type", [&]() {
+                switch (sub_type) {
+                case 1:
+                    return "add";
+                case 2:
+                    return "invite";
+                default:
+                    return "unknown";
+                }
+            }()},
+        {"time", send_time},
+        {"group_id", from_group},
+        {"user_id", from_qq},
+        {"message", msg},
+        {"flag", response_flag}
+    };
+    auto resp = post_json(json);
 
-    if (response.json) {
+    auto resp_json = resp.json();
+    if (resp_json.is_object()) {
         // approve or reject request if needed
-        auto approve_json = json_object_get(response.json, "approve");
-        if (json_is_boolean(approve_json)) {
+        if (resp_json.find("approve") != resp_json.end()
+            && resp_json["approve"].is_boolean()) {
             // the action is specified
-            auto approve = json_boolean_value(approve_json);
-            auto reason_str_json = json_object_get(response.json, "reason");
-            auto reason_c_str = reason_str_json && !json_is_null(reason_str_json) ? json_string_value(reason_str_json) : "";
-            CQ->set_group_add_request(response_flag, sub_type, approve ? REQUEST_ALLOW : REQUEST_DENY, reason_c_str);
+            auto approve = resp_json["approve"].get<bool>();
+            str reason;
+            if (resp_json.find("reason") != resp_json.end()
+                && resp_json["reason"].is_string()) {
+                reason = resp_json["reason"].get<str>();
+            }
+            CQ->set_group_add_request(response_flag, sub_type, approve ? REQUEST_ALLOW : REQUEST_DENY, reason);
         }
 
-        return handle_block_response(response);
+        return handle_block_response(resp_json);
     }
 
     return EVENT_IGNORE;

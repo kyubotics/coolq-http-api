@@ -174,7 +174,7 @@ Message::Message(const str &msg_str) {
 
 Message::Message(json_t *msg_json) {
     if (json_is_string(msg_json)) {
-        *this = Message(json_string_value(msg_json));
+        *this = Message(str(json_string_value(msg_json)));
     } else if (json_is_array(msg_json)) {
         size_t i;
         json_t *seg;
@@ -213,6 +213,15 @@ Message::Message(json_t *msg_json) {
     }
 }
 
+Message::Message(const json &msg_json) {
+    if (msg_json.is_string()) {
+        this->segments_ = split(msg_json.get<str>());
+    } else if (msg_json.is_array()) {
+        for (auto seg : msg_json) { }
+        this->segments_ = msg_json.get<vector<Segment>>();
+    }
+}
+
 str Message::process_outcoming() const {
     vector<Segment> segments;
     for (auto seg : this->segments_) {
@@ -221,7 +230,23 @@ str Message::process_outcoming() const {
     return merge(segments);
 }
 
-json_t *Message::process_incoming(str msg_fmt) const {
+void to_json(json &j, const Message::Segment &seg) {
+    j = json{{"type", seg.type},{"data", seg.data}};
+}
+
+void from_json(const json &j, Message::Segment &seg) {
+    seg.type = j.at("type").get<str>();
+    auto data = j.at("data");
+    if (data.is_object()) {
+        for (auto it = data.begin(); it != data.end(); ++it) {
+            if (it.value().is_string()) {
+                seg.data[it.key()] = it.value().get<string>();
+            }
+        }
+    }
+}
+
+json Message::process_incoming(str msg_fmt) const {
     if (!msg_fmt) {
         msg_fmt = CQ->config.post_message_format;
     }
@@ -232,25 +257,11 @@ json_t *Message::process_incoming(str msg_fmt) const {
     }
 
     if (msg_fmt == MSG_FMT_STRING) {
-        return json_string(merge(segments).c_str());
+        return merge(segments);
     }
 
     if (msg_fmt == MSG_FMT_ARRAY) {
-        auto result = json_array();
-        for (auto seg : segments) {
-            auto seg_json = json_object();
-            json_object_set_new(seg_json, "type", json_string(seg.type.c_str()));
-            auto data_json = json_object();
-            for (auto param : seg.data) {
-                json_object_set_new(data_json, param.first.c_str(), json_string(param.second.c_str()));
-            }
-            json_object_set(seg_json, "data", data_json);
-            json_decref(data_json);
-
-            json_array_append(result, seg_json);
-            json_decref(seg_json);
-        }
-        return result;
+        return segments;
     }
 
     return nullptr;
