@@ -25,6 +25,23 @@
 
 using namespace std;
 
+Message::Message(const str &msg_str) : msg_str_(msg_str), msg_json_(nullptr) {}
+
+Message::Message(json_t *msg_json) : msg_json_(nullptr) {
+    json_incref(msg_json);
+}
+
+Message::Message(const Message &other) {
+    this->msg_str_ = other.msg_str_;
+    this->msg_json_ = other.msg_json_;
+    json_incref(this->msg_json_);
+    this->segments_ = other.segments_;
+}
+
+Message::~Message() {
+    json_decref(this->msg_json_);
+}
+
 str Message::process_outcoming() const {
     if (this->msg_str_) {
         // string already exists
@@ -136,7 +153,7 @@ json_t *Message::process_incoming(str msg_fmt) const {
         // convert from string format
         smatch match;
         auto search_iter(msg_str.c_begin());
-        while (regex_search(search_iter, msg_str.c_end(), match, CQCODE_REGEX)) {
+        while (regex_search(search_iter, msg_str.c_end(), match, regex(R"(\[CQ:((?:.|\r|\n)*?)\])"))) {
             // normal message before this current CQ code
             // NOTE: because "search_iter" is a string::iterator, we are fine to add "search_iter" and "match.position()"
             // if it's a str::iterator, the following line will break

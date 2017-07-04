@@ -21,22 +21,17 @@
 
 #include "common.h"
 
+#include <map>
+
 #define MSG_FMT_STRING "string"
 #define MSG_FMT_ARRAY "array"
 
 class Message {
 public:
-    Message(const str &msg_str) : msg_str_(msg_str), msg_json_(nullptr) {}
-
-    Message(json_t *msg_json) : msg_str_(""), msg_json_(msg_json) {
-        json_incref(msg_json);
-    }
-
-    Message(const Message &other) {
-        this->msg_str_ = other.msg_str_;
-        this->msg_json_ = other.msg_json_;
-        json_incref(this->msg_json_);
-    }
+    Message(const str &msg_str);
+    Message(json_t *msg_json);
+    Message(const Message &other);
+    ~Message();
 
     /**
      * Convert message to a string, which can be sent directly (CQ codes will be enhanced as OUTCOMING).
@@ -50,7 +45,13 @@ public:
      */
     json_t *process_incoming(str msg_fmt = "") const;
 
+    struct Segment {
+        str type;
+        std::map<str, str> data;
+    };
+
 private:
+    std::vector<Segment> segments_;
     str msg_str_;
     json_t *msg_json_;
 };

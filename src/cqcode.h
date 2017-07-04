@@ -25,7 +25,7 @@
 #define CQCODE_ENHANCE_OUTCOMING 1 // message to send out
 
 // 0: full CQ code, 1: function name, 2: params string
-const static std::regex CQCODE_REGEX("\\[CQ:([\\._\\-0-9A-Za-z]+?)(?:\\s*\\]|\\s*,\\s*((?:.|\\r?\\n)*?)\\])");
+const static std::regex CQCODE_REGEX(R"(\[CQ:([0-9A-Za-z]+?)(?:\s*\]|,((?:.|\r|\n)*?)\]))");
 
 str message_escape(const str &msg);
 
