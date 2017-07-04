@@ -174,7 +174,7 @@ Message::Message(const str &msg_str) {
 
 Message::Message(json_t *msg_json) {
     if (json_is_string(msg_json)) {
-        *this = Message(json_string_value(msg_json));
+        *this = Message(str(json_string_value(msg_json)));
     } else if (json_is_array(msg_json)) {
         size_t i;
         json_t *seg;
