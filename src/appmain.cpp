@@ -63,6 +63,7 @@ static void init() {
  */
 CQEVENT(int32_t, __event_enable, 0)
 () {
+    L.d("启用", CQ_APP_FULLNAME);
     L.d("启用", "开始初始化");
     CQ->enabled = true;
     init();
