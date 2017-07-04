@@ -217,8 +217,16 @@ Message::Message(const json &msg_json) {
     if (msg_json.is_string()) {
         this->segments_ = split(msg_json.get<str>());
     } else if (msg_json.is_array()) {
-        for (auto seg : msg_json) { }
-        this->segments_ = msg_json.get<vector<Segment>>();
+        for (auto seg : msg_json) {
+            if (seg.is_object()) {
+                try {
+                    auto s = seg.get<Segment>();
+                    this->segments_.push_back(s);
+                } catch (...) {
+                    // it's not a valid message segment, skip it
+                }
+            }
+        }
     }
 }
 
