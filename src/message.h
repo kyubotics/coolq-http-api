@@ -28,10 +28,11 @@
 
 class Message {
 public:
+    static str escape(const str &msg);
+    static str unescape(const str &msg);
+
     Message(const str &msg_str);
     Message(json_t *msg_json);
-    Message(const Message &other);
-    ~Message();
 
     /**
      * Convert message to a string, which can be sent directly (CQ codes will be enhanced as OUTCOMING).
@@ -48,10 +49,15 @@ public:
     struct Segment {
         str type;
         std::map<str, str> data;
+
+        const static int ENHANCE_INCOMING = 0;
+        const static int ENHANCE_OUTCOMING = 1;
+
+        Segment enhanced(int mode = ENHANCE_OUTCOMING) const;
     };
 
 private:
     std::vector<Segment> segments_;
-    str msg_str_;
-    json_t *msg_json_;
+//    str msg_str_;
+//    json_t *msg_json_;
 };

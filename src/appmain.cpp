@@ -19,7 +19,6 @@
 
 #include "app.h"
 
-#include <regex>
 #include <curl/curl.h>
 
 #include "helpers.h"

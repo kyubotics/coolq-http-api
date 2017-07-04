@@ -25,7 +25,6 @@
 #include <event2/buffer.h>
 
 #include "Message.h"
-#include "cqcode.h"
 #include "helpers.h"
 
 using namespace std;
@@ -77,7 +76,7 @@ str ApiRequest::get_msg_param(const char *key, const char *is_raw_key) const {
     auto msg_str = this->get_str_param(key, "");
     if (msg_str) {
         auto is_raw = this->get_bool_param(is_raw_key, false);
-        return Message(is_raw ? message_escape(msg_str) : msg_str).process_outcoming();
+        return Message(is_raw ? Message::escape(msg_str) : msg_str).process_outcoming();
     }
     return Message(json_object_get(this->json, key)).process_outcoming();
 }

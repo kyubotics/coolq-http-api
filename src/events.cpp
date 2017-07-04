@@ -43,7 +43,7 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
     ENSURE_POST_NEEDED;
 
     if (match_pattern(msg)) {
-        auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:o}",
+        auto json = json_pack("{s:s, s:s, s:s, s:i, s:I, s:o?}",
                               "post_type", "message",
                               "message_type", "private",
                               "sub_type", [&]() {
@@ -87,7 +87,7 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
             anonymous = Anonymous::from_bytes(anonymous_bin).name;
         }
         auto is_anonymous = from_anonymous.length() > 0;
-        auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s, s:o}",
+        auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:s, s:s, s:o?}",
                               "post_type", "message",
                               "message_type", "group",
                               "time", send_time,
@@ -144,7 +144,7 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_disc
     ENSURE_POST_NEEDED;
 
     if (match_pattern(msg)) {
-        auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:o}",
+        auto json = json_pack("{s:s, s:s, s:i, s:I, s:I, s:o?}",
                               "post_type", "message",
                               "message_type", "discuss",
                               "time", send_time,
