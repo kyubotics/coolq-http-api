@@ -58,6 +58,4 @@ public:
 
 private:
     std::vector<Segment> segments_;
-//    str msg_str_;
-//    json_t *msg_json_;
 };
