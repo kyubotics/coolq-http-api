@@ -56,6 +56,7 @@ $ docker run -ti --rm --name cqhttp-test \
 | 语言 | 地址 | 作者 |
 | --- | ---- | --- |
 | PHP | https://github.com/slight-sky/coolq-sdk-php | slight-sky |
+| Python | https://github.com/richardchien/cqhttp-python-sdk | richardchien |
 
 ## 修改、编译
 
