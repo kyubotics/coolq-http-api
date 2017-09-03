@@ -47,101 +47,223 @@ str Message::unescape(const str &msg) {
  * Implement a FSM manually,
  * because the regex lib of VC++ will throw stack overflow in some cases.
  */
-static vector<Message::Segment> split(const str &raw_msg) {
+//static vector<Message::Segment> split(const str &raw_msg) {
+//    vector<Message::Segment> segments;
+//    const static auto TEXT = 0;
+//    const static auto FUNCTION_NAME = 1;
+//    const static auto PARAMS = 2;
+//    auto state = TEXT;
+//    auto end = raw_msg.c_end();
+//    stringstream text_s, function_name_s, params_s;
+//    auto curr_cq_start = end;
+//    for (auto it = raw_msg.c_begin(); it != end; ++it) {
+//        auto curr = *it;
+//        switch (state) {
+//        case TEXT: {
+//        text:
+//            if (curr == '[' && end - it >= 5 /* [CQ:a] at least 5 chars behind */
+//                && *(it + 1) == 'C' && *(it + 2) == 'Q' && *(it + 3) == ':') {
+//                state = FUNCTION_NAME;
+//                curr_cq_start = it;
+//                it += 3;
+//            } else {
+//                text_s << curr;
+//            }
+//            break;
+//        }
+//        case FUNCTION_NAME: {
+//            if (curr >= 'A' && curr <= 'Z'
+//                || curr >= 'a' && curr <= 'z'
+//                || curr >= '0' && curr <= '9') {
+//                function_name_s << curr;
+//            } else if (curr == ',') {
+//                // function name out, params in
+//                state = PARAMS;
+//            } else if (curr == ']') {
+//                // CQ code end, with no params
+//                goto params;
+//            } else {
+//                // unrecognized character
+//                text_s << string(curr_cq_start, it); // mark as text
+//                curr_cq_start = end;
+//                function_name_s = stringstream();
+//                params_s = stringstream();
+//                state = TEXT;
+//                // because the current char may be '[', so we goto text part
+//                goto text;
+//            }
+//            break;
+//        }
+//        case PARAMS: {
+//        params:
+//            if (curr == ']') {
+//                // CQ code end
+//                Message::Segment seg;
+//
+//                seg.type = function_name_s.str();
+//                while (params_s.rdbuf()->in_avail()) {
+//                    // split key and value
+//                    string key, value;
+//                    getline(params_s, key, '=');
+//                    getline(params_s, value, ',');
+//                    seg.data[key] = Message::unescape(value);
+//                }
+//
+//                if (text_s.rdbuf()->in_avail()) {
+//                    // there is a text segment before this CQ code
+//                    segments.push_back(Message::Segment{"text", {{"text", Message::unescape(text_s.str())}}});
+//                    text_s = stringstream();
+//                }
+//
+//                segments.push_back(seg);
+//                curr_cq_start = end;
+//                text_s = stringstream();
+//                function_name_s = stringstream();
+//                params_s = stringstream();
+//                state = TEXT;
+//            } else {
+//                params_s << curr;
+//            }
+//        }
+//        default: break;
+//        }
+//    }
+//
+//    // iterator end, there may be some rest of message we haven't put into segments
+//    switch (state) {
+//    case FUNCTION_NAME:
+//    case PARAMS:
+//        // we are in CQ code, but it ended with no ']', so it's a text segment
+//        text_s << string(curr_cq_start, end);
+//        // should fall through
+//    case TEXT:
+//        if (text_s.rdbuf()->in_avail()) {
+//            segments.push_back(Message::Segment{"text", {{"text", Message::unescape(text_s.str())}}});
+//        }
+//    default: break;
+//    }
+//
+//    return segments;
+//}
+
+const static string CQ_START_FLAG = "[CQ:";
+
+static vector<Message::Segment> split(const str &raw_msg_str) {
+    // to avoid potential problems, we use "string" instead of "str" here
+    auto raw_msg = raw_msg_str.to_bytes();
+
     vector<Message::Segment> segments;
-    const static auto TEXT = 0;
-    const static auto FUNCTION_NAME = 1;
-    const static auto PARAMS = 2;
-    auto state = TEXT;
-    auto end = raw_msg.c_end();
-    stringstream text_s, function_name_s, params_s;
-    auto curr_cq_start = end;
-    for (auto it = raw_msg.c_begin(); it != end; ++it) {
-        auto curr = *it;
-        switch (state) {
-        case TEXT: {
-        text:
-            if (curr == '[' && end - it >= 5 /* [CQ:a] at least 5 chars behind */
-                && *(it + 1) == 'C' && *(it + 2) == 'Q' && *(it + 3) == ':') {
-                state = FUNCTION_NAME;
-                curr_cq_start = it;
-                it += 3;
-            } else {
-                text_s << curr;
-            }
-            break;
-        }
-        case FUNCTION_NAME: {
-            if (curr >= 'A' && curr <= 'Z'
-                || curr >= 'a' && curr <= 'z'
-                || curr >= '0' && curr <= '9') {
-                function_name_s << curr;
-            } else if (curr == ',') {
-                // function name out, params in
-                state = PARAMS;
-            } else if (curr == ']') {
-                // CQ code end, with no params
-                goto params;
-            } else {
-                // unrecognized character
-                text_s << string(curr_cq_start, it); // mark as text
-                curr_cq_start = end;
-                function_name_s = stringstream();
-                params_s = stringstream();
-                state = TEXT;
-                // because the current char may be '[', so we goto text part
-                goto text;
-            }
-            break;
-        }
-        case PARAMS: {
-        params:
-            if (curr == ']') {
-                // CQ code end
-                Message::Segment seg;
 
-                seg.type = function_name_s.str();
-                while (params_s.rdbuf()->in_avail()) {
-                    // split key and value
-                    string key, value;
-                    getline(params_s, key, '=');
-                    getline(params_s, value, ',');
-                    seg.data[key] = Message::unescape(value);
+    stringstream text_buffer_s;
+    auto flush_text_buffer = [&]() {
+                auto text = text_buffer_s.str();
+                if (text.length() > 0) {
+                    Message::Segment segment{"text", {{str("text"), Message::unescape(text)}}};
+                    segments.push_back(segment);
+                    text_buffer_s = stringstream();
+                }
+            };
+
+    auto it = raw_msg.begin();
+    while (it != raw_msg.end()) {
+        auto curr_cq_start_it = search(it, raw_msg.end(), CQ_START_FLAG.begin(), CQ_START_FLAG.end());
+        if (curr_cq_start_it == raw_msg.end()) {
+            // there is no CQ code left
+            text_buffer_s << string(it, curr_cq_start_it);
+            it = curr_cq_start_it;
+        } else {
+            auto temp_it = curr_cq_start_it + CQ_START_FLAG.length();
+
+            stringstream function_name_s, param_s;
+            vector<string> params;
+            auto in_params = false; // initially false, which means in function name
+            auto succeeded = false;
+
+            auto flush_param = [&]() {
+                        auto p = param_s.str();
+                        if (p.length() > 0) {
+                            params.push_back(param_s.str());
+                            param_s = stringstream();
+                        }
+                    };
+
+            while (temp_it != raw_msg.end()) {
+                // scanning the current possible CQ code
+                auto should_stop = false;
+                auto ch = *(temp_it++);
+                switch (ch) {
+                case ',': {
+                    if (!in_params) {
+                        // we were reading function name just now, and now we are switching to params
+                        in_params = true;
+                    } else {
+                        flush_param();
+                    }
+                    break;
+                }
+                case ']': {
+                    // CQ code finished
+                    flush_param();
+                    succeeded = true;
+                    break;
+                }
+                case '[': {
+                    // '[' should never show up inside a CQ code, so we will stop parsing the current one
+                    should_stop = true;
+                    // temp_it now is the next position of '[', we move it back
+                    temp_it -= 1;
+                    break;
+                }
+                default: {
+                    // other characters, we read them in
+                    if (in_params) {
+                        // in params
+                        param_s << ch;
+                    } else {
+                        // in function name
+                        function_name_s << ch;
+                    }
+                    break;
+                }
                 }
 
-                if (text_s.rdbuf()->in_avail()) {
-                    // there is a text segment before this CQ code
-                    segments.push_back(Message::Segment{"text", {{"text", Message::unescape(text_s.str())}}});
-                    text_s = stringstream();
+                if (succeeded || should_stop) {
+                    break;
+                }
+            }
+
+            if (succeeded) {
+                // handle the text segment (if any) before the current CQ code
+                text_buffer_s << string(it, curr_cq_start_it);
+                flush_text_buffer();
+
+                Message::Segment segment;
+
+                segment.type = str(function_name_s.str());
+                function_name_s = stringstream();
+
+                for (auto param_text : params) {
+                    auto pos = param_text.find('=');
+                    auto key = param_text.substr(0, pos);
+                    string value;
+                    if (pos != string::npos && pos + 1 < param_text.length()) {
+                        value = param_text.substr(pos + 1);
+                    }
+                    if (key.length() > 0) {
+                        segment.data[str(key)] = Message::unescape(value);
+                    }
                 }
 
-                segments.push_back(seg);
-                curr_cq_start = end;
-                text_s = stringstream();
-                function_name_s = stringstream();
-                params_s = stringstream();
-                state = TEXT;
+                segments.push_back(segment);
             } else {
-                params_s << curr;
+                text_buffer_s << string(it, temp_it);
             }
-        }
-        default: break;
+            it = temp_it;
         }
     }
 
-    // iterator end, there may be some rest of message we haven't put into segments
-    switch (state) {
-    case FUNCTION_NAME:
-    case PARAMS:
-        // we are in CQ code, but it ended with no ']', so it's a text segment
-        text_s << string(curr_cq_start, end);
-        // should fall through
-    case TEXT:
-        if (text_s.rdbuf()->in_avail()) {
-            segments.push_back(Message::Segment{"text", {{"text", Message::unescape(text_s.str())}}});
-        }
-    default: break;
-    }
+    // flush the possibly remained text
+    flush_text_buffer();
 
     return segments;
 }
