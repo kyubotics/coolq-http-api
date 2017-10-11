@@ -42,7 +42,7 @@
     <ClCompile Include="src\helpers.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\CQ.cpp">
+    <ClCompile Include="src\sdk.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,8 +83,17 @@
     <ClInclude Include="src\helpers.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\CQApp.h">
+    <ClInclude Include="src\sdk_class.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\log_class.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conf\loader.h">
+      <Filter>src\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conf\ini_reader.h">
+      <Filter>src\conf</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -66,19 +66,34 @@ void string_replace(string &str, const string &search, const string &replace) {
     str.swap(ws_ret); // faster than str = wsRet;
 }
 
-///**
-// * Get root directory of CoolQ, including the trailing "\".
-// */
-//str get_coolq_root() {
-//    static str root;
-//    if (!root) {
-//        auto app_dir = CQ->get_app_directory();
-//        auto suffix = str("app\\" CQ_APP_ID "\\");
-//        root = app_dir[slice(0, app_dir.length() - suffix.length())];
-//    }
-//    return root;
-//}
+/**
+ * Get root directory of CoolQ, including the trailing "\".
+ */
+string get_coolq_root() {
+    static string root;
+    if (root.empty()) {
+        auto app_dir = sdk->get_app_directory();
+        //        auto suffix = str("app\\" CQ_APP_ID "\\");
+        //        root = app_dir[slice(0, app_dir.length() - suffix.length())];
+    }
+    return root;
+}
 
 string ansi(const string &s) {
     return string_encode(s, Encodings::ANSI);
+}
+
+bool text_to_bool(const string &text) {
+    auto t = boost::algorithm::to_lower_copy(text);
+    return t == "yes" || t == "true" || t == "1";
+}
+
+namespace std {
+    string to_string(const string &val) {
+        return val;
+    }
+
+    string to_string(bool val) {
+        return val ? "true" : "false";
+    }
 }

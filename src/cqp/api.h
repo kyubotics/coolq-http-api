@@ -63,7 +63,7 @@ API(const char *, getRecord, int32_t auth_code, const char *file, const char *ou
 
 API(int32_t, addLog, int32_t auth_code, int32_t log_level, const char *category, const char *log_msg)
 API(int32_t, setFatal, int32_t auth_code, const char *error_info)
-API(int32_t, setRestart, int32_t auth_code) // currently banned by CQ
+API(int32_t, setRestart, int32_t auth_code) // currently banned by sdk
 
 #ifdef DEFINED_API
 #undef API

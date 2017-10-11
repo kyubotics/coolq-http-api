@@ -1,5 +1,5 @@
 // 
-// helpers.h : Declare helper functions.
+// sdk.cpp : Provide a global Sdk instance.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -17,25 +17,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#pragma once
+#include "sdk_class.h"
 
-#include "common.h"
-
-bool isnumber(const std::string &s); // act as "is_positive_integer", actually
-
-bool isfile(const std::string &path);
-
-long long filesize(const std::string &path);
-
-void string_replace(std::string &str, const std::string &search, const std::string &replace);
-
-std::string get_coolq_root();
-
-std::string ansi(const std::string &s);
-
-bool text_to_bool(const std::string &text);
-
-namespace std {
-    string to_string(const string &val);
-    string to_string(bool val);
-}
+std::optional<Sdk> sdk = std::nullopt; // will be initialized in "Initialize" event

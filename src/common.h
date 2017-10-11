@@ -8,4 +8,6 @@
 
 #include <string>
 #include <optional>
+#include <cstdint>
+#include <boost/algorithm/string.hpp>
 #include "encoding/string.h"

@@ -10,6 +10,8 @@
 
 #include "common.h"
 
-class CQApp;
-extern std::optional<CQApp> CQ;
-#include "CQApp.h"
+class Sdk;
+extern std::optional<Sdk> sdk;
+#include "sdk_class.h"
+
+#include "log_class.h"

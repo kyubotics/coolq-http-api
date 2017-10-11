@@ -19,105 +19,61 @@
 
 //#include "loader.h"
 
-//#include "app.h"
-//
-//#include <fstream>
-//
-//#include "conf/ini.h"
-//#include "helpers.h"
-////#include "Message.h"
-//#include "config_class.h"
-//
-//using namespace std;
-//
-//bool load_configuration(const string &filepath, Config &config) {
-//    // set default values
-//    config.host = "0.0.0.0";
-//    config.port = 5700;
-//    config.post_url = "";
-//    config.post_timeout = 20;
-//    config.token = "";
-//    config.pattern = "";
-//    //config.post_message_format = MSG_FMT_STRING;
-//    config.serve_data_file = false;
-//    config.auto_check_update = false;
-//
-//    auto ansi_filepath = ansi(filepath);
-//    FILE *conf_file = nullptr;
-//    fopen_s(&conf_file, ansi_filepath.c_str(), "r");
-//    if (!conf_file) {
-//        // first init, save default config
-////        L.i("ÈÖçÁΩÆ", "Ê≤°ÊúâÊâæÂà∞ÈÖçÁΩÆÊñá‰ª∂ÔºåÂÜôÂÖ•ÈªòËÆ§ÈÖçÁΩÆ");
-//        ofstream file(ansi_filepath);
-//        if (file.is_open()) {
-//            file << "[general]" << endl
-//                    << "host=0.0.0.0" << endl
-//                    << "port=5700" << endl
-//                    << "post_url=" << endl
-//                    << "post_timeout=20" << endl
-//                    << "token=" << endl
-//                    << "pattern=" << endl
-//                    << "post_message_format=string" << endl
-//                    << "serve_data_file=no" << endl
-//                    << "auto_check_update=no" << endl;
-//            file.close();
-//        }
-//    } else {
-//        // load from config file
-//        auto callback = [&](const string &section, const string &name, const string &value)
-//        {
-//            static auto login_qq_str = str(CQ->get_login_qq());
-//            if (section == "general" || isnumber(section) && login_qq_str == section) {
-//                if (name == "host") {
-//                    config.host = value;
-//                } else if (name == "port") {
-//                    config.port = int(value);
-//                } else if (name == "post_url") {
-//                    config.post_url = value;
-//                } else if (name == "post_timeout") {
-//                    if (value) {
-//                        config.post_timeout = long(long long(value));
-//                    }
-//                } else if (name == "token") {
-//                    config.token = value;
-//                } else if (name == "pattern") {
-//                    config.pattern = regex(value.to_bytes());
-//                } else if (name == "post_message_format") {
-//                    config.post_message_format = value;
-//                } else if (name == "serve_data_file") {
-//                    auto v = value.lower();
-//                    if (v == "yes" || v == "true" || v == "1") {
-//                        config.serve_data_file = true;
-//                    }
-//                } else if (name == "auto_check_update") {
-//                    auto v = value.lower();
-//                    if (v == "yes" || v == "true" || v == "1") {
-//                        config.auto_check_update = true;
-//                    }
-//                }
-//            }
-//            return 1;
-//        };
-//        // pass the real lambda callback as the user data to allow capturing
-//        // see http://bannalia.blogspot.com/2016/07/passing-capturing-c-lambda-functions-as.html
-//        if (0 != ini_parse_file(conf_file, [](void *real_cb, const char *section, const char *name, const char *value)
-//        {
-//            return (*static_cast<decltype(callback)*>(real_cb))(section, name, value);
-//        }, &callback)) {
-//            return false; // failed to parse
-//        }
-//        fclose(conf_file);
-//    }
-//
-//    #define PRINT_CONFIG(key) L.d("ÈÖçÁΩÆ", #key ": " + str(CQ->config.key))
-//    PRINT_CONFIG(host);
-//    PRINT_CONFIG(port);
-//    PRINT_CONFIG(post_url);
-//    PRINT_CONFIG(post_timeout);
-//    PRINT_CONFIG(token);
-//    PRINT_CONFIG(post_message_format);
-//    PRINT_CONFIG(serve_data_file);
-//    PRINT_CONFIG(auto_check_update);
-//
-//    return true;
-//}
+#include "app.h"
+
+#include <fstream>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
+
+#include "helpers.h"
+//#include "Message.h"
+#include "config_class.h"
+
+using namespace std;
+
+optional<Config> load_configuration(const string &filepath) {
+    Config config;
+
+    const auto ansi_filepath = ansi(filepath);
+    if (!isfile(filepath)) {
+        // first init, create default config
+        Log::i(u8"≈‰÷√", u8"√ª”–’“µΩ≈‰÷√Œƒº˛£¨–¥»Îƒ¨»œ≈‰÷√");
+        ofstream file(ansi_filepath);
+        if (file.is_open()) {
+            file << "[general]" << endl
+                    << "host=0.0.0.0" << endl
+                    << "port=5700" << endl
+                    << "post_url=" << endl
+                    << "post_timeout=20" << endl
+                    << "token=" << endl
+                    << "post_message_format=string" << endl
+                    << "serve_data_file=no" << endl
+                    << "auto_check_update=no" << endl;
+            file.close();
+        }
+    } else {
+        // load from config file
+        try {
+            boost::property_tree::ptree pt;
+            read_ini(ansi_filepath, pt);
+            const auto login_qq_str = to_string(sdk->get_login_qq());
+            #define GET_CONFIG(key, type) \
+                config.key = pt.get<type>(login_qq_str + "." #key, config.key); \
+                Log::d(u8"≈‰÷√", #key ": " + to_string(config.key))
+            GET_CONFIG(host, string);
+            GET_CONFIG(port, int);
+            GET_CONFIG(post_url, string);
+            GET_CONFIG(post_timeout, long);
+            GET_CONFIG(token, string);
+            GET_CONFIG(post_message_format, string);
+            GET_CONFIG(serve_data_file, bool);
+            GET_CONFIG(auto_check_update, bool);
+            #undef GET_CONFIG
+        } catch (...) {
+            // failed to load configurations
+            return nullopt;
+        }
+    }
+
+    return config;
+}

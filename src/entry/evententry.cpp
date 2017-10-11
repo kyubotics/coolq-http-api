@@ -19,8 +19,7 @@
 
 #include "app.h"
 
-#include <optional>
-#include <string>
+#include "conf/loader.h"
 
 using namespace std;
 
@@ -29,7 +28,8 @@ using namespace std;
  */
 CQEVENT(const char *, AppInfo, 0)
 () {
-    return CQAPIVERTEXT "," CQAPP_ID;
+    // CoolQ API version: 9
+    return "9," CQAPP_ID;
 }
 
 /**
@@ -37,38 +37,39 @@ CQEVENT(const char *, AppInfo, 0)
  */
 CQEVENT(int32_t, Initialize, 4)
 (const int32_t auth_code) {
-    CQ = CQApp(auth_code);
+    sdk = Sdk(auth_code);
     return 0;
 }
 
-///**
-// * Initialize plugin, called immediately when plugin is enabled.
-// */
-//static void init() {
-//    L.d("初始化", "尝试加载配置文件");
-//    if (load_configuration(CQ->get_app_directory() + "config.cfg", CQ->config)) {
-//        L.i("初始化", "加载配置文件成功");
-//    } else {
-//        L.e("初始化", "加载配置文件失败，请确定配置文件格式和访问权限是否正确");
-//    }
-//}
+/**
+ * Initialize plugin, called immediately when plugin is enabled.
+ */
+static void init() {
+    Log::d(u8"初始化", u8"尝试加载配置文件");
+    if (const auto config = load_configuration(sdk->get_app_directory() + "config.cfg")) {
+        sdk->config = config.value();
+        Log::i(u8"初始化", u8"加载配置文件成功");
+    } else {
+        Log::e(u8"初始化", u8"加载配置文件失败，请确定配置文件格式和访问权限是否正确");
+    }
+}
 
 /**
  * Event: Plugin is enabled.
  */
 CQEVENT(int32_t, __event_enable, 0)
 () {
-    //    L.d("启用", CQ_APP_FULLNAME);
-    //    L.d("启用", "开始初始化");
-    //    CQ->enabled = true;
-    //    init();
-    //    start_httpd();
-    //    L.i("启用", "HTTP API 插件已启用");
-    //
-    //    if (CQ->config.auto_check_update) {
+    Log::d(u8"启用", CQAPP_FULLNAME);
+    Log::d(u8"启用", u8"开始初始化");
+    sdk->enabled = true;
+    init();
+    //start_httpd();
+    Log::i(u8"启用", u8"HTTP API 插件已启用");
+
+    //    if (sdk->config.auto_check_update) {
     //        check_update(false);
     //    }
-    CQ->send_private_msg(1002647525, u8"你好");
+    sdk->send_private_msg(1002647525, u8"你好");
     return 0;
 }
 

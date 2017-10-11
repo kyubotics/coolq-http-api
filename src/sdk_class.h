@@ -1,5 +1,5 @@
 // 
-// CQApp.h : Wrap functions of CoolQ and preserve configurations.
+// Sdk.h : Wrap functions of CoolQ and preserve configurations.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -21,17 +21,17 @@
 
 #include "common.h"
 
-#include <cqp.h>
+#include "cqp/cqp.h"
 
-//#include "conf/Config.h"
+#include "conf/config_class.h"
 #include "encoding/base64.h"
 
-class CQApp {
+class Sdk {
 public:
-    //    Config config;
+    Config config;
     bool enabled = false;
 
-    CQApp(int32_t auth_code) : ac_(auth_code) {}
+    Sdk(int32_t auth_code) : ac_(auth_code) {}
 
     #pragma region Send Message
 
@@ -188,13 +188,13 @@ public:
                          string_encode(msg, Encodings::ANSI).c_str());
     }
 
-    //     int32_t set_fatal(const char *error_info) const {
-    //         return CQ_setFatal(this->ac_, error_info);
-    //     }
-    //     
-    //     int32_t set_restart() const {
-    //         return CQ_setRestart(this->ac_);
-    //     }
+    //int32_t set_fatal(const char *error_info) const {
+    //    return CQ_setFatal(this->ac_, error_info);
+    //}
+    //
+    //int32_t set_restart() const {
+    //    return CQ_setRestart(this->ac_);
+    //}
 
     #pragma endregion
 

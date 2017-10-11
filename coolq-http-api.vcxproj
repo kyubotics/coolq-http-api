@@ -13,7 +13,7 @@
   <ItemGroup>
     <ClCompile Include="src\conf\ini.c" />
     <ClCompile Include="src\conf\loader.cpp" />
-    <ClCompile Include="src\CQ.cpp" />
+    <ClCompile Include="src\sdk.cpp" />
     <ClCompile Include="src\cqp\api.cpp" />
     <ClCompile Include="src\encoding\base64.cpp" />
     <ClCompile Include="src\encoding\md5.cpp" />
@@ -26,7 +26,10 @@
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\conf\config_class.h" />
     <ClInclude Include="src\conf\ini.h" />
-    <ClInclude Include="src\CQApp.h" />
+    <ClInclude Include="src\conf\ini_reader.h" />
+    <ClInclude Include="src\conf\loader.h" />
+    <ClInclude Include="src\log_class.h" />
+    <ClInclude Include="src\sdk_class.h" />
     <ClInclude Include="src\cqp\api.h" />
     <ClInclude Include="src\cqp\api_initiator.h" />
     <ClInclude Include="src\cqp\def.h" />

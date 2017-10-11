@@ -1,5 +1,5 @@
 // 
-// CQ.cpp : Provide a global CQApp instance.
+// loader.h : Define load configuration function.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -17,6 +17,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include "CQApp.h"
+#pragma once
 
-std::optional<CQApp> CQ = std::nullopt; // will be initialized in "Initialize" event
+#include "common.h"
+
+#include "conf/config_class.h"
+
+/**
+* Load configuration file from specified path, to given Config object.
+*
+* \param filepath: path of configuration file
+* \return the output Config object, or nullopt if failed to load
+*/
+std::optional<Config> load_configuration(const std::string &filepath);

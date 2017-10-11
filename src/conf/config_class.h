@@ -24,13 +24,12 @@
 #include <regex>
 
 struct Config {
-    std::string host;
-    int port;
-    std::string post_url;
-    long post_timeout;
-    std::string token;
-    std::regex pattern;
-    std::string post_message_format;
-    bool serve_data_file;
-    bool auto_check_update;
+    std::string host = "0.0.0.0";
+    int port = 5700;
+    std::string post_url = "";
+    long post_timeout = 20;
+    std::string token = "";
+    std::string post_message_format = "string";
+    bool serve_data_file = false;
+    bool auto_check_update = false;
 };
