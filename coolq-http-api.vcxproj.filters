@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{05a585ee-558b-4c0a-8138-14d8b1c7dc10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cqp">
+      <UniqueIdentifier>{438eb2db-3ab9-4e68-9ded-a9c81b9644f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\entry">
+      <UniqueIdentifier>{ace738f4-ed73-41c5-8952-5c8812f3fbbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\encoding">
+      <UniqueIdentifier>{0abf4b1c-0d13-4ca9-85ab-11a14cfe879b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\conf">
+      <UniqueIdentifier>{8e37c943-54f7-4836-a366-8997db42ebb5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\cqp\api.cpp">
+      <Filter>src\cqp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entry\dllentry.cpp">
+      <Filter>src\entry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entry\evententry.cpp">
+      <Filter>src\entry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoding\base64.cpp">
+      <Filter>src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="src\encoding\md5.cpp">
+      <Filter>src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conf\ini.c">
+      <Filter>src\conf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conf\loader.cpp">
+      <Filter>src\conf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\helpers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CQ.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\cqp\api_initiator.h">
+      <Filter>src\cqp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqp\def.h">
+      <Filter>src\cqp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqp\cqp.h">
+      <Filter>src\cqp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqp\api.h">
+      <Filter>src\cqp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\encoding\base64.h">
+      <Filter>src\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="src\encoding\md5.h">
+      <Filter>src\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="src\encoding\string.h">
+      <Filter>src\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conf\ini.h">
+      <Filter>src\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conf\config_class.h">
+      <Filter>src\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\helpers.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CQApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="io.github.richardchien.coolqhttpapi.json" />
+    <None Include="post_build.bat" />
+  </ItemGroup>
+</Project>

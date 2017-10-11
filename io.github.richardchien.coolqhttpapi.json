@@ -1,0 +1,140 @@
+{
+    "ret": 1,
+    "apiver": 9,
+    "name": "HTTP API",
+    "version": "2.1.4",
+    "version_id": 104,
+    "author": "Richard Chien",
+    "description": "CoolQ HTTP API\r\nhttps://github.com/richardchien/coolq-http-api",
+    "event": [
+        {
+            "id": 1003,
+            "type": 1003,
+            "name": "App Enable",
+            "priority": 20000,
+            "function": "_event_enable"
+        },
+        {
+            "id": 1004,
+            "type": 1004,
+            "name": "App Disable",
+            "priority": 20000,
+            "function": "_event_disable"
+        },
+        {
+            "id": 1001,
+            "type": 1001,
+            "name": "CoolQ Start",
+            "priority": 20000,
+            "function": "_event_start"
+        },
+        {
+            "id": 1002,
+            "type": 1002,
+            "name": "CoolQ Exit",
+            "priority": 20000,
+            "function": "_event_exit"
+        },
+        {
+            "id": 1,
+            "type": 21,
+            "name": "Private Message",
+            "function": "_event_private_msg",
+            "priority": 20000
+        },
+        {
+            "id": 2,
+            "type": 2,
+            "name": "Group Message",
+            "function": "_event_group_msg",
+            "priority": 20000
+        },
+        {
+            "id": 3,
+            "type": 4,
+            "name": "Discuss Message",
+            "function": "_event_discuss_msg",
+            "priority": 20000
+        },
+        {
+            "id": 4,
+            "type": 11,
+            "name": "Group Upload",
+            "function": "_event_group_upload",
+            "priority": 20000
+        },
+        {
+            "id": 5,
+            "type": 101,
+            "name": "Group Admin",
+            "function": "_event_group_admin",
+            "priority": 20000
+        },
+        {
+            "id": 6,
+            "type": 102,
+            "name": "Group Decrease",
+            "function": "_event_group_member_decrease",
+            "priority": 20000
+        },
+        {
+            "id": 7,
+            "type": 103,
+            "name": "Group Increase",
+            "function": "_event_group_member_increase",
+            "priority": 20000
+        },
+        {
+            "id": 10,
+            "type": 201,
+            "name": "Friend Add",
+            "function": "_event_friend_add",
+            "priority": 20000
+        },
+        {
+            "id": 8,
+            "type": 301,
+            "name": "Add Friend Request",
+            "function": "_event_add_friend_request",
+            "priority": 20000
+        },
+        {
+            "id": 9,
+            "type": 302,
+            "name": "Add Group Request",
+            "function": "_event_add_group_request",
+            "priority": 20000
+        }
+    ],
+    "menu": [
+        {
+            "name": "¼ì²é¸üÐÂ",
+            "function": "_menu_check_update"
+        }
+    ],
+    "status": [],
+    "auth": [
+        20, // getCookies / getCsrfToken
+        30, // getRecord
+        101, // sendGroupMsg
+        103, // sendDiscussMsg
+        106, // sendPrivateMsg
+        110, // sendLikeV2 / sendLike
+        120, // setGroupKick
+        121, // setGroupBan
+        122, // setGroupAdmin
+        123, // setGroupWholeBan
+        124, // setGroupAnonymousBan
+        125, // setGroupAnonymous
+        126, // setGroupCard
+        127, // setGroupLeave
+        128, // setGroupSpecialTitle
+        130, // getGroupMemberInfoV2 / getGroupMemberInfo
+        131, // getStrangerInfo
+        140, // setDiscussLeave
+        150, // setFriendAddRequest
+        151, // setGroupAddRequest
+        160, // getGroupMemberList
+        161 // getGroupList
+    ]
+}
