@@ -11,22 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\conf\ini.c" />
     <ClCompile Include="src\conf\loader.cpp" />
     <ClCompile Include="src\sdk.cpp" />
     <ClCompile Include="src\cqp\api.cpp" />
-    <ClCompile Include="src\encoding\base64.cpp" />
-    <ClCompile Include="src\encoding\md5.cpp" />
     <ClCompile Include="src\entry\dllentry.cpp" />
     <ClCompile Include="src\entry\evententry.cpp" />
     <ClCompile Include="src\helpers.cpp" />
+    <ClCompile Include="src\utils\base64.cpp" />
+    <ClCompile Include="src\utils\md5.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\conf\config_class.h" />
-    <ClInclude Include="src\conf\ini.h" />
-    <ClInclude Include="src\conf\ini_reader.h" />
     <ClInclude Include="src\conf\loader.h" />
     <ClInclude Include="src\log_class.h" />
     <ClInclude Include="src\sdk_class.h" />
@@ -34,10 +31,11 @@
     <ClInclude Include="src\cqp\api_initiator.h" />
     <ClInclude Include="src\cqp\def.h" />
     <ClInclude Include="src\cqp\cqp.h" />
-    <ClInclude Include="src\encoding\base64.h" />
-    <ClInclude Include="src\encoding\md5.h" />
-    <ClInclude Include="src\encoding\string.h" />
     <ClInclude Include="src\helpers.h" />
+    <ClInclude Include="src\utils\base64.h" />
+    <ClInclude Include="src\utils\curl.h" />
+    <ClInclude Include="src\utils\encoding.h" />
+    <ClInclude Include="src\utils\md5.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
@@ -48,6 +46,8 @@
     <ProjectGuid>{86D67665-C6C5-4140-B37F-73052B9C5126}</ProjectGuid>
     <RootNamespace>coolqhttpapi</RootNamespace>
     <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <VcpkgTriplet>x86-windows-static-md</VcpkgTriplet>
+    <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -98,9 +98,12 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);src\cqp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>crypt32.lib;bcrypt.lib;winhttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if exist ".\post_build.bat" (call ".\post_build.bat" Debug)</Command>
@@ -116,11 +119,14 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);src\cqp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>crypt32.lib;bcrypt.lib;winhttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if exist ".\post_build.bat" (call ".\post_build.bat" Release)</Command>

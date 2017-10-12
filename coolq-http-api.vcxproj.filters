@@ -10,11 +10,11 @@
     <Filter Include="src\entry">
       <UniqueIdentifier>{ace738f4-ed73-41c5-8952-5c8812f3fbbd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\encoding">
-      <UniqueIdentifier>{0abf4b1c-0d13-4ca9-85ab-11a14cfe879b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\conf">
       <UniqueIdentifier>{8e37c943-54f7-4836-a366-8997db42ebb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils">
+      <UniqueIdentifier>{99622cd1-6725-4225-be7b-6dc88e8dbc11}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -27,15 +27,6 @@
     <ClCompile Include="src\entry\evententry.cpp">
       <Filter>src\entry</Filter>
     </ClCompile>
-    <ClCompile Include="src\encoding\base64.cpp">
-      <Filter>src\encoding</Filter>
-    </ClCompile>
-    <ClCompile Include="src\encoding\md5.cpp">
-      <Filter>src\encoding</Filter>
-    </ClCompile>
-    <ClCompile Include="src\conf\ini.c">
-      <Filter>src\conf</Filter>
-    </ClCompile>
     <ClCompile Include="src\conf\loader.cpp">
       <Filter>src\conf</Filter>
     </ClCompile>
@@ -44,6 +35,12 @@
     </ClCompile>
     <ClCompile Include="src\sdk.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\md5.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\base64.cpp">
+      <Filter>src\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,18 +62,6 @@
     <ClInclude Include="src\app.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\encoding\base64.h">
-      <Filter>src\encoding</Filter>
-    </ClInclude>
-    <ClInclude Include="src\encoding\md5.h">
-      <Filter>src\encoding</Filter>
-    </ClInclude>
-    <ClInclude Include="src\encoding\string.h">
-      <Filter>src\encoding</Filter>
-    </ClInclude>
-    <ClInclude Include="src\conf\ini.h">
-      <Filter>src\conf</Filter>
-    </ClInclude>
     <ClInclude Include="src\conf\config_class.h">
       <Filter>src\conf</Filter>
     </ClInclude>
@@ -92,8 +77,17 @@
     <ClInclude Include="src\conf\loader.h">
       <Filter>src\conf</Filter>
     </ClInclude>
-    <ClInclude Include="src\conf\ini_reader.h">
-      <Filter>src\conf</Filter>
+    <ClInclude Include="src\utils\curl.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\base64.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\encoding.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\md5.h">
+      <Filter>src\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

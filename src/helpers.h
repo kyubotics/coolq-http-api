@@ -19,7 +19,8 @@
 
 #pragma once
 
-#include "common.h"
+#include <string>
+#include <memory>
 
 bool isnumber(const std::string &s); // act as "is_positive_integer", actually
 
@@ -38,4 +39,9 @@ bool text_to_bool(const std::string &text);
 namespace std {
     string to_string(const string &val);
     string to_string(bool val);
+}
+
+template <typename T>
+static std::shared_ptr<T> make_shared_array(size_t size) {
+    return std::shared_ptr<T>(new T[size], [](T *p) { delete[] p; });
 }

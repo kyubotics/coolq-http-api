@@ -24,7 +24,7 @@
 #include "cqp/cqp.h"
 
 #include "conf/config_class.h"
-#include "encoding/base64.h"
+#include "utils/base64.h"
 
 class Sdk {
 public:
@@ -142,19 +142,19 @@ public:
         return nick ? string_decode(nick, Encodings::ANSI) : std::string();
     }
 
-    std::string get_stranger_info_raw(int64_t qq, bool no_cache) const {
+    bytes get_stranger_info_raw(int64_t qq, bool no_cache) const {
         return base64_decode(CQ_getStrangerInfo(this->ac_, qq, no_cache));
     }
 
-    std::string get_group_list_raw() const {
+    bytes get_group_list_raw() const {
         return base64_decode(CQ_getGroupList(this->ac_));
     }
 
-    std::string get_group_member_list_raw(int64_t group_id) const {
+    bytes get_group_member_list_raw(int64_t group_id) const {
         return base64_decode(CQ_getGroupMemberList(this->ac_, group_id));
     }
 
-    std::string get_group_member_info_raw(int64_t group_id, int64_t qq, bool no_cache) const {
+    bytes get_group_member_info_raw(int64_t group_id, int64_t qq, bool no_cache) const {
         return base64_decode(CQ_getGroupMemberInfoV2(this->ac_, group_id, qq, no_cache));
     }
 

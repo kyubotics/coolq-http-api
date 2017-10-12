@@ -17,7 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-//#include "loader.h"
+#include "loader.h"
 
 #include "app.h"
 
@@ -32,14 +32,17 @@
 using namespace std;
 
 optional<Config> load_configuration(const string &filepath) {
+    const auto tag = u8"配置";
+
     Config config;
+
+    Log::d(tag, u8"尝试加载配置文件");
 
     const auto ansi_filepath = ansi(filepath);
     if (!isfile(filepath)) {
-        // first init, create default config
-        Log::i(u8"配置", u8"没有找到配置文件，写入默认配置");
-        ofstream file(ansi_filepath);
-        if (file.is_open()) {
+        // create default config
+        Log::i(tag, u8"没有找到配置文件，写入默认配置");
+        if (ofstream file(ansi_filepath); file.is_open()) {
             file << "[general]" << endl
                     << "host=0.0.0.0" << endl
                     << "port=5700" << endl
@@ -50,6 +53,8 @@ optional<Config> load_configuration(const string &filepath) {
                     << "serve_data_file=no" << endl
                     << "auto_check_update=no" << endl;
             file.close();
+        } else {
+            Log::e(tag, u8"写入默认配置失败，请检查文件系统权限");
         }
     } else {
         // load from config file
@@ -57,9 +62,10 @@ optional<Config> load_configuration(const string &filepath) {
             boost::property_tree::ptree pt;
             read_ini(ansi_filepath, pt);
             const auto login_qq_str = to_string(sdk->get_login_qq());
+
             #define GET_CONFIG(key, type) \
                 config.key = pt.get<type>(login_qq_str + "." #key, config.key); \
-                Log::d(u8"配置", #key ": " + to_string(config.key))
+                Log::d(tag, #key ": " + to_string(config.key))
             GET_CONFIG(host, string);
             GET_CONFIG(port, int);
             GET_CONFIG(post_url, string);
@@ -69,8 +75,11 @@ optional<Config> load_configuration(const string &filepath) {
             GET_CONFIG(serve_data_file, bool);
             GET_CONFIG(auto_check_update, bool);
             #undef GET_CONFIG
+
+            Log::i(tag, u8"加载配置文件成功");
         } catch (...) {
             // failed to load configurations
+            Log::e(tag, u8"加载配置文件失败，请检查配置文件格式和访问权限");
             return nullopt;
         }
     }

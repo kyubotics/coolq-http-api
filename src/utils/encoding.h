@@ -1,5 +1,5 @@
 // 
-// string.h : Handle string encodings.
+// encoding.h : Handle string encodings.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -26,18 +26,30 @@
 #include <memory>
 #include <codecvt>
 
+#include "helpers.h"
+
+using bytes = std::string;
+
 static auto multibyte_to_widechar(const int code_page, const char *multibyte_str) {
     const auto len = MultiByteToWideChar(code_page, 0, multibyte_str, -1, nullptr, 0);
-    auto c_wstr_sptr = std::shared_ptr<wchar_t>(new wchar_t[len + 1]);
+    auto c_wstr_sptr = make_shared_array<wchar_t>(len + 1);
     MultiByteToWideChar(code_page, 0, multibyte_str, -1, c_wstr_sptr.get(), len);
     return c_wstr_sptr;
 }
 
 static auto widechar_to_multibyte(const int code_page, const wchar_t *widechar_str) {
     const auto len = WideCharToMultiByte(code_page, 0, widechar_str, -1, nullptr, 0, nullptr, nullptr);
-    auto c_str_sptr = std::shared_ptr<char>(new char[len + 1]);
+    auto c_str_sptr = make_shared_array<char>(len + 1);
     WideCharToMultiByte(code_page, 0, widechar_str, -1, c_str_sptr.get(), len, nullptr, nullptr);
     return c_str_sptr;
+}
+
+static auto ws2s(const std::wstring &ws) {
+    return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().to_bytes(ws);
+}
+
+static auto s2ws(const std::string &s) {
+    return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s);
 }
 
 struct Encodings {
@@ -63,23 +75,22 @@ struct Encodings {
 /**
 * Encode a UTF-8 string into bytes, using the encoding specified.
 */
-static std::string string_encode(const std::string &s, int encoding = Encodings::UTF8) {
-    auto ws = std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s);
-    return std::string(widechar_to_multibyte(encoding, ws.c_str()).get());
+static bytes string_encode(const std::string &s, int encoding = Encodings::UTF8) {
+    auto ws = s2ws(s);
+    return bytes(widechar_to_multibyte(encoding, ws.c_str()).get());
 }
 
 /**
 * Decode bytes into a UTF-8 string, using the encoding specified.
 */
-static std::string string_decode(const std::string &b, int encoding = Encodings::UTF8) {
+static std::string string_decode(const bytes &b, int encoding = Encodings::UTF8) {
     // check if in WinNT (not Wine)
     static auto in_nt = false;
 
     if (!in_nt) {
-        auto hntdll = GetModuleHandleW(L"ntdll.dll");
-        if (hntdll) {
-            auto pwine_get_version = GetProcAddress(hntdll, "wine_get_version");
-            if (!pwine_get_version) {
+        if (const auto hntdll = GetModuleHandleW(L"ntdll.dll")) {
+            if (const auto pwine_get_version = GetProcAddress(hntdll, "wine_get_version");
+                !pwine_get_version) {
                 // has ntdll.dll but not Wine, we assume it is NT
                 in_nt = true;
             }
@@ -93,5 +104,5 @@ static std::string string_decode(const std::string &b, int encoding = Encodings:
     }
 
     auto ws = std::wstring(multibyte_to_widechar(encoding, b.c_str()).get());
-    return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().to_bytes(ws);
+    return ws2s(ws);
 }
