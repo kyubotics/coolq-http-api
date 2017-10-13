@@ -32,16 +32,16 @@
 using namespace std;
 
 optional<Config> load_configuration(const string &filepath) {
-    const auto tag = u8"配置";
+    static const auto TAG = u8"配置";
 
     Config config;
 
-    Log::d(tag, u8"尝试加载配置文件");
+    Log::d(TAG, u8"尝试加载配置文件");
 
     const auto ansi_filepath = ansi(filepath);
     if (!isfile(filepath)) {
         // create default config
-        Log::i(tag, u8"没有找到配置文件，写入默认配置");
+        Log::i(TAG, u8"没有找到配置文件，写入默认配置");
         if (ofstream file(ansi_filepath); file.is_open()) {
             file << "[general]" << endl
                     << "host=0.0.0.0" << endl
@@ -54,7 +54,7 @@ optional<Config> load_configuration(const string &filepath) {
                     << "auto_check_update=no" << endl;
             file.close();
         } else {
-            Log::e(tag, u8"写入默认配置失败，请检查文件系统权限");
+            Log::e(TAG, u8"写入默认配置失败，请检查文件系统权限");
         }
     } else {
         // load from config file
@@ -65,7 +65,7 @@ optional<Config> load_configuration(const string &filepath) {
 
             #define GET_CONFIG(key, type) \
                 config.key = pt.get<type>(login_qq_str + "." #key, config.key); \
-                Log::d(tag, #key ": " + to_string(config.key))
+                Log::d(TAG, #key ": " + to_string(config.key))
             GET_CONFIG(host, string);
             GET_CONFIG(port, int);
             GET_CONFIG(post_url, string);
@@ -76,10 +76,10 @@ optional<Config> load_configuration(const string &filepath) {
             GET_CONFIG(auto_check_update, bool);
             #undef GET_CONFIG
 
-            Log::i(tag, u8"加载配置文件成功");
+            Log::i(TAG, u8"加载配置文件成功");
         } catch (...) {
             // failed to load configurations
-            Log::e(tag, u8"加载配置文件失败，请检查配置文件格式和访问权限");
+            Log::e(TAG, u8"加载配置文件失败，请检查配置文件格式和访问权限");
             return nullopt;
         }
     }

@@ -7,25 +7,22 @@
     <Filter Include="src\cqp">
       <UniqueIdentifier>{438eb2db-3ab9-4e68-9ded-a9c81b9644f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\entry">
-      <UniqueIdentifier>{ace738f4-ed73-41c5-8952-5c8812f3fbbd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\conf">
       <UniqueIdentifier>{8e37c943-54f7-4836-a366-8997db42ebb5}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\utils">
       <UniqueIdentifier>{99622cd1-6725-4225-be7b-6dc88e8dbc11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\message">
+      <UniqueIdentifier>{007d98a8-4e42-452c-b9d3-cbe0ec3f157e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\event">
+      <UniqueIdentifier>{54a79ccc-b4dd-4fb8-a618-5497dc9513c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cqp\api.cpp">
       <Filter>src\cqp</Filter>
-    </ClCompile>
-    <ClCompile Include="src\entry\dllentry.cpp">
-      <Filter>src\entry</Filter>
-    </ClCompile>
-    <ClCompile Include="src\entry\evententry.cpp">
-      <Filter>src\entry</Filter>
     </ClCompile>
     <ClCompile Include="src\conf\loader.cpp">
       <Filter>src\conf</Filter>
@@ -36,11 +33,23 @@
     <ClCompile Include="src\sdk.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\md5.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
     <ClCompile Include="src\utils\base64.cpp">
       <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\message\segment_class.cpp">
+      <Filter>src\message</Filter>
+    </ClCompile>
+    <ClCompile Include="src\message\message_class.cpp">
+      <Filter>src\message</Filter>
+    </ClCompile>
+    <ClCompile Include="src\event\entry.cpp">
+      <Filter>src\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dllentry.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\event\events.cpp">
+      <Filter>src\event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -77,17 +86,20 @@
     <ClInclude Include="src\conf\loader.h">
       <Filter>src\conf</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\curl.h">
-      <Filter>src\utils</Filter>
-    </ClInclude>
     <ClInclude Include="src\utils\base64.h">
       <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\encoding.h">
       <Filter>src\utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\md5.h">
+    <ClInclude Include="src\utils\rest_client.h">
       <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\message\message_class.h">
+      <Filter>src\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\events.h">
+      <Filter>src\event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

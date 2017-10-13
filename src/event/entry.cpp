@@ -19,10 +19,8 @@
 
 #include "app.h"
 
-#include <cpprest/http_client.h>
-#include <nlohmann/json.hpp>
-
 #include "conf/loader.h"
+#include "event/events.h"
 
 using namespace std;
 
@@ -49,9 +47,9 @@ CQEVENT(int32_t, Initialize, 4)
  */
 CQEVENT(int32_t, __event_enable, 0)
 () {
-    const auto tag = u8"启用";
-    Log::d(tag, CQAPP_FULLNAME);
-    Log::d(tag, u8"开始初始化");
+    static const auto TAG = u8"启用";
+    Log::d(TAG, CQAPP_FULLNAME);
+    Log::d(TAG, u8"开始初始化");
     sdk->enabled = true;
 
     if (const auto config = load_configuration(sdk->get_app_directory() + "config.cfg")) {
@@ -59,11 +57,11 @@ CQEVENT(int32_t, __event_enable, 0)
     }
 
     //start_httpd();
-    Log::i(tag, u8"HTTP API 插件已启用");
+    Log::i(TAG, u8"HTTP API 插件已启用");
 
-    //    if (sdk->config.auto_check_update) {
-    //        check_update(false);
-    //    }
+    //if (sdk->config.auto_check_update) {
+    //    check_update(false);
+    //}
     return 0;
 }
 
@@ -91,11 +89,6 @@ CQEVENT(int32_t, __event_exit, 0)
     return 0;
 }
 
-using namespace web::http;
-using namespace web::http::client;
-using namespace concurrency::streams;
-using json = nlohmann::json;
-
 /**
  * Type=21 私聊消息
  * sub_type 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
@@ -103,34 +96,7 @@ using json = nlohmann::json;
 CQEVENT(int32_t, __event_private_msg, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, int32_t font) {
     sdk->send_private_msg(1002647525, u8"你好");
-
-    //    http_client client(L"http://127.0.0.1:8080/");
-    //    client.request(methods::GET).then([](http_response resp) {
-    //        if (resp.status_code() == status_codes::OK) {
-    //            return resp.extract_json();
-    //        }
-    //        return pplx::task_from_result(json::value());
-    //    }).then([](pplx::task<json::value> prev_task) {
-    //        const auto &obj = prev_task.get();
-    //        sdk->send_private_msg(1002647525, ws2s(obj.at(L"c").as_string()));
-    //    }).wait();
-
-    http_client client(L"http://127.0.0.1:8080/");
-    client.request(methods::GET).then([](http_response resp) -> pplx::task<wstring> {
-        if (resp.status_code() == status_codes::OK) {
-            return resp.extract_string(true);
-        }
-        return pplx::task_from_result(wstring());
-    }).then([](pplx::task<wstring> task) {
-        string json_string = ws2s(task.get());
-        sdk->send_private_msg(1002647525, json_string);
-
-        auto j = json::parse(json_string);
-        sdk->send_private_msg(1002647525, j["c"].get<string>());
-    }).wait();
-
-    return CQEVENT_IGNORE;
-    //return event_private_msg(sub_type, send_time, from_qq, string_decode(msg, Encoding::ANSI), font);
+    return event_private_msg(sub_type, send_time, from_qq, string_decode(msg, Encodings::ANSI), font);
 }
 
 ///**
@@ -140,15 +106,15 @@ CQEVENT(int32_t, __event_private_msg, 24)
 //(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg, int32_t font) {
 //    return event_group_msg(sub_type, send_time, from_group, from_qq, string_decode(from_anonymous, Encoding::ANSI), string_decode(msg, Encoding::ANSI), font);
 //}
-//
-///**
-// * Type=4 讨论组消息
-// */
-//CQEVENT(int32_t, __event_discuss_msg, 32)
-//(int32_t sub_type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font) {
-//    return event_discuss_msg(sub_type, send_time, from_discuss, from_qq, string_decode(msg, Encoding::ANSI), font);
-//}
-//
+
+/**
+ * Type=4 讨论组消息
+ */
+CQEVENT(int32_t, __event_discuss_msg, 32)
+(int32_t sub_type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font) {
+    return event_discuss_msg(sub_type, send_time, from_discuss, from_qq, string_decode(msg, Encodings::ANSI), font);
+}
+
 ///**
 // * Type=11 群事件-文件上传
 // */

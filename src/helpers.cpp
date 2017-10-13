@@ -72,9 +72,9 @@ void string_replace(string &str, const string &search, const string &replace) {
 string get_coolq_root() {
     static string root;
     if (root.empty()) {
-        auto app_dir = sdk->get_app_directory();
-        //        auto suffix = str("app\\" CQ_APP_ID "\\");
-        //        root = app_dir[slice(0, app_dir.length() - suffix.length())];
+        const auto app_dir = sdk->get_app_directory();
+        const auto suffix = string("app\\" CQAPP_ID "\\");
+        root = app_dir.substr(0, app_dir.length() - suffix.length());
     }
     return root;
 }

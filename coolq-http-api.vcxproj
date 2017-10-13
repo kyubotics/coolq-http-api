@@ -12,20 +12,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\conf\loader.cpp" />
+    <ClCompile Include="src\dllentry.cpp" />
+    <ClCompile Include="src\event\entry.cpp" />
+    <ClCompile Include="src\event\events.cpp" />
+    <ClCompile Include="src\message\message_class.cpp" />
+    <ClCompile Include="src\message\segment_class.cpp" />
     <ClCompile Include="src\sdk.cpp" />
     <ClCompile Include="src\cqp\api.cpp" />
-    <ClCompile Include="src\entry\dllentry.cpp" />
-    <ClCompile Include="src\entry\evententry.cpp" />
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\utils\base64.cpp" />
-    <ClCompile Include="src\utils\md5.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\conf\config_class.h" />
     <ClInclude Include="src\conf\loader.h" />
+    <ClInclude Include="src\event\events.h" />
     <ClInclude Include="src\log_class.h" />
+    <ClInclude Include="src\message\message_class.h" />
     <ClInclude Include="src\sdk_class.h" />
     <ClInclude Include="src\cqp\api.h" />
     <ClInclude Include="src\cqp\api_initiator.h" />
@@ -33,9 +37,8 @@
     <ClInclude Include="src\cqp\cqp.h" />
     <ClInclude Include="src\helpers.h" />
     <ClInclude Include="src\utils\base64.h" />
-    <ClInclude Include="src\utils\curl.h" />
     <ClInclude Include="src\utils\encoding.h" />
-    <ClInclude Include="src\utils\md5.h" />
+    <ClInclude Include="src\utils\rest_client.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
@@ -45,7 +48,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{86D67665-C6C5-4140-B37F-73052B9C5126}</ProjectGuid>
     <RootNamespace>coolqhttpapi</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <VcpkgTriplet>x86-windows-static-md</VcpkgTriplet>
     <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
@@ -53,13 +56,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -98,8 +101,9 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);src\cqp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4003</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,8 +123,9 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);src\cqp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4003</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

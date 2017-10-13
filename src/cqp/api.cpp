@@ -19,7 +19,7 @@ vector<function<void(HMODULE)>> api_initiators;
         CQ_##ApiName = reinterpret_cast<CQ_##ApiName##_T>(GetProcAddress(dll, "CQ_"#ApiName)); \
     });
 
-#include "api.h"
+#include "./api.h"
 
 #undef API
 

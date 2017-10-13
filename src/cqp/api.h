@@ -5,7 +5,7 @@
 #pragma once
 
 #ifdef API
-#include "api_initiator.h"
+#include "./api_initiator.h"
 #else
 #define DEFINED_API
 #define API(ReturnType, ApiName, ...) \
