@@ -7,6 +7,7 @@
 #define CQAPP_VERSION "3.0.0-dev-1"
 #define CQAPP_FULLNAME CQAPP_NAME " v" CQAPP_VERSION
 #define CQAPP_USER_AGENT "CoolQHttpApi/" CQAPP_VERSION
+#define CQAPP_SERVER "CoolQHttpApi"
 
 #include "common.h"
 

@@ -28,7 +28,11 @@ public:
     }
 };
 
+static const auto TAG = u8"API服务";
+
 void ApiServer::init() {
+    Log::d(TAG, u8"初始化 API 处理函数");
+
     server_.default_resource["GET"]
             = server_.default_resource["POST"]
             = [](shared_ptr<Response> response, shared_ptr<Request> request) {
@@ -39,6 +43,9 @@ void ApiServer::init() {
         const auto path_regex = "^/" + handler_kv.first + "$";
         server_.resource[path_regex]["GET"] = server_.resource[path_regex]["POST"]
                 = [&handler_kv](shared_ptr<Response> response, shared_ptr<Request> request) {
+                    Log::d(TAG, u8"收到 API 请求：" + request->method
+                           + u8" " + request->path + u8"?" + request->query_string);
+
                     auto json_params = json::object();
                     json args = request->parse_query_string(), form;
 
@@ -47,21 +54,24 @@ void ApiServer::init() {
                         if (const auto it = request->header.find("Content-Type");
                             it != request->header.end()) {
                             content_type = it->second;
+                            Log::d(TAG, u8"Content-Type: " + content_type);
                         }
 
                         if (content_type == "application/x-www-form-urlencoded") {
                             form = SimpleWeb::QueryString::parse(request->content.string());
                         } else if (content_type == "application/json") {
                             try {
-                                json_params = json::parse(request->content.string());
+                                json_params = json::parse(request->content.string()); // may throw invalid_argument
                                 if (!json_params.is_object()) {
                                     throw invalid_argument("must be a JSON object");
                                 }
                             } catch (invalid_argument &) {
+                                Log::d(TAG, u8"HTTP 正文的 JSON 无效或者不是对象");
                                 ResponseHelper{400 /* Bad Request */}.write(response);
                                 return;
                             }
                         } else {
+                            Log::d(TAG, u8"Content-Type 不支持");
                             ResponseHelper{406 /* Not Acceptable */}.write(response);
                             return;
                         }
@@ -76,14 +86,39 @@ void ApiServer::init() {
                         }
                     }
 
+                    Log::d(TAG, u8"API 处理函数 " + handler_kv.first + u8" 开始处理请求");
                     ApiResult result;
                     ApiParams params(json_params);
                     handler_kv.second(params, result);
 
-                    decltype(request->header) headers{{"Content-Type", "application/json; charset=UTF-8"}};
-                    response->write(result.json().dump(), headers);
+                    decltype(request->header) headers{
+                        {"Server", CQAPP_SERVER},
+                        {"Content-Type", "application/json; charset=UTF-8"}
+                    };
+                    auto resp_body = result.json().dump();
+                    Log::d(TAG, u8"响应数据已准备完毕：" + resp_body);
+                    response->write(resp_body, headers);
+                    Log::d(TAG, u8"响应内容已发送");
+                    Log::i(TAG, u8"已成功处理一个 API 请求：" + request->path);
                 };
     }
 
     initiated_ = true;
+}
+
+void ApiServer::start(const string &host, const unsigned short port) {
+    server_.config.address = host;
+    server_.config.port = port;
+    thread_ = std::thread([&]() {
+        server_.start();
+    });
+    Log::d(TAG, u8"开启 API 服务成功，开始监听 http://" + host + ":" + to_string(port));
+}
+
+void ApiServer::stop() {
+    server_.stop();
+    if (thread_.joinable()) {
+        thread_.join();
+    }
+    Log::d(TAG, u8"已关闭 API 服务");
 }

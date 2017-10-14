@@ -38,19 +38,20 @@ optional<Config> load_configuration(const string &filepath) {
 
     Log::d(TAG, u8"尝试加载配置文件");
 
+    const auto login_qq_str = to_string(sdk->get_login_qq());
+
     const auto ansi_filepath = ansi(filepath);
     if (!boost::filesystem::is_regular_file(ansi_filepath)) {
         // create default config file
         Log::i(TAG, u8"没有找到配置文件，写入默认配置");
         if (ofstream file(ansi_filepath); file.is_open()) {
-            file << "[general]" << endl
+            file << "[" << login_qq_str << "]" << endl
                     << "host=0.0.0.0" << endl
                     << "port=5700" << endl
                     << "post_url=" << endl
-                    << "post_timeout=20" << endl
                     << "token=" << endl
                     << "post_message_format=string" << endl
-                    << "serve_data_file=no" << endl
+                    << "serve_data_files=no" << endl
                     << "auto_check_update=no" << endl;
             file.close();
         } else {
@@ -62,20 +63,18 @@ optional<Config> load_configuration(const string &filepath) {
     try {
         boost::property_tree::ptree pt;
         read_ini(ansi_filepath, pt);
-        const auto login_qq_str = to_string(sdk->get_login_qq());
 
-            #define GET_CONFIG(key, type) \
-                config.key = pt.get<type>(login_qq_str + "." #key, config.key); \
-                Log::d(TAG, #key "=" + to_string(config.key))
+        #define GET_CONFIG(key, type) \
+            config.key = pt.get<type>(login_qq_str + "." #key, config.key); \
+            Log::d(TAG, #key "=" + to_string(config.key))
         GET_CONFIG(host, string);
         GET_CONFIG(port, unsigned short);
         GET_CONFIG(post_url, string);
-        GET_CONFIG(post_timeout, long);
         GET_CONFIG(token, string);
         GET_CONFIG(post_message_format, string);
-        GET_CONFIG(serve_data_file, bool);
+        GET_CONFIG(serve_data_files, bool);
         GET_CONFIG(auto_check_update, bool);
-            #undef GET_CONFIG
+        #undef GET_CONFIG
 
         Log::i(TAG, u8"加载配置文件成功");
     } catch (...) {
