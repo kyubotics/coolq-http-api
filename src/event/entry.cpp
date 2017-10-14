@@ -19,76 +19,7 @@
 
 #include "app.h"
 
-#include "conf/loader.h"
 #include "event/events.h"
-
-using namespace std;
-
-/*
- * Return app info.
- */
-CQEVENT(const char *, AppInfo, 0)
-() {
-    // CoolQ API version: 9
-    return "9," CQAPP_ID;
-}
-
-/**
- * Get auth code.
- */
-CQEVENT(int32_t, Initialize, 4)
-(const int32_t auth_code) {
-    sdk = Sdk(auth_code);
-    return 0;
-}
-
-/**
- * Event: Plugin is enabled.
- */
-CQEVENT(int32_t, __event_enable, 0)
-() {
-    static const auto TAG = u8"启用";
-
-    Log::d(TAG, CQAPP_FULLNAME);
-    Log::d(TAG, u8"开始初始化");
-    sdk->enabled = true;
-
-    if (const auto config = load_configuration(sdk->get_app_directory() + "config.cfg")) {
-        sdk->config = config.value();
-    }
-
-    //start_httpd();
-    Log::i(TAG, u8"HTTP API 插件已启用");
-
-    //if (sdk->config.auto_check_update) {
-    //    check_update(false);
-    //}
-    return 0;
-}
-
-/**
- * Event: Plugin is disabled.
- */
-CQEVENT(int32_t, __event_disable, 0)
-() {
-    return 0;
-}
-
-/**
-* Event: CoolQ is starting.
-*/
-CQEVENT(int32_t, __event_start, 0)
-() {
-    return 0;
-}
-
-/**
-* Event: CoolQ is exiting.
-*/
-CQEVENT(int32_t, __event_exit, 0)
-() {
-    return 0;
-}
 
 /**
  * Type=21 私聊消息
@@ -185,12 +116,4 @@ CQEVENT(int32_t, __event_add_group_request, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *msg, const char *response_flag) {
     return event_add_group_request(sub_type, send_time, from_group, from_qq, string_decode(msg, Encodings::ANSI),
                                    string_decode(response_flag, Encodings::ANSI));
-}
-
-/**
- * 检查更新菜单项
- */
-CQEVENT(int32_t, __menu_check_update, 0)() {
-    //check_update(true);
-    return 0;
 }

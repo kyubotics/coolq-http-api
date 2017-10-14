@@ -78,9 +78,15 @@ string ansi(const string &s) {
     return string_encode(s, Encodings::ANSI);
 }
 
-bool text_to_bool(const string &text) {
+bool text_to_bool(const string &text, const bool default_val) {
     auto t = boost::algorithm::to_lower_copy(text);
-    return t == "yes" || t == "true" || t == "1";
+    if (t == "yes" || t == "true" || t == "1") {
+        return true;
+    }
+    if (t == "no" || t == "false" || t == "0") {
+        return false;
+    }
+    return default_val;
 }
 
 namespace std {

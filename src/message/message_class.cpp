@@ -197,7 +197,7 @@ string Message::process_outward() const {
 
 json Message::process_inward(optional<Format> fmt) const {
     if (!fmt) {
-        fmt = sdk->config.post_message_format;
+        fmt = config.post_message_format;
     }
 
     vector<Segment> segments;

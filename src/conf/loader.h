@@ -21,7 +21,7 @@
 
 #include "common.h"
 
-#include "conf/config_class.h"
+#include "conf/config_struct.h"
 
 /**
 * Load configuration file from specified path, to given Config object.

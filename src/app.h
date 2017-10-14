@@ -14,4 +14,8 @@ class Sdk;
 extern std::optional<Sdk> sdk;
 #include "sdk_class.h"
 
+struct Config;
+extern Config config;
+#include "conf/config_struct.h"
+
 #include "log_class.h"

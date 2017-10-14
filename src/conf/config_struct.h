@@ -1,5 +1,5 @@
 // 
-// config_class.h : Define the Config structure.
+// config_struct.h : Define the Config structure.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -21,11 +21,9 @@
 
 #include "common.h"
 
-#include <regex>
-
 struct Config {
     std::string host = "0.0.0.0";
-    int port = 5700;
+    unsigned short port = 5700;
     std::string post_url = "";
     long post_timeout = 20;
     std::string token = "";

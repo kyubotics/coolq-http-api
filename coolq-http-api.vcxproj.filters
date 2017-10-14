@@ -22,6 +22,9 @@
     <Filter Include="src\web_server">
       <UniqueIdentifier>{2903b17e-34c2-448f-8b71-32dcf9583e3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\api">
+      <UniqueIdentifier>{d107b753-1225-4f23-9b00-2a1e7cfa7679}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cqp\api.cpp">
@@ -57,6 +60,18 @@
     <ClCompile Include="src\utils\pack_class.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\appentry.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\server_class.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\config.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\handlers.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\api_initiator.h">
@@ -76,9 +91,6 @@
     </ClInclude>
     <ClInclude Include="src\app.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\conf\config_class.h">
-      <Filter>src\conf</Filter>
     </ClInclude>
     <ClInclude Include="src\helpers.h">
       <Filter>src</Filter>
@@ -127,6 +139,15 @@
     </ClInclude>
     <ClInclude Include="src\web_server\crypto.hpp">
       <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\server_class.h">
+      <Filter>src\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conf\config_struct.h">
+      <Filter>src\conf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\types.h">
+      <Filter>src\api</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

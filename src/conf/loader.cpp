@@ -27,7 +27,7 @@
 #include <boost/filesystem.hpp>
 
 #include "helpers.h"
-#include "config_class.h"
+#include "config_struct.h"
 
 using namespace std;
 
@@ -40,7 +40,7 @@ optional<Config> load_configuration(const string &filepath) {
 
     const auto ansi_filepath = ansi(filepath);
     if (!boost::filesystem::is_regular_file(ansi_filepath)) {
-        // create default config
+        // create default config file
         Log::i(TAG, u8"没有找到配置文件，写入默认配置");
         if (ofstream file(ansi_filepath); file.is_open()) {
             file << "[general]" << endl
@@ -56,32 +56,32 @@ optional<Config> load_configuration(const string &filepath) {
         } else {
             Log::e(TAG, u8"写入默认配置失败，请检查文件系统权限");
         }
-    } else {
-        // load from config file
-        try {
-            boost::property_tree::ptree pt;
-            read_ini(ansi_filepath, pt);
-            const auto login_qq_str = to_string(sdk->get_login_qq());
+    }
+
+    // load from config file
+    try {
+        boost::property_tree::ptree pt;
+        read_ini(ansi_filepath, pt);
+        const auto login_qq_str = to_string(sdk->get_login_qq());
 
             #define GET_CONFIG(key, type) \
                 config.key = pt.get<type>(login_qq_str + "." #key, config.key); \
                 Log::d(TAG, #key "=" + to_string(config.key))
-            GET_CONFIG(host, string);
-            GET_CONFIG(port, int);
-            GET_CONFIG(post_url, string);
-            GET_CONFIG(post_timeout, long);
-            GET_CONFIG(token, string);
-            GET_CONFIG(post_message_format, string);
-            GET_CONFIG(serve_data_file, bool);
-            GET_CONFIG(auto_check_update, bool);
+        GET_CONFIG(host, string);
+        GET_CONFIG(port, unsigned short);
+        GET_CONFIG(post_url, string);
+        GET_CONFIG(post_timeout, long);
+        GET_CONFIG(token, string);
+        GET_CONFIG(post_message_format, string);
+        GET_CONFIG(serve_data_file, bool);
+        GET_CONFIG(auto_check_update, bool);
             #undef GET_CONFIG
 
-            Log::i(TAG, u8"加载配置文件成功");
-        } catch (...) {
-            // failed to load configurations
-            Log::e(TAG, u8"加载配置文件失败，请检查配置文件格式和访问权限");
-            return nullopt;
-        }
+        Log::i(TAG, u8"加载配置文件成功");
+    } catch (...) {
+        // failed to load configurations
+        Log::e(TAG, u8"加载配置文件失败，请检查配置文件格式和访问权限");
+        return nullopt;
     }
 
     return config;

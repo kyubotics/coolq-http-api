@@ -23,12 +23,10 @@
 
 #include "cqp/cqp.h"
 
-#include "conf/config_class.h"
 #include "utils/base64.h"
 
 class Sdk {
 public:
-    Config config;
     bool enabled = false;
 
     Sdk(int32_t auth_code) : ac_(auth_code) {}

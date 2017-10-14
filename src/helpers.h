@@ -32,7 +32,7 @@ std::string get_coolq_root();
 
 std::string ansi(const std::string &s);
 
-bool text_to_bool(const std::string &text);
+bool text_to_bool(const std::string &text, const bool default_val = false);
 
 namespace std {
     string to_string(const string &val);

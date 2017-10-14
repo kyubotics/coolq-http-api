@@ -22,7 +22,8 @@
 #include "sdk_class.h"
 extern std::optional<Sdk> sdk;
 
-struct Log {
+class Log {
+public:
     static void i(const std::string &tag, const std::string &msg) {
         log(CQLOG_INFO, tag, msg);
     }

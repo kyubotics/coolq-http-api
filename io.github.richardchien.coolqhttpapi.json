@@ -12,28 +12,28 @@
       "type": 1003,
       "name": "App Enable",
       "priority": 20000,
-      "function": "_event_enable"
+      "function": "Enable"
     },
     {
       "id": 1004,
       "type": 1004,
       "name": "App Disable",
       "priority": 20000,
-      "function": "_event_disable"
+      "function": "Disable"
     },
     {
       "id": 1001,
       "type": 1001,
       "name": "CoolQ Start",
       "priority": 20000,
-      "function": "_event_start"
+      "function": "Start"
     },
     {
       "id": 1002,
       "type": 1002,
       "name": "CoolQ Exit",
       "priority": 20000,
-      "function": "_event_exit"
+      "function": "Exit"
     },
     {
       "id": 1,

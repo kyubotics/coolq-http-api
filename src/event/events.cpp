@@ -8,13 +8,17 @@
 
 using namespace std;
 
-#define ENSURE_POST_NEEDED if (sdk->config.post_url.empty()) { return CQEVENT_IGNORE; }
+#define ENSURE_POST_NEEDED if (config.post_url.empty()) { return CQEVENT_IGNORE; }
 
 static pplx::task<json> post(json &json_body) {
     static const auto TAG = u8"上报";
 
-    return http_client(s2ws(sdk->config.post_url))
-            .request(http::methods::POST, "", json_body.dump(), "application/json")
+    http_request request(http::methods::POST);
+    request.headers().add(L"User-Agent", CQAPP_USER_AGENT);
+    request.headers().add(L"Content-Type", L"application/json; charset=UTF-8");
+    request.set_body(json_body.dump());
+    return http_client(s2ws(config.post_url))
+            .request(request)
             .then([](pplx::task<http_response> task) {
                 auto next_task = pplx::task_from_result<string>("");
                 try {
@@ -25,11 +29,11 @@ static pplx::task<json> post(json &json_body) {
                         next_task = resp.extract_utf8string(true);
                     }
                     Log::d(TAG,
-                           u8"上报数据到 " + sdk->config.post_url + (succeeded ? u8" 成功" : u8" 失败")
+                           u8"上报数据到 " + config.post_url + (succeeded ? u8" 成功" : u8" 失败")
                            + u8"，状态码：" + to_string(resp.status_code()));
                 } catch (http_exception &) {
                     // failed to request
-                    Log::d(TAG, u8"上报地址 " + sdk->config.post_url + u8" 无法访问");
+                    Log::d(TAG, u8"上报地址 " + config.post_url + u8" 无法访问");
                 }
                 return next_task;
             })
@@ -67,8 +71,7 @@ static int32_t handle_response(pplx::task<json> task, const function<void(const 
 static void do_quick_reply(const json &resp_payload, const function<void(const string &)> send_func) {
     static const auto TAG = u8"快速回复";
 
-    if (const auto reply_it = resp_payload.find("reply");
-        reply_it != resp_payload.end() && !reply_it->is_null()) {
+    if (const auto reply_it = resp_payload.find("reply"); reply_it != resp_payload.end() && !reply_it->is_null()) {
         auto reply = *reply_it;
         if (reply.is_string()) {
             if (const auto auto_escape_it = resp_payload.find("auto_escape");
