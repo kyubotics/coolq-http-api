@@ -19,6 +19,9 @@
     <Filter Include="src\event">
       <UniqueIdentifier>{54a79ccc-b4dd-4fb8-a618-5497dc9513c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\web_server">
+      <UniqueIdentifier>{2903b17e-34c2-448f-8b71-32dcf9583e3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cqp\api.cpp">
@@ -109,6 +112,21 @@
     </ClInclude>
     <ClInclude Include="src\structs.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\server_http.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\server_https.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\status_code.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\utility.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\crypto.hpp">
+      <Filter>src\web_server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -21,13 +21,13 @@
 
 #include <cpprest/filestream.h>
 #include <websocketpp/common/md5.hpp>
+#include <boost/filesystem.hpp>
 
 #include "./message_class.h"
 #include "utils/rest_client.h"
 
 using namespace std;
 using boost::algorithm::starts_with;
-using utility::conversions::to_string_t;
 using websocketpp::md5::md5_hash_hex;
 
 static Message::Segment enhance_remote_file(const Message::Segment &raw, string data_dir);
@@ -68,15 +68,17 @@ static Message::Segment enhance_remote_file(const Message::Segment &raw, string 
 
     if (starts_with(file, "http://") || starts_with(file, "https://")) {
         const auto &url = file;
+        const auto ws_url = s2ws(url);
         const auto filename = md5_hash_hex(url) + ".tmp"; // despite of the format, we store all images as ".tmp"
         const auto filepath = get_coolq_root() + "data\\" + data_dir + "\\" + filename;
+        const auto ws_filepath = s2ws(filepath);
 
         // check if to use cache
         auto use_cache = true; // use cache by default
         if (segment.data.find("cache") != segment.data.end() && segment.data["cache"] == "0") {
             use_cache = false;
         }
-        const auto cached = isfile(filepath);
+        const auto cached = boost::filesystem::is_regular_file(ws_filepath);
 
         if (!cached || !use_cache) {
             // perform download
@@ -84,11 +86,10 @@ static Message::Segment enhance_remote_file(const Message::Segment &raw, string 
             using concurrency::streams::fstream;
 
             optional<ostream> file_stream;
-            const auto ws_filepath = to_string_t(filepath);
+            
             fstream::open_ostream(ws_filepath).then([&](ostream out_file) {
                 file_stream = out_file;
 
-                const auto ws_url = to_string_t(url);
                 http_client client(ws_url);
                 http_request request(http::methods::GET);
                 request.headers().add(L"User-Agent",

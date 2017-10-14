@@ -24,9 +24,7 @@
 
 bool isnumber(const std::string &s); // act as "is_positive_integer", actually
 
-bool isfile(const std::string &path);
-
-long long filesize(const std::string &path);
+//bool isfile(const std::string &path);
 
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
 

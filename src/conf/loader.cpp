@@ -24,9 +24,9 @@
 #include <fstream>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
+#include <boost/filesystem.hpp>
 
 #include "helpers.h"
-//#include "Message.h"
 #include "config_class.h"
 
 using namespace std;
@@ -39,7 +39,7 @@ optional<Config> load_configuration(const string &filepath) {
     Log::d(TAG, u8"尝试加载配置文件");
 
     const auto ansi_filepath = ansi(filepath);
-    if (!isfile(filepath)) {
+    if (!boost::filesystem::is_regular_file(ansi_filepath)) {
         // create default config
         Log::i(TAG, u8"没有找到配置文件，写入默认配置");
         if (ofstream file(ansi_filepath); file.is_open()) {

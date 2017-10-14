@@ -22,6 +22,7 @@
 #include "app.h"
 
 #include <cctype>
+#include <boost/filesystem.hpp>
 
 using namespace std;
 
@@ -35,19 +36,13 @@ bool isnumber(const string &s) {
 }
 
 bool isfile(const string &path) {
-    struct stat st;
-    if (stat(ansi(path).c_str(), &st) < 0) {
-        return false;
-    }
-    return (st.st_mode & S_IFMT) != S_IFDIR;
-}
+    //struct stat st;
+    //if (stat(ansi(path).c_str(), &st) < 0) {
+    //    return false;
+    //}
+    //return (st.st_mode & S_IFMT) != S_IFDIR;
 
-long long filesize(const string &path) {
-    struct stat st;
-    if (stat(ansi(path).c_str(), &st) < 0 || (st.st_mode & S_IFMT) == S_IFDIR) {
-        return -1;
-    }
-    return st.st_size;
+    return boost::filesystem::is_regular_file(s2ws(path));
 }
 
 void string_replace(string &str, const string &search, const string &replace) {

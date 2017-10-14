@@ -13,7 +13,7 @@ using namespace std;
 static pplx::task<json> post(json &json_body) {
     static const auto TAG = u8"ÉÏ±¨";
 
-    return http_client(utility::conversions::to_string_t(sdk->config.post_url))
+    return http_client(s2ws(sdk->config.post_url))
             .request(http::methods::POST, "", json_body.dump(), "application/json")
             .then([](pplx::task<http_response> task) {
                 auto next_task = pplx::task_from_result<string>("");
