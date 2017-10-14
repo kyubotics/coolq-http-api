@@ -95,17 +95,16 @@ CQEVENT(int32_t, __event_exit, 0)
  */
 CQEVENT(int32_t, __event_private_msg, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, int32_t font) {
-    sdk->send_private_msg(1002647525, u8"你好");
     return event_private_msg(sub_type, send_time, from_qq, string_decode(msg, Encodings::ANSI), font);
 }
 
-///**
-// * Type=2 群消息
-// */
-//CQEVENT(int32_t, __event_group_msg, 36)
-//(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg, int32_t font) {
-//    return event_group_msg(sub_type, send_time, from_group, from_qq, string_decode(from_anonymous, Encoding::ANSI), string_decode(msg, Encoding::ANSI), font);
-//}
+/**
+ * Type=2 群消息
+ */
+CQEVENT(int32_t, __event_group_msg, 36)
+(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg, int32_t font) {
+    return event_group_msg(sub_type, send_time, from_group, from_qq, string_decode(from_anonymous, Encodings::ANSI), string_decode(msg, Encodings::ANSI), font);
+}
 
 /**
  * Type=4 讨论组消息

@@ -51,6 +51,9 @@
     <ClCompile Include="src\event\events.cpp">
       <Filter>src\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\pack_class.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\api_initiator.h">
@@ -100,6 +103,12 @@
     </ClInclude>
     <ClInclude Include="src\event\events.h">
       <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\pack_class.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\structs.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

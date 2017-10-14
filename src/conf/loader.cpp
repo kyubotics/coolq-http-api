@@ -65,7 +65,7 @@ optional<Config> load_configuration(const string &filepath) {
 
             #define GET_CONFIG(key, type) \
                 config.key = pt.get<type>(login_qq_str + "." #key, config.key); \
-                Log::d(TAG, #key ": " + to_string(config.key))
+                Log::d(TAG, #key "=" + to_string(config.key))
             GET_CONFIG(host, string);
             GET_CONFIG(port, int);
             GET_CONFIG(post_url, string);
