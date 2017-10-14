@@ -40,7 +40,7 @@ struct Stranger {
         };
     }
 
-    static Stranger from_bytes(bytes &bytes) {
+    static Stranger from_bytes(const bytes &bytes) {
         auto pack = Pack(bytes);
         Stranger stranger;
         stranger.user_id = pack.pop_int64();
@@ -64,7 +64,7 @@ struct Group {
         };
     }
 
-    static Group from_bytes(bytes &bytes) {
+    static Group from_bytes(const bytes &bytes) {
         auto pack = Pack(bytes);
         Group group;
         group.group_id = pack.pop_int64();
@@ -112,7 +112,7 @@ struct GroupMember {
         };
     }
 
-    static GroupMember from_bytes(bytes &bytes) {
+    static GroupMember from_bytes(const bytes &bytes) {
         auto pack = Pack(bytes);
         GroupMember member;
         member.group_id = pack.pop_int64();
@@ -148,7 +148,7 @@ struct Anonymous {
         };
     }
 
-    static Anonymous from_bytes(bytes &bytes) {
+    static Anonymous from_bytes(const bytes &bytes) {
         auto pack = Pack(bytes);
         Anonymous anonymous;
         anonymous.id = pack.pop_int64();
@@ -175,7 +175,7 @@ struct GroupFile {
         };
     }
 
-    static GroupFile from_bytes(bytes &bytes) {
+    static GroupFile from_bytes(const bytes &bytes) {
         auto pack = Pack(bytes);
         GroupFile file;
         file.id = pack.pop_string();
