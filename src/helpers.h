@@ -21,6 +21,7 @@
 
 #include <string>
 #include <memory>
+#include <optional>
 
 bool isfile(const std::string &path);
 
@@ -28,7 +29,8 @@ void string_replace(std::string &str, const std::string &search, const std::stri
 
 std::string ansi(const std::string &s);
 
-bool to_bool(const std::string &str, const bool default_val = false);
+bool to_bool(const std::string &str, const bool default_val);
+std::optional<bool> to_bool(const std::string &str);
 
 namespace std {
     string to_string(const string &val);

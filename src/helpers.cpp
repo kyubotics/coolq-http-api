@@ -21,7 +21,6 @@
 
 #include "app.h"
 
-#include <cctype>
 #include <boost/filesystem.hpp>
 
 using namespace std;
@@ -57,14 +56,19 @@ string ansi(const string &s) {
 }
 
 bool to_bool(const string &str, const bool default_val) {
-    auto s = boost::algorithm::to_lower_copy(str);
+    auto result = to_bool(str);
+    return result ? result.value() : default_val;
+}
+
+optional<bool> to_bool(const string &str) {
+    const auto s = boost::algorithm::to_lower_copy(str);
     if (s == "yes" || s == "true" || s == "1") {
         return true;
     }
     if (s == "no" || s == "false" || s == "0") {
         return false;
     }
-    return default_val;
+    return nullopt;
 }
 
 namespace std {

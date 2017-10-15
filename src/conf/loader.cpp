@@ -68,14 +68,8 @@ optional<Config> load_configuration(const string &filepath) {
 
         struct string_to_bool_translator {
             boost::optional<bool> get_value(const string &s) const {
-                const auto tmp = boost::to_lower_copy(s);
-                if (tmp == "true" || tmp == "1" || tmp == "yes" || tmp == "on") {
-                    return boost::make_optional(true);
-                }
-                if (tmp == "false" || tmp == "0" || tmp == "no" || tmp == "off") {
-                    return boost::make_optional(false);
-                }
-                return boost::none;
+                auto b_opt = to_bool(s);
+                return b_opt ? boost::make_optional<bool>(b_opt.value()) : boost::none;
             }
         };
 
