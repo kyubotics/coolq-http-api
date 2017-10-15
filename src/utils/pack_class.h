@@ -1,5 +1,6 @@
 // 
-// pack_class.h : Define Pack class, which is to help parse information from raw bytes.
+// pack_class.h : Define Pack class,
+// which is to help parse information from raw bytes.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 

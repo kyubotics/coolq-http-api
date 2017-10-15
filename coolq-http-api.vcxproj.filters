@@ -72,6 +72,9 @@
     <ClCompile Include="src\cqp\sdk.cpp">
       <Filter>src\cqp</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\params_class.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
@@ -148,6 +151,9 @@
     </ClInclude>
     <ClInclude Include="src\cqp\sdk_class.h">
       <Filter>src\cqp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\params_class.h">
+      <Filter>src\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

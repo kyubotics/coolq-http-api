@@ -23,6 +23,7 @@
 
 #include "./types.h"
 #include "structs.h"
+#include "utils/params_class.h"
 
 using namespace std;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
@@ -38,11 +39,11 @@ static bool __add_api_handler(const string &name, ApiHandler handler) {
 }
 
 #define HANDLER(handler_name) \
-    static void __##handler_name(const ApiParams &, ApiResult &); \
+    static void __##handler_name(const Params &, ApiResult &); \
     static bool __dummy_##handler_name = __add_api_handler(#handler_name, __##handler_name); \
-    static void __##handler_name(const ApiParams &params, ApiResult &result)
+    static void __##handler_name(const Params &params, ApiResult &result)
 
-static void handle_async(const ApiParams &params, ApiResult &result, ApiHandler handler) {
+static void handle_async(const Params &params, ApiResult &result, ApiHandler handler) {
     static const auto TAG = u8"APIÒì²½";
     if (pool) {
         pool->push([params, result, handler](int) {

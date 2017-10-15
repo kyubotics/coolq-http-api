@@ -24,10 +24,13 @@
 #include <openssl/hmac.h>
 
 #include "utils/rest_client.h"
+#include "utils/params_class.h"
 #include "message/message_class.h"
 #include "structs.h"
 
 using namespace std;
+
+static const auto TAG = u8"上报";
 
 #define ENSURE_POST_NEEDED if (config.post_url.empty()) { return CQEVENT_IGNORE; }
 
@@ -50,8 +53,6 @@ static string hmac_sha1_hex(string key, string msg) {
 }
 
 static pplx::task<json> post(json &json_body) {
-    static const auto TAG = u8"上报";
-
     http_request request(http::methods::POST);
     request.headers().add(L"User-Agent", CQAPP_USER_AGENT);
     request.headers().add(L"Content-Type", L"application/json; charset=UTF-8");
@@ -89,18 +90,18 @@ static pplx::task<json> post(json &json_body) {
             });
 }
 
-static int32_t handle_response(pplx::task<json> task, const function<void(const json &)> func = nullptr) {
-    static const auto TAG = u8"上报";
-
+static int32_t handle_response(pplx::task<json> task, const function<void(const Params &)> func = nullptr) {
     try {
         if (const auto resp_payload = task.get(); resp_payload.is_object()) {
-            // custom handler
-            if (func) {
-                func(resp_payload);
+            Params params;
+            if (resp_payload.is_object()) {
+                params = Params(resp_payload);
             }
 
-            if (const auto block_it = resp_payload.find("block");
-                block_it != resp_payload.end() && block_it->is_boolean() && *block_it) {
+            // custom handler
+            if (func) func(params);
+
+            if (params.get_bool("block", false)) {
                 return CQEVENT_BLOCK;
             }
         }
@@ -109,41 +110,6 @@ static int32_t handle_response(pplx::task<json> task, const function<void(const 
         Log::d(TAG, u8"上报响应不是有效的 JSON，已忽略");
     }
     return CQEVENT_IGNORE;
-}
-
-static void do_quick_reply(const json &resp_payload, const function<void(const string &)> send_func) {
-    static const auto TAG = u8"快速回复";
-
-    if (const auto reply_it = resp_payload.find("reply"); reply_it != resp_payload.end() && !reply_it->is_null()) {
-        auto reply = *reply_it;
-        if (reply.is_string()) {
-            if (const auto auto_escape_it = resp_payload.find("auto_escape");
-                auto_escape_it != resp_payload.end() && auto_escape_it->is_boolean() && *auto_escape_it) {
-                reply = Message::escape(reply.get<string>());
-            }
-        }
-        if (send_func) {
-            const auto reply_str = Message(reply).process_outward();
-            send_func(reply_str);
-            Log::d(TAG, u8"已快速回复：" + reply_str);
-        }
-    }
-}
-
-/**
- * Call "func" if the "key" exists in "resp_payload" and the type matches the template "Type".
- */
-template <typename Type>
-static void handle_key(const json &resp_payload, const string &key, function<void(const Type &)> func) {
-    if (const auto it = resp_payload.find(key); it != resp_payload.end()) {
-        try {
-            if (func) {
-                func(it->get<Type>());
-            }
-        } catch (domain_error &) {
-            // type doesn't match
-        }
-    }
 }
 
 int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, const string &msg, int32_t font) {
@@ -173,10 +139,11 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
         {"font", font}
     };
 
-    return handle_response(post(payload), [&](auto &resp_payload) {
-        do_quick_reply(resp_payload, [&](auto &reply) {
+    return handle_response(post(payload), [&](const Params &params) {
+        const auto reply = params.get_message("reply");
+        if (!reply.empty()) {
             sdk->send_private_msg(from_qq, reply);
-        });
+        }
     });
 }
 
@@ -203,31 +170,25 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
         {"font", font}
     };
 
-    return handle_response(post(payload), [&](auto &resp_payload) {
-        do_quick_reply(resp_payload, [&](auto &reply) {
-            auto prefix = "[CQ:at,qq=" + to_string(from_qq) + "] "; // at sender by default
-            handle_key<bool>(resp_payload, "at_sender", [&](auto at_sender) {
-                if (!at_sender) {
-                    prefix = "";
-                }
-            });
+    return handle_response(post(payload), [&](const Params &params) {
+        const auto reply = params.get_message("reply");
+        if (!reply.empty()) {
+            auto prefix = params.get_bool("at_sender", true) ? "[CQ:at,qq=" + to_string(from_qq) + "] " : "";
             sdk->send_group_msg(from_group, prefix + reply);
-        });
+        }
 
-        handle_key<bool>(resp_payload, "kick", [&](auto kick) {
-            if (!is_anonymous) {
-                sdk->set_group_kick(from_group, from_qq, false);
-            }
-        });
+        if (params.get_bool("kick", false) && !is_anonymous) {
+            sdk->set_group_kick(from_group, from_qq, false);
+        }
 
-        handle_key<bool>(resp_payload, "ban", [&](auto ban) {
+        if (params.get_bool("ban", false)) {
             const auto ban_duration = 30 * 60; // 30 minutes by default
             if (is_anonymous) {
                 sdk->set_group_anonymous_ban(from_group, from_anonymous, ban_duration);
             } else {
                 sdk->set_group_ban(from_group, from_qq, ban_duration);
             }
-        });
+        }
     });
 }
 
@@ -245,16 +206,12 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_disc
         {"font", font}
     };
 
-    return handle_response(post(payload), [&](auto &resp_payload) {
-        do_quick_reply(resp_payload, [&](auto &reply) {
-            auto prefix = "[CQ:at,qq=" + to_string(from_qq) + "] "; // at sender by default
-            handle_key<bool>(resp_payload, "at_sender", [&prefix](auto at_sender) {
-                if (!at_sender) {
-                    prefix = "";
-                }
-            });
+    return handle_response(post(payload), [&](const Params &params) {
+        const auto reply = params.get_message("reply");
+        if (!reply.empty()) {
+            auto prefix = params.get_bool("at_sender", true) ? "[CQ:at,qq=" + to_string(from_qq) + "] " : "";
             sdk->send_discuss_msg(from_discuss, prefix + reply);
-        });
+        }
     });
 }
 
@@ -385,14 +342,12 @@ int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t fr
         {"flag", response_flag}
     };
 
-    return handle_response(post(payload), [&](auto &resp_payload) {
-        handle_key<bool>(resp_payload, "approve", [&](auto approve) {
-            string remark;
-            handle_key<string>(resp_payload, "remark", [&remark](auto &r) {
-                remark = r;
-            });
-            sdk->set_friend_add_request(response_flag, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY, remark);
-        });
+    return handle_response(post(payload), [&](const Params &params) {
+        if (auto approve_opt = params.get<bool>("approve"); approve_opt) {
+            auto approve = approve_opt.value();
+            sdk->set_friend_add_request(response_flag, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY,
+                                        params.get_string("remark"));
+        }
     });
 }
 
@@ -421,13 +376,11 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
         {"flag", response_flag}
     };
 
-    return handle_response(post(payload), [&](auto &resp_payload) {
-        handle_key<bool>(resp_payload, "approve", [&](auto approve) {
-            string reason;
-            handle_key<string>(resp_payload, "reason", [&reason](auto &r) {
-                reason = r;
-            });
-            sdk->set_group_add_request(response_flag, sub_type, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY, reason);
-        });
+    return handle_response(post(payload), [&](const Params &params) {
+        if (auto approve_opt = params.get<bool>("approve"); approve_opt) {
+            auto approve = approve_opt.value();
+            sdk->set_group_add_request(response_flag, sub_type, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY,
+                                       params.get_string("reason"));
+        }
     });
 }

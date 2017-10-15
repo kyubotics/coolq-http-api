@@ -22,66 +22,68 @@
 #include "common.h"
 
 #include "web_server/server_http.hpp"
-#include "message/message_class.h"
+#include "utils/params_class.h"
 
-struct ApiParams {
-    ApiParams(const json &j) : params_(j) {}
+//#include "message/message_class.h"
 
-    json get(const std::string &key) const {
-        if (const auto it = params_.find(key); it != params_.end()) {
-            return *it;
-        }
-        return json(nullptr);
-    }
-
-    std::string get_string(const std::string &key, const std::string &default_val = "") const {
-        auto result = default_val;
-        if (auto v = get(key); v.is_string()) {
-            return v.get<std::string>();
-        }
-        return result;
-    }
-
-    std::string get_message(const std::string &key = "message",
-                            const std::string &auto_escape_key = "auto_escape") const {
-        if (auto msg = get(key); !msg.is_null()) {
-            if (msg.is_string()) {
-                if (get_bool(auto_escape_key)) {
-                    msg = Message::escape(msg.get<std::string>());
-                }
-            }
-            return Message(msg).process_outward();
-        }
-        return "";
-    }
-
-    int64_t get_integer(const std::string &key, const int64_t default_val = 0) const {
-        auto result = default_val;
-        if (auto v = get(key); v.is_string()) {
-            try {
-                result = stoll(v.get<std::string>());
-            } catch (std::invalid_argument &) {
-                // invalid integer string
-            }
-        } else if (v.is_number_integer()) {
-            result = v.get<int64_t>();
-        }
-        return result;
-    }
-
-    bool get_bool(const std::string &key, const bool default_val = false) const {
-        auto result = default_val;
-        if (auto v = get(key); v.is_string()) {
-            result = to_bool(v.get<std::string>(), default_val);
-        } else if (v.is_boolean()) {
-            result = v.get<bool>();
-        }
-        return result;
-    }
-
-private:
-    json params_;
-};
+//struct ApiParams {
+//    ApiParams(const json &j) : params_(j) {}
+//
+//    json get(const std::string &key) const {
+//        if (const auto it = params_.find(key); it != params_.end()) {
+//            return *it;
+//        }
+//        return json(nullptr);
+//    }
+//
+//    std::string get_string(const std::string &key, const std::string &default_val = "") const {
+//        auto result = default_val;
+//        if (auto v = get(key); v.is_string()) {
+//            return v.get<std::string>();
+//        }
+//        return result;
+//    }
+//
+//    std::string get_message(const std::string &key = "message",
+//                            const std::string &auto_escape_key = "auto_escape") const {
+//        if (auto msg = get(key); !msg.is_null()) {
+//            if (msg.is_string()) {
+//                if (get_bool(auto_escape_key)) {
+//                    msg = Message::escape(msg.get<std::string>());
+//                }
+//            }
+//            return Message(msg).process_outward();
+//        }
+//        return "";
+//    }
+//
+//    int64_t get_integer(const std::string &key, const int64_t default_val = 0) const {
+//        auto result = default_val;
+//        if (auto v = get(key); v.is_string()) {
+//            try {
+//                result = stoll(v.get<std::string>());
+//            } catch (std::invalid_argument &) {
+//                // invalid integer string
+//            }
+//        } else if (v.is_number_integer()) {
+//            result = v.get<int64_t>();
+//        }
+//        return result;
+//    }
+//
+//    bool get_bool(const std::string &key, const bool default_val = false) const {
+//        auto result = default_val;
+//        if (auto v = get(key); v.is_string()) {
+//            result = to_bool(v.get<std::string>(), default_val);
+//        } else if (v.is_boolean()) {
+//            result = v.get<bool>();
+//        }
+//        return result;
+//    }
+//
+//private:
+//    json params_;
+//};
 
 struct ApiResult {
     using RetCode = int;
@@ -119,5 +121,5 @@ struct ApiResult {
     }
 };
 
-using ApiHandler = std::function<void(const ApiParams &, ApiResult &)>;
+using ApiHandler = std::function<void(const Params &, ApiResult &)>;
 using ApiHandlerMap = std::map<std::string, ApiHandler>;
