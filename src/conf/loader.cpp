@@ -52,7 +52,8 @@ optional<Config> load_configuration(const string &filepath) {
                     << "token=" << endl
                     << "post_message_format=string" << endl
                     << "serve_data_files=no" << endl
-                    << "auto_check_update=no" << endl;
+                    << "auto_check_update=no" << endl
+                    << "thread_pool_size=4" << endl;
             file.close();
         } else {
             Log::e(TAG, u8"写入默认配置失败，请检查文件系统权限");
@@ -74,6 +75,7 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(post_message_format, string);
         GET_CONFIG(serve_data_files, bool);
         GET_CONFIG(auto_check_update, bool);
+        GET_CONFIG(thread_pool_size, int);
         #undef GET_CONFIG
 
         Log::i(TAG, u8"加载配置文件成功");

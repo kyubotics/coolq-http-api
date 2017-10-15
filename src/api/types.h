@@ -71,6 +71,8 @@ struct ApiResult {
         static const RetCode OK = 0;
         static const RetCode DEFAULT_ERROR = 100;
         static const RetCode INVALID_DATA = 102; // the data that CoolQ returns is invalid
+        static const RetCode ASYNC = 200;
+        static const RetCode BAD_THREAD_POOL = 201; // the thread pool isn't properly initiated
     };
 
     RetCode retcode; // succeeded: 0, lack of parameters or invalid ones: 1xx, CQ error code: -11, -23, etc... (< 0)
@@ -79,8 +81,19 @@ struct ApiResult {
     ApiResult() : retcode(RetCodes::DEFAULT_ERROR) {}
 
     json json() const {
+        std::string status;
+        switch (retcode) {
+        case RetCodes::OK:
+            status = "ok";
+            break;
+        case RetCodes::ASYNC:
+            status = "async";
+            break;
+        default:
+            status = "failed";
+        }
         return {
-            {"status", retcode == RetCodes::OK ? "ok" : "failed"},
+            {"status", status},
             {"retcode", retcode},
             {"data", data}
         };

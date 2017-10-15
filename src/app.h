@@ -19,4 +19,7 @@ struct Config;
 extern Config config;
 #include "conf/config_struct.h"
 
+#include "ctpl/ctpl_stl.h"
+extern std::shared_ptr<ctpl::thread_pool> pool;
+
 #include "log_class.h"

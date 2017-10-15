@@ -14,14 +14,13 @@
     <ClCompile Include="src\api\handlers.cpp" />
     <ClCompile Include="src\api\server_class.cpp" />
     <ClCompile Include="src\appentry.cpp" />
-    <ClCompile Include="src\config.cpp" />
     <ClCompile Include="src\conf\loader.cpp" />
     <ClCompile Include="src\dllentry.cpp" />
     <ClCompile Include="src\event\entry.cpp" />
     <ClCompile Include="src\event\events.cpp" />
+    <ClCompile Include="src\globals.cpp" />
     <ClCompile Include="src\message\message_class.cpp" />
     <ClCompile Include="src\message\segment_class.cpp" />
-    <ClCompile Include="src\sdk.cpp" />
     <ClCompile Include="src\cqp\api.cpp" />
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\utils\base64.cpp" />
@@ -34,6 +33,7 @@
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\conf\config_struct.h" />
     <ClInclude Include="src\conf\loader.h" />
+    <ClInclude Include="src\ctpl\ctpl_stl.h" />
     <ClInclude Include="src\event\events.h" />
     <ClInclude Include="src\log_class.h" />
     <ClInclude Include="src\message\message_class.h" />

@@ -9,7 +9,7 @@ using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 using Response = HttpServer::Response;
 using Request = HttpServer::Request;
 
-extern ApiHandlerMap api_handlers;
+extern ApiHandlerMap api_handlers; // defined in handlers.cpp
 
 class ResponseHelper {
 public:

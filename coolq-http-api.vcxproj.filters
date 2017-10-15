@@ -25,6 +25,9 @@
     <Filter Include="src\api">
       <UniqueIdentifier>{d107b753-1225-4f23-9b00-2a1e7cfa7679}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ctpl">
+      <UniqueIdentifier>{3352b376-ce61-4273-9396-4ae11e988783}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cqp\api.cpp">
@@ -34,9 +37,6 @@
       <Filter>src\conf</Filter>
     </ClCompile>
     <ClCompile Include="src\helpers.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sdk.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\base64.cpp">
@@ -66,11 +66,11 @@
     <ClCompile Include="src\api\server_class.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
-    <ClCompile Include="src\config.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\api\handlers.cpp">
       <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\globals.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="src\api\types.h">
       <Filter>src\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ctpl\ctpl_stl.h">
+      <Filter>src\ctpl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

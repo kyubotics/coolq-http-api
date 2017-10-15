@@ -59,6 +59,11 @@ CQEVENT(int32_t, Enable, 0)
 
     ApiServer::instance().start(config.host, config.port);
 
+    if (!pool) {
+        Log::d(TAG, u8"工作线程池创建成功");
+        pool = make_shared<ctpl::thread_pool>(config.thread_pool_size);
+    }
+
     Log::i(TAG, u8"HTTP API 插件已启用");
 
     //if (sdk->config.auto_check_update) {
@@ -76,6 +81,11 @@ CQEVENT(int32_t, Disable, 0)
 
     sdk->enabled = false;
     ApiServer::instance().stop();
+    if (pool) {
+        pool->stop();
+        pool = nullptr;
+    }
+
     Log::i(TAG, u8"HTTP API 插件已停用");
     return 0;
 }
@@ -94,6 +104,7 @@ CQEVENT(int32_t, Start, 0)
 CQEVENT(int32_t, Exit, 0)
 () {
     ApiServer::instance().stop();
+    if (pool) pool->stop();
     return 0;
 }
 

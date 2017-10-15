@@ -29,4 +29,5 @@ struct Config {
     std::string post_message_format = "string";
     bool serve_data_files = false;
     bool auto_check_update = false;
+    int thread_pool_size = 4;
 };
