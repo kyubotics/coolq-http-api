@@ -70,7 +70,7 @@ static Message::Segment enhance_remote_file(const Message::Segment &raw, string 
         const auto &url = file;
         const auto ws_url = s2ws(url);
         const auto filename = md5_hash_hex(url) + ".tmp"; // despite of the format, we store all images as ".tmp"
-        const auto filepath = get_coolq_root() + "data\\" + data_dir + "\\" + filename;
+        const auto filepath = sdk->get_coolq_directory() + "data\\" + data_dir + "\\" + filename;
         const auto ws_filepath = s2ws(filepath);
 
         // check if to use cache
@@ -86,7 +86,7 @@ static Message::Segment enhance_remote_file(const Message::Segment &raw, string 
             using concurrency::streams::fstream;
 
             optional<ostream> file_stream;
-            
+
             fstream::open_ostream(ws_filepath).then([&](ostream out_file) {
                 file_stream = out_file;
 
@@ -119,7 +119,7 @@ static Message::Segment enhance_remote_file(const Message::Segment &raw, string 
         const auto path = file.substr(strlen("file://"));
         const auto new_filename = md5_hash_hex(path) + ".tmp";
 
-        const auto new_filepath = get_coolq_root() + "data\\" + data_dir + "\\" + new_filename;
+        const auto new_filepath = sdk->get_coolq_directory() + "data\\" + data_dir + "\\" + new_filename;
         if (CopyFileW(s2ws(path).c_str(), s2ws(new_filepath).c_str(), false)) {
             // copy remote file succeeded
             segment.data["file"] = new_filename;
@@ -141,7 +141,7 @@ static Message::Segment enhance_parse_cqimg(const Message::Segment &raw) {
 
     if (!filename.empty()) {
         const auto cqimg_filename = filename + ".cqimg";
-        const auto cqimg_filepath = get_coolq_root() + "data\\image\\" + cqimg_filename;
+        const auto cqimg_filepath = sdk->get_coolq_directory() + "data\\image\\" + cqimg_filename;
         if (ifstream istrm(ansi(cqimg_filepath), ios::binary); istrm.is_open()) {
             string url = "";
             string line;

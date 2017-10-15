@@ -22,17 +22,13 @@
 #include <string>
 #include <memory>
 
-bool isnumber(const std::string &s); // act as "is_positive_integer", actually
-
-//bool isfile(const std::string &path);
+bool isfile(const std::string &path);
 
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
 
-std::string get_coolq_root();
-
 std::string ansi(const std::string &s);
 
-bool text_to_bool(const std::string &text, const bool default_val = false);
+bool to_bool(const std::string &str, const bool default_val = false);
 
 namespace std {
     string to_string(const string &val);

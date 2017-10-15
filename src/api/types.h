@@ -72,7 +72,7 @@ struct ApiParams {
     bool get_bool(const std::string &key, const bool default_val = false) const {
         auto result = default_val;
         if (auto v = get(key); v.is_string()) {
-            result = text_to_bool(v.get<std::string>(), default_val);
+            result = to_bool(v.get<std::string>(), default_val);
         } else if (v.is_boolean()) {
             result = v.get<bool>();
         }

@@ -26,15 +26,6 @@
 
 using namespace std;
 
-bool isnumber(const string &s) {
-    for (auto ch : s) {
-        if (!isdigit(ch)) {
-            return false;
-        }
-    }
-    return !s.empty();
-}
-
 bool isfile(const string &path) {
     //struct stat st;
     //if (stat(ansi(path).c_str(), &st) < 0) {
@@ -42,7 +33,7 @@ bool isfile(const string &path) {
     //}
     //return (st.st_mode & S_IFMT) != S_IFDIR;
 
-    return boost::filesystem::is_regular_file(s2ws(path));
+    return boost::filesystem::is_regular_file(ansi(path));
 }
 
 void string_replace(string &str, const string &search, const string &replace) {
@@ -61,29 +52,16 @@ void string_replace(string &str, const string &search, const string &replace) {
     str.swap(ws_ret); // faster than str = wsRet;
 }
 
-/**
- * Get root directory of CoolQ, including the trailing "\".
- */
-string get_coolq_root() {
-    static string root;
-    if (root.empty()) {
-        const auto app_dir = sdk->get_app_directory();
-        const auto suffix = string("app\\" CQAPP_ID "\\");
-        root = app_dir.substr(0, app_dir.length() - suffix.length());
-    }
-    return root;
-}
-
 string ansi(const string &s) {
     return string_encode(s, Encodings::ANSI);
 }
 
-bool text_to_bool(const string &text, const bool default_val) {
-    auto t = boost::algorithm::to_lower_copy(text);
-    if (t == "yes" || t == "true" || t == "1") {
+bool to_bool(const string &str, const bool default_val) {
+    auto s = boost::algorithm::to_lower_copy(str);
+    if (s == "yes" || s == "true" || s == "1") {
         return true;
     }
-    if (t == "no" || t == "false" || t == "0") {
+    if (s == "no" || s == "false" || s == "0") {
         return false;
     }
     return default_val;

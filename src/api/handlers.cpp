@@ -341,14 +341,15 @@ HANDLER(get_csrf_token) {
 }
 
 HANDLER(get_version_info) {
-    auto root_dir = get_coolq_root();
+    const auto coolq_directory = sdk->get_coolq_directory();
     string coolq_edition = "air";
-    if (boost::filesystem::is_regular_file(ansi(root_dir + "CQP.exe"))) {
+    if (boost::filesystem::is_regular_file(ansi(coolq_directory + "CQP.exe"))) {
         coolq_edition = "pro";
     }
     auto plugin_version = CQAPP_VERSION;
     result.retcode = RetCodes::OK;
     result.data = {
+        {"coolq_directory", coolq_directory},
         {"coolq_edition", coolq_edition},
         {"plugin_version", plugin_version}
     };

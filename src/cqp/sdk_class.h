@@ -173,6 +173,19 @@ public:
         return string_decode(CQ_getAppDirectory(this->ac_), Encodings::ANSI);
     }
 
+    /**
+     * Get root directory of CoolQ, including the trailing "\".
+     */
+    std::string get_coolq_directory() const {
+        static std::string dir;
+        if (dir.empty()) {
+            const auto app_dir = get_app_directory();
+            const auto suffix = std::string("app\\" CQAPP_ID "\\");
+            dir = app_dir.substr(0, app_dir.length() - suffix.length());
+        }
+        return dir;
+    }
+
     // const char *get_record(const char *file, const char *out_format) const {
     //     return CQ_getRecord(this->ac_, file, out_format);
     // }
