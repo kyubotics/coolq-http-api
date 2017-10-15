@@ -66,8 +66,24 @@ optional<Config> load_configuration(const string &filepath) {
         boost::property_tree::ptree pt;
         read_ini(ansi_filepath, pt);
 
+        struct string_to_bool_translator {
+            boost::optional<bool> get_value(const string &s) const {
+                const auto tmp = boost::to_lower_copy(s);
+                if (tmp == "true" || tmp == "1" || tmp == "yes" || tmp == "on") {
+                    return boost::make_optional(true);
+                }
+                if (tmp == "false" || tmp == "0" || tmp == "no" || tmp == "off") {
+                    return boost::make_optional(false);
+                }
+                return boost::none;
+            }
+        };
+
         #define GET_CONFIG(key, type) \
             config.key = pt.get<type>(login_qq_str + "." #key, config.key); \
+            Log::d(TAG, #key "=" + to_string(config.key))
+        #define GET_BOOL_CONFIG(key) \
+            config.key = pt.get<bool>(login_qq_str + "." #key, config.key, string_to_bool_translator()); \
             Log::d(TAG, #key "=" + to_string(config.key))
         GET_CONFIG(host, string);
         GET_CONFIG(port, unsigned short);
@@ -75,8 +91,8 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(access_token, string);
         GET_CONFIG(secret, string);
         GET_CONFIG(post_message_format, string);
-        GET_CONFIG(serve_data_files, bool);
-        GET_CONFIG(auto_check_update, bool);
+        GET_BOOL_CONFIG(serve_data_files);
+        GET_BOOL_CONFIG(auto_check_update);
         GET_CONFIG(thread_pool_size, int);
         #undef GET_CONFIG
 
