@@ -49,6 +49,37 @@ public:
 
 static const auto TAG = u8"API服务";
 
+static bool authorize(const decltype(Request::header) &headers, const json &query_args,
+                      const function<void(unsigned short)> on_failed = nullptr) {
+    if (config.token.empty()) {
+        return true;
+    }
+
+    string token_given;
+    if (const auto headers_it = headers.find("Authorization");
+        headers_it != headers.end() && boost::starts_with(headers_it->second, "Token ")) {
+        token_given = headers_it->second.substr(strlen("Token "));
+    } else if (const auto args_it = query_args.find("access_token"); args_it != query_args.end()) {
+        token_given = args_it->get<string>();
+    }
+
+    if (token_given.empty()) {
+        if (on_failed) {
+            on_failed(401 /* Unauthorized */);
+        }
+        return false;
+    }
+
+    if (token_given != config.token) {
+        if (on_failed) {
+            on_failed(403 /* Forbidden */);
+        }
+        return false;
+    }
+
+    return true; // token_given == config.token
+}
+
 void ApiServer::init() {
     Log::d(TAG, u8"初始化 API 处理函数");
 
@@ -67,6 +98,14 @@ void ApiServer::init() {
 
                     auto json_params = json::object();
                     json args = request->parse_query_string(), form;
+
+                    auto authorized = authorize(request->header, args, [&response](auto status_code) {
+                        ResponseHelper{status_code}.write(response);
+                    });
+                    if (!authorized) {
+                        Log::d(TAG, u8"没有提供 Token 或 Token 不符，已拒绝请求");
+                        return;
+                    }
 
                     if (request->method == "POST") {
                         string content_type;
