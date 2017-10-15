@@ -340,6 +340,12 @@ HANDLER(get_csrf_token) {
     result.data = {{"token", token}};
 }
 
+#ifdef _DEBUG
+#define BUILD_CONFIGURATION "debug"
+#else
+#define BUILD_CONFIGURATION "release"
+#endif
+
 HANDLER(get_version_info) {
     const auto coolq_directory = sdk->get_coolq_directory();
     string coolq_edition = "air";
@@ -351,7 +357,8 @@ HANDLER(get_version_info) {
     result.data = {
         {"coolq_directory", coolq_directory},
         {"coolq_edition", coolq_edition},
-        {"plugin_version", plugin_version}
+        {"plugin_version", plugin_version},
+        {"plugin_build_configuration", BUILD_CONFIGURATION}
     };
 }
 
