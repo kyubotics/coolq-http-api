@@ -124,6 +124,16 @@ static Message::Segment enhance_remote_file(const Message::Segment &raw, string 
             // copy remote file succeeded
             segment.data["file"] = new_filename;
         }
+    } else if (starts_with(file, "base64://")) {
+        const auto base64_encoded = file.substr(strlen("base64://"));
+        const auto filename = "from_base64.tmp"; // despite of the format, we store all images as ".tmp"
+        const auto filepath = sdk->get_coolq_directory() + "data\\" + data_dir + "\\" + filename;
+
+        if (fstream f(ansi(filepath), ios::binary | ios::out); f.is_open()) {
+            f << base64_decode(base64_encoded);
+            f.close();
+            segment.data["file"] = filename;
+        }
     }
 
     return segment;
