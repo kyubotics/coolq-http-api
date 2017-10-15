@@ -21,7 +21,7 @@
     <ClCompile Include="src\globals.cpp" />
     <ClCompile Include="src\message\message_class.cpp" />
     <ClCompile Include="src\message\segment_class.cpp" />
-    <ClCompile Include="src\cqp\api.cpp" />
+    <ClCompile Include="src\cqp\sdk.cpp" />
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\utils\base64.cpp" />
     <ClCompile Include="src\utils\pack_class.cpp" />
@@ -33,15 +33,14 @@
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\conf\config_struct.h" />
     <ClInclude Include="src\conf\loader.h" />
+    <ClInclude Include="src\cqp\sdk_class.h" />
     <ClInclude Include="src\ctpl\ctpl_stl.h" />
     <ClInclude Include="src\event\events.h" />
     <ClInclude Include="src\log_class.h" />
     <ClInclude Include="src\message\message_class.h" />
-    <ClInclude Include="src\sdk_class.h" />
-    <ClInclude Include="src\cqp\api.h" />
-    <ClInclude Include="src\cqp\api_initiator.h" />
+    <ClInclude Include="src\cqp\funcs.h" />
     <ClInclude Include="src\cqp\def.h" />
-    <ClInclude Include="src\cqp\cqp.h" />
+    <ClInclude Include="src\cqp\sdk.h" />
     <ClInclude Include="src\helpers.h" />
     <ClInclude Include="src\structs.h" />
     <ClInclude Include="src\utils\base64.h" />

@@ -19,8 +19,6 @@
 
 #include "common.h"
 
-#include "api.h"
-
 #pragma unmanaged
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -28,8 +26,6 @@ BOOL APIENTRY DllMain(HMODULE hModule,
                       LPVOID lpReserved) {
     switch (ul_reason_for_call) {
     case DLL_PROCESS_ATTACH:
-        init_dll();
-        break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:

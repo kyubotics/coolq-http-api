@@ -1,5 +1,5 @@
 // 
-// Log.h : Wrap "add_log" method of CQApp.
+// Log.h : Wrap "add_log" method of Sdk class.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "sdk_class.h"
+#include "cqp/sdk.h"
 extern std::optional<Sdk> sdk;
 
 class Log {

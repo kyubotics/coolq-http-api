@@ -38,7 +38,7 @@ CQEVENT(const char *, AppInfo, 0)
 */
 CQEVENT(int32_t, Initialize, 4)
 (const int32_t auth_code) {
-    sdk = Sdk(auth_code);
+    init_sdk(auth_code);
     return 0;
 }
 

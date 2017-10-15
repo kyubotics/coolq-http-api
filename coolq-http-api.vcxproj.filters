@@ -30,9 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\cqp\api.cpp">
-      <Filter>src\cqp</Filter>
-    </ClCompile>
     <ClCompile Include="src\conf\loader.cpp">
       <Filter>src\conf</Filter>
     </ClCompile>
@@ -72,18 +69,12 @@
     <ClCompile Include="src\globals.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\cqp\sdk.cpp">
+      <Filter>src\cqp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\cqp\api_initiator.h">
-      <Filter>src\cqp</Filter>
-    </ClInclude>
     <ClInclude Include="src\cqp\def.h">
-      <Filter>src\cqp</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cqp\cqp.h">
-      <Filter>src\cqp</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cqp\api.h">
       <Filter>src\cqp</Filter>
     </ClInclude>
     <ClInclude Include="src\common.h">
@@ -93,9 +84,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\helpers.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sdk_class.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\log_class.h">
@@ -151,6 +139,15 @@
     </ClInclude>
     <ClInclude Include="src\ctpl\ctpl_stl.h">
       <Filter>src\ctpl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqp\funcs.h">
+      <Filter>src\cqp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqp\sdk.h">
+      <Filter>src\cqp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqp\sdk_class.h">
+      <Filter>src\cqp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

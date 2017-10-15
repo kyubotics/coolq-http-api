@@ -1,5 +1,5 @@
 // 
-// Sdk.h : Wrap functions of CoolQ and preserve configurations.
+// sdk_class.h : Wrap C-style CoolQ SDK functions.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -21,7 +21,7 @@
 
 #include "common.h"
 
-#include "cqp/cqp.h"
+#include "./funcs.h"
 
 #include "utils/base64.h"
 
