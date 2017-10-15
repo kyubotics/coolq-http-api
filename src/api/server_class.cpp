@@ -21,6 +21,8 @@
 
 #include "app.h"
 
+#include <boost/filesystem.hpp>
+
 #include "types.h"
 #include "utils/params_class.h"
 
@@ -134,7 +136,6 @@ void ApiServer::init() {
                     handler_kv.second(params, result);
 
                     decltype(request->header) headers{
-                        {"Server", CQAPP_SERVER},
                         {"Content-Type", "application/json; charset=UTF-8"}
                     };
                     auto resp_body = result.json().dump();
@@ -145,8 +146,48 @@ void ApiServer::init() {
                 };
     }
 
-    server_.resource["^/data/(.*)$"]["GET"] = [](shared_ptr<Response> response, shared_ptr<Request> request) {
-        response->write(SimpleWeb::StatusCode::success_ok);
+    const auto regex = "^/(data/(?:bface|image|record|show)/.+)$";
+    server_.resource[regex]["GET"] = [](shared_ptr<Response> response, shared_ptr<Request> request) {
+        if (!config.serve_data_files) {
+            response->write(SimpleWeb::StatusCode::client_error_not_found);
+            return;
+        }
+
+        auto relpath = request->path_match.str(1);
+        boost::algorithm::replace_all(relpath, "/", "\\");
+        Log::d(TAG, u8"收到 GET 数据文件请求，相对路径：" + relpath);
+
+        if (boost::algorithm::contains(relpath, "..")) {
+            Log::d(TAG, u8"请求的数据文件路径中有非法字符，已拒绝请求");
+            response->write(SimpleWeb::StatusCode::client_error_forbidden);
+            return;
+        }
+
+        auto filepath = sdk->get_coolq_directory() + relpath;
+        auto ansi_filepath = ansi(filepath);
+        if (!boost::filesystem::is_regular_file(ansi_filepath)) {
+            // is not a file
+            Log::d(TAG, u8"相对路径 " + relpath + u8" 所制定的内容不存在，或为非文件类型，无法发送");
+            response->write(SimpleWeb::StatusCode::client_error_not_found);
+            return;
+        }
+
+        if (ifstream f(ansi_filepath, ios::in | ios::binary); f.is_open()) {
+            auto length = boost::filesystem::file_size(ansi_filepath);
+            response->write(decltype(request->header){
+                {"Content-Length", to_string(length)},
+                {"Content-Disposition", "attachment"}
+            });
+            *response << f.rdbuf();
+            Log::d(TAG, u8"文件内容已发送完毕");
+            f.close();
+        } else {
+            Log::d(TAG, u8"文件 " + relpath + u8" 打开失败，请检查文件系统权限");
+            response->write(SimpleWeb::StatusCode::client_error_forbidden);
+            return;
+        }
+
+        Log::i(TAG, u8"已成功发送文件：" + relpath);
     };
 
     initiated_ = true;
