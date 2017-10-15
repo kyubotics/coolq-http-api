@@ -51,7 +51,7 @@ static const auto TAG = u8"API·þÎñ";
 
 static bool authorize(const decltype(Request::header) &headers, const json &query_args,
                       const function<void(unsigned short)> on_failed = nullptr) {
-    if (config.token.empty()) {
+    if (config.access_token.empty()) {
         return true;
     }
 
@@ -70,7 +70,7 @@ static bool authorize(const decltype(Request::header) &headers, const json &quer
         return false;
     }
 
-    if (token_given != config.token) {
+    if (token_given != config.access_token) {
         if (on_failed) {
             on_failed(403 /* Forbidden */);
         }

@@ -49,7 +49,8 @@ optional<Config> load_configuration(const string &filepath) {
                     << "host=0.0.0.0" << endl
                     << "port=5700" << endl
                     << "post_url=" << endl
-                    << "token=" << endl
+                    << "access_token=" << endl
+                    << "secret=" << endl
                     << "post_message_format=string" << endl
                     << "serve_data_files=no" << endl
                     << "auto_check_update=no" << endl
@@ -71,7 +72,8 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(host, string);
         GET_CONFIG(port, unsigned short);
         GET_CONFIG(post_url, string);
-        GET_CONFIG(token, string);
+        GET_CONFIG(access_token, string);
+        GET_CONFIG(secret, string);
         GET_CONFIG(post_message_format, string);
         GET_CONFIG(serve_data_files, bool);
         GET_CONFIG(auto_check_update, bool);

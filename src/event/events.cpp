@@ -21,6 +21,8 @@
 
 #include "app.h"
 
+#include <openssl/hmac.h>
+
 #include "utils/rest_client.h"
 #include "message/message_class.h"
 #include "structs.h"
@@ -29,13 +31,35 @@ using namespace std;
 
 #define ENSURE_POST_NEEDED if (config.post_url.empty()) { return CQEVENT_IGNORE; }
 
+static string hmac_sha1_hex(string key, string msg) {
+    unsigned digest_len = 20;
+    const auto digest = new unsigned char[digest_len];
+    HMAC_CTX ctx;
+    HMAC_CTX_init(&ctx);
+    HMAC_Init_ex(&ctx, key.c_str(), key.size(), EVP_sha1(), nullptr);
+    HMAC_Update(&ctx, reinterpret_cast<const unsigned char *>(msg.c_str()), msg.size());
+    HMAC_Final(&ctx, digest, &digest_len);
+    HMAC_CTX_cleanup(&ctx);
+
+    stringstream ss;
+    for (unsigned i = 0; i < digest_len; ++i) {
+        ss << hex << setfill('0') << setw(2) << static_cast<unsigned int>(digest[i]);
+    }
+    delete[] digest;
+    return ss.str();
+}
+
 static pplx::task<json> post(json &json_body) {
     static const auto TAG = u8"…œ±®";
 
     http_request request(http::methods::POST);
     request.headers().add(L"User-Agent", CQAPP_USER_AGENT);
     request.headers().add(L"Content-Type", L"application/json; charset=UTF-8");
-    request.set_body(json_body.dump());
+    const auto body = json_body.dump();
+    request.set_body(body);
+    if (!config.secret.empty()) {
+        request.headers().add(L"X-Signature", s2ws(hmac_sha1_hex(config.secret, body)));
+    }
     return http_client(s2ws(config.post_url))
             .request(request)
             .then([](pplx::task<http_response> task) {

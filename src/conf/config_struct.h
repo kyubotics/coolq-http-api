@@ -25,7 +25,8 @@ struct Config {
     std::string host = "0.0.0.0";
     unsigned short port = 5700;
     std::string post_url = "";
-    std::string token = "";
+    std::string access_token = "";
+    std::string secret = "";
     std::string post_message_format = "string";
     bool serve_data_files = false;
     bool auto_check_update = false;
