@@ -19,9 +19,11 @@
 
 #include "app.h"
 
-#include <cpprest/filestream.h>
-#include <websocketpp/common/md5.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
+#include <websocketpp/common/md5.hpp>
+#include <cpprest/filestream.h>
 
 #include "./message_class.h"
 #include "utils/rest_client.h"
@@ -129,7 +131,7 @@ static Message::Segment enhance_remote_file(const Message::Segment &raw, string 
         const auto filename = "from_base64.tmp"; // despite of the format, we store all images as ".tmp"
         const auto filepath = sdk->get_coolq_directory() + "data\\" + data_dir + "\\" + filename;
 
-        if (fstream f(ansi(filepath), ios::binary | ios::out); f.is_open()) {
+        if (ofstream f(ansi(filepath), ios::binary | ios::out); f.is_open()) {
             f << base64_decode(base64_encoded);
             f.close();
             segment.data["file"] = filename;
@@ -152,18 +154,13 @@ static Message::Segment enhance_parse_cqimg(const Message::Segment &raw) {
     if (!filename.empty()) {
         const auto cqimg_filename = filename + ".cqimg";
         const auto cqimg_filepath = sdk->get_coolq_directory() + "data\\image\\" + cqimg_filename;
+
         if (ifstream istrm(ansi(cqimg_filepath), ios::binary); istrm.is_open()) {
-            string url = "";
-            string line;
-            while (!istrm.eof()) {
-                istrm >> line;
-                if (starts_with(line, "url=")) {
-                    url = line.substr(strlen("url="));
-                    break;
-                }
-            }
-            if (url.length() != 0) {
-                segment.data["url"] = url;
+            boost::property_tree::ptree pt;
+            read_ini(istrm, pt);
+            auto url = pt.get_optional<string>("image.url");
+            if (url && !url->empty()) {
+                segment.data["url"] = url.value();
             }
             istrm.close();
         }
