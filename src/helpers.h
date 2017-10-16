@@ -24,8 +24,6 @@
 #include <optional>
 #include <nlohmann/json.hpp>
 
-bool isfile(const std::string &path);
-
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
 
 std::string ansi(const std::string &s);
@@ -44,5 +42,7 @@ static std::shared_ptr<T> make_shared_array(size_t size) {
 }
 
 std::optional<nlohmann::json> get_remote_json(const std::string &url);
+
+bool download_remote_file(const std::string &url, const std::string &local_path, bool use_fake_ua = false);
 
 int message_box(unsigned type, const std::string &text);

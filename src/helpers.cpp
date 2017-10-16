@@ -22,20 +22,11 @@
 #include "app.h"
 
 #include <boost/filesystem.hpp>
+#include <cpprest/filestream.h>
 
 #include "utils/rest_client.h"
 
 using namespace std;
-
-bool isfile(const string &path) {
-    //struct stat st;
-    //if (stat(ansi(path).c_str(), &st) < 0) {
-    //    return false;
-    //}
-    //return (st.st_mode & S_IFMT) != S_IFDIR;
-
-    return boost::filesystem::is_regular_file(ansi(path));
-}
 
 void string_replace(string &str, const string &search, const string &replace) {
     if (search.empty())
@@ -113,6 +104,45 @@ optional<json> get_remote_json(const string &url) {
     } catch (invalid_argument &) {
         return nullopt;
     }
+}
+
+bool download_remote_file(const string &url, const string &local_path, bool use_fake_ua) {
+    using concurrency::streams::ostream;
+    using concurrency::streams::fstream;
+
+    optional<ostream> file_stream;
+    auto succeeded = false;
+    fstream::open_ostream(s2ws(local_path)).then([&](ostream out_file) {
+        file_stream = out_file;
+
+        http_client client(s2ws(url));
+        http_request request(http::methods::GET);
+
+        string user_agent(CQAPP_USER_AGENT);
+        if (use_fake_ua) {
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/56.0.2924.87 Safari/537.36";
+        }
+        request.headers().add(L"User-Agent", s2ws(user_agent));
+        request.headers().add(L"Referer", s2ws(url));
+
+        return client.request(request);
+    }).then([&](http_response resp) {
+        if (resp.status_code() == 200) {
+            // we can assume here that the request is succeeded
+            return resp.body().read_to_end(file_stream->streambuf());
+        }
+        return pplx::task_from_result<size_t>(0);
+    }).then([&](size_t size) {
+        if (size > 0) {
+            // download succeeded
+            succeeded = true;
+        }
+        return file_stream->close();
+    }).wait();
+
+    return succeeded;
 }
 
 int message_box(unsigned type, const string &text) {

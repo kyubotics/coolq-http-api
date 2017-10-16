@@ -87,39 +87,8 @@ static Message::Segment enhance_send_file(const Message::Segment &raw, const str
         }
         const auto cached = boost::filesystem::is_regular_file(ws_filepath);
 
-        if (!cached || !use_cache) {
-            // perform download
-            using concurrency::streams::ostream;
-            using concurrency::streams::fstream;
-
-            optional<ostream> file_stream;
-
-            fstream::open_ostream(ws_filepath).then([&](ostream out_file) {
-                file_stream = out_file;
-
-                http_client client(ws_url);
-                http_request request(http::methods::GET);
-                request.headers().add(L"User-Agent",
-                                      L"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                                      "AppleWebKit/537.36 (KHTML, like Gecko) "
-                                      "Chrome/56.0.2924.87 Safari/537.36");
-                request.headers().add(L"Referer", ws_url);
-
-                return client.request(request);
-            }).then([&](http_response resp) {
-                if (resp.status_code() < 300 && resp.status_code() >= 200) {
-                    // we can assume here that the request is succeeded
-                    return resp.body().read_to_end(file_stream->streambuf());
-                }
-                return pplx::task_from_result<size_t>(0);
-            }).then([&](size_t size) {
-                if (size > 0) {
-                    // download succeeded
-                    segment.data["file"] = filename;
-                }
-                return file_stream->close();
-            }).wait();
-        } else {
+        if (use_cache && cached /* use cache */
+            || download_remote_file(url, filepath, true) /* or perform download */) {
             segment.data["file"] = filename;
         }
     } else if (starts_with(file, "file://")) {
