@@ -59,7 +59,7 @@ static pplx::task<json> post(json &json_body) {
     const auto body = json_body.dump();
     request.set_body(body);
     if (!config.secret.empty()) {
-        request.headers().add(L"X-Signature", s2ws(hmac_sha1_hex(config.secret, body)));
+        request.headers().add(L"X-Signature", s2ws("sha1=" + hmac_sha1_hex(config.secret, body)));
     }
     return http_client(s2ws(config.post_url))
             .request(request)
