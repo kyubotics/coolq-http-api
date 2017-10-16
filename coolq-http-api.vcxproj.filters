@@ -75,6 +75,18 @@
     <ClCompile Include="src\utils\params_class.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\menuentry.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\application_class.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqp\directories_class.cpp">
+      <Filter>src\cqp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\update.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
@@ -154,6 +166,12 @@
     </ClInclude>
     <ClInclude Include="src\utils\params_class.h">
       <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\application_class.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\update.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

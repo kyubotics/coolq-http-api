@@ -29,6 +29,8 @@ struct Config {
     std::string secret = "";
     std::string post_message_format = "string";
     bool serve_data_files = false;
+    std::string update_source = "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/";
+    std::string update_channel = "stable";
     bool auto_check_update = false;
     int thread_pool_size = 4;
 };

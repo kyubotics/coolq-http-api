@@ -14,15 +14,19 @@
     <ClCompile Include="src\api\handlers.cpp" />
     <ClCompile Include="src\api\server_class.cpp" />
     <ClCompile Include="src\appentry.cpp" />
+    <ClCompile Include="src\application_class.cpp" />
     <ClCompile Include="src\conf\loader.cpp" />
+    <ClCompile Include="src\cqp\directories_class.cpp" />
     <ClCompile Include="src\dllentry.cpp" />
     <ClCompile Include="src\event\entry.cpp" />
     <ClCompile Include="src\event\events.cpp" />
     <ClCompile Include="src\globals.cpp" />
+    <ClCompile Include="src\menuentry.cpp" />
     <ClCompile Include="src\message\message_class.cpp" />
     <ClCompile Include="src\message\segment_class.cpp" />
     <ClCompile Include="src\cqp\sdk.cpp" />
     <ClCompile Include="src\helpers.cpp" />
+    <ClCompile Include="src\update.cpp" />
     <ClCompile Include="src\utils\base64.cpp" />
     <ClCompile Include="src\utils\pack_class.cpp" />
     <ClCompile Include="src\utils\params_class.cpp" />
@@ -31,6 +35,7 @@
     <ClInclude Include="src\api\server_class.h" />
     <ClInclude Include="src\api\types.h" />
     <ClInclude Include="src\app.h" />
+    <ClInclude Include="src\application_class.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\conf\config_struct.h" />
     <ClInclude Include="src\conf\loader.h" />
@@ -44,6 +49,7 @@
     <ClInclude Include="src\cqp\sdk.h" />
     <ClInclude Include="src\helpers.h" />
     <ClInclude Include="src\structs.h" />
+    <ClInclude Include="src\update.h" />
     <ClInclude Include="src\utils\base64.h" />
     <ClInclude Include="src\utils\encoding.h" />
     <ClInclude Include="src\utils\pack_class.h" />

@@ -20,13 +20,16 @@
 #pragma once
 
 #define CQAPP_ID "io.github.richardchien.coolqhttpapi"
-#define CQAPP_NAME "CoolQ HTTP API Plugin"
-#define CQAPP_VERSION "3.0.0-dev-1"
+#define CQAPP_NAME "CoolQ HTTP API"
+#define CQAPP_VERSION "3.0.0-beta-1"
+#define CQAPP_BUILD_NUMBER 300
 #define CQAPP_FULLNAME CQAPP_NAME " v" CQAPP_VERSION
 #define CQAPP_USER_AGENT "CoolQHttpApi/" CQAPP_VERSION
-#define CQAPP_SERVER "CoolQHttpApi"
 
 #include "common.h"
+
+#include "application_class.h"
+extern Application app;
 
 #include "cqp/sdk.h"
 extern std::optional<Sdk> sdk;

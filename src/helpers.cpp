@@ -23,6 +23,8 @@
 
 #include <boost/filesystem.hpp>
 
+#include "utils/rest_client.h"
+
 using namespace std;
 
 bool isfile(const string &path) {
@@ -79,4 +81,43 @@ namespace std {
     string to_string(bool val) {
         return val ? "true" : "false";
     }
+}
+
+optional<json> get_remote_json(const string &url) {
+    http_request request(http::methods::GET);
+    request.headers().add(L"User-Agent", CQAPP_USER_AGENT);
+    auto task = http_client(s2ws(url))
+            .request(request)
+            .then([](pplx::task<http_response> task) {
+                auto next_task = pplx::task_from_result<string>("");
+                try {
+                    auto resp = task.get();
+                    if (resp.status_code() == 200) {
+                        next_task = resp.extract_utf8string(true);
+                    }
+                } catch (http_exception &) {
+                    // failed to request
+                }
+                return next_task;
+            })
+            .then([](string &body) {
+                if (!body.empty()) {
+                    return pplx::task_from_result(make_optional<json>(json::parse(body)));
+                    // may throw invalid_argument due to invalid json
+                }
+                return pplx::task_from_result(optional<json>());
+            });
+
+    try {
+        return task.get();
+    } catch (invalid_argument &) {
+        return nullopt;
+    }
+}
+
+int message_box(unsigned type, const string &text) {
+    return MessageBoxW(nullptr,
+                       s2ws(text).c_str(),
+                       s2ws(CQAPP_NAME).c_str(),
+                       type | MB_SETFOREGROUND | MB_TASKMODAL | MB_TOPMOST);
 }

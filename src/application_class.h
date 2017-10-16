@@ -1,5 +1,6 @@
 // 
-// globals.cpp : Define some program level global objects.
+// application_class.h : Define Application class,
+// which is used to maintain the app's lifecircle.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -17,11 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include "app.h"
+#pragma once
 
-using namespace std;
+#include "common.h"
 
-Application app; // always available while CoolQ is running
-optional<Sdk> sdk; // will be initialized in "Initialize" event
-Config config; // will be initiated in "Enable" event
-shared_ptr<ctpl::thread_pool> pool; // will be initiated in "Enable" event
+class Application {
+public:
+    void initialize(int32_t auth_code);
+    void enable();
+    void disable();
+
+    bool is_initialized() const { return initialized_; }
+    bool is_enabled() const { return enabled_; }
+
+private:
+    bool initialized_ = false;
+    bool enabled_ = false;
+};

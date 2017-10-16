@@ -27,9 +27,7 @@
 
 class Sdk {
 public:
-    bool enabled = false;
-
-    Sdk(int32_t auth_code) : ac_(auth_code) {}
+    Sdk(int32_t auth_code) : ac_(auth_code), directories_(auth_code) {}
 
     #pragma region Send Message
 
@@ -173,19 +171,6 @@ public:
         return string_decode(CQ_getAppDirectory(this->ac_), Encodings::ANSI);
     }
 
-    /**
-     * Get root directory of CoolQ, including the trailing "\".
-     */
-    std::string get_coolq_directory() const {
-        static std::string dir;
-        if (dir.empty()) {
-            const auto app_dir = get_app_directory();
-            const auto suffix = std::string("app\\" CQAPP_ID "\\");
-            dir = app_dir.substr(0, app_dir.length() - suffix.length());
-        }
-        return dir;
-    }
-
     // const char *get_record(const char *file, const char *out_format) const {
     //     return CQ_getRecord(this->ac_, file, out_format);
     // }
@@ -209,6 +194,25 @@ public:
 
     #pragma endregion
 
+    /**
+     * Helper class to get all kind of directories (in UTF-8),
+     * including the trailing "\".
+     */
+    class Directories {
+    public:
+        Directories(int32_t auth_code) : ac_(auth_code) {}
+
+        std::string app() const;
+        std::string app_tmp() const;
+        std::string coolq() const;
+
+    private:
+        int32_t ac_;
+    };
+
+    const Directories &directories() const { return directories_; }
+
 private:
     int32_t ac_;
+    Directories directories_;
 };

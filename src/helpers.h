@@ -22,6 +22,7 @@
 #include <string>
 #include <memory>
 #include <optional>
+#include <nlohmann/json.hpp>
 
 bool isfile(const std::string &path);
 
@@ -41,3 +42,7 @@ template <typename T>
 static std::shared_ptr<T> make_shared_array(size_t size) {
     return std::shared_ptr<T>(new T[size], [](T *p) { delete[] p; });
 }
+
+std::optional<nlohmann::json> get_remote_json(const std::string &url);
+
+int message_box(unsigned type, const std::string &text);

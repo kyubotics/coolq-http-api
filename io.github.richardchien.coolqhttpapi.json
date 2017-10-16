@@ -2,8 +2,8 @@
   "ret": 1,
   "apiver": 9,
   "name": "HTTP API",
-  "version": "3.0.0-dev-1",
-  "version_id": 104,
+  "version": "3.0.0-beta-1",
+  "version_id": 300,
   "author": "Richard Chien",
   "description": "CoolQ HTTP API\r\nhttps://github.com/richardchien/coolq-http-api",
   "event": [
@@ -107,6 +107,10 @@
     }
   ],
   "menu": [
+    {
+      "name": "重新加载",
+      "function": "_menu_reload"
+    },
     {
       "name": "检查更新",
       "function": "_menu_check_update"

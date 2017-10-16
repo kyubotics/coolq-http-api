@@ -80,7 +80,8 @@ void ApiServer::init() {
         server_.resource[path_regex]["GET"] = server_.resource[path_regex]["POST"]
                 = [&handler_kv](shared_ptr<Response> response, shared_ptr<Request> request) {
                     Log::d(TAG, u8"ÊÕµ½ API ÇëÇó£º" + request->method
-                           + u8" " + request->path + u8"?" + request->query_string);
+                           + u8" " + request->path
+                           + (request->query_string.empty() ? "" : "?" + request->query_string));
 
                     auto json_params = json::object();
                     json args = request->parse_query_string(), form;
@@ -163,7 +164,7 @@ void ApiServer::init() {
             return;
         }
 
-        auto filepath = sdk->get_coolq_directory() + relpath;
+        auto filepath = sdk->directories().coolq() + relpath;
         auto ansi_filepath = ansi(filepath);
         if (!boost::filesystem::is_regular_file(ansi_filepath)) {
             // is not a file

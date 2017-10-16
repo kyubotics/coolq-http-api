@@ -348,7 +348,7 @@ HANDLER(get_csrf_token) {
 #endif
 
 HANDLER(get_version_info) {
-    const auto coolq_directory = sdk->get_coolq_directory();
+    const auto coolq_directory = sdk->directories().coolq();
     string coolq_edition = "air";
     if (boost::filesystem::is_regular_file(ansi(coolq_directory + "CQP.exe"))) {
         coolq_edition = "pro";
@@ -359,6 +359,7 @@ HANDLER(get_version_info) {
         {"coolq_directory", coolq_directory},
         {"coolq_edition", coolq_edition},
         {"plugin_version", plugin_version},
+        {"plugin_build_number", to_string(CQAPP_BUILD_NUMBER)},
         {"plugin_build_configuration", BUILD_CONFIGURATION}
     };
 }

@@ -53,6 +53,8 @@ optional<Config> load_configuration(const string &filepath) {
                     << "secret=" << endl
                     << "post_message_format=string" << endl
                     << "serve_data_files=no" << endl
+                    << "update_source=https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/" << endl
+                    << "update_channel=stable" << endl
                     << "auto_check_update=no" << endl
                     << "thread_pool_size=4" << endl;
             file.close();
@@ -86,6 +88,8 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(secret, string);
         GET_CONFIG(post_message_format, string);
         GET_BOOL_CONFIG(serve_data_files);
+        GET_CONFIG(update_source, string);
+        GET_CONFIG(update_channel, string);
         GET_BOOL_CONFIG(auto_check_update);
         GET_CONFIG(thread_pool_size, int);
         #undef GET_CONFIG
