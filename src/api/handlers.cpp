@@ -359,7 +359,7 @@ HANDLER(get_version_info) {
         {"coolq_directory", coolq_directory},
         {"coolq_edition", coolq_edition},
         {"plugin_version", plugin_version},
-        {"plugin_build_number", to_string(CQAPP_BUILD_NUMBER)},
+        {"plugin_build_number", CQAPP_BUILD_NUMBER},
         {"plugin_build_configuration", BUILD_CONFIGURATION}
     };
 }

@@ -29,20 +29,25 @@
 #include "utils/rest_client.h"
 
 using namespace std;
+
+namespace fs {
+    using namespace boost::filesystem;
+}
+
 using boost::algorithm::starts_with;
 using websocketpp::md5::md5_hash_hex;
 
-static Message::Segment enhance_remote_file(const Message::Segment &raw, string data_dir);
-static Message::Segment enhance_parse_cqimg(const Message::Segment &raw);
+static Message::Segment enhance_send_file(const Message::Segment &raw, const string &data_dir);
+static Message::Segment enhance_receive_image(const Message::Segment &raw);
 
 Message::Segment Message::Segment::enhanced(const Direction direction) const {
     Segment result;
     if (direction == Directions::OUTWARD) {
         // messages to send
         if (this->type == "image") {
-            result = enhance_remote_file(*this, "image");
+            result = enhance_send_file(*this, "image");
         } else if (this->type == "record") {
-            result = enhance_remote_file(*this, "record");
+            result = enhance_send_file(*this, "record");
         } else {
             result = *this;
         }
@@ -50,7 +55,7 @@ Message::Segment Message::Segment::enhanced(const Direction direction) const {
     } else if (direction == Directions::INWARD) {
         // messages received
         if (this->type == "image") {
-            result = enhance_parse_cqimg(*this);
+            result = enhance_receive_image(*this);
         } else {
             result = *this;
         }
@@ -58,7 +63,7 @@ Message::Segment Message::Segment::enhanced(const Direction direction) const {
     return result;
 }
 
-static Message::Segment enhance_remote_file(const Message::Segment &raw, string data_dir) {
+static Message::Segment enhance_send_file(const Message::Segment &raw, const string &data_dir) {
     const auto file_it = raw.data.find("file");
     if (file_it == raw.data.end()) {
         // there is no "file" parameter, skip it
@@ -122,9 +127,11 @@ static Message::Segment enhance_remote_file(const Message::Segment &raw, string 
         const auto new_filename = md5_hash_hex(path) + ".tmp";
 
         const auto new_filepath = sdk->directories().coolq() + "data\\" + data_dir + "\\" + new_filename;
-        if (CopyFileW(s2ws(path).c_str(), s2ws(new_filepath).c_str(), false)) {
-            // copy remote file succeeded
+        try {
+            copy_file(ansi(path), ansi(new_filepath), fs::copy_option::overwrite_if_exists);
             segment.data["file"] = new_filename;
+        } catch (fs::filesystem_error &) {
+            // copy failed
         }
     } else if (starts_with(file, "base64://")) {
         const auto base64_encoded = file.substr(strlen("base64://"));
@@ -141,7 +148,7 @@ static Message::Segment enhance_remote_file(const Message::Segment &raw, string 
     return segment;
 }
 
-static Message::Segment enhance_parse_cqimg(const Message::Segment &raw) {
+static Message::Segment enhance_receive_image(const Message::Segment &raw) {
     const auto file_it = raw.data.find("file");
     if (file_it == raw.data.end()) {
         // there is no "file" parameter, skip it
