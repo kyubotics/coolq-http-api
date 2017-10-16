@@ -19,6 +19,8 @@
 
 #include "app.h"
 
+#include "update.h"
+
 using namespace std;
 
 /**
@@ -45,6 +47,11 @@ CQEVENT(int32_t, Initialize, 4)
 CQEVENT(int32_t, Enable, 0)
 () {
     app.enable();
+    if (config.auto_check_update) {
+        pool->push([](int) {
+            check_update(true);
+        });
+    }
     return 0;
 }
 

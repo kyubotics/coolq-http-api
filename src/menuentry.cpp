@@ -37,24 +37,8 @@ CQEVENT(int32_t, __menu_reload, 0)() {
  * Menu: Check update.
  */
 CQEVENT(int32_t, __menu_check_update, 0)() {
-    if (const auto version_opt = check_update(); version_opt) {
-        auto latest_version = version_opt.value();
-        if (get<0>(latest_version)) {
-            // should update
-            auto description = get<3>(latest_version);
-            const auto code = message_box(MB_OKCANCEL, u8"发现新版本：v" + get<1>(latest_version)
-                                          + u8"\r\n\r\n更新信息：\r\n"
-                                          + (description.empty() ? u8"无" : description)
-                                          + u8"\r\n\r\n是否现在更新？");
-            if (code == IDYES) {
-                // do update
-            }
-        } else {
-            message_box(MB_OK, u8"没有发现更新版本。");
-        }
-    } else {
-        message_box(MB_OK, u8"检查更新失败，请检查网络连接是否通畅，或尝试更换更新源。");
-    }
-
+    pool->push([](int) {
+        check_update(false);
+    });
     return 0;
 }

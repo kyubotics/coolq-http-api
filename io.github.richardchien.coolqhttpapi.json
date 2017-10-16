@@ -108,7 +108,7 @@
   ],
   "menu": [
     {
-      "name": "重新加载",
+      "name": "重启插件",
       "function": "_menu_reload"
     },
     {
