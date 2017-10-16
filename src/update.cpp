@@ -83,7 +83,8 @@ bool perform_update(const string &version, int build_number) {
 
     const auto local_cpk_path = sdk->directories().coolq() + "app\\" CQAPP_ID ".cpk";
     try {
-        copy_file(tmp_path, local_cpk_path, boost::filesystem::copy_option::overwrite_if_exists);
+        copy_file(ansi(tmp_path), ansi(local_cpk_path), boost::filesystem::copy_option::overwrite_if_exists);
+        boost::filesystem::remove(ansi(tmp_path));
         return true;
     } catch (boost::filesystem::filesystem_error &) {
         return false;

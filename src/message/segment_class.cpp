@@ -23,7 +23,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 #include <websocketpp/common/md5.hpp>
-#include <cpprest/filestream.h>
 
 #include "./message_class.h"
 #include "utils/rest_client.h"
