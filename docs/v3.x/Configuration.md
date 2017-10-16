@@ -34,7 +34,6 @@ secret=kP9yK2lrGxoymmpo
 | `host` | `0.0.0.0` | HTTP 服务器监听的 IP |
 | `port` | `5700` | HTTP 服务器监听的端口 |
 | `post_url` | 空 | 消息和事件的上报地址，通过 POST 方式请求，数据以 JSON 格式发送 |
-| `post_timeout` | 20 | 消息、事件上报的超时时间（仅限制传输超时，而非连接超时），单位为秒，除非有特殊情况，通常无需修改 |
 | `access_token` | 空 | API 访问 token，如果不为空，则会在接收到请求时验证 `Authorization` 请求头是否为 `Token xxxxxxxx`，`xxxxxxxx` 为 access token |
 | `secret` | 空 | 上报数据签名密钥，如果不为空，则会在上报数据时对 HTTP 正文进行 HMAC SHA1 哈希，使用 `secret` 的值作为密钥，计算出的哈希值放在上报的 `X-Signature` 请求头，例如 `X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2` |
 | `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](https://richardchien.github.io/coolq-http-api/#/Message) |
