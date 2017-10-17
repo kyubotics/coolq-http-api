@@ -99,6 +99,21 @@ HANDLER(send_discuss_msg_async) {
     handle_async(params, result, __send_discuss_msg);
 }
 
+HANDLER(send_msg) {
+    const auto message_type = params.get_string("message_type");
+    if (message_type == "private") {
+        __send_private_msg(params, result);
+    } else if (message_type == "group") {
+        __send_group_msg(params, result);
+    } else if (message_type == "discuss") {
+        __send_discuss_msg(params, result);
+    }
+}
+
+HANDLER(send_msg_async) {
+    handle_async(params, result, __send_msg);
+}
+
 #pragma endregion
 
 #pragma region Send Like
