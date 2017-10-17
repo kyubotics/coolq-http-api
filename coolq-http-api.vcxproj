@@ -58,6 +58,8 @@
     <ClInclude Include="src\web_server\crypto.hpp" />
     <ClInclude Include="src\web_server\server_http.hpp" />
     <ClInclude Include="src\web_server\server_https.hpp" />
+    <ClInclude Include="src\web_server\server_ws.hpp" />
+    <ClInclude Include="src\web_server\server_wss.hpp" />
     <ClInclude Include="src\web_server\status_code.hpp" />
     <ClInclude Include="src\web_server\utility.hpp" />
   </ItemGroup>

@@ -128,21 +128,6 @@
     <ClInclude Include="src\structs.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\web_server\server_http.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\server_https.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\status_code.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\utility.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\crypto.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
     <ClInclude Include="src\api\server_class.h">
       <Filter>src\api</Filter>
     </ClInclude>
@@ -172,6 +157,27 @@
     </ClInclude>
     <ClInclude Include="src\update.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\server_https.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\server_ws.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\server_wss.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\status_code.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\utility.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\crypto.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\server_http.hpp">
+      <Filter>src\web_server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 #define SIMPLE_WEB_SERVER_UTILITY_HPP
 
 #include "status_code.hpp"
+#include <atomic>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -262,5 +263,214 @@ namespace SimpleWeb {
   };
 } // namespace SimpleWeb
 #endif
+
+// WebSocket part
+
+namespace SimpleWeb {
+  class HttpHeader {
+  public:
+    /// Parse header fields
+    static CaseInsensitiveMultimap parse(std::istream &stream) noexcept {
+      CaseInsensitiveMultimap result;
+      std::string line;
+      getline(stream, line);
+      size_t param_end;
+      while((param_end = line.find(':')) != std::string::npos) {
+        size_t value_start = param_end + 1;
+        if(value_start < line.size()) {
+          if(line[value_start] == ' ')
+            value_start++;
+          if(value_start < line.size())
+            result.emplace(line.substr(0, param_end), line.substr(value_start, line.size() - value_start - 1));
+        }
+
+        getline(stream, line);
+      }
+      return result;
+    }
+  };
+
+  class RequestMessage {
+  public:
+    /// Parse request line and header fields
+    static bool parse(std::istream &stream, std::string &method, std::string &path, std::string &query_string, std::string &version, CaseInsensitiveMultimap &header) noexcept {
+      header.clear();
+      std::string line;
+      getline(stream, line);
+      size_t method_end;
+      if((method_end = line.find(' ')) != std::string::npos) {
+        method = line.substr(0, method_end);
+
+        size_t query_start = std::string::npos;
+        size_t path_and_query_string_end = std::string::npos;
+        for(size_t i = method_end + 1; i < line.size(); ++i) {
+          if(line[i] == '?' && (i + 1) < line.size())
+            query_start = i + 1;
+          else if(line[i] == ' ') {
+            path_and_query_string_end = i;
+            break;
+          }
+        }
+        if(path_and_query_string_end != std::string::npos) {
+          if(query_start != std::string::npos) {
+            path = line.substr(method_end + 1, query_start - method_end - 2);
+            query_string = line.substr(query_start, path_and_query_string_end - query_start);
+          }
+          else
+            path = line.substr(method_end + 1, path_and_query_string_end - method_end - 1);
+
+          size_t protocol_end;
+          if((protocol_end = line.find('/', path_and_query_string_end + 1)) != std::string::npos) {
+            if(line.compare(path_and_query_string_end + 1, protocol_end - path_and_query_string_end - 1, "HTTP") != 0)
+              return false;
+            version = line.substr(protocol_end + 1, line.size() - protocol_end - 2);
+          }
+          else
+            return false;
+
+          header = HttpHeader::parse(stream);
+        }
+        else
+          return false;
+      }
+      else
+        return false;
+      return true;
+    }
+  };
+
+  class ResponseMessage {
+  public:
+    /// Parse status line and header fields
+    static bool parse(std::istream &stream, std::string &version, std::string &status_code, CaseInsensitiveMultimap &header) noexcept {
+      header.clear();
+      std::string line;
+      getline(stream, line);
+      size_t version_end = line.find(' ');
+      if(version_end != std::string::npos) {
+        if(5 < line.size())
+          version = line.substr(5, version_end - 5);
+        else
+          return false;
+        if((version_end + 1) < line.size())
+          status_code = line.substr(version_end + 1, line.size() - (version_end + 1) - 1);
+        else
+          return false;
+
+        header = HttpHeader::parse(stream);
+      }
+      else
+        return false;
+      return true;
+    }
+  };
+
+  class ContentDisposition {
+  public:
+    /// Can be used to parse the Content-Disposition header field value when
+    /// clients are posting requests with enctype="multipart/form-data"
+    static CaseInsensitiveMultimap parse(const std::string &line) {
+      CaseInsensitiveMultimap result;
+
+      size_t para_start_pos = 0;
+      size_t para_end_pos = std::string::npos;
+      size_t value_start_pos = std::string::npos;
+      for(size_t c = 0; c < line.size(); ++c) {
+        if(para_start_pos != std::string::npos) {
+          if(para_end_pos == std::string::npos) {
+            if(line[c] == ';') {
+              result.emplace(line.substr(para_start_pos, c - para_start_pos), std::string());
+              para_start_pos = std::string::npos;
+            }
+            else if(line[c] == '=')
+              para_end_pos = c;
+          }
+          else {
+            if(value_start_pos == std::string::npos) {
+              if(line[c] == '"' && c + 1 < line.size())
+                value_start_pos = c + 1;
+            }
+            else if(line[c] == '"') {
+              result.emplace(line.substr(para_start_pos, para_end_pos - para_start_pos), line.substr(value_start_pos, c - value_start_pos));
+              para_start_pos = std::string::npos;
+              para_end_pos = std::string::npos;
+              value_start_pos = std::string::npos;
+            }
+          }
+        }
+        else if(line[c] != ' ' && line[c] != ';')
+          para_start_pos = c;
+      }
+      if(para_start_pos != std::string::npos && para_end_pos == std::string::npos)
+        result.emplace(line.substr(para_start_pos), std::string());
+
+      return result;
+    }
+  };
+} // namespace SimpleWeb
+
+#ifdef __SSE2__
+#include <emmintrin.h>
+namespace SimpleWeb {
+  inline void spin_loop_pause() noexcept { _mm_pause(); }
+} // namespace SimpleWeb
+// TODO: need verification that the following checks are correct:
+#elif defined(_MSC_VER) && _MSC_VER >= 1800 && (defined(_M_X64) || defined(_M_IX86))
+#include <intrin.h>
+namespace SimpleWeb {
+  inline void spin_loop_pause() noexcept { _mm_pause(); }
+} // namespace SimpleWeb
+#else
+namespace SimpleWeb {
+  inline void spin_loop_pause() noexcept {}
+} // namespace SimpleWeb
+#endif
+
+namespace SimpleWeb {
+  /// Makes it possible to for instance cancel Asio handlers without stopping asio::io_service
+  class ScopeRunner {
+    /// Scope count that is set to -1 if scopes are to be canceled
+    std::atomic<long> count;
+
+  public:
+    class SharedLock {
+      friend class ScopeRunner;
+      std::atomic<long> &count;
+      SharedLock(std::atomic<long> &count) noexcept : count(count) {}
+      SharedLock &operator=(const SharedLock &) = delete;
+      SharedLock(const SharedLock &) = delete;
+
+    public:
+      ~SharedLock() noexcept {
+        count.fetch_sub(1);
+      }
+    };
+
+    ScopeRunner() noexcept : count(0) {}
+
+    /// Returns nullptr if scope should be exited, or a shared lock otherwise
+    std::unique_ptr<SharedLock> continue_lock() noexcept {
+      long expected = count;
+      while(expected >= 0 && !count.compare_exchange_weak(expected, expected + 1))
+        spin_loop_pause();
+
+      if(expected < 0)
+        return nullptr;
+      else
+        return std::unique_ptr<SharedLock>(new SharedLock(count));
+    }
+
+    /// Blocks until all shared locks are released, then prevents future shared locks
+    void stop() noexcept {
+      long expected = 0;
+      while(!count.compare_exchange_weak(expected, -1)) {
+        if(expected < 0)
+          return;
+        expected = 0;
+        spin_loop_pause();
+      }
+    }
+  };
+} // namespace SimpleWeb
 
 #endif // SIMPLE_WEB_SERVER_UTILITY_HPP

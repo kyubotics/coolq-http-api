@@ -24,6 +24,10 @@
 struct Config {
     std::string host = "0.0.0.0";
     unsigned short port = 5700;
+    bool use_http = true;
+    std::string ws_host = "0.0.0.0";
+    unsigned short ws_port = 6700;
+    bool use_ws = false;
     std::string post_url = "";
     std::string access_token = "";
     std::string secret = "";
@@ -32,5 +36,5 @@ struct Config {
     std::string update_source = "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/";
     std::string update_channel = "stable";
     bool auto_check_update = false;
-    int thread_pool_size = 4;
+    size_t thread_pool_size = 4;
 };

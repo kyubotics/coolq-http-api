@@ -45,7 +45,7 @@ void Application::enable() {
         config = c.value();
     }
 
-    ApiServer::instance().start(config.host, config.port);
+    ApiServer::instance().start();
 
     if (!pool) {
         Log::d(TAG, u8"工作线程池创建成功");

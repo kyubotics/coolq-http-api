@@ -20,6 +20,7 @@
 #pragma once
 
 #include "web_server/server_http.hpp"
+#include "web_server/server_ws.hpp"
 
 class ApiServer {
 public:
@@ -32,16 +33,27 @@ public:
     }
 
     void init();
-    void start(const std::string &host, const unsigned short port);
+    void start();
     void stop();
 
 private:
     ApiServer() {}
-    ~ApiServer() { server_.stop(); }
+
+    ~ApiServer() {
+        stop();
+    }
+
     ApiServer(const ApiServer &) = delete;
     void operator=(const ApiServer &) = delete;
 
-    SimpleWeb::Server<SimpleWeb::HTTP> server_;
-    std::thread thread_;
+    SimpleWeb::Server<SimpleWeb::HTTP> http_server_;
+    SimpleWeb::SocketServer<SimpleWeb::WS> ws_server_;
+    std::thread http_thread_;
+    std::thread ws_thread_;
     bool initiated_ = false;
+    bool http_server_started_ = false;
+    bool ws_server_started_ = false;
+
+    void init_http();
+    void init_ws();
 };

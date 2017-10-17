@@ -33,6 +33,12 @@ struct ApiResult {
         static const RetCode DEFAULT_ERROR = 100;
         static const RetCode INVALID_DATA = 102; // the data that CoolQ returns is invalid
         static const RetCode BAD_THREAD_POOL = 201; // the thread pool isn't properly initiated
+
+        // retcodes that represent HTTP status codes
+        static const RetCode HTTP_BAD_REQUEST = 1400;
+        static const RetCode HTTP_UNAUTHORIZED = 1401;
+        static const RetCode HTTP_FORBIDDEN = 1403;
+        static const RetCode HTTP_NOT_FOUND = 1404;
     };
 
     RetCode retcode; // succeeded: 0, lack of parameters or invalid ones: 1xx, CQ error code: -11, -23, etc... (< 0)

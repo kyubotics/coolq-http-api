@@ -49,6 +49,10 @@ optional<Config> load_configuration(const string &filepath) {
             file << "[general]" << endl
                     << "host=0.0.0.0" << endl
                     << "port=5700" << endl
+                    << "use_http=yes" << endl
+                    << "ws_host=0.0.0.0" << endl
+                    << "ws_port=5700" << endl
+                    << "use_ws=no" << endl
                     << "post_url=" << endl
                     << "access_token=" << endl
                     << "secret=" << endl
@@ -88,6 +92,10 @@ optional<Config> load_configuration(const string &filepath) {
             Log::d(TAG, #key "=" + to_string(config.key))
         GET_CONFIG(host, string);
         GET_CONFIG(port, unsigned short);
+        GET_BOOL_CONFIG(use_http);
+        GET_CONFIG(ws_host, string);
+        GET_CONFIG(ws_port, unsigned short);
+        GET_BOOL_CONFIG(use_ws);
         GET_CONFIG(post_url, string);
         GET_CONFIG(access_token, string);
         GET_CONFIG(secret, string);
@@ -96,7 +104,7 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(update_source, string);
         GET_CONFIG(update_channel, string);
         GET_BOOL_CONFIG(auto_check_update);
-        GET_CONFIG(thread_pool_size, int);
+        GET_CONFIG(thread_pool_size, size_t);
         #undef GET_CONFIG
 
         Log::i(TAG, u8"加载配置文件成功");

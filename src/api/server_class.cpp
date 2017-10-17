@@ -28,14 +28,13 @@
 
 using namespace std;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
-using Response = HttpServer::Response;
-using Request = HttpServer::Request;
+using WsServer = SimpleWeb::SocketServer<SimpleWeb::WS>;
 
 extern ApiHandlerMap api_handlers; // defined in handlers.cpp
 
 static const auto TAG = u8"API服务";
 
-static bool authorize(const decltype(Request::header) &headers, const json &query_args,
+static bool authorize(const decltype(HttpServer::Request::header) &headers, const json &query_args,
                       const function<void(SimpleWeb::StatusCode)> on_failed = nullptr) {
     if (config.access_token.empty()) {
         return true;
@@ -68,17 +67,23 @@ static bool authorize(const decltype(Request::header) &headers, const json &quer
 
 void ApiServer::init() {
     Log::d(TAG, u8"初始化 API 处理函数");
+    init_http();
+    init_ws();
+    initiated_ = true;
+}
 
-    server_.default_resource["GET"]
-            = server_.default_resource["POST"]
-            = [](shared_ptr<Response> response, shared_ptr<Request> request) {
+void ApiServer::init_http() {
+    http_server_.default_resource["GET"]
+            = http_server_.default_resource["POST"]
+            = [](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
                 response->write(SimpleWeb::StatusCode::client_error_not_found);
             };
 
     for (const auto &handler_kv : api_handlers) {
         const auto path_regex = "^/" + handler_kv.first + "$";
-        server_.resource[path_regex]["GET"] = server_.resource[path_regex]["POST"]
-                = [&handler_kv](shared_ptr<Response> response, shared_ptr<Request> request) {
+        http_server_.resource[path_regex]["GET"] = http_server_.resource[path_regex]["POST"]
+                = [&handler_kv](shared_ptr<HttpServer::Response> response,
+                                shared_ptr<HttpServer::Request> request) {
                     Log::d(TAG, u8"收到 API 请求：" + request->method
                            + u8" " + request->path
                            + (request->query_string.empty() ? "" : "?" + request->query_string));
@@ -148,7 +153,8 @@ void ApiServer::init() {
     }
 
     const auto regex = "^/(data/(?:bface|image|record|show)/.+)$";
-    server_.resource[regex]["GET"] = [](shared_ptr<Response> response, shared_ptr<Request> request) {
+    http_server_.resource[regex]["GET"] = [](shared_ptr<HttpServer::Response> response,
+                                             shared_ptr<HttpServer::Request> request) {
         if (!config.serve_data_files) {
             response->write(SimpleWeb::StatusCode::client_error_not_found);
             return;
@@ -191,23 +197,116 @@ void ApiServer::init() {
 
         Log::i(TAG, u8"已成功发送文件：" + relpath);
     };
-
-    initiated_ = true;
 }
 
-void ApiServer::start(const string &host, const unsigned short port) {
-    server_.config.address = host;
-    server_.config.port = port;
-    thread_ = std::thread([&]() {
-        server_.start();
-    });
-    Log::d(TAG, u8"开启 API 服务成功，开始监听 http://" + host + ":" + to_string(port));
+void ApiServer::init_ws() {
+    auto &api_endpoint = ws_server_.endpoint["^/api/?$"];
+    api_endpoint.on_message = [](shared_ptr<WsServer::Connection> connection,
+                                 shared_ptr<WsServer::Message> message) {
+        auto ws_message_str = message->string();
+        Log::d(TAG, u8"收到 API 请求（WebSocket）：" + ws_message_str);
+
+        ApiResult result;
+
+        auto send_result = [&]() {
+            auto resp_body = result.json().dump();
+            Log::d(TAG, u8"响应数据已准备完毕：" + resp_body);
+            auto send_stream = make_shared<WsServer::SendStream>();
+            *send_stream << resp_body;
+            connection->send(send_stream);
+            Log::d(TAG, u8"响应内容已发送");
+        };
+
+        json args = SimpleWeb::QueryString::parse(connection->query_string);
+        auto authorized = authorize(connection->header, args, [&result](auto status_code) {
+            if (status_code == SimpleWeb::StatusCode::client_error_unauthorized) {
+                result.retcode = ApiResult::RetCodes::HTTP_UNAUTHORIZED;
+            } else if (status_code == SimpleWeb::StatusCode::client_error_forbidden) {
+                result.retcode = ApiResult::RetCodes::HTTP_FORBIDDEN;
+            }
+        });
+        if (!authorized) {
+            Log::d(TAG, u8"没有提供 Token 或 Token 不符，已拒绝请求");
+            send_result();
+            connection->send_close(1000); // we don't want this client any more
+            return;
+        }
+
+        json payload;
+        try {
+            payload = json::parse(ws_message_str);
+        } catch (invalid_argument &) {
+            // bad JSON
+        }
+        if (!(payload.is_object() && payload.find("action") != payload.end() && payload["action"].is_string())) {
+            Log::d(TAG, u8"消息中的 JSON 无效或者不是对象");
+            result.retcode = ApiResult::RetCodes::HTTP_BAD_REQUEST;
+            send_result();
+            return;
+        }
+
+        auto action = payload["action"].get<string>();
+        ApiHandler handler;
+        if (auto it = api_handlers.find(action); it != api_handlers.end()) {
+            Log::d(TAG, u8"找到 API 处理函数 " + action + u8"，开始处理请求");
+            handler = it->second;
+        } else {
+            Log::d(TAG, u8"未找到 API 处理函数 " + action);
+            result.retcode = ApiResult::RetCodes::HTTP_NOT_FOUND;
+            send_result();
+            return;
+        }
+
+        auto json_params = json::object();
+        if (payload.find("params") != payload.end() && payload["params"].is_object()) {
+            json_params = payload["params"];
+        }
+
+        Params params(json_params);
+        handler(params, result);
+
+        send_result();
+    };
+}
+
+void ApiServer::start() {
+    if (config.use_http) {
+        http_server_.config.address = config.host;
+        http_server_.config.port = config.port;
+        http_thread_ = thread([&]() {
+            http_server_.start();
+        });
+        http_server_started_ = true;
+        Log::d(TAG, u8"开启 API HTTP 服务器成功，开始监听 http://"
+               + http_server_.config.address + ":" + to_string(http_server_.config.port));
+    }
+
+    if (config.use_ws) {
+        ws_server_.config.address = config.ws_host;
+        ws_server_.config.port = config.ws_port;
+        ws_thread_ = thread([&]() {
+            ws_server_.start();
+        });
+        ws_server_started_ = true;
+        Log::d(TAG, u8"开启 API WebSocket 服务器成功，开始监听 http://"
+               + ws_server_.config.address + ":" + to_string(ws_server_.config.port));
+    }
 }
 
 void ApiServer::stop() {
-    server_.stop();
-    if (thread_.joinable()) {
-        thread_.join();
+    if (http_server_started_) {
+        http_server_.stop();
+        if (http_thread_.joinable()) {
+            http_thread_.join();
+        }
+        http_server_started_ = false;
+    }
+    if (ws_server_started_) {
+        ws_server_.stop();
+        if (ws_thread_.joinable()) {
+            ws_thread_.join();
+        }
+        ws_server_started_ = false;
     }
     Log::d(TAG, u8"已关闭 API 服务");
 }
