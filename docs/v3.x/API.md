@@ -53,7 +53,7 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 `status` 字段如果是 `ok` 则表示操作成功，同时 `retcode` （返回码）会等于 0，即酷 Q 函数返回了 0，也就是酷 Q 认为成功了，但实际上有某些情况下其实是没有成功的，比如向没有加入的群发送消息，返回码是 0，日志里也没有提示发送失败，但显然是发送不了的。这一点在酷 Q 的 [官方文档](https://d.cqp.me/Pro/%E5%BC%80%E5%8F%91/Error) 也说明了：
 
->  需要指出的是，某些接口暂未进行错误代码的处理，此时即使发生错误，仍返回0。
+> 需要指出的是，某些接口暂未进行错误代码的处理，此时即使发生错误，仍返回0。
 
 `status` 字段如果是 `async` 则表示请求已提交异步处理，此时 `retcode` 为 1，具体成功或失败将无法获知。
 
@@ -75,7 +75,7 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 ## 发送消息格式
 
-从 2.0.0 版本开始发送消息格式有了较大变化（向下兼容），具体请查看 [消息格式](https://richardchien.github.io/coolq-http-api/#/Message)。
+从 2.0.0 版本开始发送消息格式有了较大变化（向下兼容），具体请查看 [消息格式](#/Message)。
 
 后面提到消息的地方（`message` 字段），将不再具体解释其格式。
 
@@ -122,6 +122,25 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 | 字段名 | 数据类型 | 默认值 | 说明 |
 | ----- | ------- | ----- | --- |
 | `discuss_id` | number | - | 讨论组 ID（正常情况下看不到，需要从讨论组消息上报的数据中获得） |
+| `message` | string/array | - | 要发送的内容 |
+| `auto_escape` | bool | false | 消息内容是否作为纯文本发送（即不解析 CQ 码），`message` 数据类型为 `array` 时无效 |
+
+#### 响应数据
+
+无
+
+### `/send_msg` 发送消息
+
+有异步版本 `/send_msg_async`。
+
+#### 参数
+
+| 字段名 | 数据类型 | 默认值 | 说明 |
+| ----- | ------- | ----- | --- |
+| `message_type` | string | - | 消息类型，支持 `private`、`group`、`discuss`，分别对应私聊、群组、讨论组 |
+| `user_id` | number | - | 对方 QQ 号（消息类型为 `private` 时需要） |
+| `group_id` | number | - | 群号（消息类型为 `group` 时需要） |
+| `discuss_id` | number | - | 讨论组 ID（消息类型为 `discuss` 时需要） |
 | `message` | string/array | - | 要发送的内容 |
 | `auto_escape` | bool | false | 消息内容是否作为纯文本发送（即不解析 CQ 码），`message` 数据类型为 `array` 时无效 |
 
@@ -443,4 +462,4 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 另外，请求的路径中不允许出现 `..`，即上级目录的标记，以防止恶意或错误的请求到系统中的其它文件。
 
-本功能默认情况下不开启，在配置文件中将 `serve_data_files` 设置为 `yes` 或 `true` 即可开启，见 [配置文件说明](https://richardchien.github.io/coolq-http-api/#/Configuration)。
+本功能默认情况下不开启，在配置文件中将 `serve_data_files` 设置为 `yes` 或 `true` 即可开启，见 [配置文件说明](#/Configuration)。

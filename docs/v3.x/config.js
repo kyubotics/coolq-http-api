@@ -22,6 +22,9 @@ docute.init({
             title: 'CQ 码', path: '/CQCode'
         },
         {
+            title: 'WebSocket', path: '/WebSocket'
+        },
+        {
             title: 'HTTPS', path: 'https://github.com/richardchien/coolq-http-api/wiki/HTTPS'
         },
         {
