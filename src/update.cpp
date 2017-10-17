@@ -73,7 +73,7 @@ optional<tuple<bool, string, int, string>> get_latest_version() {
     return nullopt;
 }
 
-bool perform_update(const string &version, int build_number) {
+bool perform_update(const string &version, const int build_number) {
     const auto cpk_url = version_cpk_url(version, build_number);
     const auto tmp_path = sdk->directories().app_tmp() + version + "_build_" + to_string(build_number) + ".cpk";
     if (!download_remote_file(cpk_url, tmp_path, true)) {
@@ -97,14 +97,14 @@ void check_update(const bool is_automatically) {
     if (is_automatically) Log::i(TAG, u8"正在检查更新...");
 
     if (const auto version_opt = get_latest_version(); version_opt) {
-        const auto latest_version = version_opt.value();
-        const auto version = get<1>(latest_version);
-        const auto build_number = get<2>(latest_version);
+        bool is_newer;
+        string version, description;
+        int build_number;
+        tie(is_newer, version, build_number, description) = version_opt.value();
 
-        if (get<0>(latest_version)) {
+        if (is_newer) {
             // should update
             if (is_automatically) Log::i(TAG, u8"发现新版本：" + version + u8", build " + to_string(build_number));
-            auto description = get<3>(latest_version);
             const auto code = message_box(MB_YESNO | MB_ICONQUESTION, u8"发现新版本：" + version
                                           + u8"\r\n\r\n更新信息：\r\n"
                                           + (description.empty() ? u8"无" : description)
