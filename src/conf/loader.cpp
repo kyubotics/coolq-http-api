@@ -31,6 +31,9 @@
 
 using namespace std;
 
+static const auto DEFAULT_UPDATE_SOURCE =
+        "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/";
+
 optional<Config> load_configuration(const string &filepath) {
     static const auto TAG = u8"配置";
 
@@ -38,14 +41,12 @@ optional<Config> load_configuration(const string &filepath) {
 
     Log::d(TAG, u8"尝试加载配置文件");
 
-    const auto login_qq_str = to_string(sdk->get_login_qq());
-
     const auto ansi_filepath = ansi(filepath);
     if (!boost::filesystem::is_regular_file(ansi_filepath)) {
         // create default config file
         Log::i(TAG, u8"没有找到配置文件，写入默认配置");
         if (ofstream file(ansi_filepath); file.is_open()) {
-            file << "[" << login_qq_str << "]" << endl
+            file << "[general]" << endl
                     << "host=0.0.0.0" << endl
                     << "port=5700" << endl
                     << "post_url=" << endl
@@ -53,7 +54,7 @@ optional<Config> load_configuration(const string &filepath) {
                     << "secret=" << endl
                     << "post_message_format=string" << endl
                     << "serve_data_files=no" << endl
-                    << "update_source=https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/" << endl
+                    << "update_source=" << DEFAULT_UPDATE_SOURCE << endl
                     << "update_channel=stable" << endl
                     << "auto_check_update=no" << endl
                     << "thread_pool_size=4" << endl;
@@ -65,21 +66,25 @@ optional<Config> load_configuration(const string &filepath) {
 
     // load from config file
     try {
+        const auto login_qq_str = to_string(sdk->get_login_qq());
+
         boost::property_tree::ptree pt;
         read_ini(ansi_filepath, pt);
 
-        struct string_to_bool_translator {
+        static struct {
             boost::optional<bool> get_value(const string &s) const {
                 auto b_opt = to_bool(s);
                 return b_opt ? boost::make_optional<bool>(b_opt.value()) : boost::none;
             }
-        };
+        } bool_translator;
 
         #define GET_CONFIG(key, type) \
-            config.key = pt.get<type>(login_qq_str + "." #key, config.key); \
+            auto __general##key = pt.get<type>("general." #key, config.key); \
+            config.key = pt.get<type>(login_qq_str + "." #key, __general##key); \
             Log::d(TAG, #key "=" + to_string(config.key))
         #define GET_BOOL_CONFIG(key) \
-            config.key = pt.get<bool>(login_qq_str + "." #key, config.key, string_to_bool_translator()); \
+            auto __general##key = pt.get<bool>("general." #key, config.key, bool_translator); \
+            config.key = pt.get<bool>(login_qq_str + "." #key, __general##key, bool_translator); \
             Log::d(TAG, #key "=" + to_string(config.key))
         GET_CONFIG(host, string);
         GET_CONFIG(port, unsigned short);
