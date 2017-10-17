@@ -5,7 +5,7 @@
 [![Download Count](https://img.shields.io/github/downloads/richardchien/coolq-http-api/total.svg)](https://github.com/richardchien/coolq-http-api/releases)
 ![QQ群](https://img.shields.io/badge/qq%E7%BE%A4-201865589-orange.svg)
 
-通过 HTTP 对酷 Q 的事件进行上报以及接收 HTTP 请求来调用酷 Q 的 C++ 接口，从而可以使用其它语言编写酷 Q 插件。
+通过 HTTP 对酷 Q 的事件进行上报以及接收 HTTP 请求来调用酷 Q 的 C++ 接口，从而可以使用其它语言编写酷 Q 插件。现已支持 WebSocket。
 
 **v3.x 版本的文档正在建设中……**
 
@@ -24,6 +24,8 @@
 酷 Q 收到的消息、事件会被 POST 到配置文件中指定的 `post_url`，为空则不上报。上报数据格式见 [上报数据格式](https://richardchien.github.io/coolq-http-api/#/Post)。
 
 停用插件将会关闭 HTTP 线程，再次启用将重新读取配置文件。
+
+除了 HTTP 方式，现也支持通过 WebSocket 调用接口和接收事件，见 [WebSocket](https://richardchien.github.io/coolq-http-api/#/WebSocket)。
 
 另外，本插件所支持的 CQ 码在原生的基础上进行了一些增强，见 [CQ 码](https://richardchien.github.io/coolq-http-api/#/CQCode)，并且支持以字符串或数组格式表示消息，见 [消息格式](https://richardchien.github.io/coolq-http-api/#/Message)。
 
