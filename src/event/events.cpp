@@ -72,6 +72,8 @@ static pplx::task<json> http_post(const json &json_body) {
 }
 
 static int32_t post_event(const json &payload, const function<void(const Params &)> response_handler = nullptr) {
+    auto should_block = false;
+
     if (!config.post_url.empty()) {
         // do http post and handle response
         Log::d(TAG, u8"开始通过 HTTP 上报事件");
@@ -86,7 +88,7 @@ static int32_t post_event(const json &payload, const function<void(const Params 
                 if (response_handler) response_handler(params);
 
                 if (params.get_bool("block", false)) {
-                    return CQEVENT_BLOCK;
+                    should_block = true;
                 }
             }
         } catch (invalid_argument &) {
@@ -101,7 +103,7 @@ static int32_t post_event(const json &payload, const function<void(const Params 
         Log::d(TAG, u8"已成功向 " + to_string(client_count) + u8" 个客户端推送事件");
     }
 
-    return CQEVENT_IGNORE;
+    return should_block ? CQEVENT_BLOCK : CQEVENT_IGNORE;
 }
 
 int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, const string &msg, int32_t font) {
