@@ -177,6 +177,7 @@ void ApiServer::init() {
             auto length = boost::filesystem::file_size(ansi_filepath);
             response->write(decltype(request->header){
                 {"Content-Length", to_string(length)},
+                {"Content-Type", "application/octet-stream"},
                 {"Content-Disposition", "attachment"}
             });
             *response << f.rdbuf();

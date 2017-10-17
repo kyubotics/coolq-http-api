@@ -37,12 +37,12 @@ static string latest_url() {
     return update_source() + "latest/" + config.update_channel + ".json";
 }
 
-static string version_info_url(const string &version, int build_number) {
-    return update_source() + "versions/" + version + "_build_" + to_string(build_number) + "/info.json";
+static string version_info_url(const string &version, const int build_number) {
+    return update_source() + "versions/" + version + "(b" + to_string(build_number) + ")/info.json";
 }
 
-static string version_cpk_url(const string &version, int build_number) {
-    return update_source() + "versions/" + version + "_build_" + to_string(build_number) + "/" CQAPP_ID ".cpk";
+static string version_cpk_url(const string &version, const int build_number) {
+    return update_source() + "versions/" + version + "(b" + to_string(build_number) + ")/" CQAPP_ID ".cpk";
 }
 
 // return tuple<is_newer, version, build_number, description>
