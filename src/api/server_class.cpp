@@ -200,7 +200,22 @@ void ApiServer::init_http() {
 }
 
 void ApiServer::init_ws() {
+    auto on_open_callback = [](shared_ptr<WsServer::Connection> connection) {
+        Log::d(TAG, u8"收到 WebSocket 连接：" + connection->path);
+        json args = SimpleWeb::QueryString::parse(connection->query_string);
+        auto authorized = authorize(connection->header, args);
+        if (!authorized) {
+            Log::d(TAG, u8"没有提供 Token 或 Token 不符，已关闭连接");
+            auto send_stream = make_shared<WsServer::SendStream>();
+            *send_stream << "authorization failed";
+            connection->send(send_stream);
+            connection->send_close(1000); // we don't want this client any more
+            return;
+        }
+    };
+
     auto &api_endpoint = ws_server_.endpoint["^/api/?$"];
+    api_endpoint.on_open = on_open_callback;
     api_endpoint.on_message = [](shared_ptr<WsServer::Connection> connection,
                                  shared_ptr<WsServer::Message> message) {
         auto ws_message_str = message->string();
@@ -216,21 +231,6 @@ void ApiServer::init_ws() {
             connection->send(send_stream);
             Log::d(TAG, u8"响应内容已发送");
         };
-
-        json args = SimpleWeb::QueryString::parse(connection->query_string);
-        auto authorized = authorize(connection->header, args, [&result](auto status_code) {
-            if (status_code == SimpleWeb::StatusCode::client_error_unauthorized) {
-                result.retcode = ApiResult::RetCodes::HTTP_UNAUTHORIZED;
-            } else if (status_code == SimpleWeb::StatusCode::client_error_forbidden) {
-                result.retcode = ApiResult::RetCodes::HTTP_FORBIDDEN;
-            }
-        });
-        if (!authorized) {
-            Log::d(TAG, u8"没有提供 Token 或 Token 不符，已拒绝请求");
-            send_result();
-            connection->send_close(1000); // we don't want this client any more
-            return;
-        }
 
         json payload;
         try {
@@ -267,6 +267,9 @@ void ApiServer::init_ws() {
 
         send_result();
     };
+
+    auto &event_endpoint = ws_server_.endpoint["^/event/?$"];
+    event_endpoint.on_open = on_open_callback;
 }
 
 void ApiServer::start() {
@@ -309,4 +312,21 @@ void ApiServer::stop() {
         ws_server_started_ = false;
     }
     Log::d(TAG, u8"已关闭 API 服务");
+}
+
+size_t ApiServer::push_event(const json &payload) {
+    if (!ws_server_started_) {
+        return 0;
+    }
+
+    size_t count = 0;
+    for (const auto &connection : ws_server_.get_connections()) {
+        if (boost::algorithm::starts_with(connection->path, "/event")) {
+            const auto send_stream = make_shared<WsServer::SendStream>();
+            *send_stream << payload.dump();
+            connection->send(send_stream);
+            count++;
+        }
+    }
+    return count;
 }

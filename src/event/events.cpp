@@ -21,38 +21,19 @@
 
 #include "app.h"
 
-#include <openssl/hmac.h>
-
 #include "utils/rest_client.h"
 #include "utils/params_class.h"
 #include "message/message_class.h"
 #include "structs.h"
+#include "api/server_class.h"
 
 using namespace std;
 
 static const auto TAG = u8"上报";
 
-#define ENSURE_POST_NEEDED if (config.post_url.empty()) { return CQEVENT_IGNORE; }
+#define ENSURE_POST_NEEDED if (config.post_url.empty() && !config.use_ws) { return CQEVENT_IGNORE; }
 
-static string hmac_sha1_hex(string key, string msg) {
-    unsigned digest_len = 20;
-    const auto digest = new unsigned char[digest_len];
-    HMAC_CTX ctx;
-    HMAC_CTX_init(&ctx);
-    HMAC_Init_ex(&ctx, key.c_str(), key.size(), EVP_sha1(), nullptr);
-    HMAC_Update(&ctx, reinterpret_cast<const unsigned char *>(msg.c_str()), msg.size());
-    HMAC_Final(&ctx, digest, &digest_len);
-    HMAC_CTX_cleanup(&ctx);
-
-    stringstream ss;
-    for (unsigned i = 0; i < digest_len; ++i) {
-        ss << hex << setfill('0') << setw(2) << static_cast<unsigned int>(digest[i]);
-    }
-    delete[] digest;
-    return ss.str();
-}
-
-static pplx::task<json> post(json &json_body) {
+static pplx::task<json> http_post(const json &json_body) {
     http_request request(http::methods::POST);
     request.headers().add(L"User-Agent", CQAPP_USER_AGENT);
     request.headers().add(L"Content-Type", L"application/json; charset=UTF-8");
@@ -73,11 +54,11 @@ static pplx::task<json> post(json &json_body) {
                         next_task = resp.extract_utf8string(true);
                     }
                     Log::d(TAG,
-                           u8"上报数据到 " + config.post_url + (succeeded ? u8" 成功" : u8" 失败")
+                           u8"通过 HTTP 上报数据到 " + config.post_url + (succeeded ? u8" 成功" : u8" 失败")
                            + u8"，状态码：" + to_string(resp.status_code()));
                 } catch (http_exception &) {
                     // failed to request
-                    Log::d(TAG, u8"上报地址 " + config.post_url + u8" 无法访问");
+                    Log::d(TAG, u8"HTTP 上报地址 " + config.post_url + u8" 无法访问");
                 }
                 return next_task;
             })
@@ -90,25 +71,36 @@ static pplx::task<json> post(json &json_body) {
             });
 }
 
-static int32_t handle_response(pplx::task<json> task, const function<void(const Params &)> func = nullptr) {
-    try {
-        if (const auto resp_payload = task.get(); resp_payload.is_object()) {
-            Params params;
-            if (resp_payload.is_object()) {
-                params = Params(resp_payload);
-            }
+static int32_t post_event(const json &payload, const function<void(const Params &)> response_handler = nullptr) {
+    if (!config.post_url.empty()) {
+        // do http post and handle response
+        Log::d(TAG, u8"开始通过 HTTP 上报事件");
+        try {
+            if (const auto resp_payload = http_post(payload).get(); resp_payload.is_object()) {
+                Params params;
+                if (resp_payload.is_object()) {
+                    params = Params(resp_payload);
+                }
 
-            // custom handler
-            if (func) func(params);
+                // custom handler
+                if (response_handler) response_handler(params);
 
-            if (params.get_bool("block", false)) {
-                return CQEVENT_BLOCK;
+                if (params.get_bool("block", false)) {
+                    return CQEVENT_BLOCK;
+                }
             }
+        } catch (invalid_argument &) {
+            // failed to parse json
+            Log::d(TAG, u8"上报响应不是有效的 JSON，已忽略");
         }
-    } catch (invalid_argument &) {
-        // failed to parse json
-        Log::d(TAG, u8"上报响应不是有效的 JSON，已忽略");
     }
+
+    if (ApiServer::instance().ws_server_is_started()) {
+        Log::d(TAG, u8"开始通过 WebSocket 推送事件");
+        const auto client_count = ApiServer::instance().push_event(payload);
+        Log::d(TAG, u8"已成功向 " + to_string(client_count) + u8" 个客户端推送事件");
+    }
+
     return CQEVENT_IGNORE;
 }
 
@@ -129,7 +121,7 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
             return "unknown";
         }
     }();
-    json payload = {
+    const json payload = {
         {"post_type", "message"},
         {"message_type", "private"},
         {"sub_type", sub_type_str},
@@ -139,7 +131,7 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
         {"font", font}
     };
 
-    return handle_response(post(payload), [&](const Params &params) {
+    return post_event(payload, [&](const Params &params) {
         const auto reply = params.get_message("reply");
         if (!reply.empty()) {
             sdk->send_private_msg(from_qq, reply);
@@ -158,7 +150,7 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
     }
     auto is_anonymous = !anonymous.empty();
 
-    json payload = {
+    const json payload = {
         {"post_type", "message"},
         {"message_type", "group"},
         {"time", send_time},
@@ -170,7 +162,7 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
         {"font", font}
     };
 
-    return handle_response(post(payload), [&](const Params &params) {
+    return post_event(payload, [&](const Params &params) {
         const auto reply = params.get_message("reply");
         if (!reply.empty()) {
             auto prefix = params.get_bool("at_sender", true) ? "[CQ:at,qq=" + to_string(from_qq) + "] " : "";
@@ -196,7 +188,7 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_disc
                           int32_t font) {
     ENSURE_POST_NEEDED;
 
-    json payload = {
+    const json payload = {
         {"post_type", "message"},
         {"message_type", "discuss"},
         {"time", send_time},
@@ -206,7 +198,7 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_disc
         {"font", font}
     };
 
-    return handle_response(post(payload), [&](const Params &params) {
+    return post_event(payload, [&](const Params &params) {
         const auto reply = params.get_message("reply");
         if (!reply.empty()) {
             auto prefix = params.get_bool("at_sender", true) ? "[CQ:at,qq=" + to_string(from_qq) + "] " : "";
@@ -220,7 +212,7 @@ int32_t event_group_upload(int32_t sub_type, int32_t send_time, int64_t from_gro
     ENSURE_POST_NEEDED;
 
     const auto file_bin = base64_decode(file);
-    json payload = {
+    const json payload = {
         {"post_type", "event"},
         {"event", "group_upload"},
         {"time", send_time},
@@ -229,7 +221,7 @@ int32_t event_group_upload(int32_t sub_type, int32_t send_time, int64_t from_gro
         {"file", file_bin.size() >= GroupFile::MIN_SIZE ? GroupFile::from_bytes(file_bin).json() : nullptr}
     };
 
-    return handle_response(post(payload));
+    return post_event(payload);
 }
 
 int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq) {
@@ -245,7 +237,7 @@ int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_grou
             return "unknown";
         }
     }();
-    json payload = {
+    const json payload = {
         {"post_type", "event"},
         {"event", "group_admin"},
         {"sub_type", sub_type_str},
@@ -254,7 +246,7 @@ int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_grou
         {"user_id", being_operate_qq}
     };
 
-    return handle_response(post(payload));
+    return post_event(payload);
 }
 
 int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq,
@@ -276,7 +268,7 @@ int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t
             return "unknown";
         }
     }();
-    json payload = {
+    const json payload = {
         {"post_type", "event"},
         {"event", "group_decrease"},
         {"sub_type", sub_type_str},
@@ -286,7 +278,7 @@ int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t
         {"user_id", being_operate_qq}
     };
 
-    return handle_response(post(payload));
+    return post_event(payload);
 }
 
 int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq,
@@ -303,7 +295,7 @@ int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t
             return "unknown";
         }
     }();
-    json payload = {
+    const json payload = {
         {"post_type", "event"},
         {"event", "group_increase"},
         {"sub_type", sub_type_str},
@@ -313,27 +305,27 @@ int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t
         {"user_id", being_operate_qq}
     };
 
-    return handle_response(post(payload));
+    return post_event(payload);
 }
 
 int32_t event_friend_add(int32_t sub_type, int32_t send_time, int64_t from_qq) {
     ENSURE_POST_NEEDED;
 
-    json payload = {
+    const json payload = {
         {"post_type", "event"},
         {"event", "friend_add"},
         {"time", send_time},
         {"user_id", from_qq}
     };
 
-    return handle_response(post(payload));
+    return post_event(payload);
 }
 
 int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t from_qq, const string &msg,
                                  const string &response_flag) {
     ENSURE_POST_NEEDED;
 
-    json payload = {
+    const json payload = {
         {"post_type", "request"},
         {"request_type", "friend"},
         {"time", send_time},
@@ -342,7 +334,7 @@ int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t fr
         {"flag", response_flag}
     };
 
-    return handle_response(post(payload), [&](const Params &params) {
+    return post_event(payload, [&](const Params &params) {
         if (auto approve_opt = params.get<bool>("approve"); approve_opt) {
             auto approve = approve_opt.value();
             sdk->set_friend_add_request(response_flag, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY,
@@ -365,7 +357,7 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
             return "unknown";
         }
     }();
-    json payload = {
+    const json payload = {
         {"post_type", "request"},
         {"request_type", "group"},
         {"sub_type", sub_type_str},
@@ -376,7 +368,7 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
         {"flag", response_flag}
     };
 
-    return handle_response(post(payload), [&](const Params &params) {
+    return post_event(payload, [&](const Params &params) {
         if (auto approve_opt = params.get<bool>("approve"); approve_opt) {
             auto approve = approve_opt.value();
             sdk->set_group_add_request(response_flag, sub_type, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY,

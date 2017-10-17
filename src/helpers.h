@@ -46,3 +46,5 @@ std::optional<nlohmann::json> get_remote_json(const std::string &url);
 bool download_remote_file(const std::string &url, const std::string &local_path, bool use_fake_ua = false);
 
 int message_box(unsigned type, const std::string &text);
+
+std::string hmac_sha1_hex(std::string key, std::string msg);

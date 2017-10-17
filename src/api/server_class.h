@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "common.h"
+
 #include "web_server/server_http.hpp"
 #include "web_server/server_ws.hpp"
 
@@ -35,6 +37,12 @@ public:
     void init();
     void start();
     void stop();
+
+    bool http_server_is_started() const { return http_server_started_; }
+    bool ws_server_is_started() const { return ws_server_started_; }
+
+    // websocket only
+    size_t push_event(const json &payload);
 
 private:
     ApiServer() {}
