@@ -69,7 +69,7 @@ void ApiServer::init() {
     Log::d(TAG, u8"初始化 API 处理函数");
     init_http();
     init_ws();
-    initiated_ = true;
+    initialized_ = true;
 }
 
 void ApiServer::init_http() {
@@ -273,11 +273,16 @@ void ApiServer::init_ws() {
 }
 
 void ApiServer::start() {
+    if (!initialized_) {
+        return;
+    }
+
     if (config.use_http) {
         http_server_.config.address = config.host;
         http_server_.config.port = config.port;
         http_thread_ = thread([&]() {
             http_server_.start();
+            http_server_started_ = false; // since it reaches here, the server is absolutely stopped
         });
         http_server_started_ = true;
         Log::d(TAG, u8"开启 API HTTP 服务器成功，开始监听 http://"
@@ -289,6 +294,7 @@ void ApiServer::start() {
         ws_server_.config.port = config.ws_port;
         ws_thread_ = thread([&]() {
             ws_server_.start();
+            ws_server_started_ = false;
         });
         ws_server_started_ = true;
         Log::d(TAG, u8"开启 API WebSocket 服务器成功，开始监听 http://"

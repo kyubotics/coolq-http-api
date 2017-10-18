@@ -24,6 +24,7 @@
 #include "./types.h"
 #include "structs.h"
 #include "utils/params_class.h"
+#include "api/server_class.h"
 
 using namespace std;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
@@ -354,6 +355,21 @@ HANDLER(get_csrf_token) {
     auto token = sdk->get_csrf_token();
     result.retcode = token ? RetCodes::OK : RetCodes::INVALID_DATA;
     result.data = {{"token", token}};
+}
+
+#pragma endregion
+
+#pragma region Extras
+
+HANDLER(get_status) {
+    result.retcode = RetCodes::OK;
+    result.data = {
+        {"app_initialized", app.is_initialized()},
+        {"app_enabled", app.is_enabled()},
+        {"server_initialized", ApiServer::instance().is_initialized()},
+        {"http_server_started", ApiServer::instance().http_server_is_started()},
+        {"ws_server_started", ApiServer::instance().ws_server_is_started()}
+    };
 }
 
 #ifdef _DEBUG

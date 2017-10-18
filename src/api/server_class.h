@@ -28,7 +28,7 @@ class ApiServer {
 public:
     static ApiServer &instance() {
         static ApiServer instance;
-        if (!instance.initiated_) {
+        if (!instance.initialized_) {
             instance.init();
         }
         return instance;
@@ -38,6 +38,7 @@ public:
     void start();
     void stop();
 
+    bool is_initialized() const { return initialized_; }
     bool http_server_is_started() const { return http_server_started_; }
     bool ws_server_is_started() const { return ws_server_started_; }
 
@@ -58,7 +59,7 @@ private:
     SimpleWeb::SocketServer<SimpleWeb::WS> ws_server_;
     std::thread http_thread_;
     std::thread ws_thread_;
-    bool initiated_ = false;
+    bool initialized_ = false;
     bool http_server_started_ = false;
     bool ws_server_started_ = false;
 
