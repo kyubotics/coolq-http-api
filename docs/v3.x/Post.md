@@ -160,7 +160,7 @@ X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2
 | `event` | string | `"group_admin"` | 事件名 |
 | `sub_type` | string | `"set"`、`"unset"` | 事件子类型，分别表示设置和取消管理员 |
 | `group_id` | number | - | 群号 |
-| `user_id` | number | - | 发送者 QQ 号 |
+| `user_id` | number | - | 管理员 QQ 号 |
 
 ### 群成员减少
 
