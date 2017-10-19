@@ -1,10 +1,13 @@
 docute.init({
     title: 'CoolQ HTTP API 插件文档',
-    home: 'https://raw.githubusercontent.com/richardchien/coolq-http-api/master/README.md',
+    home: 'Home.md',
     repo: 'richardchien/coolq-http-api',
     nav: [
         {
             title: '首页', path: '/'
+        },
+        {
+            title: 'Docker', path: '/Docker'
         },
         {
             title: '配置文件说明', path: '/Configuration'
