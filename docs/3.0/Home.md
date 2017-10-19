@@ -49,3 +49,7 @@ $ docker run -ti --rm --name cqhttp-test \
 API 描述、事件上报等文档，见前面「手动安装」一节提供的指引链接。
 
 关于在 docker 中使用本插件的更多细节，见 [Docker](/Docker)。
+
+## 从旧版升级
+
+由于 3.0 版本引入了一些 breaking change，因此这里给出一份 [升级指南](/UpgradeGuide)，帮助用户从旧版升级到 3.0。
