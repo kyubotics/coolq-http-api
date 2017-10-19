@@ -48,18 +48,24 @@ def bootstrap():
         # enable plugin
         coolq_config = ConfigParser()
         coolq_config.read(COOLQ_CONFIG_FILE)
-        coolq_config['App'][APP_ID + '.status'] = '1'
+        if 'App' in coolq_config:
+            coolq_config['App'][APP_ID + '.status'] = '1'
+        else:
+            coolq_config['App'] = {
+                APP_ID + '.status': '1'
+            }
         with open(COOLQ_CONFIG_FILE, 'w') as config_file:
             coolq_config.write(config_file)
 
         # write app config
         app_config = ConfigParser()
+        app_config['general'] = {}
         for key, value in os.environ.items():
             if not key.startswith(APP_CONFIG_ENV_PREFIX):
                 continue
 
             key = key[len(APP_CONFIG_ENV_PREFIX):]
-            app_config[key.lower()] = value
+            app_config['general'][key.lower()] = value
         with open(APP_CONFIG_FILE, 'w') as config_file:
             app_config.write(config_file)
 
