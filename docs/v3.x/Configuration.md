@@ -40,11 +40,11 @@ secret=kP9yK2lrGxoymmpo
 | `use_http` | `yes` | 是否开启 HTTP 接口，即通过 HTTP 调用 API |
 | `ws_host` | `0.0.0.0` | WebSocket 服务器监听的 IP |
 | `ws_port` | `6700` | WebSocket 服务器监听的端口 |
-| `use_ws` | `no` | 是否开启 WebSocket 服务器，可用于调用 API 和推送事件，见 [WebSocket](#/WebSocket) |
+| `use_ws` | `no` | 是否开启 WebSocket 服务器，可用于调用 API 和推送事件，见 [WebSocket](/WebSocket) |
 | `post_url` | 空 | 消息和事件的上报地址，通过 POST 方式请求，数据以 JSON 格式发送 |
 | `access_token` | 空 | API 访问 token，如果不为空，则会在接收到请求时验证 `Authorization` 请求头是否为 `Token xxxxxxxx`，`xxxxxxxx` 为 access token |
 | `secret` | 空 | 上报数据签名密钥，如果不为空，则会在 HTTP 上报时对 HTTP 正文进行 HMAC SHA1 哈希，使用 `secret` 的值作为密钥，计算出的哈希值放在上报的 `X-Signature` 请求头，例如 `X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2` |
-| `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](#/Message) |
+| `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](/Message) |
 | `serve_data_files` | `no` | 是否提供请求 `data` 目录的文件的功能，`yes` 或 `true` 表示启用，否则不启用 |
 | `update_source` | `https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/` | 更新源，默认使用 GitHub 的 [richardchien/coolq-http-api-release] 仓库，对于酷 Q 运行在国内的情况，可以换成 `https://gitee.com/richardchien/coolq-http-api-release/raw/master/` |
 | `update_channel` | `stable` | 更新通道，目前有 `stable` 和 `beta` 两个 |

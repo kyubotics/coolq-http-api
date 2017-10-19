@@ -55,7 +55,7 @@ X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2
 
 ## 上报和回复消息格式
 
-从 2.0.0 版本开始上报和回复消息格式有了较大变化（向下兼容），具体请查看 [消息格式](https://richardchien.github.io/coolq-http-api/#/Message)。
+从 2.0.0 版本开始上报和回复消息格式有了较大变化（向下兼容），具体请查看 [消息格式](/Message)。
 
 本页后面提到消息的地方（消息事件的 `message` 字段和响应的 `reply` 字段），将不再具体解释其格式。
 

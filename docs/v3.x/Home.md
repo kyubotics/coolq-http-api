@@ -12,17 +12,17 @@
 
 注意如果系统中没有装 VC++ 2017 运行库，酷 Q 启动时会报错说插件加载失败，需要去下载 [Microsoft Visual C++ Redistributable for Visual Studio 2017 x86](https://www.visualstudio.com/zh-hans/downloads/?q=redist) 安装，**注意一定要安装 x86 版本**！
 
-启用后插件将开启一个 HTTP 服务器来接收请求，默认监听 `0.0.0.0:5700`，首次启用会生成一个默认配置文件，在酷 Q app 文件夹的 `io.github.richardchien.coolqhttpapi` 文件夹中，文件名 `config.cfg`，使用 ini 格式填写。关于配置项的说明，见 [配置文件说明](#/Configuration)。
+启用后插件将开启一个 HTTP 服务器来接收请求，默认监听 `0.0.0.0:5700`，首次启用会生成一个默认配置文件，在酷 Q app 文件夹的 `io.github.richardchien.coolqhttpapi` 文件夹中，文件名 `config.cfg`，使用 ini 格式填写。关于配置项的说明，见 [配置文件说明](/Configuration)。
 
-此时通过 `http://192.168.1.123:5700/` 即可调用酷 Q 的函数，例如 `http://192.168.1.123:5700/send_private_msg?user_id=123456&message=你好`，注意这里的 `192.168.1.123` 要换成你自己电脑的 IP，如果在本地跑，可以用 `127.0.0.1`，`user_id` 也要换成你想要发送到的 QQ 号。具体的 API 列表见 [API 描述](#/API)。如果需要使用 HTTPS 来访问，见 [HTTPS](https://github.com/richardchien/coolq-http-api/wiki/HTTPS)。
+此时通过 `http://192.168.1.123:5700/` 即可调用酷 Q 的函数，例如 `http://192.168.1.123:5700/send_private_msg?user_id=123456&message=你好`，注意这里的 `192.168.1.123` 要换成你自己电脑的 IP，如果在本地跑，可以用 `127.0.0.1`，`user_id` 也要换成你想要发送到的 QQ 号。具体的 API 列表见 [API 描述](/API)。如果需要使用 HTTPS 来访问，见 [HTTPS](https://github.com/richardchien/coolq-http-api/wiki/HTTPS)。
 
-酷 Q 收到的消息、事件会被 POST 到配置文件中指定的 `post_url`，为空则不上报。上报数据格式见 [上报数据格式](#/Post)。
+酷 Q 收到的消息、事件会被 POST 到配置文件中指定的 `post_url`，为空则不上报。上报数据格式见 [上报数据格式](/Post)。
 
 停用插件将会关闭 HTTP 线程，再次启用将重新读取配置文件。
 
-除了 HTTP 方式，现也支持通过 WebSocket 调用接口和接收事件，见 [WebSocket](#/WebSocket)。
+除了 HTTP 方式，现也支持通过 WebSocket 调用接口和接收事件，见 [WebSocket](/WebSocket)。
 
-另外，本插件所支持的 CQ 码在原生的基础上进行了一些增强，见 [CQ 码](#/CQCode)，并且支持以字符串或数组格式表示消息，见 [消息格式](#/Message)。
+另外，本插件所支持的 CQ 码在原生的基础上进行了一些增强，见 [CQ 码](/CQCode)，并且支持以字符串或数组格式表示消息，见 [消息格式](/Message)。
 
 对于其它可能比较容易遇到的问题，见 [FAQ](https://github.com/richardchien/coolq-http-api/wiki/FAQ)。
 
@@ -42,10 +42,10 @@ $ docker run -ti --rm --name cqhttp-test \
              richardchien/cqhttp
 ```
 
-其中，`CQHTTP_POST_URL`、`CQHTTP_SERVE_DATA_FILES` 是用于配置插件运行的，格式为「`CQHTTP_` + 插件配置项的大写」，具体的配置项，见 [配置文件说明](#/Configuration)。
+其中，`CQHTTP_POST_URL`、`CQHTTP_SERVE_DATA_FILES` 是用于配置插件运行的，格式为「`CQHTTP_` + 插件配置项的大写」，具体的配置项，见 [配置文件说明](/Configuration)。
 
 然后访问 `http://<你的IP>:9000/` 进入 noVNC（默认密码 `MAX8char`），登录酷 Q，即可开始使用（插件已自动启用，配置文件也根据启动命令的环境变量自动生成了）。一般情况下，你不太需要关注插件是如何存在于容器中的。
 
 API 描述、事件上报等文档，见前面「手动安装」一节提供的指引链接。
 
-关于在 docker 中使用本插件的更多细节，见 [Docker](#/Docker)。
+关于在 docker 中使用本插件的更多细节，见 [Docker](/Docker)。

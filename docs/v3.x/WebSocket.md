@@ -36,9 +36,9 @@ Authorization: Token kSLuTF2GC2Q4q4ugm3
 }
 ```
 
-这里的 `action` 参数用于指定要调用的 API，具体支持的 API 可以参考 [API 列表](#/API?id=api-%E5%88%97%E8%A1%A8)。`params` 用于传入参数，如果要调用的 API 不需要参数，则可以不加。
+这里的 `action` 参数用于指定要调用的 API，具体支持的 API 可以参考 [API 列表](/API#api-列表)。`params` 用于传入参数，如果要调用的 API 不需要参数，则可以不加。
 
-客户端向插件发送 JSON 之后，插件会往回发送一个调用结果，结构和 [响应说明](#/API?id=%E5%93%8D%E5%BA%94%E8%AF%B4%E6%98%8E) 是一样的，唯一的区别在于，调用 HTTP 接口时，通过 HTTP 状态码反应的错误情况，被移动到响应 JSON 的 `retcode` 字段，例如，HTTP 接口返回 404 的情况，对应到 WebSocket 的回复，是：
+客户端向插件发送 JSON 之后，插件会往回发送一个调用结果，结构和 [响应说明](/API#响应说明) 是一样的，唯一的区别在于，调用 HTTP 接口时，通过 HTTP 状态码反应的错误情况，被移动到响应 JSON 的 `retcode` 字段，例如，HTTP 接口返回 404 的情况，对应到 WebSocket 的回复，是：
 
 ```json
 {
@@ -63,7 +63,7 @@ Authorization: Token kSLuTF2GC2Q4q4ugm3
 
 ## `/event/`
 
-连接此接口后，插件会在收到事件后推送至客户端，推送的格式和 HTTP POST 方式上报的完全一致，见 [上报数据格式](#/Post?id=%E4%B8%8A%E6%8A%A5%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F)，事件列表见 [事件列表](#/Post?id=%E4%BA%8B%E4%BB%B6%E5%88%97%E8%A1%A8)。
+连接此接口后，插件会在收到事件后推送至客户端，推送的格式和 HTTP POST 方式上报的完全一致，见 [上报数据格式](/Post#上报数据格式)，事件列表见 [事件列表](/Post#事件列表)。
 
 与 HTTP 上报不同的是，WebSocket 推送不会对数据进行签名（即 HTTP 上报中的 `X-Signature` 请求头在这里没有等价的东西），并且也不会处理响应数据。如果对事件进行处理的时候需要调用接口，请使用 HTTP 接口或 WebSocket 的 `/api/` 接口。
 
