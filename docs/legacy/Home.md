@@ -28,7 +28,7 @@
 
 如果你使用 docker 来部署服务，可以直接运行已制作好的 docker 镜像，容器将会按照环境变量的配置来下载或更新插件到指定或最新版本，并自动修改配置文件，例如：
 
-```sh
+```bash
 $ docker pull richardchien/cqhttp:legacy
 $ docker run -ti --rm --name cqhttp-test \
              -p 9000:9000 -p 5700:5700 \

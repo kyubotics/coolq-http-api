@@ -6,7 +6,7 @@
 
 ## 基本用法
 
-```sh
+```bash
 $ docker pull richardchien/cqhttp:latest
 $ mkdir coolq  # 用于存储酷 Q 的程序文件
 $ docker run -ti --rm --name cqhttp-test \

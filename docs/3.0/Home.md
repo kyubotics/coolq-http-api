@@ -30,7 +30,7 @@
 
 如果你使用 docker 来部署服务，可以直接运行已制作好的 docker 镜像，例如：
 
-```sh
+```bash
 $ docker pull richardchien/cqhttp:latest
 $ mkdir coolq  # 用于存储酷 Q 的程序文件
 $ docker run -ti --rm --name cqhttp-test \
