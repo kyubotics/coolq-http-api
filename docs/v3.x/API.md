@@ -438,6 +438,24 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 | ----- | ------- | --- |
 | `token` | number | CSRF Token |
 
+### `/get_status` 获取插件运行状态
+
+#### 参数
+
+无
+
+#### 响应数据
+
+| 字段名 | 数据类型 | 说明 |
+| ----- | ------- | --- |
+| `app_initialized` | boolean | 插件已初始化 |
+| `app_enabled` | boolean | 插件已启用 |
+| `server_initialized` | boolean | API 服务器已初始化 |
+| `http_server_started` | boolean | HTTP 服务器已启动 |
+| `ws_server_started` | boolean | WebSocket 服务器已启动 |
+
+上面的前三项永远都应该是 `true`，后面两个根据配置文件的 `use_http` 和 `use_ws` 配置项的不同，会存在 `false`。
+
 ### `/get_version_info` 获取酷 Q 及 HTTP API 插件的版本信息
 
 #### 参数
