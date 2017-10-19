@@ -13,7 +13,7 @@ env:
     - GIT_EMAIL: richardchienthebest@gmail.com
     - DOCKER_USER: richardchien
     - DOCKER_EMAIL: richardchienthebest@gmail.com
-    - DOCKER_REPO: richardchien/cqhttp-test
+    - DOCKER_REPO: richardchien/cqhttp
 
 script:
   - export DOCKER_TAG=${TRAVIS_TAG#v}
