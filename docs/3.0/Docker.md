@@ -15,7 +15,7 @@ $ docker run -ti --rm --name cqhttp-test \
              -p 5700:5700 \  # HTTP API 插件开放的端口
              -e CQHTTP_POST_URL=http://example.com:8080 \  # 事件上报地址
              -e CQHTTP_SERVE_DATA_FILES=yes \  # 允许通过 HTTP 接口访问酷 Q 数据文件
-             richardchien/cqhttp
+             richardchien/cqhttp:latest
 ```
 
 其中，`CQHTTP_POST_URL`、`CQHTTP_SERVE_DATA_FILES` 是用于配置插件运行的，格式为「`CQHTTP_` + 插件配置项的大写」，具体的配置项，见 [配置文件说明](/Configuration)。
@@ -24,7 +24,7 @@ $ docker run -ti --rm --name cqhttp-test \
 
 注意，默认情况下，容器启动时会将 `CQHTTP_` 开头的环境变量写入到配置文件中（整个覆盖已有的配置文件），**因此，尽管你可以在酷 Q 运行时修改配置文件并重启插件以使用修改后的配置，但容器重启后配置文件将再次被覆盖**，如果你不要使用环境变量来配置，请看下面的 [强制手动模式](#强制手动模式)。
 
-## 由官方镜像继承的配置
+## 由官方镜像继承来的配置
 
 除了 `CQHTTP_` 开头的环境变量用来配置插件，还有若干环境变量可以用来调整容器的运行，它们都继承自 coolq/wine-coolq 镜像：
 

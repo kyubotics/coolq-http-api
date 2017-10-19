@@ -39,7 +39,7 @@ $ docker run -ti --rm --name cqhttp-test \
              -p 5700:5700 \  # HTTP API 插件开放的端口
              -e CQHTTP_POST_URL=http://example.com:8080 \  # 事件上报地址
              -e CQHTTP_SERVE_DATA_FILES=yes \  # 允许通过 HTTP 接口访问酷 Q 数据文件
-             richardchien/cqhttp
+             richardchien/cqhttp:latest
 ```
 
 其中，`CQHTTP_POST_URL`、`CQHTTP_SERVE_DATA_FILES` 是用于配置插件运行的，格式为「`CQHTTP_` + 插件配置项的大写」，具体的配置项，见 [配置文件说明](/Configuration)。
