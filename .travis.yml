@@ -12,7 +12,6 @@ env:
     - GIT_NAME: "Richard Chien"
     - GIT_EMAIL: richardchienthebest@gmail.com
     - DOCKER_USER: richardchien
-    - DOCKER_EMAIL: richardchienthebest@gmail.com
     - DOCKER_REPO: richardchien/cqhttp
 
 script:
@@ -21,5 +20,5 @@ script:
 
 after_success:
   - docker tag $DOCKER_REPO:$DOCKER_TAG $DOCKER_REPO:latest
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - docker push $DOCKER_REPO
