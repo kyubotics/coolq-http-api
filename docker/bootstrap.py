@@ -11,7 +11,7 @@ APP_LOCK_FILE = os.path.join(APP_DIR, 'app.lock')
 APP_CONFIG_FILE = os.path.join(APP_DIR, 'config.cfg')
 APP_CONFIG_ENV_PREFIX = 'CQHTTP_'
 
-TMP_CPK_FILE = '/tmp/io.github.richardchien.coolqhttpapi.cpk'
+CPK_FILE = '/home/user/io.github.richardchien.coolqhttpapi.cpk'
 
 
 def touch(path):
@@ -41,7 +41,7 @@ def bootstrap():
 
         # copy cpk
         shutil.copyfile(
-            TMP_CPK_FILE,
+            CPK_FILE,
             os.path.join(COOLQ_APP_DIR, APP_ID + '.cpk')
         )
 
