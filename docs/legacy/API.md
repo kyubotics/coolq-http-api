@@ -67,7 +67,7 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 ## 发送消息格式
 
-从 2.0.0 版本开始发送消息格式有了较大变化（向下兼容），具体请查看 [消息格式](https://richardchien.github.io/coolq-http-api/#/Message)。
+从 2.0.0 版本开始发送消息格式有了较大变化（向下兼容），具体请查看 [消息格式](/Message)。
 
 后面提到消息的地方（`message` 字段），将不再具体解释其格式。
 
@@ -426,4 +426,4 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 另外，请求的路径中不允许出现 `..`，即上级目录的标记，以防止恶意或错误的请求到系统中的其它文件。
 
-本功能默认情况下不开启，在配置文件中将 `serve_data_file` 设置为 `yes` 或 `true` 即可开启，见 [配置文件说明](https://richardchien.github.io/coolq-http-api/#/Configuration)。
+本功能默认情况下不开启，在配置文件中将 `serve_data_file` 设置为 `yes` 或 `true` 即可开启，见 [配置文件说明](/Configuration)。

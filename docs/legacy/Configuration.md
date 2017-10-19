@@ -43,6 +43,6 @@ pattern=通知|公告
 | `post_timeout` | 20 | 消息、事件上报的超时时间（仅限制传输超时，而非连接超时），单位为秒，除非有特殊情况，通常无需修改 |
 | `token` | 空 | 验证 token，如果不为空，则会在接收到请求时验证 `Authorization` 请求头是否为 `token xxxxxxxx`，`xxxxxxxx` 为 token，并在上报数据时在请求中加入同样的 `Authorization` 请求头 |
 | `pattern` | 空 | 正则匹配模式，对于消息类型的事件，如果此项不为空，则对消息进行正则搜索，若搜索到指定的模式，则上报事件，否则不上报 |
-| `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](https://richardchien.github.io/coolq-http-api/#/Message) |
+| `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](/Message) |
 | `serve_data_file` | `no` | 是否提供请求 `data` 目录的文件的功能，`yes` 或 `true` 表示启用，否则不启用 |
 | `auto_check_update` | `no` | 是否自动检查更新（每次启用插件时检查），`yes` 或 `true` 表示启用，否则不启用，不启用的情况下，仍然可以在酷 Q 应用菜单中手动检查更新 |

@@ -8,15 +8,15 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/richardchien/cqhttp.svg)](https://hub.docker.com/r/richardchien/cqhttp/)
 ![QQ群](https://img.shields.io/badge/qq%E7%BE%A4-201865589-orange.svg)
 
-通过 HTTP 对酷 Q 的事件进行上报以及接收 HTTP 请求来调用酷 Q 的 C++ 接口，从而可以使用其它语言编写酷 Q 插件。现已支持 WebSocket。
+通过 HTTP 对酷 Q 的事件进行上报以及接收 HTTP 请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。现已支持 WebSocket。
 
 ## 使用方法
 
-使用方法见 [CoolQ HTTP API 插件文档](https://richardchien.github.io/coolq-http-api/)。3.x 版本的文档在 [CoolQ HTTP API 插件文档 v3.x](https://richardchien.github.io/coolq-http-api/v3.x/)。
+使用方法见 [CoolQ HTTP API 插件文档](https://richardchien.github.io/coolq-http-api/)。v1.x、v2.x 的旧版本文档在 [CoolQ HTTP API 插件文档](https://richardchien.github.io/coolq-http-api/legacy/)。
 
 ## SDK
 
-**重要：目前这些插件可能不兼容 v3.x。**
+**重要：目前这些插件可能不兼容 v3.0。**
 
 对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK：
 
