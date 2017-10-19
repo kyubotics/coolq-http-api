@@ -42,7 +42,8 @@ static bool authorize(const decltype(HttpServer::Request::header) &headers, cons
 
     string token_given;
     if (const auto headers_it = headers.find("Authorization");
-        headers_it != headers.end() && boost::starts_with(headers_it->second, "Token ")) {
+        headers_it != headers.end()
+        && (boost::starts_with(headers_it->second, "Token ") || boost::starts_with(headers_it->second, "token "))) {
         token_given = headers_it->second.substr(strlen("Token "));
     } else if (const auto args_it = query_args.find("access_token"); args_it != query_args.end()) {
         token_given = args_it->get<string>();
