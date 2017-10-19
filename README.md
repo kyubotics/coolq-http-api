@@ -12,7 +12,7 @@
 
 ## 使用方法
 
-使用方法见 [CoolQ HTTP API 插件文档](https://richardchien.github.io/coolq-http-api/)。3.x 版本的文档在 [CoolQ HTTP API 插件文档 v3.x](https://richardchien.github.io/coolq-http-api/v3.x/)
+使用方法见 [CoolQ HTTP API 插件文档](https://richardchien.github.io/coolq-http-api/)。3.x 版本的文档在 [CoolQ HTTP API 插件文档 v3.x](https://richardchien.github.io/coolq-http-api/v3.x/)。
 
 ## SDK
 
