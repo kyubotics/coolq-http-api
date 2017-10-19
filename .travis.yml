@@ -1,0 +1,25 @@
+sudo: required
+
+branches:
+  only:
+    - /^v\d+\.\d+(\.\d+)?(-\S+)?$/  # only build release tags
+
+services:
+  - docker
+
+env:
+  global:
+    - GIT_NAME: "Richard Chien"
+    - GIT_EMAIL: richardchienthebest@gmail.com
+    - DOCKER_USER: richardchien
+    - DOCKER_EMAIL: richardchienthebest@gmail.com
+    - DOCKER_REPO: richardchien/cqhttp-test
+
+script:
+  - export DOCKER_TAG=${TRAVIS_TAG#v}
+  - docker build -t $DOCKER_REPO:$DOCKER_TAG --build-arg GIT_TAG=$TRAVIS_TAG ./docker
+
+after_success:
+  - docker tag $DOCKER_REPO:$DOCKER_TAG $DOCKER_REPO:latest
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - docker push $DOCKER_REPO
