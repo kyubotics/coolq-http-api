@@ -108,9 +108,9 @@ void ApiServer::init_http() {
                             Log::d(TAG, u8"Content-Type: " + content_type);
                         }
 
-                        if (content_type == "application/x-www-form-urlencoded") {
+                        if (boost::starts_with(content_type, "application/x-www-form-urlencoded")) {
                             form = SimpleWeb::QueryString::parse(request->content.string());
-                        } else if (content_type == "application/json") {
+                        } else if (boost::starts_with(content_type, "application/json")) {
                             try {
                                 json_params = json::parse(request->content.string()); // may throw invalid_argument
                                 if (!json_params.is_object()) {
