@@ -18,14 +18,13 @@
 
 ## SDK
 
-**重要：目前这些插件可能不兼容 v3.0。**
-
 对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK：
 
-| 语言 | 地址 | 作者 |
-| --- | ---- | --- |
-| PHP | https://github.com/slight-sky/coolq-sdk-php | slight-sky |
-| Python | https://github.com/richardchien/cqhttp-python-sdk | richardchien |
+| 语言 | 地址 | 作者 | 备注 |
+| --- | ---- | --- | --- |
+| PHP | https://github.com/slight-sky/coolq-sdk-php | slight-sky | - |
+| Python | https://github.com/richardchien/cqhttp-python-sdk | richardchien | 已兼容 v3.0 |
+| Node.js | https://github.com/richardchien/cqhttp-node-sdk | richardchien | 已兼容 v3.0 |
 
 ## 修改、编译
 
