@@ -48,3 +48,5 @@ bool download_remote_file(const std::string &url, const std::string &local_path,
 int message_box(unsigned type, const std::string &text);
 
 std::string hmac_sha1_hex(std::string key, std::string msg);
+
+bool is_emoji(uint32_t codepoint);

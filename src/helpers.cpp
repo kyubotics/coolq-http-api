@@ -107,41 +107,50 @@ optional<json> get_remote_json(const string &url) {
     }
 }
 
-bool download_remote_file(const string &url, const string &local_path, bool use_fake_ua) {
-    using concurrency::streams::ostream;
-    using concurrency::streams::fstream;
+bool download_remote_file(const string &url, const string &local_path, const bool use_fake_ua) {
+    using concurrency::streams::container_buffer;
 
-    optional<ostream> file_stream;
     auto succeeded = false;
-    fstream::open_ostream(s2ws(local_path)).then([&](ostream out_file) {
-        file_stream = out_file;
 
-        http_client client(s2ws(url));
-        http_request request(http::methods::GET);
+    auto ansi_local_path = ansi(local_path);
 
-        string user_agent(CQAPP_USER_AGENT);
-        if (use_fake_ua) {
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/56.0.2924.87 Safari/537.36";
-        }
-        request.headers().add(L"User-Agent", s2ws(user_agent));
-        request.headers().add(L"Referer", s2ws(url));
+    http_request request(http::methods::GET);
+    string user_agent(CQAPP_USER_AGENT);
+    if (use_fake_ua) {
+        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/56.0.2924.87 Safari/537.36";
+    }
+    request.headers().add(L"User-Agent", s2ws(user_agent));
+    request.headers().add(L"Referer", s2ws(url));
 
-        return client.request(request);
-    }).then([&](http_response resp) {
-        if (resp.status_code() == 200) {
-            // we can assume here that the request is succeeded
-            return resp.body().read_to_end(file_stream->streambuf());
+    http_client(s2ws(url)).request(request).then([&](http_response response) {
+        if (ofstream f(ansi_local_path, ios::out | ios::binary); f.is_open()) {
+            auto length = response.headers().content_length();
+            decltype(length) read_count = 0;
+            auto body_stream = response.body();
+
+            size_t last_read_count = 0;
+            do {
+                container_buffer<string> buffer;
+                body_stream.read(buffer, 8192).then([&](size_t count) {
+                    read_count += count;
+                    last_read_count = count;
+                }).wait();
+
+                f << buffer.collection();
+            } while (last_read_count > 0);
+
+            if (read_count == length) {
+                succeeded = true;
+            }
+            f.close();
         }
-        return pplx::task_from_result<size_t>(0);
-    }).then([&](size_t size) {
-        if (size > 0) {
-            // download succeeded
-            succeeded = true;
-        }
-        return file_stream->close();
     }).wait();
+
+    if (!succeeded && boost::filesystem::exists(ansi_local_path)) {
+        boost::filesystem::remove(ansi_local_path);
+    }
 
     return succeeded;
 }
@@ -169,4 +178,17 @@ string hmac_sha1_hex(string key, string msg) {
     }
     delete[] digest;
     return ss.str();
+}
+
+static const uint32_t EMOJI_RANGES_1[87][2] = {{1, 2}, {3,4}};
+static const uint32_t EMOJI_RANGES_2[87][2] = {{1, 2}, {3,4}};
+
+bool is_emoji(uint32_t codepoint) {
+    if (codepoint < 0x203C /* part 1 lowest */
+        || codepoint > 0x3299 /* part 1 highest */ && codepoint < 0x1F004 /* part 2 lowest */
+        || codepoint > 0x1F9E6 /* part 2 highest */) {
+        return false;
+    }
+
+
 }
