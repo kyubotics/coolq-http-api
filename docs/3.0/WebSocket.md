@@ -7,7 +7,7 @@
 ```ini
 ws_host=0.0.0.0  # 监听的 IP
 ws_host=6700  # 监听的端口
-use_ws=yes  # 使用启用 WebSocket
+use_ws=yes  # 启用 WebSocket
 ```
 
 重启插件后，便启动了 WebSocket 服务器（如果你不再需要 HTTP 接口，可以设置 `use_http=no`，注意这不会影响 `post_url` 的作用）。
