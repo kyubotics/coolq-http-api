@@ -59,11 +59,11 @@ public:
         std::string type;
         std::map<std::string, std::string> data;
 
-        Segment enhanced(const Direction direction = Directions::OUTWARD) const;
+        std::vector<Segment> enhanced(const Direction direction = Directions::OUTWARD) const;
     };
 
 private:
-    std::vector<Segment> segments_;
+    std::list<Segment> segments_;
 };
 
 void to_json(json &j, const Message::Segment &seg);

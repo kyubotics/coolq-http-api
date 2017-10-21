@@ -47,8 +47,8 @@ string Message::unescape(string msg) {
  * Implement a FSM manually,
  * because the regex lib of VC++ will throw stack overflow in some cases.
  */
-static vector<Message::Segment> split(const string &raw_msg) {
-    vector<Message::Segment> segments;
+static list<Message::Segment> split(const string &raw_msg) {
+    list<Message::Segment> segments;
     const static auto TEXT = 0;
     const static auto FUNCTION_NAME = 1;
     const static auto PARAMS = 2;
@@ -146,7 +146,7 @@ static vector<Message::Segment> split(const string &raw_msg) {
     return segments;
 }
 
-static string merge(vector<Message::Segment> segments) {
+static string merge(const list<Message::Segment> &segments) {
     stringstream ss;
     for (auto seg : segments) {
         if (seg.type.empty()) {
@@ -165,6 +165,30 @@ static string merge(vector<Message::Segment> segments) {
         }
     }
     return ss.str();
+}
+
+/**
+ * Merge adjacent "text" segments.
+ */
+static void reduce(list<Message::Segment> &segments) {
+    if (segments.empty()) {
+        return;
+    }
+
+    auto last_seg_it = segments.begin();
+    for (auto it = segments.begin(); ++it != segments.end();) {
+        if (it->type == "text" && last_seg_it->type == "text"
+            && it->data.find("text") != it->data.end()
+            && last_seg_it->data.find("text") != last_seg_it->data.end()) {
+            // found adjacent "text" segments
+            last_seg_it->data["text"] += it->data["text"];
+            // remove the current element and continue
+            segments.erase(it);
+            it = last_seg_it;
+        } else {
+            last_seg_it = it;
+        }
+    }
 }
 
 Message::Message(const string &msg_str) {
@@ -188,9 +212,11 @@ Message::Message(const json &msg_json) {
 }
 
 string Message::process_outward() const {
-    vector<Segment> segments;
-    for (auto seg : this->segments_) {
-        segments.push_back(seg.enhanced(Directions::OUTWARD));
+    list<Segment> segments;
+    for (const auto &seg : this->segments_) {
+        for (const auto &enhanced_seg : seg.enhanced(Directions::OUTWARD)) {
+            segments.push_back(enhanced_seg);
+        }
     }
     return merge(segments);
 }
@@ -200,9 +226,11 @@ json Message::process_inward(optional<Format> fmt) const {
         fmt = config.post_message_format;
     }
 
-    vector<Segment> segments;
-    for (auto seg : this->segments_) {
-        segments.push_back(seg.enhanced(Directions::INWARD));
+    list<Segment> segments;
+    for (const auto &seg : this->segments_) {
+        for (const auto &enhanced_seg : seg.enhanced(Directions::INWARD)) {
+            segments.push_back(enhanced_seg);
+        }
     }
 
     if (fmt == Formats::STRING) {
@@ -210,6 +238,7 @@ json Message::process_inward(optional<Format> fmt) const {
     }
 
     if (fmt == Formats::ARRAY) {
+        reduce(segments);
         return segments;
     }
 
@@ -217,7 +246,10 @@ json Message::process_inward(optional<Format> fmt) const {
 }
 
 void to_json(json &j, const Message::Segment &seg) {
-    j = json{{"type", seg.type},{"data", seg.data}};
+    j = json{
+        {"type", seg.type},
+        {"data", seg.data}
+    };
 }
 
 void from_json(const json &j, Message::Segment &seg) {

@@ -19,6 +19,7 @@
 
 #include "app.h"
 
+#include <regex>
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
@@ -38,28 +39,32 @@ using websocketpp::md5::md5_hash_hex;
 
 static Message::Segment enhance_send_file(const Message::Segment &raw, const string &data_dir);
 static Message::Segment enhance_receive_image(const Message::Segment &raw);
+static Message::Segment enhance_emoji_cq_to_unicode(const Message::Segment &raw);
+static vector<Message::Segment> enhance_emoji_unicode_to_cq(const Message::Segment &raw);
 
-Message::Segment Message::Segment::enhanced(const Direction direction) const {
-    Segment result;
+vector<Message::Segment> Message::Segment::enhanced(const Direction direction) const {
     if (direction == Directions::OUTWARD) {
         // messages to send
         if (this->type == "image") {
-            result = enhance_send_file(*this, "image");
-        } else if (this->type == "record") {
-            result = enhance_send_file(*this, "record");
-        } else {
-            result = *this;
+            return {enhance_send_file(*this, "image")};
         }
-
-    } else if (direction == Directions::INWARD) {
-        // messages received
-        if (this->type == "image") {
-            result = enhance_receive_image(*this);
-        } else {
-            result = *this;
+        if (this->type == "record") {
+            return {enhance_send_file(*this, "record")};
+        }
+        if (this->type == "text") {
+            return enhance_emoji_unicode_to_cq(*this);
         }
     }
-    return result;
+    if (direction == Directions::INWARD) {
+        // messages received
+        if (this->type == "image") {
+            return {enhance_receive_image(*this)};
+        }
+        if (this->type == "emoji") {
+            return {enhance_emoji_cq_to_unicode(*this)};
+        }
+    }
+    return {*this};
 }
 
 static Message::Segment enhance_send_file(const Message::Segment &raw, const string &data_dir) {
@@ -141,4 +146,50 @@ static Message::Segment enhance_receive_image(const Message::Segment &raw) {
         }
     }
     return segment;
+}
+
+static Message::Segment enhance_emoji_cq_to_unicode(const Message::Segment &raw) {
+    if (const auto it = raw.data.find("id"); it != raw.data.end()) {
+        const auto codepoint = static_cast<char32_t>(stoul(it->second));
+        const u32string u32_str = {codepoint};
+        const auto p = reinterpret_cast<const uint32_t *>(u32_str.data());
+        wstring_convert<codecvt_utf8<uint32_t>, uint32_t> conv;
+        const auto emoji_unicode_str = conv.to_bytes(p, p + u32_str.size());
+        return Message::Segment{"text", {{"text", emoji_unicode_str}}};
+    }
+    return raw;
+}
+
+static vector<Message::Segment> enhance_emoji_unicode_to_cq(const Message::Segment &raw) {
+    if (raw.data.find("text") == raw.data.end()) {
+        return {raw};
+    }
+
+    vector<Message::Segment> result;
+
+    const auto text = raw.data.at("text");
+    wstring_convert<codecvt_utf8<uint32_t>, uint32_t> uint32_conv;
+    auto uint32_str = uint32_conv.from_bytes(text);
+
+    auto push_text = [&](decltype(uint32_str.cbegin()) begin, decltype(uint32_str.cbegin()) end) {
+        decltype(uint32_str) uint32_part_str(begin, end);
+        if (!uint32_part_str.empty()) {
+            auto utf8_part_str = uint32_conv.to_bytes(uint32_part_str);
+            result.push_back(Message::Segment{"text",{{"text", utf8_part_str}}});
+        }
+    };
+
+    auto last_it = uint32_str.cbegin();
+    for (auto it = uint32_str.cbegin(); it != uint32_str.cend(); ++it) {
+        const auto codepoint = *it;
+        if (is_emoji(codepoint)) {
+            // is emoji
+            push_text(last_it, it);
+            result.push_back(Message::Segment{"emoji", {{"id", to_string(codepoint)}}});
+            last_it = it + 1;
+        }
+    }
+    push_text(last_it, uint32_str.cend());
+
+    return result;
 }
