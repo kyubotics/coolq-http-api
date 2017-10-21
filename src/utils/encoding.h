@@ -24,7 +24,6 @@
 
 #include <string>
 #include <memory>
-#include <codecvt>
 
 #include "helpers.h"
 
@@ -42,14 +41,6 @@ static auto widechar_to_multibyte(const int code_page, const wchar_t *widechar_s
     auto c_str_sptr = make_shared_array<char>(len + 1);
     WideCharToMultiByte(code_page, 0, widechar_str, -1, c_str_sptr.get(), len, nullptr, nullptr);
     return c_str_sptr;
-}
-
-static auto ws2s(const std::wstring &ws) {
-    return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().to_bytes(ws);
-}
-
-static auto s2ws(const std::string &s) {
-    return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s);
 }
 
 struct Encodings {

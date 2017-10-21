@@ -26,6 +26,8 @@
 
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
 
+std::string ws2s(const std::wstring &ws);
+std::wstring s2ws(const std::string &s);
 std::string ansi(const std::string &s);
 
 bool to_bool(const std::string &str, const bool default_val);
@@ -50,3 +52,6 @@ int message_box(unsigned type, const std::string &text);
 std::string hmac_sha1_hex(std::string key, std::string msg);
 
 bool is_emoji(uint32_t codepoint);
+
+std::string string_to_coolq(const std::string &str);
+std::string string_from_coolq(const std::string &str);

@@ -31,5 +31,5 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-#include "utils/encoding.h"
 #include "helpers.h"
+using bytes = std::string;

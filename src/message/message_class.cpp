@@ -214,9 +214,7 @@ Message::Message(const json &msg_json) {
 string Message::process_outward() const {
     list<Segment> segments;
     for (const auto &seg : this->segments_) {
-        for (const auto &enhanced_seg : seg.enhanced(Directions::OUTWARD)) {
-            segments.push_back(enhanced_seg);
-        }
+        segments.push_back(seg.enhanced(Directions::OUTWARD));
     }
     return merge(segments);
 }
@@ -228,9 +226,7 @@ json Message::process_inward(optional<Format> fmt) const {
 
     list<Segment> segments;
     for (const auto &seg : this->segments_) {
-        for (const auto &enhanced_seg : seg.enhanced(Directions::INWARD)) {
-            segments.push_back(enhanced_seg);
-        }
+        segments.push_back(seg.enhanced(Directions::INWARD));
     }
 
     if (fmt == Formats::STRING) {

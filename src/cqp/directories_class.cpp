@@ -8,7 +8,7 @@ using namespace std;
 using namespace boost::filesystem;
 
 string Sdk::Directories::app() const {
-    return string_decode(CQ_getAppDirectory(this->ac_), Encodings::ANSI);
+    return string_from_coolq(CQ_getAppDirectory(this->ac_));
 }
 
 string Sdk::Directories::app_tmp() const {

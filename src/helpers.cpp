@@ -21,11 +21,14 @@
 
 #include "app.h"
 
+#include <codecvt>
+#include <regex>
 #include <openssl/hmac.h>
 #include <boost/filesystem.hpp>
 #include <cpprest/filestream.h>
 
 #include "utils/rest_client.h"
+#include "utils/encoding.h"
 
 using namespace std;
 
@@ -43,6 +46,14 @@ void string_replace(string &str, const string &search, const string &replace) {
     }
     ws_ret += str.substr(start_pos);
     str.swap(ws_ret); // faster than str = wsRet;
+}
+
+string ws2s(const wstring &ws) {
+    return std::wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().to_bytes(ws);
+}
+
+wstring s2ws(const string &s) {
+    return std::wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s);
 }
 
 string ansi(const string &s) {
@@ -239,4 +250,57 @@ bool is_emoji(const uint32_t codepoint) {
         return false;
     }
     return false;
+}
+
+string string_to_coolq(const string &str) {
+    // call CoolQ API
+    string processed_str;
+
+    wstring_convert<codecvt_utf8<uint32_t>, uint32_t> uint32_conv;
+    auto uint32_str = uint32_conv.from_bytes(str);
+
+    auto append_text = [&](decltype(uint32_str.cbegin()) begin, decltype(uint32_str.cbegin()) end) {
+        decltype(uint32_str) uint32_part_str(begin, end);
+        auto utf8_part_str = uint32_conv.to_bytes(uint32_part_str);
+        processed_str += utf8_part_str;
+    };
+
+    auto last_it = uint32_str.cbegin();
+    for (auto it = uint32_str.cbegin(); it != uint32_str.cend(); ++it) {
+        const auto codepoint = *it;
+        if (is_emoji(codepoint)) {
+            // is emoji
+            append_text(last_it, it);
+            processed_str += "[CQ:emoji,id=" + to_string(codepoint) + "]";
+            last_it = it + 1;
+        }
+    }
+    append_text(last_it, uint32_str.cend());
+
+    return string_encode(processed_str, Encodings::ANSI);
+}
+
+string string_from_coolq(const string &str) {
+    // handle CoolQ event and data
+    auto utf8_str = string_decode(str, Encodings::ANSI);
+    string processed_str;
+
+    const regex r(R"(\[CQ:emoji,\s*id=(\d+)\])");
+    smatch m;
+    auto it = utf8_str.cbegin();
+    while (regex_search(it, utf8_str.cend(), m, r)) {
+        processed_str += string(it, it + m.position());
+
+        const auto codepoint = static_cast<char32_t>(stoul(m.str(1)));
+        const u32string u32_str = {codepoint};
+        const auto p = reinterpret_cast<const uint32_t *>(u32_str.data());
+        wstring_convert<codecvt_utf8<uint32_t>, uint32_t> conv;
+        const auto emoji_utf8_str = conv.to_bytes(p, p + u32_str.size());
+        processed_str += emoji_utf8_str;
+
+        it += m.position() + m.length();
+    }
+    processed_str += string(it, utf8_str.cend());
+
+    return processed_str;
 }

@@ -68,7 +68,7 @@ string Pack::pop_string() {
         return string();
     }
     check_enough(this->size(), len);
-    auto result = string_decode(this->bytes_.substr(this->curr_, len), Encodings::ANSI);
+    auto result = string_from_coolq(this->bytes_.substr(this->curr_, len));
     this->curr_ += len;
     return result;
 }

@@ -59,7 +59,7 @@ public:
         std::string type;
         std::map<std::string, std::string> data;
 
-        std::vector<Segment> enhanced(const Direction direction = Directions::OUTWARD) const;
+        Segment enhanced(const Direction direction = Directions::OUTWARD) const;
     };
 
 private:

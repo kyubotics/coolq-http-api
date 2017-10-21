@@ -27,7 +27,7 @@
  */
 CQEVENT(int32_t, __event_private_msg, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, int32_t font) {
-    return event_private_msg(sub_type, send_time, from_qq, string_decode(msg, Encodings::ANSI), font);
+    return event_private_msg(sub_type, send_time, from_qq, string_from_coolq(msg), font);
 }
 
 /**
@@ -36,8 +36,8 @@ CQEVENT(int32_t, __event_private_msg, 24)
 CQEVENT(int32_t, __event_group_msg, 36)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg,
  int32_t font) {
-    return event_group_msg(sub_type, send_time, from_group, from_qq, string_decode(from_anonymous, Encodings::ANSI),
-                           string_decode(msg, Encodings::ANSI), font);
+    return event_group_msg(sub_type, send_time, from_group, from_qq, string_from_coolq(from_anonymous),
+                           string_from_coolq(msg), font);
 }
 
 /**
@@ -45,7 +45,7 @@ CQEVENT(int32_t, __event_group_msg, 36)
  */
 CQEVENT(int32_t, __event_discuss_msg, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font) {
-    return event_discuss_msg(sub_type, send_time, from_discuss, from_qq, string_decode(msg, Encodings::ANSI), font);
+    return event_discuss_msg(sub_type, send_time, from_discuss, from_qq, string_from_coolq(msg), font);
 }
 
 /**
@@ -53,7 +53,7 @@ CQEVENT(int32_t, __event_discuss_msg, 32)
  */
 CQEVENT(int32_t, __event_group_upload, 28)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *file) {
-    return event_group_upload(sub_type, send_time, from_group, from_qq, string_decode(file, Encodings::ANSI));
+    return event_group_upload(sub_type, send_time, from_group, from_qq, string_from_coolq(file));
 }
 
 /**
@@ -102,8 +102,8 @@ CQEVENT(int32_t, __event_friend_add, 16)
  */
 CQEVENT(int32_t, __event_add_friend_request, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, const char *response_flag) {
-    return event_add_friend_request(sub_type, send_time, from_qq, string_decode(msg, Encodings::ANSI),
-                                    string_decode(response_flag, Encodings::ANSI));
+    return event_add_friend_request(sub_type, send_time, from_qq, string_from_coolq(msg),
+                                    string_from_coolq(response_flag));
 }
 
 /**
@@ -114,6 +114,6 @@ CQEVENT(int32_t, __event_add_friend_request, 24)
  */
 CQEVENT(int32_t, __event_add_group_request, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *msg, const char *response_flag) {
-    return event_add_group_request(sub_type, send_time, from_group, from_qq, string_decode(msg, Encodings::ANSI),
-                                   string_decode(response_flag, Encodings::ANSI));
+    return event_add_group_request(sub_type, send_time, from_group, from_qq, string_from_coolq(msg),
+                                   string_from_coolq(response_flag));
 }
