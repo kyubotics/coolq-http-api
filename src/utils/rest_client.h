@@ -22,10 +22,7 @@
 #include <cpprest/http_client.h>
 #undef U  // fix bug in cpprestsdk
 
-namespace http {
-    using namespace web::http;
-}
-
+namespace http = web::http;
 using http::http_exception;
 using http::http_headers;
 using http::http_request;

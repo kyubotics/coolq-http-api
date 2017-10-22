@@ -20,6 +20,7 @@
 #include "app.h"
 
 #include <boost/filesystem.hpp>
+#include <boost/process.hpp>
 
 #include "./types.h"
 #include "structs.h"
@@ -384,15 +385,34 @@ HANDLER(get_version_info) {
     if (boost::filesystem::is_regular_file(ansi(coolq_directory + "CQP.exe"))) {
         coolq_edition = "pro";
     }
-    auto plugin_version = CQAPP_VERSION;
     result.retcode = RetCodes::OK;
     result.data = {
         {"coolq_directory", coolq_directory},
         {"coolq_edition", coolq_edition},
-        {"plugin_version", plugin_version},
+        {"plugin_version", CQAPP_VERSION},
         {"plugin_build_number", CQAPP_BUILD_NUMBER},
         {"plugin_build_configuration", BUILD_CONFIGURATION}
     };
+}
+
+HANDLER(set_restart) {
+    constexpr size_t size = 1024;
+    wchar_t w_exec_path[size]{};
+    GetModuleFileName(nullptr, w_exec_path, size);
+
+    const auto restart_batch_path = sdk->directories().app_tmp() + "restart.bat";
+    const auto ansi_restart_batch_path = ansi(restart_batch_path);
+    if (ofstream f(ansi_restart_batch_path); f.is_open()) {
+        f << "taskkill /F /PID " << _getpid() << "\r\n"
+                << "timeout 1 > NUL\r\n"
+                << "start \"\" \"" << ansi(ws2s(w_exec_path)) << "\" /account " << sdk->get_login_qq();
+        f.close();
+    }
+
+    try {
+        boost::process::spawn(ansi_restart_batch_path);
+        result.retcode = RetCodes::OK;
+    } catch (exception &) { }
 }
 
 #pragma endregion

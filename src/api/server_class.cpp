@@ -281,11 +281,11 @@ void ApiServer::start() {
     if (config.use_http) {
         http_server_.config.address = config.host;
         http_server_.config.port = config.port;
+        http_server_started_ = true;
         http_thread_ = thread([&]() {
             http_server_.start();
             http_server_started_ = false; // since it reaches here, the server is absolutely stopped
         });
-        http_server_started_ = true;
         Log::d(TAG, u8"开启 API HTTP 服务器成功，开始监听 http://"
                + http_server_.config.address + ":" + to_string(http_server_.config.port));
     }
@@ -293,11 +293,11 @@ void ApiServer::start() {
     if (config.use_ws) {
         ws_server_.config.address = config.ws_host;
         ws_server_.config.port = config.ws_port;
+        ws_server_started_ = true;
         ws_thread_ = thread([&]() {
             ws_server_.start();
             ws_server_started_ = false;
         });
-        ws_server_started_ = true;
         Log::d(TAG, u8"开启 API WebSocket 服务器成功，开始监听 http://"
                + ws_server_.config.address + ":" + to_string(ws_server_.config.port));
     }
