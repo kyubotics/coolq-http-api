@@ -1,5 +1,5 @@
 // 
-// main_handlers.cpp : Implement main API handlers directly talk with CoolQ.
+// handlers.cpp : Implement API handlers.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -22,7 +22,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/process.hpp>
 
-#include "./handler.h"
+#include "./types.h"
 #include "structs.h"
 #include "utils/params_class.h"
 #include "api/server_class.h"
@@ -30,6 +30,38 @@
 using namespace std;
 
 ApiHandlerMap api_handlers;
+
+using RetCodes = ApiResult::RetCodes;
+
+extern ApiHandlerMap api_handlers;
+
+static bool __add_api_handler(const std::string &name, ApiHandler handler) {
+    api_handlers[name] = handler;
+    return true;
+}
+
+#define HANDLER(handler_name) \
+    static void __##handler_name(const Params &, ApiResult &); \
+    static bool __dummy_##handler_name = __add_api_handler(#handler_name, __##handler_name); \
+    static void __##handler_name(const Params &params, ApiResult &result)
+
+static void handle_async(const Params &params, ApiResult &result, ApiHandler handler) {
+    static const auto TAG = u8"API异步";
+    if (pool) {
+        pool->push([params, result, handler](int) {
+            // copy "params" and "result" in the async task
+            auto async_params = params;
+            auto async_result = result;
+            handler(async_params, async_result);
+            Log::d(TAG, u8"成功执行一个 API 请求异步处理任务");
+        });
+        Log::d(TAG, u8"API 请求异步处理任务已进入线程池等待执行");
+        result.retcode = RetCodes::ASYNC;
+    } else {
+        Log::d(TAG, u8"工作线程池未正确初始化，无法进行异步处理，请尝试重启插件");
+        result.retcode = RetCodes::BAD_THREAD_POOL;
+    }
+}
 
 #pragma region Send Message
 
@@ -312,6 +344,8 @@ HANDLER(get_group_member_info) {
     }
 }
 
+#pragma endregion
+
 #pragma region Get CoolQ Information
 
 HANDLER(get_cookies) {
@@ -381,6 +415,91 @@ HANDLER(set_restart) {
         boost::process::spawn(ansi_restart_batch_path);
         result.retcode = RetCodes::OK;
     } catch (exception &) { }
+}
+
+#pragma endregion
+
+#pragma region Experimental
+
+HANDLER(_get_friend_list) {
+    const auto cookies = sdk->get_cookies();
+    const auto g_tk = to_string(sdk->get_csrf_token());
+    const auto login_qq = to_string(sdk->get_login_qq());
+
+    {
+        // try mobile QZone API
+        const auto url = "http://m.qzone.com/friend/mfriend_list?g_tk=" + g_tk + "&res_uin=" + login_qq +
+                "&res_type=normal&format=json";
+        const auto res = get_remote_json(url, true, cookies).value_or(nullptr);
+        try {
+            if (res.at("code").get<int>() == 0) {
+                // succeeded
+                auto resp_data = res.at("data");
+                result.data = json::array();
+
+                map<int64_t, int> gpid_idx_map;
+                for (auto gp : resp_data.at("gpnames")) {
+                    auto res_gp = json::object();
+                    auto gpid = gp.at("gpid").get<int64_t>();
+                    res_gp["friend_group_id"] = gpid;
+                    res_gp["friend_group_name"] = gp.at("gpname").get<string>();
+                    res_gp["friends"] = json::array();
+                    gpid_idx_map[gpid] = result.data.size();
+                    result.data.push_back(res_gp);
+                }
+
+                for (auto frnd : resp_data.at("list")) {
+                    auto gpid = frnd.at("groupid").get<int64_t>();
+                    auto res_frnd = json::object();
+                    res_frnd["user_id"] = frnd.at("uin").get<int64_t>();
+                    res_frnd["nickname"] = frnd.at("nick").get<string>();
+                    res_frnd["remark"] = frnd.at("remark").get<string>();
+                    result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
+                }
+
+                result.retcode = RetCodes::OK;
+                return;
+            }
+        } catch (exception &) {}
+    }
+
+    {
+        // try desktop web QZone API
+        const auto url =
+                "https://h5.qzone.qq.com/proxy/domain/r.qzone.qq.com/cgi-bin/tfriend/friend_show_qqfriends.cgi?g_tk=" +
+                g_tk + "&uin=" + login_qq;
+        const auto res = get_remote_json(url, true, cookies).value_or(nullptr);
+        try {
+            auto resp_data = res;
+            result.data = json::array();
+
+            map<int64_t, int> gpid_idx_map;
+            for (auto gp : resp_data.at("gpnames")) {
+                auto res_gp = json::object();
+                auto gpid = gp.at("gpid").get<int64_t>();
+                res_gp["friend_group_id"] = gpid;
+                res_gp["friend_group_name"] = gp.at("gpname").get<string>();
+                res_gp["friends"] = json::array();
+                gpid_idx_map[gpid] = result.data.size();
+                result.data.push_back(res_gp);
+            }
+
+            for (auto frnd : resp_data.at("items")) {
+                auto gpid = frnd.at("groupid").get<int64_t>();
+                auto res_frnd = json::object();
+                res_frnd["user_id"] = frnd.at("uin").get<int64_t>();
+                res_frnd["nickname"] = frnd.at("name").get<string>();
+                res_frnd["remark"] = frnd.at("remark").get<string>();
+                result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
+            }
+
+            result.retcode = RetCodes::OK;
+            return;
+        } catch (exception &) {}
+    }
+
+    // failed
+    result.data = nullptr;
 }
 
 #pragma endregion
