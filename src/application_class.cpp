@@ -49,7 +49,9 @@ void Application::enable() {
 
     if (!pool) {
         Log::d(TAG, u8"工作线程池创建成功");
-        pool = make_shared<ctpl::thread_pool>(config.thread_pool_size);
+        pool = make_shared<ctpl::thread_pool>(
+            config.thread_pool_size > 0 ? config.thread_pool_size : thread::hardware_concurrency() * 2 + 1
+        );
     }
 
     enabled_ = true;

@@ -43,7 +43,15 @@ static std::shared_ptr<T> make_shared_array(size_t size) {
     return std::shared_ptr<T>(new T[size], [](T *p) { delete[] p; });
 }
 
-std::optional<nlohmann::json> get_remote_json(const std::string &url);
+namespace web {
+    namespace http {
+        class http_request;
+    }
+}
+
+std::optional<nlohmann::json> get_remote_json(const std::string &url, bool use_fake_ua = false,
+                                              const std::string &cookies = "");
+std::optional<nlohmann::json> get_remote_json(const std::string &url, const web::http::http_request &request);
 
 bool download_remote_file(const std::string &url, const std::string &local_path, bool use_fake_ua = false);
 

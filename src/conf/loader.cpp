@@ -61,7 +61,8 @@ optional<Config> load_configuration(const string &filepath) {
                     << "update_source=" << DEFAULT_UPDATE_SOURCE << endl
                     << "update_channel=stable" << endl
                     << "auto_check_update=no" << endl
-                    << "thread_pool_size=4" << endl;
+                    << "thread_pool_size=4" << endl
+                    << "server_thread_pool_size=1" << endl;
             file.close();
         } else {
             Log::e(TAG, u8"写入默认配置失败，请检查文件系统权限");
@@ -105,6 +106,7 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(update_channel, string);
         GET_BOOL_CONFIG(auto_check_update);
         GET_CONFIG(thread_pool_size, size_t);
+        GET_CONFIG(server_thread_pool_size, size_t);
         #undef GET_CONFIG
 
         Log::i(TAG, u8"加载配置文件成功");

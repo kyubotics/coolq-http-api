@@ -1,5 +1,5 @@
 // 
-// handlers.cpp : Implement API handlers.
+// main_handlers.cpp : Implement main API handlers directly talk with CoolQ.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -22,46 +22,14 @@
 #include <boost/filesystem.hpp>
 #include <boost/process.hpp>
 
-#include "./types.h"
+#include "./handler.h"
 #include "structs.h"
 #include "utils/params_class.h"
 #include "api/server_class.h"
 
 using namespace std;
-using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
-using Response = HttpServer::Response;
-using Request = HttpServer::Request;
-using RetCodes = ApiResult::RetCodes;
 
 ApiHandlerMap api_handlers;
-
-static bool __add_api_handler(const string &name, ApiHandler handler) {
-    api_handlers[name] = handler;
-    return true;
-}
-
-#define HANDLER(handler_name) \
-    static void __##handler_name(const Params &, ApiResult &); \
-    static bool __dummy_##handler_name = __add_api_handler(#handler_name, __##handler_name); \
-    static void __##handler_name(const Params &params, ApiResult &result)
-
-static void handle_async(const Params &params, ApiResult &result, ApiHandler handler) {
-    static const auto TAG = u8"API异步";
-    if (pool) {
-        pool->push([params, result, handler](int) {
-            // copy "params" and "result" in the async task
-            auto async_params = params;
-            auto async_result = result;
-            handler(async_params, async_result);
-            Log::d(TAG, u8"成功执行一个 API 请求异步处理任务");
-        });
-        Log::d(TAG, u8"API 请求异步处理任务已进入线程池等待执行");
-        result.retcode = RetCodes::ASYNC;
-    } else {
-        Log::d(TAG, u8"工作线程池未正确初始化，无法进行异步处理，请尝试重启插件");
-        result.retcode = RetCodes::BAD_THREAD_POOL;
-    }
-}
 
 #pragma region Send Message
 

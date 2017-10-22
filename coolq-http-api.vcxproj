@@ -11,7 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\api\handlers.cpp" />
+    <ClCompile Include="src\api\extra_handlers.cpp" />
+    <ClCompile Include="src\api\main_handlers.cpp" />
     <ClCompile Include="src\api\server_class.cpp" />
     <ClCompile Include="src\appentry.cpp" />
     <ClCompile Include="src\application_class.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="src\utils\params_class.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\api\handler.h" />
     <ClInclude Include="src\api\server_class.h" />
     <ClInclude Include="src\api\types.h" />
     <ClInclude Include="src\app.h" />

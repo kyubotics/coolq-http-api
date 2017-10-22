@@ -86,9 +86,21 @@ namespace std {
     }
 }
 
-optional<json> get_remote_json(const string &url) {
+#define FAKE_USER_AGENT "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
+    "AppleWebKit/537.36 (KHTML, like Gecko) " \
+    "Chrome/56.0.2924.87 Safari/537.36"
+
+optional<json> get_remote_json(const string &url, const bool use_fake_ua, const string &cookies) {
     http_request request(http::methods::GET);
-    request.headers().add(L"User-Agent", CQAPP_USER_AGENT);
+    request.headers().add(L"User-Agent", s2ws(use_fake_ua ? FAKE_USER_AGENT : CQAPP_USER_AGENT));
+    request.headers().add(L"Referer", s2ws(url));
+    if (!cookies.empty()) {
+        request.headers().add(L"Cookie", s2ws(cookies));
+    }
+    return get_remote_json(url, request);
+}
+
+optional<nlohmann::json> get_remote_json(const string &url, const http_request &request) {
     auto task = http_client(s2ws(url))
             .request(request)
             .then([](pplx::task<http_response> task) {
@@ -104,6 +116,12 @@ optional<json> get_remote_json(const string &url) {
                 return next_task;
             })
             .then([](string &body) {
+                if (smatch m; regex_search(body, m, regex("\\);?\\s*$"))) {
+                    // is jsonp
+                    if (auto start = body.find("("); start != string::npos) {
+                        body = body.substr(start + 1, body.size() - (start + 1) - m.length());
+                    }
+                }
                 if (!body.empty()) {
                     return pplx::task_from_result(make_optional<json>(json::parse(body)));
                     // may throw invalid_argument due to invalid json
@@ -126,13 +144,7 @@ bool download_remote_file(const string &url, const string &local_path, const boo
     auto ansi_local_path = ansi(local_path);
 
     http_request request(http::methods::GET);
-    string user_agent(CQAPP_USER_AGENT);
-    if (use_fake_ua) {
-        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/56.0.2924.87 Safari/537.36";
-    }
-    request.headers().add(L"User-Agent", s2ws(user_agent));
+    request.headers().add(L"User-Agent", s2ws(use_fake_ua ? FAKE_USER_AGENT : CQAPP_USER_AGENT));
     request.headers().add(L"Referer", s2ws(url));
 
     http_client(s2ws(url)).request(request).then([&](http_response response) {

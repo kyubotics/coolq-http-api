@@ -66,6 +66,10 @@ static bool authorize(const decltype(HttpServer::Request::header) &headers, cons
     return true; // token_given == config.token
 }
 
+static auto server_thread_pool_size() {
+    return config.server_thread_pool_size > 0 ? config.server_thread_pool_size : thread::hardware_concurrency() * 2 + 1;
+}
+
 void ApiServer::init() {
     Log::d(TAG, u8"初始化 API 处理函数");
     init_http();
@@ -279,6 +283,7 @@ void ApiServer::start() {
     }
 
     if (config.use_http) {
+        http_server_.config.thread_pool_size = server_thread_pool_size();
         http_server_.config.address = config.host;
         http_server_.config.port = config.port;
         http_server_started_ = true;
@@ -291,6 +296,7 @@ void ApiServer::start() {
     }
 
     if (config.use_ws) {
+        ws_server_.config.thread_pool_size = server_thread_pool_size();
         ws_server_.config.address = config.ws_host;
         ws_server_.config.port = config.ws_port;
         ws_server_started_ = true;

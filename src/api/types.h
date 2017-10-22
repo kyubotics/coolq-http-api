@@ -21,7 +21,6 @@
 
 #include "common.h"
 
-#include "web_server/server_http.hpp"
 #include "utils/params_class.h"
 
 struct ApiResult {

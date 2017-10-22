@@ -63,9 +63,6 @@
     <ClCompile Include="src\api\server_class.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
-    <ClCompile Include="src\api\handlers.cpp">
-      <Filter>src\api</Filter>
-    </ClCompile>
     <ClCompile Include="src\globals.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -86,6 +83,12 @@
     </ClCompile>
     <ClCompile Include="src\update.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\main_handlers.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\extra_handlers.cpp">
+      <Filter>src\api</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="src\web_server\server_http.hpp">
       <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\handler.h">
+      <Filter>src\api</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
