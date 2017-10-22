@@ -472,6 +472,45 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 | `plugin_build_number` | number | HTTP API 插件 build 号 |
 | `plugin_build_configuration` | string | HTTP API 插件编译配置，`debug` 或 `release` |
 
+### `/set_restart` 重启酷 Q，并以当前登录号自动登录（需勾选快速登录）
+
+> v3.0.2 新增
+
+#### 参数
+
+无
+
+#### 响应数据
+
+无
+
+## API 列表（试验性）
+
+3.0.2 版本开始加入了一些并非酷 Q 原生提供的接口，可以一定程度上增强实用性，但不保证随时可用，且接口可能会在后面的版本中发生变动。
+
+所有试验性接口都以下划线（`_`）开头。
+
+### `/_get_friend_list` 获取好友列表
+
+> v3.0.2 新增
+
+#### 参数
+
+无
+
+#### 响应数据
+
+响应内容为 JSON 数组，每个元素为一个好友分组，格式如下：
+
+| 字段名 | 数据类型 | 说明 |
+| ----- | ------- | --- |
+| `friend_group_id` | number | 好友分组 ID |
+| `friend_group_name` | string | 好友分组名称 |
+| `friends` | array | 分组中的好友 |
+| `friends[i].nickname` | string | 好友昵称 |
+| `friends[i].remark` | string | 好友备注 |
+| `friends[i].user_id` | number | 好友 QQ 号 |
+
 ## 获取 `data` 目录中的文件的接口
 
 2.1.0 版本开始提供一个简单的静态文件获取服务，请求方式只支持 GET，URL 路径为 `/data/` 加上要请求的文件相对于酷 Q `data` 目录的路径。例如，假设酷 Q 主目录在 `C:\Apps\CQA`，则要获取 `C:\Apps\CQA\data\image\ABCD.jpg.cqimg` 的话，只需请求 `/data/image/ABCD.jpg.cqimg`，响应内容即为要请求的文件。
