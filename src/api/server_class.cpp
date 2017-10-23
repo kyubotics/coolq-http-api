@@ -125,7 +125,7 @@ void ApiServer::init_http() {
                                 response->write(SimpleWeb::StatusCode::client_error_bad_request);
                                 return;
                             }
-                        } else {
+                        } else if (!content_type.empty()) {
                             Log::d(TAG, u8"Content-Type ²»Ö§³Ö");
                             response->write(SimpleWeb::StatusCode::client_error_not_acceptable);
                             return;
