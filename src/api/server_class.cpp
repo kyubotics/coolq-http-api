@@ -112,11 +112,14 @@ void ApiServer::init_http() {
                             Log::d(TAG, u8"Content-Type: " + content_type);
                         }
 
+                        auto body_string = request->content.string();
+                        Log::d(TAG, u8"HTTP ÕýÎÄÄÚÈÝ£º" + body_string);
+
                         if (boost::starts_with(content_type, "application/x-www-form-urlencoded")) {
-                            form = SimpleWeb::QueryString::parse(request->content.string());
+                            form = SimpleWeb::QueryString::parse(body_string);
                         } else if (boost::starts_with(content_type, "application/json")) {
                             try {
-                                json_params = json::parse(request->content.string()); // may throw invalid_argument
+                                json_params = json::parse(body_string); // may throw invalid_argument
                                 if (!json_params.is_object()) {
                                     throw invalid_argument("must be a JSON object");
                                 }
