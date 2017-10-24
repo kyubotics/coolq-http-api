@@ -23,8 +23,9 @@
 | 语言 | 地址 | 作者 | 备注 |
 | --- | ---- | --- | --- |
 | PHP | https://github.com/slight-sky/coolq-sdk-php | slight-sky | - |
-| Python | https://github.com/richardchien/cqhttp-python-sdk | richardchien | 已兼容 v3.0 |
-| Node.js | https://github.com/richardchien/cqhttp-node-sdk | richardchien | 已兼容 v3.0 |
+| Python (HTTP) | https://github.com/richardchien/cqhttp-python-sdk | richardchien | 已兼容 v3.0 |
+| Node.js (HTTP) | https://github.com/richardchien/cqhttp-node-sdk | richardchien | 已兼容 v3.0 |
+| Node.js (WebSocket) | https://github.com/momocow/node-cq-websocket | momocow | 已兼容 v3.0 |
 
 ## 修改、编译
 
