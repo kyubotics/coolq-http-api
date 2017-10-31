@@ -35,7 +35,7 @@ using RetCodes = ApiResult::RetCodes;
 
 extern ApiHandlerMap api_handlers;
 
-static bool __add_api_handler(const std::string &name, ApiHandler handler) {
+static bool __add_api_handler(const string &name, ApiHandler handler) {
     api_handlers[name] = handler;
     return true;
 }
