@@ -23,6 +23,8 @@
 
 #include "web_server/server_http.hpp"
 #include "web_server/server_ws.hpp"
+#include "web_server/client_ws.hpp"
+#include "web_server/client_wss.hpp"
 
 class ApiServer {
 public:
@@ -55,13 +57,27 @@ private:
     ApiServer(const ApiServer &) = delete;
     void operator=(const ApiServer &) = delete;
 
-    SimpleWeb::Server<SimpleWeb::HTTP> http_server_;
-    SimpleWeb::SocketServer<SimpleWeb::WS> ws_server_;
-    std::thread http_thread_;
-    std::thread ws_thread_;
     bool initialized_ = false;
+
+    SimpleWeb::Server<SimpleWeb::HTTP> http_server_;
+    std::thread http_thread_;
     bool http_server_started_ = false;
+
+    SimpleWeb::SocketServer<SimpleWeb::WS> ws_server_;
+    std::thread ws_thread_;
     bool ws_server_started_ = false;
+
+    union WsReverseApiClient {
+        std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WS>> ws;
+        std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WSS>> wss;
+
+        WsReverseApiClient() : ws(nullptr) {}
+        ~WsReverseApiClient() {}
+    } ws_reverse_api_client_;
+
+    std::optional<bool> ws_reverse_api_client_is_wss_;
+    std::thread ws_reverse_api_thread_;
+    bool ws_reverse_api_client_started_ = false;
 
     void init_http();
     void init_ws();

@@ -179,6 +179,12 @@
     <ClInclude Include="src\web_server\server_http.hpp">
       <Filter>src\web_server</Filter>
     </ClInclude>
+    <ClInclude Include="src\web_server\client_ws.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\client_wss.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />

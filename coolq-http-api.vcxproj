@@ -55,6 +55,8 @@
     <ClInclude Include="src\utils\pack_class.h" />
     <ClInclude Include="src\utils\params_class.h" />
     <ClInclude Include="src\utils\rest_client.h" />
+    <ClInclude Include="src\web_server\client_ws.hpp" />
+    <ClInclude Include="src\web_server\client_wss.hpp" />
     <ClInclude Include="src\web_server\crypto.hpp" />
     <ClInclude Include="src\web_server\server_http.hpp" />
     <ClInclude Include="src\web_server\server_https.hpp" />
