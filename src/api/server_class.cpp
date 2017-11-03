@@ -74,22 +74,32 @@ static auto server_thread_pool_size() {
 }
 
 void ApiServer::init() {
-    Log::d(TAG, u8"初始化 API 服务");
-    init_http();
-    init_ws();
-    initialized_ = true;
+    if (!initialized_) {
+        Log::d(TAG, u8"初始化 API 服务");
+        if (config.use_http) {
+            init_http();
+        }
+        if (config.use_ws) {
+            init_ws();
+        }
+        if (config.use_ws_reverse) {
+            init_ws_reverse();
+        }
+        initialized_ = true;
+    }
 }
 
 void ApiServer::init_http() {
-    http_server_.default_resource["GET"]
-            = http_server_.default_resource["POST"]
+    http_server_ = make_shared<HttpServer>();
+    http_server_->default_resource["GET"]
+            = http_server_->default_resource["POST"]
             = [](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
                 response->write(SimpleWeb::StatusCode::client_error_not_found);
             };
 
     for (const auto &handler_kv : api_handlers) {
         const auto path_regex = "^/" + handler_kv.first + "$";
-        http_server_.resource[path_regex]["GET"] = http_server_.resource[path_regex]["POST"]
+        http_server_->resource[path_regex]["GET"] = http_server_->resource[path_regex]["POST"]
                 = [&handler_kv](shared_ptr<HttpServer::Response> response,
                                 shared_ptr<HttpServer::Request> request) {
                     Log::d(TAG, u8"收到 API 请求：" + request->method
@@ -164,8 +174,8 @@ void ApiServer::init_http() {
     }
 
     const auto regex = "^/(data/(?:bface|image|record|show)/.+)$";
-    http_server_.resource[regex]["GET"] = [](shared_ptr<HttpServer::Response> response,
-                                             shared_ptr<HttpServer::Request> request) {
+    http_server_->resource[regex]["GET"] = [](shared_ptr<HttpServer::Response> response,
+                                              shared_ptr<HttpServer::Request> request) {
         if (!config.serve_data_files) {
             response->write(SimpleWeb::StatusCode::client_error_not_found);
             return;
@@ -277,64 +287,115 @@ void ApiServer::init_ws() {
         }
     };
 
-    auto &api_endpoint = ws_server_.endpoint["^/api/?$"];
+    ws_server_ = make_shared<WsServer>();
+
+    auto &api_endpoint = ws_server_->endpoint["^/api/?$"];
     api_endpoint.on_open = on_open_callback;
     api_endpoint.on_message = api_on_message<WsServer>;
 
-    auto &event_endpoint = ws_server_.endpoint["^/event/?$"];
+    auto &event_endpoint = ws_server_->endpoint["^/event/?$"];
     event_endpoint.on_open = on_open_callback;
+}
+
+template <typename WsClientT>
+static void set_ws_reverse_client_headers(WsClientT &client) {
+    client.config.header.emplace("User-Agent", CQAPP_USER_AGENT);
+    if (!config.access_token.empty()) {
+        client.config.header.emplace("Authorization", "Token " + config.access_token);
+    }
 }
 
 template <typename WsClientT>
 static shared_ptr<WsClientT> init_ws_reverse_api_client(const string &api_url) {
     auto client = make_shared<WsClientT>(api_url);
+    set_ws_reverse_client_headers<WsClientT>(*client);
     client->on_message = api_on_message<WsClientT>;
     return client;
 }
 
-void ApiServer::start() {
-    if (!initialized_) {
-        return;
+void ApiServer::init_ws_reverse() {
+    try {
+        if (boost::algorithm::starts_with(config.ws_reverse_api_url, "ws://")) {
+            ws_reverse_api_client_.ws = init_ws_reverse_api_client<WsClient>(
+                config.ws_reverse_api_url.substr(strlen("ws://")));
+            ws_reverse_api_client_is_wss_ = false;
+        } else if (boost::algorithm::starts_with(config.ws_reverse_api_url, "wss://")) {
+            ws_reverse_api_client_.wss = init_ws_reverse_api_client<WssClient>(
+                config.ws_reverse_api_url.substr(strlen("wss://")));
+            ws_reverse_api_client_is_wss_ = true;
+        }
+    } catch (...) {
+        ws_reverse_api_client_is_wss_ = nullopt;
     }
 
+    if (boost::algorithm::starts_with(config.ws_reverse_event_url, "ws://")) {
+        ws_reverse_event_server_port_path_ = config.ws_reverse_event_url.substr(strlen("ws://"));
+        ws_reverse_event_client_is_wss_ = false;
+    } else if (boost::algorithm::starts_with(config.ws_reverse_event_url, "wss://")) {
+        ws_reverse_event_server_port_path_ = config.ws_reverse_event_url.substr(strlen("wss://"));
+        ws_reverse_event_client_is_wss_ = true;
+    }
+}
+
+void ApiServer::finalize() {
+    if (initialized_) {
+        finalize_http();
+        finalize_ws();
+        finalize_ws_reverse();
+        initialized_ = false;
+    }
+}
+
+void ApiServer::finalize_http() {
+    http_server_ = nullptr;
+    http_server_started_ = false;
+}
+
+void ApiServer::finalize_ws() {
+    ws_server_ = nullptr;
+    ws_server_started_ = false;
+}
+
+void ApiServer::finalize_ws_reverse() {
+    ws_reverse_api_client_.ws = nullptr;
+    ws_reverse_api_client_.wss = nullptr;
+    ws_reverse_api_client_is_wss_ = nullopt;
+    ws_reverse_api_client_started_ = false;
+    ws_reverse_event_server_port_path_ = "";
+    ws_reverse_event_client_is_wss_ = nullopt;
+}
+
+void ApiServer::start() {
+    init();
+
     if (config.use_http) {
-        http_server_.config.thread_pool_size = server_thread_pool_size();
-        http_server_.config.address = config.host;
-        http_server_.config.port = config.port;
+        http_server_->config.thread_pool_size = server_thread_pool_size();
+        http_server_->config.address = config.host;
+        http_server_->config.port = config.port;
         http_server_started_ = true;
         http_thread_ = thread([&]() {
-            http_server_.start();
+            http_server_->start();
             http_server_started_ = false; // since it reaches here, the server is absolutely stopped
         });
         Log::d(TAG, u8"开启 API HTTP 服务器成功，开始监听 http://"
-               + http_server_.config.address + ":" + to_string(http_server_.config.port));
+               + http_server_->config.address + ":" + to_string(http_server_->config.port));
     }
 
     if (config.use_ws) {
-        ws_server_.config.thread_pool_size = server_thread_pool_size();
-        ws_server_.config.address = config.ws_host;
-        ws_server_.config.port = config.ws_port;
+        ws_server_->config.thread_pool_size = server_thread_pool_size();
+        ws_server_->config.address = config.ws_host;
+        ws_server_->config.port = config.ws_port;
         ws_server_started_ = true;
         ws_thread_ = thread([&]() {
-            ws_server_.start();
+            ws_server_->start();
             ws_server_started_ = false;
         });
         Log::d(TAG, u8"开启 API WebSocket 服务器成功，开始监听 ws://"
-               + ws_server_.config.address + ":" + to_string(ws_server_.config.port));
+               + ws_server_->config.address + ":" + to_string(ws_server_->config.port));
     }
 
-    const string ws_reverse_api_url = "ws://localhost:8765/api/";
-
-    if (boost::algorithm::starts_with(ws_reverse_api_url, "ws://")) {
-        ws_reverse_api_client_.ws = init_ws_reverse_api_client<WsClient>(ws_reverse_api_url.substr(strlen("ws://")));
-        ws_reverse_api_client_is_wss_ = false;
-    } else if (boost::algorithm::starts_with(ws_reverse_api_url, "wss://")) {
-        ws_reverse_api_client_.wss = init_ws_reverse_api_client<WssClient>(ws_reverse_api_url.substr(strlen("wss://")));
-        ws_reverse_api_client_is_wss_ = true;
-    }
-
-    if (ws_reverse_api_client_is_wss_.has_value()) {
-        // "ws_reverse_api_url" is valid
+    if (config.use_ws_reverse /* use ws reverse */
+        && ws_reverse_api_client_is_wss_.has_value() /* client successfully initialized */) {
         ws_reverse_api_client_started_ = true;
         ws_reverse_api_thread_ = thread([&]() {
             if (ws_reverse_api_client_is_wss_.value() == false) {
@@ -344,19 +405,22 @@ void ApiServer::start() {
             }
             ws_reverse_api_client_started_ = false;
         });
+        Log::d(TAG, u8"开启 API WebSocket 反向客户端成功，开始连接 " + config.ws_reverse_api_url);
     }
+
+    Log::d(TAG, u8"已开启 API 服务");
 }
 
 void ApiServer::stop() {
     if (http_server_started_) {
-        http_server_.stop();
+        http_server_->stop();
         if (http_thread_.joinable()) {
             http_thread_.join();
         }
         http_server_started_ = false;
     }
     if (ws_server_started_) {
-        ws_server_.stop();
+        ws_server_->stop();
         if (ws_thread_.joinable()) {
             ws_thread_.join();
         }
@@ -375,31 +439,40 @@ void ApiServer::stop() {
         ws_reverse_api_client_started_ = false;
     }
 
+    finalize();
+
     Log::d(TAG, u8"已关闭 API 服务");
 }
 
 template <typename WsClientT>
-static bool push_event_through_ws_reverse_event(const string &url, const json &payload) {
-    WsClientT client(url);
+static bool push_ws_reverse_event(const string &server_port_path, const json &payload) {
     auto succeeded = false;
-    client.on_open = [&](shared_ptr<typename WsClientT::Connection> connection) {
-        const auto send_stream = make_shared<typename WsClientT::SendStream>();
-        *send_stream << payload.dump();
-        connection->send(send_stream);
-        connection->send_close(1000);
-        succeeded = true;
-    };
-    client.start();
+    try {
+        WsClientT client(server_port_path);
+        set_ws_reverse_client_headers<WsClientT>(client);
+        client.on_open = [&](shared_ptr<typename WsClientT::Connection> connection) {
+            const auto send_stream = make_shared<typename WsClientT::SendStream>();
+            *send_stream << payload.dump();
+            connection->send(send_stream);
+            connection->send_close(1000);
+            succeeded = true;
+        };
+        client.start();
+    } catch (...) {
+        // maybe "server_port_path" not valid,
+        // maybe connection failed,
+        // maybe the end of world came
+    }
     return succeeded;
 }
 
-size_t ApiServer::push_event(const json &payload) {
+size_t ApiServer::push_event(const json &payload) const {
     if (!ws_server_started_) {
         return 0;
     }
 
     size_t count = 0;
-    for (const auto &connection : ws_server_.get_connections()) {
+    for (const auto &connection : ws_server_->get_connections()) {
         if (boost::algorithm::starts_with(connection->path, "/event")) {
             const auto send_stream = make_shared<WsServer::SendStream>();
             *send_stream << payload.dump();
@@ -408,11 +481,12 @@ size_t ApiServer::push_event(const json &payload) {
         }
     }
 
-    const string ws_reverse_event_url = "ws://localhost:8765/event/";
-    if (boost::algorithm::starts_with(ws_reverse_event_url, "ws://")) {
-        push_event_through_ws_reverse_event<WsClient>(ws_reverse_event_url.substr(strlen("ws://")), payload);
-    } else if (boost::algorithm::starts_with(ws_reverse_event_url, "wss://")) {
-        push_event_through_ws_reverse_event<WssClient>(ws_reverse_event_url.substr(strlen("wss://")), payload);
+    if (ws_reverse_event_client_is_wss_.has_value()) {
+        if (ws_reverse_event_client_is_wss_.value() == false) {
+            push_ws_reverse_event<WsClient>(ws_reverse_event_server_port_path_, payload);
+        } else {
+            push_ws_reverse_event<WssClient>(ws_reverse_event_server_port_path_, payload);
+        }
     }
 
     return count;

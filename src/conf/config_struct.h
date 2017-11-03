@@ -28,6 +28,9 @@ struct Config {
     std::string ws_host = "0.0.0.0";
     unsigned short ws_port = 6700;
     bool use_ws = false;
+    std::string ws_reverse_api_url = "";
+    std::string ws_reverse_event_url = "";
+    bool use_ws_reverse = false;
     std::string post_url = "";
     std::string access_token = "";
     std::string secret = "";

@@ -85,12 +85,12 @@ optional<Config> load_configuration(const string &filepath) {
         } bool_translator;
 
         #define GET_CONFIG(key, type) \
-            auto __general##key = pt.get<type>("general." #key, config.key); \
-            config.key = pt.get<type>(login_qq_str + "." #key, __general##key); \
+            auto __general_##key = pt.get<type>("general." #key, config.key); \
+            config.key = pt.get<type>(login_qq_str + "." #key, __general_##key); \
             Log::d(TAG, #key "=" + to_string(config.key))
         #define GET_BOOL_CONFIG(key) \
-            auto __general##key = pt.get<bool>("general." #key, config.key, bool_translator); \
-            config.key = pt.get<bool>(login_qq_str + "." #key, __general##key, bool_translator); \
+            auto __general_##key = pt.get<bool>("general." #key, config.key, bool_translator); \
+            config.key = pt.get<bool>(login_qq_str + "." #key, __general_##key, bool_translator); \
             Log::d(TAG, #key "=" + to_string(config.key))
         GET_CONFIG(host, string);
         GET_CONFIG(port, unsigned short);
@@ -98,6 +98,9 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(ws_host, string);
         GET_CONFIG(ws_port, unsigned short);
         GET_BOOL_CONFIG(use_ws);
+        GET_CONFIG(ws_reverse_api_url, string);
+        GET_CONFIG(ws_reverse_event_url, string);
+        GET_BOOL_CONFIG(use_ws_reverse);
         GET_CONFIG(post_url, string);
         GET_CONFIG(access_token, string);
         GET_CONFIG(secret, string);

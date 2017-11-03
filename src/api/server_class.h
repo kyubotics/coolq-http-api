@@ -30,13 +30,9 @@ class ApiServer {
 public:
     static ApiServer &instance() {
         static ApiServer instance;
-        if (!instance.initialized_) {
-            instance.init();
-        }
         return instance;
     }
 
-    void init();
     void start();
     void stop();
 
@@ -45,7 +41,7 @@ public:
     bool ws_server_is_started() const { return ws_server_started_; }
 
     // websocket only
-    size_t push_event(const json &payload);
+    size_t push_event(const json &payload) const;
 
 private:
     ApiServer() {}
@@ -59,11 +55,11 @@ private:
 
     bool initialized_ = false;
 
-    SimpleWeb::Server<SimpleWeb::HTTP> http_server_;
+    std::shared_ptr<SimpleWeb::Server<SimpleWeb::HTTP>> http_server_;
     std::thread http_thread_;
     bool http_server_started_ = false;
 
-    SimpleWeb::SocketServer<SimpleWeb::WS> ws_server_;
+    std::shared_ptr<SimpleWeb::SocketServer<SimpleWeb::WS>> ws_server_;
     std::thread ws_thread_;
     bool ws_server_started_ = false;
 
@@ -79,6 +75,15 @@ private:
     std::thread ws_reverse_api_thread_;
     bool ws_reverse_api_client_started_ = false;
 
+    std::string ws_reverse_event_server_port_path_;
+    std::optional<bool> ws_reverse_event_client_is_wss_;
+
+    void init();
     void init_http();
     void init_ws();
+    void init_ws_reverse();
+    void finalize();
+    void finalize_http();
+    void finalize_ws();
+    void finalize_ws_reverse();
 };
