@@ -43,10 +43,10 @@ struct Stranger {
     static Stranger from_bytes(const bytes &bytes) {
         auto pack = Pack(bytes);
         Stranger stranger;
-        stranger.user_id = pack.pop_int64();
+        stranger.user_id = pack.pop_int<int64_t>();
         stranger.nickname = pack.pop_string();
-        stranger.sex = pack.pop_int32();
-        stranger.age = pack.pop_int32();
+        stranger.sex = pack.pop_int<int32_t>();
+        stranger.age = pack.pop_int<int32_t>();
         return stranger;
     }
 };
@@ -67,7 +67,7 @@ struct Group {
     static Group from_bytes(const bytes &bytes) {
         auto pack = Pack(bytes);
         Group group;
-        group.group_id = pack.pop_int64();
+        group.group_id = pack.pop_int<int64_t>();
         group.group_name = pack.pop_string();
         return group;
     }
@@ -115,20 +115,20 @@ struct GroupMember {
     static GroupMember from_bytes(const bytes &bytes) {
         auto pack = Pack(bytes);
         GroupMember member;
-        member.group_id = pack.pop_int64();
-        member.user_id = pack.pop_int64();
+        member.group_id = pack.pop_int<int64_t>();
+        member.user_id = pack.pop_int<int64_t>();
         member.nickname = pack.pop_string();
         member.card = pack.pop_string();
-        member.sex = pack.pop_int32();
-        member.age = pack.pop_int32();
+        member.sex = pack.pop_int<int32_t>();
+        member.age = pack.pop_int<int32_t>();
         member.area = pack.pop_string();
-        member.join_time = pack.pop_int32();
-        member.last_sent_time = pack.pop_int32();
+        member.join_time = pack.pop_int<int32_t>();
+        member.last_sent_time = pack.pop_int<int32_t>();
         member.level = pack.pop_string();
-        member.role = pack.pop_int32();
+        member.role = pack.pop_int<int32_t>();
         member.unfriendly = pack.pop_bool();
         member.title = pack.pop_string();
-        member.title_expire_time = pack.pop_int32();
+        member.title_expire_time = pack.pop_int<int32_t>();
         member.card_changeable = pack.pop_bool();
         return member;
     }
@@ -151,7 +151,7 @@ struct Anonymous {
     static Anonymous from_bytes(const bytes &bytes) {
         auto pack = Pack(bytes);
         Anonymous anonymous;
-        anonymous.id = pack.pop_int64();
+        anonymous.id = pack.pop_int<int64_t>();
         anonymous.name = pack.pop_string();
         anonymous.token = pack.pop_token();
         return anonymous;
@@ -180,8 +180,8 @@ struct GroupFile {
         GroupFile file;
         file.id = pack.pop_string();
         file.name = pack.pop_string();
-        file.size = pack.pop_int64();
-        file.busid = pack.pop_int64();
+        file.size = pack.pop_int<int64_t>();
+        file.busid = pack.pop_int<int64_t>();
         return file;
     }
 };

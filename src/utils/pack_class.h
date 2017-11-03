@@ -34,15 +34,28 @@ public:
     size_t size() const { return bytes_.size() - curr_; }
     bool empty() const { return size() == 0; }
 
-    int16_t pop_int16();
-    int32_t pop_int32();
-    int64_t pop_int64();
+    template <typename IntType>
+    IntType pop_int() {
+        constexpr auto size = sizeof(IntType);
+        _check_enough(size);
+
+        auto s = this->bytes_.substr(this->curr_, size);
+        this->curr_ += size;
+        std::reverse(s.begin(), s.end());
+
+        IntType result;
+        memcpy(static_cast<void *>(&result), s.data(), size);
+        return result;
+    }
+
     std::string pop_string();
-    bytes pop_bytes(size_t len);
+    bytes pop_bytes(const size_t len);
     bytes pop_token();
     bool pop_bool();
 
 private:
     bytes bytes_;
     size_t curr_;
+
+    void _check_enough(const size_t needed) const;
 };
