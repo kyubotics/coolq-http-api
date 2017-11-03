@@ -372,7 +372,8 @@ HANDLER(get_status) {
         {"app_enabled", app.is_enabled()},
         {"server_initialized", ApiServer::instance().is_initialized()},
         {"http_server_started", ApiServer::instance().http_server_is_started()},
-        {"ws_server_started", ApiServer::instance().ws_server_is_started()}
+        {"ws_server_started", ApiServer::instance().ws_server_is_started()},
+        {"ws_reverse_api_client_started", ApiServer::instance().ws_reverse_api_client_is_started()}
     };
 }
 

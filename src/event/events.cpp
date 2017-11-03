@@ -97,11 +97,7 @@ static int32_t post_event(const json &payload, const function<void(const Params 
         }
     }
 
-    if (ApiServer::instance().ws_server_is_started()) {
-        Log::d(TAG, u8"开始通过 WebSocket 推送事件");
-        const auto client_count = ApiServer::instance().push_event(payload);
-        Log::d(TAG, u8"已成功向 " + to_string(client_count) + u8" 个客户端推送事件");
-    }
+    ApiServer::instance().push_event(payload);
 
     return should_block ? CQEVENT_BLOCK : CQEVENT_IGNORE;
 }

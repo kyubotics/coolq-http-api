@@ -395,7 +395,7 @@ void ApiServer::start() {
     }
 
     if (config.use_ws_reverse /* use ws reverse */
-        && ws_reverse_api_client_is_wss_.has_value() /* client successfully initialized */) {
+        && ws_reverse_api_client_is_wss_.has_value() /* successfully initialized */) {
         ws_reverse_api_client_started_ = true;
         ws_reverse_api_thread_ = thread([&]() {
             if (ws_reverse_api_client_is_wss_.value() == false) {
@@ -466,28 +466,31 @@ static bool push_ws_reverse_event(const string &server_port_path, const json &pa
     return succeeded;
 }
 
-size_t ApiServer::push_event(const json &payload) const {
-    if (!ws_server_started_) {
-        return 0;
-    }
-
-    size_t count = 0;
-    for (const auto &connection : ws_server_->get_connections()) {
-        if (boost::algorithm::starts_with(connection->path, "/event")) {
-            const auto send_stream = make_shared<WsServer::SendStream>();
-            *send_stream << payload.dump();
-            connection->send(send_stream);
-            count++;
+void ApiServer::push_event(const json &payload) const {
+    if (ws_server_started_) {
+        Log::d(TAG, u8"开始通过 WebSocket 服务端推送事件");
+        size_t count = 0;
+        for (const auto &connection : ws_server_->get_connections()) {
+            if (boost::algorithm::starts_with(connection->path, "/event")) {
+                const auto send_stream = make_shared<WsServer::SendStream>();
+                *send_stream << payload.dump();
+                connection->send(send_stream);
+                count++;
+            }
         }
+        Log::d(TAG, u8"已成功向 " + to_string(count) + u8" 个客户端推送事件");
     }
 
-    if (ws_reverse_event_client_is_wss_.has_value()) {
+    if (config.use_ws_reverse /* use ws reverse */
+        && ws_reverse_event_client_is_wss_.has_value() /* successfully initialized */) {
+        Log::d(TAG, u8"开始通过 WebSocket 反向客户端上报事件");
+        bool succeeded;
         if (ws_reverse_event_client_is_wss_.value() == false) {
-            push_ws_reverse_event<WsClient>(ws_reverse_event_server_port_path_, payload);
+            succeeded = push_ws_reverse_event<WsClient>(ws_reverse_event_server_port_path_, payload);
         } else {
-            push_ws_reverse_event<WssClient>(ws_reverse_event_server_port_path_, payload);
+            succeeded = push_ws_reverse_event<WssClient>(ws_reverse_event_server_port_path_, payload);
         }
-    }
 
-    return count;
+        Log::d(TAG, u8"通过 WebSocket 反向客户端上报数据到 " + config.ws_reverse_event_url + (succeeded ? u8" 成功" : u8" 失败"));
+    }
 }

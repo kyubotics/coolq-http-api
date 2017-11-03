@@ -39,9 +39,10 @@ public:
     bool is_initialized() const { return initialized_; }
     bool http_server_is_started() const { return http_server_started_; }
     bool ws_server_is_started() const { return ws_server_started_; }
+    bool ws_reverse_api_client_is_started() const { return ws_reverse_api_client_started_; }
 
     // websocket only
-    size_t push_event(const json &payload) const;
+    void push_event(const json &payload) const;
 
 private:
     ApiServer() {}
