@@ -29,10 +29,7 @@
 #include "utils/rest_client.h"
 
 using namespace std;
-
-namespace fs {
-    using namespace boost::filesystem;
-}
+namespace fs = boost::filesystem;
 
 using boost::algorithm::starts_with;
 using websocketpp::md5::md5_hash_hex;
@@ -81,7 +78,7 @@ static Message::Segment enhance_send_file(const Message::Segment &raw, const str
         if (segment.data.find("cache") != segment.data.end() && segment.data["cache"] == "0") {
             use_cache = false;
         }
-        const auto cached = boost::filesystem::is_regular_file(ws_filepath);
+        const auto cached = fs::is_regular_file(ws_filepath);
 
         if (use_cache && cached /* use cache */
             || download_remote_file(url, filepath, true) /* or perform download */) {

@@ -28,6 +28,7 @@
 #include "api/server_class.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 ApiHandlerMap api_handlers;
 
@@ -384,7 +385,7 @@ HANDLER(get_status) {
 HANDLER(get_version_info) {
     const auto coolq_directory = sdk->directories().coolq();
     string coolq_edition = "air";
-    if (boost::filesystem::is_regular_file(ansi(coolq_directory + "CQP.exe"))) {
+    if (fs::is_regular_file(ansi(coolq_directory + "CQP.exe"))) {
         coolq_edition = "pro";
     }
     result.retcode = RetCodes::OK;

@@ -25,6 +25,7 @@
 
 using namespace std;
 using boost::algorithm::ends_with;
+namespace fs = boost::filesystem;
 
 static string update_source() {
     if (ends_with(config.update_source, "/")) {
@@ -46,7 +47,7 @@ static string version_cpk_url(const string &version, const int build_number) {
 }
 
 static bool is_locked() {
-    return boost::filesystem::exists(ansi(sdk->directories().app() + "app.lock"));
+    return fs::exists(ansi(sdk->directories().app() + "app.lock"));
 }
 
 // return tuple<is_newer, version, build_number, description>
@@ -87,10 +88,10 @@ bool perform_update(const string &version, const int build_number) {
 
     const auto local_cpk_path = sdk->directories().coolq() + "app\\" CQAPP_ID ".cpk";
     try {
-        copy_file(ansi(tmp_path), ansi(local_cpk_path), boost::filesystem::copy_option::overwrite_if_exists);
-        boost::filesystem::remove(ansi(tmp_path));
+        copy_file(ansi(tmp_path), ansi(local_cpk_path), fs::copy_option::overwrite_if_exists);
+        fs::remove(ansi(tmp_path));
         return true;
-    } catch (boost::filesystem::filesystem_error &) {
+    } catch (fs::filesystem_error &) {
         return false;
     }
 }

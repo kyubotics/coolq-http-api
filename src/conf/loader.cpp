@@ -30,6 +30,7 @@
 #include "config_struct.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 static const auto DEFAULT_UPDATE_SOURCE =
         "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/";
@@ -42,7 +43,7 @@ optional<Config> load_configuration(const string &filepath) {
     Log::d(TAG, u8"尝试加载配置文件");
 
     const auto ansi_filepath = ansi(filepath);
-    if (!boost::filesystem::is_regular_file(ansi_filepath)) {
+    if (!fs::is_regular_file(ansi_filepath)) {
         // create default config file
         Log::i(TAG, u8"没有找到配置文件，写入默认配置");
         if (ofstream file(ansi_filepath); file.is_open()) {

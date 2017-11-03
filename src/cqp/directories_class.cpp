@@ -5,7 +5,7 @@
 #include <boost/filesystem.hpp>
 
 using namespace std;
-using namespace boost::filesystem;
+namespace fs = boost::filesystem;
 
 string Sdk::Directories::app() const {
     return string_from_coolq(CQ_getAppDirectory(this->ac_));
@@ -14,8 +14,8 @@ string Sdk::Directories::app() const {
 string Sdk::Directories::app_tmp() const {
     const auto tmpdir = app() + "\\tmp\\";
     const auto ansi_tmpdir = ansi(tmpdir);
-    if (!exists(ansi_tmpdir)) {
-        create_directories(ansi_tmpdir);
+    if (!fs::exists(ansi_tmpdir)) {
+        fs::create_directories(ansi_tmpdir);
     }
     return tmpdir;
 }

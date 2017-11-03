@@ -29,6 +29,7 @@
 using namespace std;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 using WsServer = SimpleWeb::SocketServer<SimpleWeb::WS>;
+namespace fs = boost::filesystem;
 
 extern ApiHandlerMap api_handlers; // defined in handlers.cpp
 
@@ -180,7 +181,7 @@ void ApiServer::init_http() {
 
         auto filepath = sdk->directories().coolq() + relpath;
         auto ansi_filepath = ansi(filepath);
-        if (!boost::filesystem::is_regular_file(ansi_filepath)) {
+        if (!fs::is_regular_file(ansi_filepath)) {
             // is not a file
             Log::d(TAG, u8"相对路径 " + relpath + u8" 所制定的内容不存在，或为非文件类型，无法发送");
             response->write(SimpleWeb::StatusCode::client_error_not_found);
@@ -188,7 +189,7 @@ void ApiServer::init_http() {
         }
 
         if (ifstream f(ansi_filepath, ios::in | ios::binary); f.is_open()) {
-            auto length = boost::filesystem::file_size(ansi_filepath);
+            auto length = fs::file_size(ansi_filepath);
             response->write(decltype(request->header){
                 {"Content-Length", to_string(length)},
                 {"Content-Type", "application/octet-stream"},

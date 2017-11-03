@@ -31,6 +31,7 @@
 #include "utils/encoding.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 void string_replace(string &str, const string &search, const string &replace) {
     if (search.empty())
@@ -171,8 +172,8 @@ bool download_remote_file(const string &url, const string &local_path, const boo
         }
     }).wait();
 
-    if (!succeeded && boost::filesystem::exists(ansi_local_path)) {
-        boost::filesystem::remove(ansi_local_path);
+    if (!succeeded && fs::exists(ansi_local_path)) {
+        fs::remove(ansi_local_path);
     }
 
     return succeeded;
