@@ -25,6 +25,7 @@
 
 #include "types.h"
 #include "utils/params_class.h"
+#include "web_server/utility.hpp"
 
 using namespace std;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
@@ -37,7 +38,11 @@ extern ApiHandlerMap api_handlers; // defined in handlers.cpp
 
 static const auto TAG = u8"API服务";
 
-static bool authorize(const decltype(HttpServer::Request::header) &headers, const json &query_args,
+/**
+ * Do authorization (check access token),
+ * should be called on incomming connection request (http server and websocket server)
+ */
+static bool authorize(const SimpleWeb::CaseInsensitiveMultimap &headers, const json &query_args,
                       const function<void(SimpleWeb::StatusCode)> on_failed = nullptr) {
     if (config.access_token.empty()) {
         return true;
@@ -90,7 +95,9 @@ void ApiServer::init() {
 }
 
 void ApiServer::init_http() {
+    // recreate http server instance
     http_server_ = make_shared<HttpServer>();
+
     http_server_->default_resource["GET"]
             = http_server_->default_resource["POST"]
             = [](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
@@ -160,7 +167,7 @@ void ApiServer::init_http() {
                     Log::d(TAG, u8"API 处理函数 " + handler_kv.first + u8" 开始处理请求");
                     ApiResult result;
                     Params params(json_params);
-                    handler_kv.second(params, result);
+                    handler_kv.second(params, result); // call the real handler
 
                     decltype(request->header) headers{
                         {"Content-Type", "application/json; charset=UTF-8"}
@@ -173,6 +180,7 @@ void ApiServer::init_http() {
                 };
     }
 
+    // data files handler
     const auto regex = "^/(data/(?:bface|image|record|show)/.+)$";
     http_server_->resource[regex]["GET"] = [](shared_ptr<HttpServer::Response> response,
                                               shared_ptr<HttpServer::Request> request) {
@@ -220,8 +228,13 @@ void ApiServer::init_http() {
     };
 }
 
-template <typename Ws>
-static void api_on_message(shared_ptr<typename Ws::Connection> connection, shared_ptr<typename Ws::Message> message) {
+/**
+ * \brief Common "on_message" callback for websocket server's api endpoint and reverse websocket api client.
+ * \tparam WsT WsServer (websocket server /api/ endpoint) or WsClient (reverse websocket api client)
+ */
+template <typename WsT>
+static void ws_api_on_message(shared_ptr<typename WsT::Connection> connection,
+                              shared_ptr<typename WsT::Message> message) {
     auto ws_message_str = message->string();
     Log::d(TAG, u8"收到 API 请求（WebSocket）：" + ws_message_str);
 
@@ -230,7 +243,7 @@ static void api_on_message(shared_ptr<typename Ws::Connection> connection, share
     auto send_result = [&]() {
         auto resp_body = result.json().dump();
         Log::d(TAG, u8"响应数据已准备完毕：" + resp_body);
-        auto send_stream = make_shared<typename Ws::SendStream>();
+        auto send_stream = make_shared<typename WsT::SendStream>();
         *send_stream << resp_body;
         connection->send(send_stream);
         Log::d(TAG, u8"响应内容已发送");
@@ -291,12 +304,18 @@ void ApiServer::init_ws() {
 
     auto &api_endpoint = ws_server_->endpoint["^/api/?$"];
     api_endpoint.on_open = on_open_callback;
-    api_endpoint.on_message = api_on_message<WsServer>;
+    api_endpoint.on_message = ws_api_on_message<WsServer>;
 
     auto &event_endpoint = ws_server_->endpoint["^/event/?$"];
     event_endpoint.on_open = on_open_callback;
 }
 
+/**
+ * \brief Set some common headers like "User-Agent" and "Authorization"
+ *        for reverse websocket client (both api and event).
+ * \tparam WsClientT WsClient or WssClient (WebSocket SSL)
+ * \param client reference of the client instance
+ */
 template <typename WsClientT>
 static void set_ws_reverse_client_headers(WsClientT &client) {
     client.config.header.emplace("User-Agent", CQAPP_USER_AGENT);
@@ -305,15 +324,22 @@ static void set_ws_reverse_client_headers(WsClientT &client) {
     }
 }
 
+/**
+ * \brief Create a reverse websocket api client instance.
+ * \tparam WsClientT WsClient or WssClient (WebSocket SSL)
+ * \param server_port_path destination to connect
+ * \return the newly created client instance (as shared_ptr)
+ */
 template <typename WsClientT>
-static shared_ptr<WsClientT> init_ws_reverse_api_client(const string &api_url) {
-    auto client = make_shared<WsClientT>(api_url);
+static shared_ptr<WsClientT> init_ws_reverse_api_client(const string &server_port_path) {
+    auto client = make_shared<WsClientT>(server_port_path);
     set_ws_reverse_client_headers<WsClientT>(*client);
-    client->on_message = api_on_message<WsClientT>;
+    client->on_message = ws_api_on_message<WsClientT>;
     return client;
 }
 
 void ApiServer::init_ws_reverse() {
+    // for api client, we create the instance at initialization stage
     try {
         if (boost::algorithm::starts_with(config.ws_reverse_api_url, "ws://")) {
             ws_reverse_api_client_.ws = init_ws_reverse_api_client<WsClient>(
@@ -325,9 +351,11 @@ void ApiServer::init_ws_reverse() {
             ws_reverse_api_client_is_wss_ = true;
         }
     } catch (...) {
+        // in case "init_ws_reverse_api_client()" failed due to invalid "server_port_path"
         ws_reverse_api_client_is_wss_ = nullopt;
     }
 
+    // for event client, we just calculate the "server_port_path"
     if (boost::algorithm::starts_with(config.ws_reverse_event_url, "ws://")) {
         ws_reverse_event_server_port_path_ = config.ws_reverse_event_url.substr(strlen("ws://"));
         ws_reverse_event_client_is_wss_ = false;
@@ -394,7 +422,7 @@ void ApiServer::start() {
                + ws_server_->config.address + ":" + to_string(ws_server_->config.port));
     }
 
-    if (config.use_ws_reverse /* use ws reverse */
+    if (config.use_ws_reverse /* use reverse websocket */
         && ws_reverse_api_client_is_wss_.has_value() /* successfully initialized */) {
         ws_reverse_api_client_started_ = true;
         ws_reverse_api_thread_ = thread([&]() {
@@ -448,19 +476,19 @@ template <typename WsClientT>
 static bool push_ws_reverse_event(const string &server_port_path, const json &payload) {
     auto succeeded = false;
     try {
-        WsClientT client(server_port_path);
+        WsClientT client(server_port_path); // this may fail due to invalid "server_port_path"
         set_ws_reverse_client_headers<WsClientT>(client);
         client.on_open = [&](shared_ptr<typename WsClientT::Connection> connection) {
             const auto send_stream = make_shared<typename WsClientT::SendStream>();
             *send_stream << payload.dump();
             connection->send(send_stream);
-            connection->send_close(1000);
+            connection->send_close(1000); // close connection after sending the event
             succeeded = true;
         };
         client.start();
     } catch (...) {
-        // maybe "server_port_path" not valid,
-        // maybe connection failed,
+        // maybe "server_port_path" is not valid
+        // maybe connection is failed
         // maybe the end of world came
     }
     return succeeded;
@@ -478,10 +506,10 @@ void ApiServer::push_event(const json &payload) const {
                 count++;
             }
         }
-        Log::d(TAG, u8"已成功向 " + to_string(count) + u8" 个客户端推送事件");
+        Log::d(TAG, u8"已成功向 " + to_string(count) + u8" 个 WebSocket 客户端推送事件");
     }
 
-    if (config.use_ws_reverse /* use ws reverse */
+    if (config.use_ws_reverse /* use reverse websocket */
         && ws_reverse_event_client_is_wss_.has_value() /* successfully initialized */) {
         Log::d(TAG, u8"开始通过 WebSocket 反向客户端上报事件");
         bool succeeded;

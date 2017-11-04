@@ -56,14 +56,17 @@ private:
 
     bool initialized_ = false;
 
+    // http api server
     std::shared_ptr<SimpleWeb::Server<SimpleWeb::HTTP>> http_server_;
     std::thread http_thread_;
     bool http_server_started_ = false;
 
+    // websocket api and event server
     std::shared_ptr<SimpleWeb::SocketServer<SimpleWeb::WS>> ws_server_;
     std::thread ws_thread_;
     bool ws_server_started_ = false;
 
+    // reverse websocket api client
     union WsReverseApiClient {
         std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WS>> ws;
         std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WSS>> wss;
@@ -76,13 +79,33 @@ private:
     std::thread ws_reverse_api_thread_;
     bool ws_reverse_api_client_started_ = false;
 
+    // reverse websocket event client
     std::string ws_reverse_event_server_port_path_;
     std::optional<bool> ws_reverse_event_client_is_wss_;
 
+    /**
+     * This will be called in start().
+     */
     void init();
+
+    /**
+     * Init http api server.
+     */
     void init_http();
+
+    /**
+     * Init websocket server.
+     */
     void init_ws();
+
+    /**
+     * Init reverse websocket client.
+     */
     void init_ws_reverse();
+
+    /**
+    * This will be called in stop().
+    */
     void finalize();
     void finalize_http();
     void finalize_ws();
