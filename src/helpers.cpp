@@ -162,7 +162,7 @@ bool download_remote_file(const string &url, const string &local_path, const boo
                     last_read_count = count;
                 }).wait();
 
-                f << buffer.collection();
+                f << buffer.collection().substr(0, last_read_count);
             } while (last_read_count > 0);
 
             if (read_count == length) {
