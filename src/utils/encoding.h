@@ -63,16 +63,16 @@ struct Encodings {
 };
 
 /**
-* Encode a UTF-8 string into bytes, using the encoding specified.
-*/
+ * Encode a UTF-8 string into bytes, using the encoding specified.
+ */
 static bytes string_encode(const std::string &s, int encoding = Encodings::UTF8) {
     auto ws = s2ws(s);
     return bytes(widechar_to_multibyte(encoding, ws.c_str()).get());
 }
 
 /**
-* Decode bytes into a UTF-8 string, using the encoding specified.
-*/
+ * Decode bytes into a UTF-8 string, using the encoding specified.
+ */
 static std::string string_decode(const bytes &b, int encoding = Encodings::UTF8) {
     // check if in WinNT (not Wine)
     static auto in_nt = false;
