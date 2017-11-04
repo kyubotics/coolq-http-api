@@ -329,6 +329,8 @@ namespace SimpleWeb {
     /// If you have your own asio::io_service, store its pointer here before running start().
     std::shared_ptr<asio::io_service> io_service;
 
+    std::shared_ptr<Connection> connection; // change: make "connection" property public
+
   protected:
     bool internal_io_service = false;
 
@@ -336,7 +338,7 @@ namespace SimpleWeb {
     unsigned short port;
     std::string path;
 
-    std::shared_ptr<Connection> connection;
+    //std::shared_ptr<Connection> connection;
     std::mutex connection_mutex;
 
     std::shared_ptr<ScopeRunner> handler_runner;

@@ -66,22 +66,26 @@ private:
     std::thread ws_thread_;
     bool ws_server_started_ = false;
 
-    // reverse websocket api client
+    // reverse websocket
     union WsReverseApiClient {
         std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WS>> ws;
         std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WSS>> wss;
 
         WsReverseApiClient() : ws(nullptr) {}
         ~WsReverseApiClient() {}
-    } ws_reverse_api_client_;
+    };
 
+    // reverse websocket api client
+    WsReverseApiClient ws_reverse_api_client_;
     std::optional<bool> ws_reverse_api_client_is_wss_;
     std::thread ws_reverse_api_thread_;
     bool ws_reverse_api_client_started_ = false;
 
     // reverse websocket event client
-    std::string ws_reverse_event_server_port_path_;
+    WsReverseApiClient ws_reverse_event_client_;
     std::optional<bool> ws_reverse_event_client_is_wss_;
+    std::thread ws_reverse_event_thread_;
+    bool ws_reverse_event_client_started_ = false;
 
     /**
      * This will be called in start().

@@ -311,57 +311,52 @@ void ApiServer::init_ws() {
 }
 
 /**
- * \brief Set some common headers like "User-Agent" and "Authorization"
- *        for reverse websocket client (both api and event).
- * \tparam WsClientT WsClient or WssClient (WebSocket SSL)
- * \param client reference of the client instance
- */
-template <typename WsClientT>
-static void set_ws_reverse_client_headers(WsClientT &client) {
-    client.config.header.emplace("User-Agent", CQAPP_USER_AGENT);
-    if (!config.access_token.empty()) {
-        client.config.header.emplace("Authorization", "Token " + config.access_token);
-    }
-}
-
-/**
- * \brief Create a reverse websocket api client instance.
+ * \brief Create a reverse websocket client instance.
  * \tparam WsClientT WsClient or WssClient (WebSocket SSL)
  * \param server_port_path destination to connect
  * \return the newly created client instance (as shared_ptr)
  */
 template <typename WsClientT>
-static shared_ptr<WsClientT> init_ws_reverse_api_client(const string &server_port_path) {
+static shared_ptr<WsClientT> init_ws_reverse_client(const string &server_port_path) {
     auto client = make_shared<WsClientT>(server_port_path);
-    set_ws_reverse_client_headers<WsClientT>(*client);
-    client->on_message = ws_api_on_message<WsClientT>;
+    client->config.header.emplace("User-Agent", CQAPP_USER_AGENT);
+    if (!config.access_token.empty()) {
+        client->config.header.emplace("Authorization", "Token " + config.access_token);
+    }
     return client;
 }
 
 void ApiServer::init_ws_reverse() {
-    // for api client, we create the instance at initialization stage
     try {
         if (boost::algorithm::starts_with(config.ws_reverse_api_url, "ws://")) {
-            ws_reverse_api_client_.ws = init_ws_reverse_api_client<WsClient>(
+            ws_reverse_api_client_.ws = init_ws_reverse_client<WsClient>(
                 config.ws_reverse_api_url.substr(strlen("ws://")));
+            ws_reverse_api_client_.ws->on_message = ws_api_on_message<WsClient>;
             ws_reverse_api_client_is_wss_ = false;
         } else if (boost::algorithm::starts_with(config.ws_reverse_api_url, "wss://")) {
-            ws_reverse_api_client_.wss = init_ws_reverse_api_client<WssClient>(
+            ws_reverse_api_client_.wss = init_ws_reverse_client<WssClient>(
                 config.ws_reverse_api_url.substr(strlen("wss://")));
+            ws_reverse_api_client_.wss->on_message = ws_api_on_message<WssClient>;
             ws_reverse_api_client_is_wss_ = true;
         }
     } catch (...) {
-        // in case "init_ws_reverse_api_client()" failed due to invalid "server_port_path"
+        // in case "init_ws_reverse_client()" failed due to invalid "server_port_path"
         ws_reverse_api_client_is_wss_ = nullopt;
     }
 
-    // for event client, we just calculate the "server_port_path"
-    if (boost::algorithm::starts_with(config.ws_reverse_event_url, "ws://")) {
-        ws_reverse_event_server_port_path_ = config.ws_reverse_event_url.substr(strlen("ws://"));
-        ws_reverse_event_client_is_wss_ = false;
-    } else if (boost::algorithm::starts_with(config.ws_reverse_event_url, "wss://")) {
-        ws_reverse_event_server_port_path_ = config.ws_reverse_event_url.substr(strlen("wss://"));
-        ws_reverse_event_client_is_wss_ = true;
+    try {
+        if (boost::algorithm::starts_with(config.ws_reverse_event_url, "ws://")) {
+            ws_reverse_event_client_.ws = init_ws_reverse_client<WsClient>(
+                config.ws_reverse_event_url.substr(strlen("ws://")));
+            ws_reverse_event_client_is_wss_ = false;
+        } else if (boost::algorithm::starts_with(config.ws_reverse_event_url, "wss://")) {
+            ws_reverse_event_client_.wss = init_ws_reverse_client<WssClient>(
+                config.ws_reverse_event_url.substr(strlen("wss://")));
+            ws_reverse_event_client_is_wss_ = true;
+        }
+    } catch (...) {
+        // in case "init_ws_reverse_client()" failed due to invalid "server_port_path"
+        ws_reverse_event_client_is_wss_ = nullopt;
     }
 }
 
@@ -389,8 +384,11 @@ void ApiServer::finalize_ws_reverse() {
     ws_reverse_api_client_.wss = nullptr;
     ws_reverse_api_client_is_wss_ = nullopt;
     ws_reverse_api_client_started_ = false;
-    ws_reverse_event_server_port_path_ = "";
+
+    ws_reverse_event_client_.ws = nullptr;
+    ws_reverse_event_client_.wss = nullptr;
     ws_reverse_event_client_is_wss_ = nullopt;
+    ws_reverse_event_client_started_ = false;
 }
 
 void ApiServer::start() {
@@ -422,18 +420,34 @@ void ApiServer::start() {
                + ws_server_->config.address + ":" + to_string(ws_server_->config.port));
     }
 
-    if (config.use_ws_reverse /* use reverse websocket */
-        && ws_reverse_api_client_is_wss_.has_value() /* successfully initialized */) {
-        ws_reverse_api_client_started_ = true;
-        ws_reverse_api_thread_ = thread([&]() {
-            if (ws_reverse_api_client_is_wss_.value() == false) {
-                ws_reverse_api_client_.ws->start();
-            } else {
-                ws_reverse_api_client_.wss->start();
-            }
-            ws_reverse_api_client_started_ = false;
-        });
-        Log::d(TAG, u8"开启 API WebSocket 反向客户端成功，开始连接 " + config.ws_reverse_api_url);
+    if (config.use_ws_reverse) {
+        if (ws_reverse_api_client_is_wss_.has_value()) {
+            // client successfully initialized
+            ws_reverse_api_client_started_ = true;
+            ws_reverse_api_thread_ = thread([&]() {
+                if (ws_reverse_api_client_is_wss_.value() == false) {
+                    ws_reverse_api_client_.ws->start();
+                } else {
+                    ws_reverse_api_client_.wss->start();
+                }
+                ws_reverse_api_client_started_ = false;
+            });
+            Log::d(TAG, u8"开启 API WebSocket 反向客户端成功，开始连接 " + config.ws_reverse_api_url);
+        }
+
+        if (ws_reverse_event_client_is_wss_.has_value()) {
+            // client successfully initialized
+            ws_reverse_event_client_started_ = true;
+            ws_reverse_event_thread_ = thread([&]() {
+                if (ws_reverse_event_client_is_wss_.value() == false) {
+                    ws_reverse_event_client_.ws->start();
+                } else {
+                    ws_reverse_event_client_.wss->start();
+                }
+                ws_reverse_event_client_started_ = false;
+            });
+            Log::d(TAG, u8"开启 Event WebSocket 反向客户端成功，开始连接 " + config.ws_reverse_event_url);
+        }
     }
 
     Log::d(TAG, u8"已开启 API 服务");
@@ -467,56 +481,59 @@ void ApiServer::stop() {
         ws_reverse_api_client_started_ = false;
     }
 
+    if (ws_reverse_event_client_started_) {
+        if (ws_reverse_event_client_is_wss_.value() == false) {
+            ws_reverse_event_client_.ws->stop();
+        } else {
+            ws_reverse_event_client_.wss->stop();
+        }
+        if (ws_reverse_event_thread_.joinable()) {
+            ws_reverse_event_thread_.join();
+        }
+        ws_reverse_event_client_started_ = false;
+    }
+
     finalize();
 
     Log::d(TAG, u8"已关闭 API 服务");
 }
 
-template <typename WsClientT>
-static bool push_ws_reverse_event(const string &server_port_path, const json &payload) {
-    auto succeeded = false;
-    try {
-        WsClientT client(server_port_path); // this may fail due to invalid "server_port_path"
-        set_ws_reverse_client_headers<WsClientT>(client);
-        client.on_open = [&](shared_ptr<typename WsClientT::Connection> connection) {
-            const auto send_stream = make_shared<typename WsClientT::SendStream>();
-            *send_stream << payload.dump();
-            connection->send(send_stream);
-            connection->send_close(1000); // close connection after sending the event
-            succeeded = true;
-        };
-        client.start();
-    } catch (...) {
-        // maybe "server_port_path" is not valid
-        // maybe connection is failed
-        // maybe the end of world came
-    }
-    return succeeded;
-}
-
 void ApiServer::push_event(const json &payload) const {
     if (ws_server_started_) {
         Log::d(TAG, u8"开始通过 WebSocket 服务端推送事件");
-        size_t count = 0;
+        size_t total_count = 0;
+        size_t succeeded_count = 0;
         for (const auto &connection : ws_server_->get_connections()) {
             if (boost::algorithm::starts_with(connection->path, "/event")) {
-                const auto send_stream = make_shared<WsServer::SendStream>();
-                *send_stream << payload.dump();
-                connection->send(send_stream);
-                count++;
+                total_count++;
+                try {
+                    const auto send_stream = make_shared<WsServer::SendStream>();
+                    *send_stream << payload.dump();
+                    connection->send(send_stream);
+                    succeeded_count++;
+                } catch (...) {}
             }
         }
-        Log::d(TAG, u8"已成功向 " + to_string(count) + u8" 个 WebSocket 客户端推送事件");
+        Log::d(TAG, u8"已成功向 " + to_string(succeeded_count) + "/" + to_string(total_count) + u8" 个 WebSocket 客户端推送事件");
     }
 
-    if (config.use_ws_reverse /* use reverse websocket */
-        && ws_reverse_event_client_is_wss_.has_value() /* successfully initialized */) {
+    if (ws_reverse_event_client_started_) {
         Log::d(TAG, u8"开始通过 WebSocket 反向客户端上报事件");
+
         bool succeeded;
-        if (ws_reverse_event_client_is_wss_.value() == false) {
-            succeeded = push_ws_reverse_event<WsClient>(ws_reverse_event_server_port_path_, payload);
-        } else {
-            succeeded = push_ws_reverse_event<WssClient>(ws_reverse_event_server_port_path_, payload);
+        try {
+            if (ws_reverse_event_client_is_wss_.value() == false) {
+                const auto send_stream = make_shared<WsClient::SendStream>();
+                *send_stream << payload.dump();
+                ws_reverse_event_client_.ws->connection->send(send_stream);
+            } else {
+                const auto send_stream = make_shared<WssClient::SendStream>();
+                *send_stream << payload.dump();
+                ws_reverse_event_client_.wss->connection->send(send_stream);
+            }
+            succeeded = true;
+        } catch (...) {
+            succeeded = false;
         }
 
         Log::d(TAG, u8"通过 WebSocket 反向客户端上报数据到 " + config.ws_reverse_event_url + (succeeded ? u8" 成功" : u8" 失败"));
