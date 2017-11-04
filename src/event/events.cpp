@@ -31,7 +31,7 @@ using namespace std;
 
 static const auto TAG = u8"…œ±®";
 
-#define ENSURE_POST_NEEDED if (config.post_url.empty() && !config.use_ws) { return CQEVENT_IGNORE; }
+#define ENSURE_POST_NEEDED if (config.post_url.empty() && !config.use_ws && !config.use_ws_reverse) { return CQEVENT_IGNORE; }
 
 static pplx::task<json> http_post(const json &json_body) {
     http_request request(http::methods::POST);
