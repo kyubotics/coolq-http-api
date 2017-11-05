@@ -8,11 +8,11 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/richardchien/cqhttp.svg)](https://hub.docker.com/r/richardchien/cqhttp/)
 ![QQ群](https://img.shields.io/badge/qq%E7%BE%A4-201865589-orange.svg)
 
-通过 HTTP 对酷 Q 的事件进行上报以及接收 HTTP 请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。现已支持 WebSocket。
-
 <a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/E54rqjApb13Qp1PSTivyKGhm/richardchien/coolq-http-api'>
   <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/E54rqjApb13Qp1PSTivyKGhm/richardchien/coolq-http-api.svg' />
 </a>
+
+通过 HTTP 对酷 Q 的事件进行上报以及接收 HTTP 请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。现已支持 WebSocket。
 
 ## 使用方法
 
