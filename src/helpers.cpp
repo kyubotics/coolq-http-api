@@ -248,17 +248,19 @@ static const uint32_t EMOJI_RANGES_2[][2] = {
 bool is_emoji(const uint32_t codepoint) {
     if (codepoint >= 0x203C && codepoint <= 0x3299) {
         for (auto pair : EMOJI_RANGES_1) {
-            if (codepoint >= pair[0] && codepoint <= pair[1]) {
+            if (codepoint > pair[1])
+                return false;
+            if (codepoint >= pair[0])
                 return true;
-            }
         }
         return false;
     }
     if (codepoint >= 0x1F004 && codepoint <= 0x1F9E6) {
         for (auto pair : EMOJI_RANGES_2) {
-            if (codepoint >= pair[0] && codepoint <= pair[1]) {
+            if (codepoint > pair[1])
+                return false;
+            if (codepoint >= pair[0])
                 return true;
-            }
         }
         return false;
     }
