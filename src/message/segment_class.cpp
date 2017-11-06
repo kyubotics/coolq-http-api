@@ -102,7 +102,6 @@ static Message::Segment enhance_send_file(const Message::Segment &raw, const str
 
         if (ofstream f(ansi(filepath), ios::binary | ios::out); f.is_open()) {
             f << base64_decode(base64_encoded);
-            f.close();
             segment.data["file"] = filename;
         }
     }
@@ -131,7 +130,6 @@ static Message::Segment enhance_receive_image(const Message::Segment &raw) {
             if (url && !url->empty()) {
                 segment.data["url"] = url.value();
             }
-            istrm.close();
         }
     }
     return segment;

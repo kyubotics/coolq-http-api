@@ -64,7 +64,6 @@ optional<Config> load_configuration(const string &filepath) {
                     << "auto_check_update=no" << endl
                     << "thread_pool_size=4" << endl
                     << "server_thread_pool_size=1" << endl;
-            file.close();
         } else {
             Log::e(TAG, u8"写入默认配置失败，请检查文件系统权限");
         }

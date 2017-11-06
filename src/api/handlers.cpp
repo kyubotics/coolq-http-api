@@ -410,7 +410,6 @@ HANDLER(set_restart) {
         f << "taskkill /F /PID " << _getpid() << "\r\n"
                 << "timeout 1 > NUL\r\n"
                 << "start \"\" \"" << ansi(ws2s(w_exec_path)) << "\" /account " << sdk->get_login_qq();
-        f.close();
     }
 
     try {

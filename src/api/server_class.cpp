@@ -217,7 +217,6 @@ void ApiServer::init_http() {
             });
             *response << f.rdbuf();
             Log::d(TAG, u8"文件内容已发送完毕");
-            f.close();
         } else {
             Log::d(TAG, u8"文件 " + relpath + u8" 打开失败，请检查文件系统权限");
             response->write(SimpleWeb::StatusCode::client_error_forbidden);

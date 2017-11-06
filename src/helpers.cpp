@@ -82,7 +82,7 @@ namespace std {
         return val;
     }
 
-    string to_string(bool val) {
+    string to_string(const bool val) {
         return val ? "true" : "false";
     }
 }
@@ -168,7 +168,6 @@ bool download_remote_file(const string &url, const string &local_path, const boo
             if (read_count == length) {
                 succeeded = true;
             }
-            f.close();
         }
     }).wait();
 
