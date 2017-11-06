@@ -19,6 +19,7 @@
 
 #include "app.h"
 
+#include <ctime>
 #include <regex>
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -97,7 +98,7 @@ static Message::Segment enhance_send_file(const Message::Segment &raw, const str
         }
     } else if (starts_with(file, "base64://")) {
         const auto base64_encoded = file.substr(strlen("base64://"));
-        const auto filename = "from_base64.tmp"; // despite of the format, we store all images as ".tmp"
+        const auto filename = "from_base64_" + to_string(time(nullptr)) + "_" + to_string(random_int(1, 1000)) + ".tmp";
         const auto filepath = sdk->directories().coolq() + "data\\" + data_dir + "\\" + filename;
 
         if (ofstream f(ansi(filepath), ios::binary | ios::out); f.is_open()) {

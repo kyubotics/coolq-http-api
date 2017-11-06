@@ -331,3 +331,10 @@ string string_from_coolq(const string &str) {
 
     return processed_str;
 }
+
+unsigned random_int(const unsigned min, const unsigned max) {
+    mt19937 rng;
+    rng.seed(random_device()());
+    const uniform_int_distribution<mt19937::result_type> dist(min, max);
+    return dist(rng);
+}

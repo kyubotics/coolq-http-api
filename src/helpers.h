@@ -63,3 +63,5 @@ bool is_emoji(uint32_t codepoint);
 
 std::string string_to_coolq(const std::string &str);
 std::string string_from_coolq(const std::string &str);
+
+unsigned random_int(const unsigned min, const unsigned max);
