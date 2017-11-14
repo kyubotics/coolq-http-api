@@ -29,6 +29,9 @@
     <ClCompile Include="src\message\segment_class.cpp" />
     <ClCompile Include="src\cqp\sdk.cpp" />
     <ClCompile Include="src\helpers.cpp" />
+    <ClCompile Include="src\service\hub_class.cpp" />
+    <ClCompile Include="src\service\impl\http_service_class.cpp" />
+    <ClCompile Include="src\service\impl\ws_service_class.cpp" />
     <ClCompile Include="src\update.cpp" />
     <ClCompile Include="src\utils\base64.cpp" />
     <ClCompile Include="src\utils\pack_class.cpp" />
@@ -52,6 +55,12 @@
     <ClInclude Include="src\cqp\def.h" />
     <ClInclude Include="src\cqp\sdk.h" />
     <ClInclude Include="src\helpers.h" />
+    <ClInclude Include="src\service\hub_class.h" />
+    <ClInclude Include="src\service\impl\http_service_class.h" />
+    <ClInclude Include="src\service\impl\service_impl_common.h" />
+    <ClInclude Include="src\service\impl\ws_service_class.h" />
+    <ClInclude Include="src\service\pushable_interface.h" />
+    <ClInclude Include="src\service\service_base_class.h" />
     <ClInclude Include="src\structs.h" />
     <ClInclude Include="src\update.h" />
     <ClInclude Include="src\utils\base64.h" />

@@ -28,6 +28,12 @@
     <Filter Include="src\ctpl">
       <UniqueIdentifier>{3352b376-ce61-4273-9396-4ae11e988783}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\service">
+      <UniqueIdentifier>{e6b7997b-751a-4723-9446-40ee84903df8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\service\impl">
+      <UniqueIdentifier>{98eb6e06-c259-42a2-a8c9-6b9ed5fd54ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\conf\loader.cpp">
@@ -95,6 +101,15 @@
     </ClCompile>
     <ClCompile Include="src\api\server_impl_ws_reverse.cpp">
       <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\service\impl\http_service_class.cpp">
+      <Filter>src\service\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\service\hub_class.cpp">
+      <Filter>src\service</Filter>
+    </ClCompile>
+    <ClCompile Include="src\service\impl\ws_service_class.cpp">
+      <Filter>src\service\impl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +211,24 @@
     </ClInclude>
     <ClInclude Include="src\api\server_impl_common.h">
       <Filter>src\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\service\service_base_class.h">
+      <Filter>src\service</Filter>
+    </ClInclude>
+    <ClInclude Include="src\service\impl\http_service_class.h">
+      <Filter>src\service\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\service\impl\service_impl_common.h">
+      <Filter>src\service\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\service\hub_class.h">
+      <Filter>src\service</Filter>
+    </ClInclude>
+    <ClInclude Include="src\service\impl\ws_service_class.h">
+      <Filter>src\service\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\service\pushable_interface.h">
+      <Filter>src\service</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

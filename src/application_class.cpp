@@ -23,56 +23,59 @@
 
 #include "conf/loader.h"
 #include "api/server_class.h"
+#include "service/hub_class.h"
 
 using namespace std;
 
 void Application::initialize(const int32_t auth_code) {
-    init_sdk(auth_code);
-    initialized_ = true;
+	init_sdk(auth_code);
+	initialized_ = true;
 }
 
 void Application::enable() {
-    static const auto TAG = u8"启用";
+	static const auto TAG = u8"启用";
 
-    if (!initialized_ || enabled_) {
-        return;
-    }
+	if (!initialized_ || enabled_) {
+		return;
+	}
 
-    Log::d(TAG, CQAPP_FULLNAME);
-    Log::d(TAG, u8"开始初始化");
+	Log::d(TAG, CQAPP_FULLNAME);
+	Log::d(TAG, u8"开始初始化");
 
-    if (const auto c = load_configuration(sdk->directories().app() + "config.cfg")) {
-        config = c.value();
-    }
+	if (const auto c = load_configuration(sdk->directories().app() + "config.cfg")) {
+		config = c.value();
+	}
 
-    ApiServer::instance().start();
+	//ApiServer::instance().start();
+	ServiceHub::instance().start();
 
-    if (!pool) {
-        Log::d(TAG, u8"工作线程池创建成功");
-        pool = make_shared<ctpl::thread_pool>(
-            config.thread_pool_size > 0 ? config.thread_pool_size : thread::hardware_concurrency() * 2 + 1
-        );
-    }
+	if (!pool) {
+		Log::d(TAG, u8"工作线程池创建成功");
+		pool = make_shared<ctpl::thread_pool>(
+			config.thread_pool_size > 0 ? config.thread_pool_size : thread::hardware_concurrency() * 2 + 1
+		);
+	}
 
-    enabled_ = true;
-    Log::i(TAG, u8"HTTP API 插件已启用");
+	enabled_ = true;
+	Log::i(TAG, u8"HTTP API 插件已启用");
 }
 
 void Application::disable() {
-    static const auto TAG = u8"停用";
+	static const auto TAG = u8"停用";
 
-    if (!enabled_) {
-        return;
-    }
+	if (!enabled_) {
+		return;
+	}
 
-    ApiServer::instance().stop();
+	//ApiServer::instance().stop();
+	ServiceHub::instance().stop();
 
-    if (pool) {
-        pool->stop();
-        pool = nullptr;
-        Log::d(TAG, u8"工作线程池关闭成功");
-    }
+	if (pool) {
+		pool->stop();
+		pool = nullptr;
+		Log::d(TAG, u8"工作线程池关闭成功");
+	}
 
-    enabled_ = false;
-    Log::i(TAG, u8"HTTP API 插件已停用");
+	enabled_ = false;
+	Log::i(TAG, u8"HTTP API 插件已停用");
 }
