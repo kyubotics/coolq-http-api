@@ -25,7 +25,7 @@
 #include "./types.h"
 #include "structs.h"
 #include "utils/params_class.h"
-#include "api/server_class.h"
+#include "service/hub_class.h"
 
 using namespace std;
 namespace fs = boost::filesystem;
@@ -370,10 +370,7 @@ HANDLER(get_status) {
     result.data = {
         {"app_initialized", app.is_initialized()},
         {"app_enabled", app.is_enabled()},
-        {"server_initialized", ApiServer::instance().is_initialized()},
-        {"http_server_started", ApiServer::instance().http_server_is_started()},
-        {"ws_server_started", ApiServer::instance().ws_server_is_started()},
-        {"ws_reverse_api_client_started", ApiServer::instance().ws_reverse_api_client_is_started()}
+        {"service_good", ServiceHub::instance().good()}
     };
 }
 

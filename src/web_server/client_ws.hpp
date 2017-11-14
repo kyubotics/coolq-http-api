@@ -330,7 +330,7 @@ namespace SimpleWeb {
     std::shared_ptr<asio::io_service> io_service;
 
     std::shared_ptr<Connection> connection; // change: make "connection" property public
-	std::mutex connection_mutex; // change: make "connection_mutex" property public
+    std::mutex connection_mutex; // change: make "connection_mutex" property public
 
   protected:
     bool internal_io_service = false;

@@ -66,9 +66,6 @@
     <ClCompile Include="src\appentry.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\api\server_class.cpp">
-      <Filter>src\api</Filter>
-    </ClCompile>
     <ClCompile Include="src\globals.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -93,15 +90,6 @@
     <ClCompile Include="src\api\handlers.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
-    <ClCompile Include="src\api\server_impl_http.cpp">
-      <Filter>src\api</Filter>
-    </ClCompile>
-    <ClCompile Include="src\api\server_impl_ws.cpp">
-      <Filter>src\api</Filter>
-    </ClCompile>
-    <ClCompile Include="src\api\server_impl_ws_reverse.cpp">
-      <Filter>src\api</Filter>
-    </ClCompile>
     <ClCompile Include="src\service\impl\http_service_class.cpp">
       <Filter>src\service\impl</Filter>
     </ClCompile>
@@ -109,6 +97,9 @@
       <Filter>src\service</Filter>
     </ClCompile>
     <ClCompile Include="src\service\impl\ws_service_class.cpp">
+      <Filter>src\service\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\service\impl\ws_reverse_service_class.cpp">
       <Filter>src\service\impl</Filter>
     </ClCompile>
   </ItemGroup>
@@ -151,9 +142,6 @@
     </ClInclude>
     <ClInclude Include="src\structs.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\api\server_class.h">
-      <Filter>src\api</Filter>
     </ClInclude>
     <ClInclude Include="src\conf\config_struct.h">
       <Filter>src\conf</Filter>
@@ -209,9 +197,6 @@
     <ClInclude Include="src\web_server\client_wss.hpp">
       <Filter>src\web_server</Filter>
     </ClInclude>
-    <ClInclude Include="src\api\server_impl_common.h">
-      <Filter>src\api</Filter>
-    </ClInclude>
     <ClInclude Include="src\service\service_base_class.h">
       <Filter>src\service</Filter>
     </ClInclude>
@@ -229,6 +214,9 @@
     </ClInclude>
     <ClInclude Include="src\service\pushable_interface.h">
       <Filter>src\service</Filter>
+    </ClInclude>
+    <ClInclude Include="src\service\impl\ws_reverse_service_class.h">
+      <Filter>src\service\impl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
