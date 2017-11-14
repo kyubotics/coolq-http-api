@@ -87,6 +87,15 @@
     <ClCompile Include="src\api\handlers.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
+    <ClCompile Include="src\api\server_impl_http.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\server_impl_ws.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\server_impl_ws_reverse.cpp">
+      <Filter>src\api</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
@@ -184,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="src\web_server\client_wss.hpp">
       <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\server_impl_common.h">
+      <Filter>src\api</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

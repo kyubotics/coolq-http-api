@@ -54,7 +54,7 @@ private:
     ApiServer(const ApiServer &) = delete;
     void operator=(const ApiServer &) = delete;
 
-    bool initialized_ = false;
+    bool initialized_ = true;
 
     // http api server
     std::shared_ptr<SimpleWeb::Server<SimpleWeb::HTTP>> http_server_;
@@ -87,31 +87,19 @@ private:
     std::thread ws_reverse_event_thread_;
     bool ws_reverse_event_client_started_ = false;
 
-    /**
-     * This will be called in start().
-     */
-    void init();
-
-    /**
-     * Init http api server.
-     */
     void init_http();
-
-    /**
-     * Init websocket server.
-     */
     void init_ws();
-
-    /**
-     * Init reverse websocket client.
-     */
     void init_ws_reverse();
 
-    /**
-    * This will be called in stop().
-    */
-    void finalize();
     void finalize_http();
     void finalize_ws();
     void finalize_ws_reverse();
+
+	void start_http();
+	void start_ws();
+	void start_ws_reverse();
+
+	void stop_http();
+	void stop_ws();
+	void stop_ws_reverse();
 };
