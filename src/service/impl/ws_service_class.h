@@ -1,7 +1,5 @@
 #pragma once
 
-#include <thread>
-
 #include "../service_base_class.h"
 #include "../pushable_interface.h"
 #include "web_server/server_ws.hpp"

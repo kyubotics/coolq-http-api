@@ -29,6 +29,24 @@ using namespace std;
 void Application::initialize(const int32_t auth_code) {
     init_sdk(auth_code);
     initialized_ = true;
+
+    restart_worker_running_ = true;
+    restart_worker_thread_ = thread([&]() {
+        static const auto tag = u8"重启";
+        while (restart_worker_running_) {
+            if (should_restart_) {
+                // this is not thread-safe, but currently it's ok
+                if (restart_delay_ > 0) {
+                    Log::i(tag, u8"HTTP API 插件将在 " + to_string(restart_delay_) + u8" 毫秒后重启");
+                }
+                Sleep(restart_delay_);
+                disable();
+                enable();
+                should_restart_ = false;
+                Log::i(tag, u8"HTTP API 插件重启成功");
+            }
+        }
+    });
 }
 
 void Application::enable() {
@@ -77,8 +95,7 @@ void Application::disable() {
     Log::i(TAG, u8"HTTP API 插件已停用");
 }
 
-void Application::restart() {
-    disable();
-    enable();
-    Log::i(u8"重启", u8"HTTP API 插件重启成功");
+void Application::restart_async(const unsigned long delay_millisecond) {
+    restart_delay_ = delay_millisecond;
+    should_restart_ = true; // this will let the restart worker do it
 }

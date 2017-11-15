@@ -1,7 +1,5 @@
 #pragma once
 
-#include <thread>
-
 #include "../service_base_class.h"
 #include "web_server/server_http.hpp"
 

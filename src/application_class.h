@@ -27,12 +27,24 @@ public:
     void initialize(int32_t auth_code);
     void enable();
     void disable();
-    void restart();
+    void restart_async(const unsigned long delay_millisecond = 0);
 
     bool is_initialized() const { return initialized_; }
     bool is_enabled() const { return enabled_; }
 
+    ~Application() {
+        restart_worker_running_ = false;
+        if (restart_worker_thread_.joinable()) {
+            restart_worker_thread_.join();
+        }
+    }
+
 private:
     bool initialized_ = false;
     bool enabled_ = false;
+
+    bool should_restart_ = false;
+    unsigned long restart_delay_ = 0;
+    std::thread restart_worker_thread_;
+    bool restart_worker_running_ = false;
 };

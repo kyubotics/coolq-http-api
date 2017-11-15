@@ -27,7 +27,7 @@ using namespace std;
  * Menu: Reload.
  */
 CQEVENT(int32_t, __menu_restart, 0)() {
-    app.restart();
+    app.restart_async();
     return 0;
 }
 
