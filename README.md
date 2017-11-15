@@ -27,12 +27,6 @@
 | Node.js (HTTP) | https://github.com/richardchien/cqhttp-node-sdk | richardchien | 已兼容 v3.0 |
 | Node.js (WebSocket) | https://github.com/momocow/node-cq-websocket | momocow | 已兼容 v3.0 |
 
-## 已知 Bug
-
-已知 bug 将会尽快在后续的版本中修复。
-
-- 3.1.2 和 3.2.0 版本的 docker 容器中无法通过 HTTP 上报，提示无法访问上报地址
-
 ## 修改、编译
 
 整个项目目录是一个 VS 2017 工程，使用了 VS 2017 (v141) 工具集，直接打开 `coolq-http-api.sln` 即可修改。
@@ -49,6 +43,14 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 ```
 
 由于 triplet 的名字是在 VS 工程文件里写死的，所以建议将 triplet 命名为 `x86-windows-static.cmake`。要编译项目的话，需要先安装这些依赖：`boost`、`cpprestsdk`、`nlohmann-json`、`openssl`。
+
+注意，如果要在 docker 中使用，目前最新版（2.10.0）的 `cpprestsdk` 不能正常工作的，需要先进 vcpkg 根目录，运行：
+
+```bash
+git checkout 2e39b6195fbc14a655474b019234890df94a2ed0 -- ports/cpprestsdk
+```
+
+然后再安装 `cpprestsdk`，就会安装 2.9.0 版本。
 
 ## 开源许可证、重新分发
 
