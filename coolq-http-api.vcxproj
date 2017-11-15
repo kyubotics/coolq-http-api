@@ -82,7 +82,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{86D67665-C6C5-4140-B37F-73052B9C5126}</ProjectGuid>
     <RootNamespace>coolqhttpapi</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <VcpkgTriplet>x86-windows-static</VcpkgTriplet>
     <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
@@ -134,7 +134,7 @@
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
-      <AdditionalIncludeDirectories>$(StlIncludeDirectories);src\cqp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(StlIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>
@@ -157,7 +157,7 @@
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
-      <AdditionalIncludeDirectories>$(StlIncludeDirectories);src\cqp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(StlIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DisableSpecificWarnings>
