@@ -27,6 +27,12 @@
 | Node.js (HTTP) | https://github.com/richardchien/cqhttp-node-sdk | richardchien | 已兼容 v3.0 |
 | Node.js (WebSocket) | https://github.com/momocow/node-cq-websocket | momocow | 已兼容 v3.0 |
 
+## 已知 Bug
+
+已知 bug 将会尽快在后续的版本中修复。
+
+- 3.1.2 和 3.2.0 版本的 docker 容器中无法通过 HTTP 上报，提示无法访问上报地址
+
 ## 修改、编译
 
 整个项目目录是一个 VS 2017 工程，使用了 VS 2017 (v141) 工具集，直接打开 `coolq-http-api.sln` 即可修改。
