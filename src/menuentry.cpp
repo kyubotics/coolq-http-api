@@ -26,10 +26,8 @@ using namespace std;
 /**
  * Menu: Reload.
  */
-CQEVENT(int32_t, __menu_reload, 0)() {
-    app.disable();
-    app.enable();
-    Log::i(u8"重新加载", u8"HTTP API 重新加载成功");
+CQEVENT(int32_t, __menu_restart, 0)() {
+    app.restart();
     return 0;
 }
 

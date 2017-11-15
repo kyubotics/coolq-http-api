@@ -108,8 +108,8 @@
   ],
   "menu": [
     {
-      "name": "重启插件",
-      "function": "_menu_reload"
+        "name": "重启插件",
+        "function": "_menu_restart"
     },
     {
       "name": "检查更新",

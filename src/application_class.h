@@ -27,6 +27,7 @@ public:
     void initialize(int32_t auth_code);
     void enable();
     void disable();
+    void restart();
 
     bool is_initialized() const { return initialized_; }
     bool is_enabled() const { return enabled_; }

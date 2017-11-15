@@ -369,9 +369,16 @@ HANDLER(get_status) {
     result.retcode = RetCodes::OK;
     result.data = {
         {"app_initialized", app.is_initialized()},
-        {"app_enabled", app.is_enabled()},
-        {"service_good", ServiceHub::instance().good()}
+        {"app_enabled", app.is_enabled()}
     };
+
+    for (const auto &entry : ServiceHub::instance().get_services()) {
+        result.data[entry.first + "_service_good"] = entry.second->good();
+    }
+
+    result.data["good"] = app.is_initialized()
+            && (app.is_enabled() && ServiceHub::instance().good()
+                || !app.is_enabled());
 }
 
 #ifdef _DEBUG

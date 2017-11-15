@@ -76,3 +76,9 @@ void Application::disable() {
     enabled_ = false;
     Log::i(TAG, u8"HTTP API 插件已停用");
 }
+
+void Application::restart() {
+    disable();
+    enable();
+    Log::i(u8"重启", u8"HTTP API 插件重启成功");
+}

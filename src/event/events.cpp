@@ -145,21 +145,43 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
     ENSURE_POST_NEEDED;
 
     string anonymous;
-    if (from_qq == 8000000 || !from_anonymous.empty()) {
+    if (from_qq == 80000000 && !from_anonymous.empty()) {
         const auto anonymous_bin = base64_decode(from_anonymous);
         anonymous = Anonymous::from_bytes(anonymous_bin).name;
     }
     auto is_anonymous = !anonymous.empty();
 
+    const auto sub_type_str = [&]() {
+        if (from_qq == 80000000) {
+            return "anonymous";
+        }
+        if (from_qq == 1000000) {
+            return "notice";
+        }
+        if (sub_type == 1) {
+            return "normal";
+        }
+        return "unknown";
+    }();
+
+    string final_msg;
+    auto prefix = "&#91;" + anonymous + "&#93;:";
+    if (!anonymous.empty() && boost::starts_with(msg, prefix)) {
+        final_msg = msg.substr(prefix.length());
+    } else {
+        final_msg = move(msg);
+    }
+
     const json payload = {
         {"post_type", "message"},
         {"message_type", "group"},
+        {"sub_type", sub_type_str},
         {"time", send_time},
         {"group_id", from_group},
         {"user_id", from_qq},
         {"anonymous", anonymous},
         {"anonymous_flag", from_anonymous},
-        {"message", Message(msg).process_inward()},
+        {"message", Message(final_msg).process_inward()},
         {"font", font}
     };
 
