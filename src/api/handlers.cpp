@@ -408,7 +408,7 @@ HANDLER(set_restart) {
     wchar_t w_exec_path[size]{};
     GetModuleFileName(nullptr, w_exec_path, size);
 
-    const auto restart_batch_path = sdk->directories().app_tmp() + "restart_async.bat";
+    const auto restart_batch_path = sdk->directories().app_tmp() + "restart.bat";
     const auto ansi_restart_batch_path = ansi(restart_batch_path);
     if (ofstream f(ansi_restart_batch_path); f.is_open()) {
         f << "taskkill /F /PID " << _getpid() << "\r\n"
