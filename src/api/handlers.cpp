@@ -376,12 +376,8 @@ HANDLER(get_status) {
         result.data[entry.first + "_service_good"] = entry.second->good();
     }
 
-    const Params tmp_params(json{
-        {"user_id", 10000},
-        {"no_cache", true}
-    });
     ApiResult tmp_result;
-    __get_stranger_info(tmp_params, tmp_result);
+    __get_stranger_info(Params{json{{"user_id", 10000}, {"no_cache", true}}}, tmp_result);
 
     auto online = tmp_result.retcode == RetCodes::OK;
     result.data["online"] = online;
