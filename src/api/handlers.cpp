@@ -277,7 +277,7 @@ HANDLER(get_stranger_info) {
         if (bytes.size() >= Stranger::MIN_SIZE) {
             auto stranger = Stranger::from_bytes(bytes);
             result.data = stranger.json();
-            result.retcode = RetCodes::OK;;
+            result.retcode = RetCodes::OK;
         } else {
             result.retcode = RetCodes::INVALID_DATA;
         }
@@ -376,9 +376,20 @@ HANDLER(get_status) {
         result.data[entry.first + "_service_good"] = entry.second->good();
     }
 
+    const Params tmp_params(json{
+        {"user_id", 10000},
+        {"no_cache", true}
+    });
+    ApiResult tmp_result;
+    __get_stranger_info(tmp_params, tmp_result);
+
+    auto online = tmp_result.retcode == RetCodes::OK;
+    result.data["online"] = online;
+
     result.data["good"] = app.is_initialized()
             && (app.is_enabled() && ServiceHub::instance().good()
-                || !app.is_enabled());
+                || !app.is_enabled())
+            && online;
 }
 
 #ifdef _DEBUG
