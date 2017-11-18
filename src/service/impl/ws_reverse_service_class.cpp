@@ -73,59 +73,29 @@ void WsReverseService::finalize() {
     ServiceBase::finalize();
 }
 
-void WsReverseService::start() {
-    if (config.use_ws_reverse) {
-        init();
-
-        if (api_client_is_wss_.has_value()) {
-            // client successfully initialized
-            api_thread_ = thread([&]() {
-                api_client_started_ = true;
-                try {
-                    if (api_client_is_wss_.value() == false) {
-                        api_client_.ws->start();
-                    } else {
-                        api_client_.wss->start();
-                    }
-                } catch (...) {}
-                api_client_started_ = false;
-            });
-            Log::d(TAG, u8"开启 API WebSocket 反向客户端成功，开始连接 " + config.ws_reverse_api_url);
-        }
-
-        if (event_client_is_wss_.has_value()) {
-            // client successfully initialized
-            event_thread_ = thread([&]() {
-                event_client_started_ = true;
-                try {
-                    if (event_client_is_wss_.value() == false) {
-                        event_client_.ws->start();
-                    } else {
-                        event_client_.wss->start();
-                    }
-                } catch (...) {}
-                event_client_started_ = false;
-            });
-            Log::d(TAG, u8"开启 Event WebSocket 反向客户端成功，开始连接 " + config.ws_reverse_event_url);
-        }
-
-        started_ = true;
+void WsReverseService::start_api_client() {
+    if (api_client_is_wss_.has_value()) {
+        // client successfully initialized
+        api_thread_ = thread([&]() {
+            api_client_started_ = true;
+            try {
+                if (api_client_is_wss_.value() == false) {
+                    api_client_.ws->start();
+                } else {
+                    api_client_.wss->start();
+                }
+            } catch (...) {}
+            api_client_started_ = false;
+        });
+        Log::d(TAG, u8"开启 API WebSocket 反向客户端成功，开始连接 " + config.ws_reverse_api_url);
     }
 }
 
-void WsReverseService::stop() {
+void WsReverseService::stop_api_client() {
     if (api_client_started_) {
         if (api_client_is_wss_.value() == false) {
-            // the WsClient class is modified by us ("connection" property made public),
-            // so we must maintain the lock manually
-            unique_lock<mutex> lock(api_client_.ws->connection_mutex);
-            api_client_.ws->connection->send_close(1000);
-            lock.unlock();
             api_client_.ws->stop();
         } else {
-            unique_lock<mutex> lock(api_client_.wss->connection_mutex);
-            api_client_.wss->connection->send_close(1000);
-            lock.unlock();
             api_client_.wss->stop();
         }
         api_client_started_ = false;
@@ -133,17 +103,31 @@ void WsReverseService::stop() {
     if (api_thread_.joinable()) {
         api_thread_.join();
     }
+}
 
+void WsReverseService::start_event_client() {
+    if (event_client_is_wss_.has_value()) {
+        // client successfully initialized
+        event_thread_ = thread([&]() {
+            event_client_started_ = true;
+            try {
+                if (event_client_is_wss_.value() == false) {
+                    event_client_.ws->start();
+                } else {
+                    event_client_.wss->start();
+                }
+            } catch (...) {}
+            event_client_started_ = false;
+        });
+        Log::d(TAG, u8"开启 Event WebSocket 反向客户端成功，开始连接 " + config.ws_reverse_event_url);
+    }
+}
+
+void WsReverseService::stop_event_client() {
     if (event_client_started_) {
         if (event_client_is_wss_.value() == false) {
-            unique_lock<mutex> lock(event_client_.ws->connection_mutex);
-            event_client_.ws->connection->send_close(1000);
-            lock.unlock();
             event_client_.ws->stop();
         } else {
-            unique_lock<mutex> lock(event_client_.wss->connection_mutex);
-            event_client_.wss->connection->send_close(1000);
-            lock.unlock();
             event_client_.wss->stop();
         }
         event_client_started_ = false;
@@ -151,9 +135,21 @@ void WsReverseService::stop() {
     if (event_thread_.joinable()) {
         event_thread_.join();
     }
+}
 
-    started_ = false;
+void WsReverseService::start() {
+    if (config.use_ws_reverse) {
+        init();
+        start_api_client();
+        start_event_client();
+        started_ = api_client_started_ && event_client_started_;
+    }
+}
 
+void WsReverseService::stop() {
+    stop_api_client();
+    stop_event_client();
+    started_ = api_client_started_ && event_client_started_;
     finalize();
 }
 
@@ -173,11 +169,17 @@ void WsReverseService::push_event(const json &payload) const {
             if (event_client_is_wss_.value() == false) {
                 const auto send_stream = make_shared<WsClient::SendStream>();
                 *send_stream << payload.dump();
+                // the WsClient class is modified by us ("connection" property made public),
+                // so we must maintain the lock manually
+                unique_lock<mutex> lock(event_client_.ws->connection_mutex);
                 event_client_.ws->connection->send(send_stream);
+                lock.unlock();
             } else {
                 const auto send_stream = make_shared<WssClient::SendStream>();
                 *send_stream << payload.dump();
+                unique_lock<mutex> lock(event_client_.wss->connection_mutex);
                 event_client_.wss->connection->send(send_stream);
+                lock.unlock();
             }
             succeeded = true;
         } catch (...) {

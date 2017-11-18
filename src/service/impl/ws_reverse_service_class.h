@@ -32,10 +32,14 @@ private:
     std::optional<bool> api_client_is_wss_;
     std::thread api_thread_;
     bool api_client_started_ = false;
+    void start_api_client();
+    void stop_api_client();
 
     // reverse websocket event client
     Client event_client_;
     std::optional<bool> event_client_is_wss_;
     std::thread event_thread_;
     bool event_client_started_ = false;
+    void start_event_client();
+    void stop_event_client();
 };
