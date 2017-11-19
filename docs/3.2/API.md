@@ -448,14 +448,13 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 | 字段名 | 数据类型 | 说明 |
 | ----- | ------- | --- |
-| `good` | boolean | 插件状态符合预期，意味着已初始化且需要启动的服务都在正常运行 |
+| `good` | boolean | 插件状态符合预期，意味着插件已初始化，需要启动的服务都在正常运行，且 QQ 在线（v3.2.2 新增） |
 | `app_initialized` | boolean | 插件已初始化 |
 | `app_enabled` | boolean | 插件已启用 |
+| `online` | boolean | 当前 QQ 在线（v3.2.2 新增） |
 | `http_service_good` | boolean | `use_http` 配置项为 `yes` 时有此字段，表示 HTTP 服务正常运行 |
 | `ws_service_good` | boolean | `use_ws` 配置项为 `yes` 时有此字段，表示 WebSocket 服务正常运行 |
 | `ws_reverse_service_good` | boolean | `use_ws_reverse` 配置项为 `yes` 时有此字段，表示反向 WebSocket 服务正常运行 |
-
-正常情况下接口返回的每一项都应该是 `true`。
 
 ### `/get_version_info` 获取酷 Q 及 HTTP API 插件的版本信息
 
