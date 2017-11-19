@@ -6,8 +6,8 @@ public:
     virtual void start() = 0;
     virtual void stop() = 0;
 
-    bool initialized() const { return initialized_; }
-    bool started() const { return started_; }
+    virtual bool initialized() const { return initialized_; }
+    virtual bool started() const { return started_; }
     virtual bool good() const { return true; }
 
 protected:

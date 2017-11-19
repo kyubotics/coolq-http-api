@@ -7,39 +7,76 @@
 
 class WsReverseService final : public ServiceBase, public IPushable {
 public:
-    void start() override;
-    void stop() override;
-    bool good() const override;
+    void start() override {
+        api_.start();
+        event_.start();
+    }
 
-    void push_event(const json &payload) const override;
+    void stop() override {
+        api_.stop();
+        event_.stop();
+    }
 
-protected:
-    void init() override;
-    void finalize() override;
+    bool initialized() const override {
+        return api_.initialized() && event_.initialized();
+    }
+
+    bool started() const override {
+        return api_.started() && event_.started();
+    }
+
+    bool good() const override {
+        return api_.good() && event_.good();
+    }
+
+    void push_event(const json &payload) const override {
+        event_.push_event(payload);
+    }
 
 private:
-    // reverse websocket
-    union Client {
-        std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WS>> ws;
-        std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WSS>> wss;
+    class SubServiceBase : public ServiceBase {
+    public:
+        virtual std::string name() = 0;
+        virtual std::string url() = 0;
 
-        Client() : ws(nullptr) {}
-        ~Client() {}
+        void start() override;
+        void stop() override;
+        bool good() const override;
+
+    protected:
+        void init() override;
+        void finalize() override;
+
+        union Client {
+            std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WS>> ws;
+            std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WSS>> wss;
+
+            Client() : ws(nullptr) {}
+            ~Client() {}
+        };
+
+        Client client_;
+        std::optional<bool> client_is_wss_;
+        std::thread thread_;
     };
 
-    // reverse websocket api client
-    Client api_client_;
-    std::optional<bool> api_client_is_wss_;
-    std::thread api_thread_;
-    bool api_client_started_ = false;
-    void start_api_client();
-    void stop_api_client();
+    class ApiSubService final : public SubServiceBase {
+    public:
+        std::string name() override;
+        std::string url() override;
 
-    // reverse websocket event client
-    Client event_client_;
-    std::optional<bool> event_client_is_wss_;
-    std::thread event_thread_;
-    bool event_client_started_ = false;
-    void start_event_client();
-    void stop_event_client();
+    protected:
+        void init() override;
+    } api_;
+
+    class EventSubService final : public SubServiceBase, public IPushable {
+    public:
+        std::string name() override;
+        std::string url() override;
+
+        void push_event(const json &payload) const override;
+
+    protected:
+        void init() override;
+    } event_;
 };
