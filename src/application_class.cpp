@@ -45,6 +45,7 @@ void Application::initialize(const int32_t auth_code) {
                 should_restart_ = false;
                 Log::i(tag, u8"HTTP API 插件重启成功");
             }
+            Sleep(500); // wait 500 ms for the next check
         }
     });
 }
