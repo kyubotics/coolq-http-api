@@ -102,6 +102,9 @@
     <ClCompile Include="src\service\impl\ws_reverse_service_class.cpp">
       <Filter>src\service\impl</Filter>
     </ClCompile>
+    <ClCompile Include="src\log_class.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">

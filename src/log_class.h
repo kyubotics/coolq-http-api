@@ -20,7 +20,8 @@
 #pragma once
 
 #include "cqp/sdk.h"
-extern std::optional<Sdk> sdk;
+
+#include <mutex>
 
 class Log {
 public:
@@ -56,9 +57,8 @@ public:
         log(CQLOG_FATAL, tag, msg);
     }
 
-    static void log(int level, const std::string &tag, const std::string &msg) {
-        if (sdk) {
-            sdk->add_log(level, tag, msg);
-        }
-    }
+    static void log(const int level, const std::string &tag, const std::string &msg);
+
+private:
+    static std::mutex log_mutex_;
 };

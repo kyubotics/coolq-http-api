@@ -20,6 +20,7 @@
     <ClCompile Include="src\event\entry.cpp" />
     <ClCompile Include="src\event\events.cpp" />
     <ClCompile Include="src\globals.cpp" />
+    <ClCompile Include="src\log_class.cpp" />
     <ClCompile Include="src\menuentry.cpp" />
     <ClCompile Include="src\message\message_class.cpp" />
     <ClCompile Include="src\message\segment_class.cpp" />
