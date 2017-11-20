@@ -77,6 +77,6 @@ CQEVENT(int32_t, Start, 0)
  */
 CQEVENT(int32_t, Exit, 0)
 () {
-    app.disable();
+    app.exit();
     return 0;
 }

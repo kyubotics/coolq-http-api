@@ -96,6 +96,15 @@ void Application::disable() {
     Log::i(TAG, u8"HTTP API ²å¼þÒÑÍ£ÓÃ");
 }
 
+void Application::exit() {
+    disable();
+
+    restart_worker_running_ = false;
+    if (restart_worker_thread_.joinable()) {
+        restart_worker_thread_.join();
+    }
+}
+
 void Application::restart_async(const unsigned long delay_millisecond) {
     restart_delay_ = delay_millisecond;
     should_restart_ = true; // this will let the restart worker do it

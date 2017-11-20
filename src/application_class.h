@@ -27,17 +27,11 @@ public:
     void initialize(int32_t auth_code);
     void enable();
     void disable();
+    void exit();
     void restart_async(const unsigned long delay_millisecond = 0);
 
     bool is_initialized() const { return initialized_; }
     bool is_enabled() const { return enabled_; }
-
-    ~Application() {
-        restart_worker_running_ = false;
-        if (restart_worker_thread_.joinable()) {
-            restart_worker_thread_.join();
-        }
-    }
 
 private:
     bool initialized_ = false;
