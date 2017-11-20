@@ -16,15 +16,11 @@ shared_ptr<WsClientT> WsReverseService::SubServiceBase::init_ws_reverse_client(c
                            int code, string reason) {
         if (code != 1000) {
             should_reconnect_ = true;
-            Log::d(TAG, u8"反向 WebSocket（" + name() + u8"）客户端连接异常关闭，将在 "
-                   + to_string(config.ws_reverse_reconnect_interval) + u8" 毫秒后尝试重连");
         }
     };
     client->on_error = [&](shared_ptr<typename WsClientT::Connection> connection,
                            const SimpleWeb::error_code &error_code) {
         should_reconnect_ = true;
-        Log::d(TAG, u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
-               + to_string(config.ws_reverse_reconnect_interval) + u8" 毫秒后尝试重连");
     };
     return client;
 }
@@ -66,6 +62,8 @@ void WsReverseService::SubServiceBase::start() {
                 set_reconnect_thread_running_flag(true);
                 while (get_reconnect_thread_running_flag()) {
                     if (should_reconnect_) {
+                        Log::d(TAG, u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
+                               + to_string(config.ws_reverse_reconnect_interval) + u8" 毫秒后尝试重连");
                         should_reconnect_ = false;
                         Sleep(config.ws_reverse_reconnect_interval);
                         stop();
