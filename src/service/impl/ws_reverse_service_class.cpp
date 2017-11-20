@@ -105,7 +105,7 @@ void WsReverseService::SubServiceBase::start() {
 
 void WsReverseService::SubServiceBase::stop() {
     set_reconnect_thread_running_flag(false, reconnect_worker_thread_.get_id());
-    // detach but not join, because we want the thread continue to run until it's next check
+    // detach but not join, because we want the thread continue to run until its next check
     reconnect_worker_thread_.detach();
 
     if (started_) {
