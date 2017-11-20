@@ -30,6 +30,7 @@ struct Config {
     bool use_ws = false;
     std::string ws_reverse_api_url = "";
     std::string ws_reverse_event_url = "";
+    unsigned long ws_reverse_reconnect_interval = 3000;
     bool use_ws_reverse = false;
     std::string post_url = "";
     std::string access_token = "";

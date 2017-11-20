@@ -24,10 +24,6 @@ public:
     const ServiceMap &get_services() const { return services_; }
 
 private:
-    ServiceHub() {}
-    ServiceHub(const ServiceHub &) = delete;
-    void operator=(const ServiceHub &) = delete;
-
     ServiceMap services_;
     std::vector<std::shared_ptr<IPushable>> pushable_services_;
 };

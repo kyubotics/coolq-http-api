@@ -35,14 +35,14 @@ void Application::initialize(const int32_t auth_code) {
         static const auto tag = u8"重启";
         while (restart_worker_running_) {
             if (should_restart_) {
-                // this is not thread-safe, but currently it's ok
+                // this may not be thread-safe, but currently it's ok
+                should_restart_ = false;
                 if (restart_delay_ > 0) {
                     Log::i(tag, u8"HTTP API 插件将在 " + to_string(restart_delay_) + u8" 毫秒后重启");
                 }
                 Sleep(restart_delay_);
                 disable();
                 enable();
-                should_restart_ = false;
                 Log::i(tag, u8"HTTP API 插件重启成功");
             }
             Sleep(500); // wait 500 ms for the next check

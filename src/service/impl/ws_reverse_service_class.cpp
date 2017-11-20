@@ -5,19 +5,25 @@ using namespace std;
 using WsClient = SimpleWeb::SocketClient<SimpleWeb::WS>;
 using WssClient = SimpleWeb::SocketClient<SimpleWeb::WSS>;
 
-/**
- * \brief Create a reverse websocket client instance.
- * \tparam WsClientT WsClient or WssClient (WebSocket SSL)
- * \param server_port_path destination to connect
- * \return the newly created client instance (as shared_ptr)
- */
 template <typename WsClientT>
-static shared_ptr<WsClientT> init_ws_reverse_client(const string &server_port_path) {
+shared_ptr<WsClientT> WsReverseService::SubServiceBase::init_ws_reverse_client(const string &server_port_path) {
     auto client = make_shared<WsClientT>(server_port_path);
     client->config.header.emplace("User-Agent", CQAPP_USER_AGENT);
     if (!config.access_token.empty()) {
         client->config.header.emplace("Authorization", "Token " + config.access_token);
     }
+    client->on_close = [&](shared_ptr<typename WsClientT::Connection> connection,
+                           int code, string reason) {
+        if (code != 1000) {
+            should_reconnect_ = true;
+            Log::d(TAG, u8"反向 WebSocket（" + name() + u8"）客户端连接异常关闭，即将尝试重连");
+        }
+    };
+    client->on_error = [&](shared_ptr<typename WsClientT::Connection> connection,
+                           const SimpleWeb::error_code &error_code) {
+        should_reconnect_ = true;
+        Log::d(TAG, u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，即将尝试重连");
+    };
     return client;
 }
 
@@ -53,6 +59,30 @@ void WsReverseService::SubServiceBase::start() {
     if (config.use_ws_reverse) {
         init();
 
+        reconnect_worker_thread_ = thread([&]() {
+            try {
+                set_reconnect_thread_running_flag(true);
+                while (get_reconnect_thread_running_flag()) {
+                    if (should_reconnect_) {
+                        should_reconnect_ = false;
+                        Sleep(config.ws_reverse_reconnect_interval);
+                        stop();
+                        start();
+                    }
+
+                    if (get_reconnect_thread_running_flag()) {
+                        Sleep(500); // wait 500 ms for the next check
+                    } else {
+                        break;
+                    }
+                }
+            } catch (...) {}
+
+            try {
+                remove_reconnect_thread_running_flag();
+            } catch (...) {}
+        });
+
         if (client_is_wss_.has_value()) {
             // client successfully initialized
             thread_ = thread([&]() {
@@ -72,6 +102,10 @@ void WsReverseService::SubServiceBase::start() {
 }
 
 void WsReverseService::SubServiceBase::stop() {
+    set_reconnect_thread_running_flag(false, reconnect_worker_thread_.get_id());
+    // detach but not join, because we want the thread continue to run until it's next check
+    reconnect_worker_thread_.detach();
+
     if (started_) {
         if (client_is_wss_.value() == false) {
             client_.ws->stop();
@@ -83,6 +117,8 @@ void WsReverseService::SubServiceBase::stop() {
     if (thread_.joinable()) {
         thread_.join();
     }
+
+    finalize();
 }
 
 bool WsReverseService::SubServiceBase::good() const {
@@ -90,10 +126,6 @@ bool WsReverseService::SubServiceBase::good() const {
         return initialized_ && started_;
     }
     return ServiceBase::good();
-}
-
-string WsReverseService::ApiSubService::name() {
-    return "API";
 }
 
 string WsReverseService::ApiSubService::url() {
@@ -110,10 +142,6 @@ void WsReverseService::ApiSubService::init() {
             client_.wss->on_message = ws_api_on_message<WssClient>;
         }
     }
-}
-
-string WsReverseService::EventSubService::name() {
-    return "Event";
 }
 
 string WsReverseService::EventSubService::url() {

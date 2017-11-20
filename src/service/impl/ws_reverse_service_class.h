@@ -58,11 +58,43 @@ private:
         Client client_;
         std::optional<bool> client_is_wss_;
         std::thread thread_;
+
+    private:
+        template <typename WsClientT>
+        std::shared_ptr<WsClientT> init_ws_reverse_client(const std::string &server_port_path);
+
+        bool should_reconnect_ = false;
+        std::unordered_map<std::thread::id, bool> reconnect_thread_running_flag_map_;
+        std::mutex reconnect_thread_running_flag_map_mutex_;
+        std::thread reconnect_worker_thread_;
+
+        bool get_reconnect_thread_running_flag(const std::thread::id tid = std::this_thread::get_id()) {
+            std::unique_lock<std::mutex> lock(reconnect_thread_running_flag_map_mutex_);
+            if (const auto &it = reconnect_thread_running_flag_map_.find(tid);
+                it != reconnect_thread_running_flag_map_.end()) {
+                return it->second;
+            }
+            return false;
+        }
+
+        void set_reconnect_thread_running_flag(const bool flag,
+                                               const std::thread::id tid = std::this_thread::get_id()) {
+            std::unique_lock<std::mutex> lock(reconnect_thread_running_flag_map_mutex_);
+            reconnect_thread_running_flag_map_[tid] = flag;
+        }
+
+        void remove_reconnect_thread_running_flag(const std::thread::id tid = std::this_thread::get_id()) {
+            std::unique_lock<std::mutex> lock(reconnect_thread_running_flag_map_mutex_);
+            reconnect_thread_running_flag_map_.erase(tid);
+        }
     };
 
     class ApiSubService final : public SubServiceBase {
     public:
-        std::string name() override;
+        std::string name() override {
+            return "API";
+        }
+
         std::string url() override;
 
     protected:
@@ -71,7 +103,10 @@ private:
 
     class EventSubService final : public SubServiceBase, public IPushable {
     public:
-        std::string name() override;
+        std::string name() override {
+            return "Event";
+        }
+
         std::string url() override;
 
         void push_event(const json &payload) const override;

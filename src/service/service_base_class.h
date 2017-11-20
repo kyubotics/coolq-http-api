@@ -2,6 +2,9 @@
 
 class ServiceBase {
 public:
+    ServiceBase() = default;
+    ServiceBase(const ServiceBase &) = delete;
+    void operator=(const ServiceBase &) = delete;
     virtual ~ServiceBase() = default;
     virtual void start() = 0;
     virtual void stop() = 0;
