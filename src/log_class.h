@@ -1,5 +1,5 @@
 // 
-// Log.h : Wrap "add_log" method of Sdk class.
+// log_class.h : Wrap "add_log" method of Sdk class.
 // 
 // Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
 // 
@@ -21,7 +21,7 @@
 
 #include "cqp/sdk.h"
 
-#include <mutex>
+extern std::optional<Sdk> sdk;
 
 class Log {
 public:
@@ -57,8 +57,9 @@ public:
         log(CQLOG_FATAL, tag, msg);
     }
 
-    static void log(const int level, const std::string &tag, const std::string &msg);
-
-private:
-    static std::mutex log_mutex_;
+    static void log(const int level, const std::string &tag, const std::string &msg) {
+        if (sdk) {
+            sdk->add_log(level, tag, msg);
+        }
+    }
 };
