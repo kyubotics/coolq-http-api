@@ -4,6 +4,8 @@
 using namespace std;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 
+extern ApiHandlerMap api_handlers; // defined in handlers.cpp
+
 void HttpService::init() {
     Log::d(TAG, u8"≥ı ºªØ HTTP");
 

@@ -30,11 +30,9 @@
 using namespace std;
 namespace fs = boost::filesystem;
 
-ApiHandlerMap api_handlers;
-
 using RetCodes = ApiResult::RetCodes;
 
-extern ApiHandlerMap api_handlers;
+ApiHandlerMap api_handlers;
 
 static bool __add_api_handler(const string &name, ApiHandler handler) {
     api_handlers[name] = handler;

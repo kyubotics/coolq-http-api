@@ -62,6 +62,7 @@ optional<Config> load_configuration(const string &filepath) {
                     << "update_source=" << DEFAULT_UPDATE_SOURCE << endl
                     << "update_channel=stable" << endl
                     << "auto_check_update=no" << endl
+                    << "auto_perform_update=no" << endl
                     << "thread_pool_size=4" << endl
                     << "server_thread_pool_size=1" << endl;
         } else {
@@ -109,6 +110,7 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(update_source, string);
         GET_CONFIG(update_channel, string);
         GET_BOOL_CONFIG(auto_check_update);
+        GET_BOOL_CONFIG(auto_perform_update);
         GET_CONFIG(thread_pool_size, size_t);
         GET_CONFIG(server_thread_pool_size, size_t);
         #undef GET_CONFIG

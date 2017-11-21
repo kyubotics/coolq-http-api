@@ -40,6 +40,7 @@ struct Config {
     std::string update_source = "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/";
     std::string update_channel = "stable";
     bool auto_check_update = false;
+    bool auto_perform_update = false;
     size_t thread_pool_size = 4;
     size_t server_thread_pool_size = 1;
 };

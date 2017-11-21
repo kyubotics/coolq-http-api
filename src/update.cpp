@@ -23,6 +23,8 @@
 
 #include <boost/filesystem.hpp>
 
+#include "api/api.h"
+
 using namespace std;
 using boost::algorithm::ends_with;
 namespace fs = boost::filesystem;
@@ -96,6 +98,11 @@ bool perform_update(const string &version, const int build_number) {
     }
 }
 
+static void restart_coolq() {
+    ApiResult tmp_result;
+    invoke_api("set_restart", Params(), tmp_result);
+}
+
 void check_update(const bool is_automatically) {
     static const auto TAG = u8"检查更新";
 
@@ -116,15 +123,29 @@ void check_update(const bool is_automatically) {
                             + (description.empty() ? u8"无" : description)
                             + u8"\r\n\r\n当前环境下不允许自动更新，如果你正在使用 Docker，请拉取最新版本的 Docker 镜像。");
             } else {
-                const auto code = message_box(MB_YESNO | MB_ICONQUESTION, u8"发现新版本：" + version
-                                              + u8"\r\n\r\n更新信息：\r\n"
-                                              + (description.empty() ? u8"无" : description)
-                                              + u8"\r\n\r\n是否现在更新？");
-                if (code == IDYES) {
+                if (is_automatically && config.auto_perform_update) {
+                    // auto update
                     if (perform_update(version, build_number)) {
-                        message_box(MB_OK | MB_ICONINFORMATION, u8"更新成功，请重启酷 Q 以生效。");
+                        Log::i(TAG, u8"更新成功，即将重启酷 Q 以生效");
+                        restart_coolq();
                     } else {
-                        message_box(MB_OK | MB_ICONERROR, u8"更新失败，请检查网络连接是否通畅，或尝试更换更新源。");
+                        Log::e(TAG, u8"更新失败，请检查网络连接是否通畅，或尝试更换更新源。");
+                    }
+                } else {
+                    // ask for manually confirming
+                    auto code = message_box(MB_YESNO | MB_ICONQUESTION, u8"发现新版本：" + version
+                                            + u8"\r\n\r\n更新信息：\r\n"
+                                            + (description.empty() ? u8"无" : description)
+                                            + u8"\r\n\r\n是否现在更新？");
+                    if (code == IDYES) {
+                        if (perform_update(version, build_number)) {
+                            code = message_box(MB_YESNO | MB_ICONQUESTION, u8"更新成功，请重启酷 Q 以生效。\r\n\r\n是否现在重启酷 Q？");
+                            if (code == IDYES) {
+                                restart_coolq();
+                            }
+                        } else {
+                            message_box(MB_OK | MB_ICONERROR, u8"更新失败，请检查网络连接是否通畅，或尝试更换更新源。");
+                        }
                     }
                 }
             }

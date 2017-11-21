@@ -66,4 +66,4 @@ struct ApiResult {
 };
 
 using ApiHandler = std::function<void(const Params &, ApiResult &)>;
-using ApiHandlerMap = std::map<std::string, ApiHandler>;
+using ApiHandlerMap = std::unordered_map<std::string, ApiHandler>;

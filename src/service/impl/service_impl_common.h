@@ -4,12 +4,10 @@
 
 #include <boost/filesystem.hpp>
 
-#include "api/types.h"
+#include "api/api.h"
 #include "web_server/utility.hpp"
 
 namespace fs = boost::filesystem;
-
-extern ApiHandlerMap api_handlers; // defined in handlers.cpp
 
 static const auto TAG = u8"API服务";
 
@@ -90,24 +88,20 @@ static void ws_api_on_message(std::shared_ptr<typename WsT::Connection> connecti
     }
 
     const auto action = payload["action"].get<std::string>();
-    ApiHandler handler;
-    if (auto it = api_handlers.find(action); it != api_handlers.end()) {
-        Log::d(TAG, u8"找到 API 处理函数 " + action + u8"，开始处理请求");
-        handler = it->second;
-    } else {
-        Log::d(TAG, u8"未找到 API 处理函数 " + action);
-        result.retcode = ApiResult::RetCodes::HTTP_NOT_FOUND;
-        send_result();
-        return;
-    }
 
     auto json_params = json::object();
     if (payload.find("params") != payload.end() && payload["params"].is_object()) {
         json_params = payload["params"];
     }
-
     const Params params(json_params);
-    handler(params, result);
+
+    try {
+        invoke_api(action, params, result);
+        Log::d(TAG, u8"找到 API 处理函数 " + action + u8"，已成功处理请求");
+    } catch (std::invalid_argument &) {
+        Log::d(TAG, u8"未找到 API 处理函数 " + action);
+        result.retcode = ApiResult::RetCodes::HTTP_NOT_FOUND;
+    }
 
     send_result();
 }
