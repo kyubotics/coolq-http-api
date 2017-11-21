@@ -19,7 +19,7 @@ void HttpService::init() {
             };
 
     for (const auto &handler_kv : api_handlers) {
-        const auto path_regex = "^/" + handler_kv.first + "$";
+        const auto path_regex = "^/" + handler_kv.first + "/?$";
         server_->resource[path_regex]["GET"] = server_->resource[path_regex]["POST"]
                 = [&handler_kv](shared_ptr<HttpServer::Response> response,
                                 shared_ptr<HttpServer::Request> request) {
