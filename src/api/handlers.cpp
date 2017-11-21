@@ -68,7 +68,15 @@ HANDLER(send_private_msg) {
     auto user_id = params.get_integer("user_id", 0);
     auto message = params.get_message();
     if (user_id && !message.empty()) {
-        result.retcode = sdk->send_private_msg(user_id, message);
+        const auto ret = sdk->send_private_msg(user_id, message);
+        if (ret < 0) {
+            result.retcode = ret;
+        } else {
+            result.retcode = RetCodes::OK;
+            if (ret > 0) {
+                result.data = json{{"id", ret}};
+            }
+        }
     }
 }
 
@@ -80,7 +88,15 @@ HANDLER(send_group_msg) {
     auto group_id = params.get_integer("group_id", 0);
     auto message = params.get_message();
     if (group_id && !message.empty()) {
-        result.retcode = sdk->send_group_msg(group_id, message);
+        const auto ret = sdk->send_group_msg(group_id, message);
+        if (ret < 0) {
+            result.retcode = ret;
+        } else {
+            result.retcode = RetCodes::OK;
+            if (ret > 0) {
+                result.data = json{{"id", ret}};
+            }
+        }
     }
 }
 
@@ -92,7 +108,15 @@ HANDLER(send_discuss_msg) {
     auto discuss_id = params.get_integer("discuss_id", 0);
     auto message = params.get_message();
     if (discuss_id && !message.empty()) {
-        result.retcode = sdk->send_discuss_msg(discuss_id, message);
+        const auto ret = sdk->send_discuss_msg(discuss_id, message);
+        if (ret < 0) {
+            result.retcode = ret;
+        } else {
+            result.retcode = RetCodes::OK;
+            if (ret > 0) {
+                result.data = json{{"id", ret}};
+            }
+        }
     }
 }
 
@@ -113,6 +137,13 @@ HANDLER(send_msg) {
 
 HANDLER(send_msg_async) {
     handle_async(params, result, __send_msg);
+}
+
+HANDLER(delete_msg) {
+    auto message_id = params.get_integer("message_id", 0);
+    if (message_id > 0) {
+        result.retcode = sdk->delete_msg(message_id);
+    }
 }
 
 #pragma endregion

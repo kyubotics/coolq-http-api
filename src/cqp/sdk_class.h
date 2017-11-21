@@ -43,6 +43,10 @@ public:
         return CQ_sendDiscussMsg(this->ac_, discuss_id, string_to_coolq(msg).c_str());
     }
 
+    int32_t delete_msg(int64_t message_id) const {
+        return CQ_deleteMsg(this->ac_, message_id);
+    }
+
     #pragma endregion
 
     #pragma region Send Like

@@ -36,6 +36,7 @@ typedef int32_t cq_bool_t;
 FUNC(int32_t, sendPrivateMsg, int32_t auth_code, int64_t qq, const char *msg)
 FUNC(int32_t, sendGroupMsg, int32_t auth_code, int64_t group_id, const char *msg)
 FUNC(int32_t, sendDiscussMsg, int32_t auth_code, int64_t discuss_id, const char *msg)
+FUNC(int32_t, deleteMsg, int32_t auth_code, int64_t msg_id)
 
 // Send Like
 FUNC(int32_t, sendLike, int32_t auth_code, int64_t qq)

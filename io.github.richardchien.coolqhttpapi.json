@@ -117,28 +117,29 @@
     }
   ],
   "status": [],
-  "auth": [
-    20, // getCookies / getCsrfToken
-    30, // getRecord
-    101, // sendGroupMsg
-    103, // sendDiscussMsg
-    106, // sendPrivateMsg
-    110, // sendLikeV2 / sendLike
-    120, // setGroupKick
-    121, // setGroupBan
-    122, // setGroupAdmin
-    123, // setGroupWholeBan
-    124, // setGroupAnonymousBan
-    125, // setGroupAnonymous
-    126, // setGroupCard
-    127, // setGroupLeave
-    128, // setGroupSpecialTitle
-    130, // getGroupMemberInfoV2 / getGroupMemberInfo
-    131, // getStrangerInfo
-    140, // setDiscussLeave
-    150, // setFriendAddRequest
-    151, // setGroupAddRequest
-    160, // getGroupMemberList
-    161 // getGroupList
-  ]
+    "auth": [
+        20, // getCookies / getCsrfToken
+        30, // getRecord
+        101, // sendGroupMsg
+        103, // sendDiscussMsg
+        106, // sendPrivateMsg
+        110, // sendLikeV2 / sendLike
+        120, // setGroupKick
+        121, // setGroupBan
+        122, // setGroupAdmin
+        123, // setGroupWholeBan
+        124, // setGroupAnonymousBan
+        125, // setGroupAnonymous
+        126, // setGroupCard
+        127, // setGroupLeave
+        128, // setGroupSpecialTitle
+        130, // getGroupMemberInfoV2 / getGroupMemberInfo
+        131, // getStrangerInfo
+        140, // setDiscussLeave
+        150, // setFriendAddRequest
+        151, // setGroupAddRequest
+        160, // getGroupMemberList
+        161, // getGroupList
+        180 // deleteMsg
+    ]
 }
