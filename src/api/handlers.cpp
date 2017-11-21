@@ -62,6 +62,10 @@ static void handle_async(const Params &params, ApiResult &result, ApiHandler han
     }
 }
 
+static ApiResult::RetCode to_retcode(const int32_t ret) {
+    return ret < 0 ? ret : RetCodes::OK;
+}
+
 #pragma region Send Message
 
 HANDLER(send_private_msg) {
@@ -69,13 +73,9 @@ HANDLER(send_private_msg) {
     auto message = params.get_message();
     if (user_id && !message.empty()) {
         const auto ret = sdk->send_private_msg(user_id, message);
-        if (ret < 0) {
-            result.retcode = ret;
-        } else {
-            result.retcode = RetCodes::OK;
-            if (ret > 0) {
-                result.data = json{{"id", ret}};
-            }
+        result.retcode = to_retcode(ret);
+        if (ret > 0) {
+            result.data = {{"id", ret}};
         }
     }
 }
@@ -89,13 +89,9 @@ HANDLER(send_group_msg) {
     auto message = params.get_message();
     if (group_id && !message.empty()) {
         const auto ret = sdk->send_group_msg(group_id, message);
-        if (ret < 0) {
-            result.retcode = ret;
-        } else {
-            result.retcode = RetCodes::OK;
-            if (ret > 0) {
-                result.data = json{{"id", ret}};
-            }
+        result.retcode = to_retcode(ret);
+        if (ret > 0) {
+            result.data = {{"id", ret}};
         }
     }
 }
@@ -109,13 +105,9 @@ HANDLER(send_discuss_msg) {
     auto message = params.get_message();
     if (discuss_id && !message.empty()) {
         const auto ret = sdk->send_discuss_msg(discuss_id, message);
-        if (ret < 0) {
-            result.retcode = ret;
-        } else {
-            result.retcode = RetCodes::OK;
-            if (ret > 0) {
-                result.data = json{{"id", ret}};
-            }
+        result.retcode = to_retcode(ret);
+        if (ret > 0) {
+            result.data = {{"id", ret}};
         }
     }
 }
@@ -142,7 +134,7 @@ HANDLER(send_msg_async) {
 HANDLER(delete_msg) {
     auto message_id = params.get_integer("message_id", 0);
     if (message_id > 0) {
-        result.retcode = sdk->delete_msg(message_id);
+        result.retcode = to_retcode(sdk->delete_msg(message_id));
     }
 }
 
@@ -156,9 +148,9 @@ HANDLER(send_like) {
     auto times = static_cast<int32_t>(params.get_integer("times", 1));
     if (user_id && times > 0) {
         if (times == 1) {
-            result.retcode = sdk->send_like(user_id);
+            result.retcode = to_retcode(sdk->send_like(user_id));
         } else {
-            result.retcode = sdk->send_like(user_id, times);
+            result.retcode = to_retcode(sdk->send_like(user_id, times));
         }
     }
 }
@@ -172,7 +164,7 @@ HANDLER(set_group_kick) {
     auto user_id = params.get_integer("user_id", 0);
     auto reject_add_request = params.get_bool("reject_add_request", false);
     if (group_id && user_id) {
-        result.retcode = sdk->set_group_kick(group_id, user_id, reject_add_request);
+        result.retcode = to_retcode(sdk->set_group_kick(group_id, user_id, reject_add_request));
     }
 }
 
@@ -181,7 +173,7 @@ HANDLER(set_group_ban) {
     auto user_id = params.get_integer("user_id", 0);
     auto duration = params.get_integer("duration", 30 * 60 /* 30 minutes */);
     if (group_id && user_id && duration >= 0) {
-        result.retcode = sdk->set_group_ban(group_id, user_id, duration);
+        result.retcode = to_retcode(sdk->set_group_ban(group_id, user_id, duration));
     }
 }
 
@@ -190,7 +182,7 @@ HANDLER(set_group_anonymous_ban) {
     auto anonymous_flag = params.get_string("flag", "");
     auto duration = params.get_integer("duration", 30 * 60 /* 30 minutes */);
     if (group_id && !anonymous_flag.empty() && duration >= 0) {
-        result.retcode = sdk->set_group_anonymous_ban(group_id, anonymous_flag, duration);
+        result.retcode = to_retcode(sdk->set_group_anonymous_ban(group_id, anonymous_flag, duration));
     }
 }
 
@@ -198,7 +190,7 @@ HANDLER(set_group_whole_ban) {
     auto group_id = params.get_integer("group_id", 0);
     auto enable = params.get_bool("enable", true);
     if (group_id) {
-        result.retcode = sdk->set_group_whole_ban(group_id, enable);
+        result.retcode = to_retcode(sdk->set_group_whole_ban(group_id, enable));
     }
 }
 
@@ -207,7 +199,7 @@ HANDLER(set_group_admin) {
     auto user_id = params.get_integer("user_id", 0);
     auto enable = params.get_bool("enable", true);
     if (group_id && user_id) {
-        result.retcode = sdk->set_group_admin(group_id, user_id, enable);
+        result.retcode = to_retcode(sdk->set_group_admin(group_id, user_id, enable));
     }
 }
 
@@ -216,7 +208,7 @@ HANDLER(set_group_anonymous) {
     auto group_id = params.get_integer("group_id", 0);
     auto enable = params.get_bool("enable", true);
     if (group_id) {
-        result.retcode = sdk->set_group_anonymous(group_id, enable);
+        result.retcode = to_retcode(sdk->set_group_anonymous(group_id, enable));
     }
 }
 
@@ -225,7 +217,7 @@ HANDLER(set_group_card) {
     auto user_id = params.get_integer("user_id", 0);
     auto card = params.get_string("card", "");
     if (group_id && user_id) {
-        result.retcode = sdk->set_group_card(group_id, user_id, card);
+        result.retcode = to_retcode(sdk->set_group_card(group_id, user_id, card));
     }
 }
 
@@ -233,7 +225,7 @@ HANDLER(set_group_leave) {
     auto group_id = params.get_integer("group_id", 0);
     auto is_dismiss = params.get_bool("is_dismiss", false);
     if (group_id) {
-        result.retcode = sdk->set_group_leave(group_id, is_dismiss);
+        result.retcode = to_retcode(sdk->set_group_leave(group_id, is_dismiss));
     }
 }
 
@@ -243,14 +235,14 @@ HANDLER(set_group_special_title) {
     auto special_title = params.get_string("special_title", "");
     auto duration = params.get_integer("duration", -1 /* permanent */); // seems to have no effect
     if (group_id && user_id) {
-        result.retcode = sdk->set_group_special_title(group_id, user_id, special_title, duration);
+        result.retcode = to_retcode(sdk->set_group_special_title(group_id, user_id, special_title, duration));
     }
 }
 
 HANDLER(set_discuss_leave) {
     auto discuss_id = params.get_integer("discuss_id", 0);
     if (discuss_id) {
-        result.retcode = sdk->set_discuss_leave(discuss_id);
+        result.retcode = to_retcode(sdk->set_discuss_leave(discuss_id));
     }
 }
 
@@ -263,7 +255,8 @@ HANDLER(set_friend_add_request) {
     auto approve = params.get_bool("approve", true);
     auto remark = params.get_string("remark", "");
     if (!flag.empty()) {
-        result.retcode = sdk->set_friend_add_request(flag, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY, remark);
+        result.retcode = to_retcode(
+            sdk->set_friend_add_request(flag, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY, remark));
     }
 }
 
@@ -279,8 +272,8 @@ HANDLER(set_group_add_request) {
         request_type = CQREQUEST_GROUPINVITE;
     }
     if (!flag.empty() && request_type != -1) {
-        result.retcode = sdk->set_group_add_request(flag, request_type, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY,
-                                                    reason);
+        result.retcode = to_retcode(
+            sdk->set_group_add_request(flag, request_type, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY, reason));
     }
 }
 
@@ -388,6 +381,18 @@ HANDLER(get_csrf_token) {
     auto token = sdk->get_csrf_token();
     result.retcode = token ? RetCodes::OK : RetCodes::INVALID_DATA;
     result.data = {{"token", token}};
+}
+
+HANDLER(get_record) {
+    const auto file = params.get_string("file");
+    const auto out_format = params.get_string("out_format");
+    if (!file.empty() && !out_format.empty()) {
+        const auto out_file = sdk->get_record(file, out_format);
+        if (!out_file.empty()) {
+            result.retcode = RetCodes::OK;
+            result.data = {{"file", out_file}};
+        }
+    }
 }
 
 #pragma endregion

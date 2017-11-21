@@ -43,8 +43,8 @@ public:
         return CQ_sendDiscussMsg(this->ac_, discuss_id, string_to_coolq(msg).c_str());
     }
 
-    int32_t delete_msg(int64_t message_id) const {
-        return CQ_deleteMsg(this->ac_, message_id);
+    int32_t delete_msg(int64_t msg_id) const {
+        return CQ_deleteMsg(this->ac_, msg_id);
     }
 
     #pragma endregion
@@ -175,9 +175,10 @@ public:
         return string_from_coolq(CQ_getAppDirectory(this->ac_));
     }
 
-    // const char *get_record(const char *file, const char *out_format) const {
-    //     return CQ_getRecord(this->ac_, file, out_format);
-    // }
+    std::string get_record(const std::string &file, const std::string &out_format) const {
+        const auto raw = CQ_getRecord(this->ac_, string_to_coolq(file).c_str(), string_to_coolq(out_format).c_str());
+        return string_from_coolq(raw);
+    }
 
     #pragma endregion
 
