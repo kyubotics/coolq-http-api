@@ -21,9 +21,9 @@
 
 #include "common.h"
 
-int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, const std::string &msg, int32_t font);
-int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const std::string &from_anonymous, const std::string &msg, int32_t font);
-int32_t event_discuss_msg(int32_t sub_Type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const std::string &msg, int32_t font);
+int32_t event_private_msg(int32_t sub_type, int32_t msg_id, int64_t from_qq, const std::string &msg, int32_t font);
+int32_t event_group_msg(int32_t sub_type, int32_t msg_id, int64_t from_group, int64_t from_qq, const std::string &from_anonymous, const std::string &msg, int32_t font);
+int32_t event_discuss_msg(int32_t sub_Type, int32_t msg_id, int64_t from_discuss, int64_t from_qq, const std::string &msg, int32_t font);
 int32_t event_group_upload(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const std::string &file);
 int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq);
 int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq);

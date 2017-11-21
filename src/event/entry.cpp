@@ -26,17 +26,17 @@
  * sub_type 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
  */
 CQEVENT(int32_t, __event_private_msg, 24)
-(int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, int32_t font) {
-    return event_private_msg(sub_type, send_time, from_qq, string_from_coolq(msg), font);
+(int32_t sub_type, int32_t msg_id, int64_t from_qq, const char *msg, int32_t font) {
+    return event_private_msg(sub_type, msg_id, from_qq, string_from_coolq(msg), font);
 }
 
 /**
  * Type=2 群消息
  */
 CQEVENT(int32_t, __event_group_msg, 36)
-(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg,
+(int32_t sub_type, int32_t msg_id, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg,
  int32_t font) {
-    return event_group_msg(sub_type, send_time, from_group, from_qq, string_from_coolq(from_anonymous),
+    return event_group_msg(sub_type, msg_id, from_group, from_qq, string_from_coolq(from_anonymous),
                            string_from_coolq(msg), font);
 }
 
@@ -44,8 +44,8 @@ CQEVENT(int32_t, __event_group_msg, 36)
  * Type=4 讨论组消息
  */
 CQEVENT(int32_t, __event_discuss_msg, 32)
-(int32_t sub_type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font) {
-    return event_discuss_msg(sub_type, send_time, from_discuss, from_qq, string_from_coolq(msg), font);
+(int32_t sub_type, int32_t msg_id, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font) {
+    return event_discuss_msg(sub_type, msg_id, from_discuss, from_qq, string_from_coolq(msg), font);
 }
 
 /**

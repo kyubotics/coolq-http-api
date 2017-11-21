@@ -105,7 +105,7 @@ static int32_t post_event(const json &payload, const function<void(const Params 
     return should_block ? CQEVENT_BLOCK : CQEVENT_IGNORE;
 }
 
-int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, const string &msg, int32_t font) {
+int32_t event_private_msg(int32_t sub_type, int32_t msg_id, int64_t from_qq, const string &msg, int32_t font) {
     ENSURE_POST_NEEDED;
 
     const auto sub_type_str = [&sub_type]() {
@@ -126,7 +126,8 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
         {"post_type", "message"},
         {"message_type", "private"},
         {"sub_type", sub_type_str},
-        {"time", send_time},
+        {"time", time(nullptr)},
+        {"message_id", msg_id},
         {"user_id", from_qq},
         {"message", Message(msg).process_inward()},
         {"font", font}
@@ -140,7 +141,7 @@ int32_t event_private_msg(int32_t sub_type, int32_t send_time, int64_t from_qq, 
     });
 }
 
-int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq,
+int32_t event_group_msg(int32_t sub_type, int32_t msg_id, int64_t from_group, int64_t from_qq,
                         const string &from_anonymous, const string &msg, int32_t font) {
     ENSURE_POST_NEEDED;
 
@@ -165,18 +166,21 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
     }();
 
     string final_msg;
-    auto prefix = "&#91;" + anonymous + "&#93;:";
-    if (!anonymous.empty() && boost::starts_with(msg, prefix)) {
-        final_msg = msg.substr(prefix.length());
-    } else {
-        final_msg = move(msg);
+    {
+        auto prefix = "&#91;" + anonymous + "&#93;:";
+        if (!anonymous.empty() && boost::starts_with(msg, prefix)) {
+            final_msg = msg.substr(prefix.length());
+        } else {
+            final_msg = move(msg);
+        }
     }
 
     const json payload = {
         {"post_type", "message"},
         {"message_type", "group"},
         {"sub_type", sub_type_str},
-        {"time", send_time},
+        {"time", time(nullptr)},
+        {"message_id", msg_id},
         {"group_id", from_group},
         {"user_id", from_qq},
         {"anonymous", anonymous},
@@ -207,14 +211,15 @@ int32_t event_group_msg(int32_t sub_type, int32_t send_time, int64_t from_group,
     });
 }
 
-int32_t event_discuss_msg(int32_t sub_type, int32_t send_time, int64_t from_discuss, int64_t from_qq, const string &msg,
+int32_t event_discuss_msg(int32_t sub_type, int32_t msg_id, int64_t from_discuss, int64_t from_qq, const string &msg,
                           int32_t font) {
     ENSURE_POST_NEEDED;
 
     const json payload = {
         {"post_type", "message"},
         {"message_type", "discuss"},
-        {"time", send_time},
+        {"time", time(nullptr)},
+        {"message_id", msg_id},
         {"discuss_id", from_discuss},
         {"user_id", from_qq},
         {"message", Message(msg).process_inward()},
