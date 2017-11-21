@@ -75,7 +75,7 @@ HANDLER(send_private_msg) {
         const auto ret = sdk->send_private_msg(user_id, message);
         result.retcode = to_retcode(ret);
         if (ret > 0) {
-            result.data = {{"id", ret}};
+            result.data = {{"message_id", ret}};
         }
     }
 }
@@ -91,7 +91,7 @@ HANDLER(send_group_msg) {
         const auto ret = sdk->send_group_msg(group_id, message);
         result.retcode = to_retcode(ret);
         if (ret > 0) {
-            result.data = {{"id", ret}};
+            result.data = {{"message_id", ret}};
         }
     }
 }
@@ -107,7 +107,7 @@ HANDLER(send_discuss_msg) {
         const auto ret = sdk->send_discuss_msg(discuss_id, message);
         result.retcode = to_retcode(ret);
         if (ret > 0) {
-            result.data = {{"id", ret}};
+            result.data = {{"message_id", ret}};
         }
     }
 }
