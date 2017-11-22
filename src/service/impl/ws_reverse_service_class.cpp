@@ -31,10 +31,10 @@ void WsReverseService::SubServiceBase::init() {
     auto ws_url = url();
 
     try {
-        if (boost::algorithm::starts_with(ws_url, "ws://")) {
+        if (string_starts_with(ws_url, "ws://")) {
             client_.ws = init_ws_reverse_client<WsClient>(ws_url.substr(strlen("ws://")));
             client_is_wss_ = false;
-        } else if (boost::algorithm::starts_with(ws_url, "wss://")) {
+        } else if (string_starts_with(ws_url, "wss://")) {
             client_.wss = init_ws_reverse_client<WssClient>(ws_url.substr(strlen("wss://")));
             client_is_wss_ = true;
         }

@@ -24,7 +24,6 @@
 #include <codecvt>
 #include <regex>
 #include <filesystem>
-#include <cpprest/filestream.h>
 
 #include "utils/rest_client.h"
 #include "utils/encoding.h"

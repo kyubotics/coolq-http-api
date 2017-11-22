@@ -4,10 +4,6 @@
 #include "crypto.hpp"
 #include "utility.hpp"
 
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/asio.hpp>
-#include <boost/functional/hash.hpp>
-
 #include <atomic>
 #include <iostream>
 #include <list>
