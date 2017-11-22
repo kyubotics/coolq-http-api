@@ -105,6 +105,12 @@
     <ClCompile Include="src\api\api.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\md5.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\crypt.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
@@ -223,6 +229,12 @@
     </ClInclude>
     <ClInclude Include="src\api\api.h">
       <Filter>src\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\md5.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\crypt.h">
+      <Filter>src\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

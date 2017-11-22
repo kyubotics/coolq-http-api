@@ -23,15 +23,14 @@
 
 #include <codecvt>
 #include <regex>
-#include <openssl/hmac.h>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <cpprest/filestream.h>
 
 #include "utils/rest_client.h"
 #include "utils/encoding.h"
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = experimental::filesystem;
 
 void string_replace(string &str, const string &search, const string &replace) {
     if (search.empty())
@@ -47,6 +46,20 @@ void string_replace(string &str, const string &search, const string &replace) {
     }
     ws_ret += str.substr(start_pos);
     str.swap(ws_ret); // faster than str = wsRet;
+}
+
+bool string_starts_with(const string &input, const string &test) {
+    if (test.size() > input.size()) return false;
+    return input.substr(0, test.size()) == test;
+}
+
+bool string_ends_with(const string &input, const string &test) {
+    if (test.size() > input.size()) return false;
+    return input.substr(input.size() - test.size()) == test;
+}
+
+bool string_contains(const string &input, const string &test) {
+    return input.find(test) != string::npos;
 }
 
 string ws2s(const wstring &ws) {
@@ -67,7 +80,8 @@ bool to_bool(const string &str, const bool default_val) {
 }
 
 optional<bool> to_bool(const string &str) {
-    const auto s = boost::algorithm::to_lower_copy(str);
+    auto s = str;
+    transform(s.begin(), s.end(), s.begin(), ::tolower);
     if (s == "yes" || s == "true" || s == "1") {
         return true;
     }
@@ -179,29 +193,11 @@ bool download_remote_file(const string &url, const string &local_path, const boo
     return succeeded;
 }
 
-int message_box(unsigned type, const string &text) {
+int message_box(const unsigned type, const string &text) {
     return MessageBoxW(nullptr,
                        s2ws(text).c_str(),
                        s2ws(CQAPP_NAME).c_str(),
                        type | MB_SETFOREGROUND | MB_TASKMODAL | MB_TOPMOST);
-}
-
-string hmac_sha1_hex(string key, string msg) {
-    unsigned digest_len = 20;
-    const auto digest = new unsigned char[digest_len];
-    HMAC_CTX ctx;
-    HMAC_CTX_init(&ctx);
-    HMAC_Init_ex(&ctx, key.c_str(), key.size(), EVP_sha1(), nullptr);
-    HMAC_Update(&ctx, reinterpret_cast<const unsigned char *>(msg.c_str()), msg.size());
-    HMAC_Final(&ctx, digest, &digest_len);
-    HMAC_CTX_cleanup(&ctx);
-
-    stringstream ss;
-    for (unsigned i = 0; i < digest_len; ++i) {
-        ss << hex << setfill('0') << setw(2) << static_cast<unsigned int>(digest[i]);
-    }
-    delete[] digest;
-    return ss.str();
 }
 
 static const uint32_t EMOJI_RANGES_1[][2] = {

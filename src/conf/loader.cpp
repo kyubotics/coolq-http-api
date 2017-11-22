@@ -24,13 +24,13 @@
 #include <fstream>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "helpers.h"
-#include "config_struct.h"
+#include "./config_struct.h"
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = experimental::filesystem;
 
 static const auto DEFAULT_UPDATE_SOURCE =
         "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/";

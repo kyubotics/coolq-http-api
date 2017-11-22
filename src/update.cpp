@@ -21,16 +21,15 @@
 
 #include "app.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "api/api.h"
 
 using namespace std;
-using boost::algorithm::ends_with;
-namespace fs = boost::filesystem;
+namespace fs = experimental::filesystem;
 
 static string update_source() {
-    if (ends_with(config.update_source, "/")) {
+    if (string_ends_with(config.update_source, "/")) {
         return config.update_source;
     }
     return config.update_source + "/";
@@ -90,7 +89,7 @@ bool perform_update(const string &version, const int build_number) {
 
     const auto local_cpk_path = sdk->directories().coolq() + "app\\" CQAPP_ID ".cpk";
     try {
-        copy_file(ansi(tmp_path), ansi(local_cpk_path), fs::copy_option::overwrite_if_exists);
+        copy_file(ansi(tmp_path), ansi(local_cpk_path), fs::copy_options::overwrite_existing);
         fs::remove(ansi(tmp_path));
         return true;
     } catch (fs::filesystem_error &) {

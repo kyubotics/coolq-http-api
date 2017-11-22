@@ -81,7 +81,7 @@ void WsService::push_event(const json &payload) const {
         size_t total_count = 0;
         size_t succeeded_count = 0;
         for (const auto &connection : server_->get_connections()) {
-            if (boost::algorithm::starts_with(connection->path, "/event")) {
+            if (string_starts_with(connection->path, "/event")) {
                 total_count++;
                 try {
                     const auto send_stream = make_shared<WsServer::SendStream>();

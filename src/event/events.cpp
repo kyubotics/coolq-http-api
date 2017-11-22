@@ -23,6 +23,7 @@
 
 #include "utils/rest_client.h"
 #include "utils/params_class.h"
+#include "utils/crypt.h"
 #include "message/message_class.h"
 #include "structs.h"
 #include "service/hub_class.h"
@@ -168,7 +169,7 @@ int32_t event_group_msg(int32_t sub_type, int32_t msg_id, int64_t from_group, in
     string final_msg;
     {
         auto prefix = "&#91;" + anonymous + "&#93;:";
-        if (!anonymous.empty() && boost::starts_with(msg, prefix)) {
+        if (!anonymous.empty() && string_starts_with(msg, prefix)) {
             final_msg = msg.substr(prefix.length());
         } else {
             final_msg = move(msg);

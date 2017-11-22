@@ -27,7 +27,6 @@
 #include <string>
 #include <optional>
 #include <cstdint>
-#include <boost/algorithm/string.hpp>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 

@@ -22,24 +22,23 @@
 #include "app.h"
 
 using namespace std;
-using boost::algorithm::replace_all;
 
 const string Message::Formats::STRING = "string";
 const string Message::Formats::ARRAY = "array";
 
 string Message::escape(string msg) {
-    replace_all(msg, "&", "&amp;");
-    replace_all(msg, "[", "&#91;");
-    replace_all(msg, "]", "&#93;");
-    replace_all(msg, ",", "&#44;");
+    string_replace(msg, "&", "&amp;");
+    string_replace(msg, "[", "&#91;");
+    string_replace(msg, "]", "&#93;");
+    string_replace(msg, ",", "&#44;");
     return msg;
 }
 
 string Message::unescape(string msg) {
-    replace_all(msg, "&#91;", "[");
-    replace_all(msg, "&#93;", "]");
-    replace_all(msg, "&#44;", ",");
-    replace_all(msg, "&amp;", "&");
+    string_replace(msg, "&#91;", "[");
+    string_replace(msg, "&#93;", "]");
+    string_replace(msg, "&#44;", ",");
+    string_replace(msg, "&amp;", "&");
     return msg;
 }
 

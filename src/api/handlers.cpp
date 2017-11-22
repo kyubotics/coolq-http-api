@@ -19,7 +19,7 @@
 
 #include "app.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/process.hpp>
 
 #include "./types.h"
@@ -28,7 +28,7 @@
 #include "service/hub_class.h"
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = experimental::filesystem;
 
 using RetCodes = ApiResult::RetCodes;
 

@@ -25,6 +25,9 @@
 #include <nlohmann/json.hpp>
 
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
+bool string_starts_with(const std::string &input, const std::string &test);
+bool string_ends_with(const std::string &input, const std::string &test);
+bool string_contains(const std::string &input, const std::string &test);
 
 std::string ws2s(const std::wstring &ws);
 std::wstring s2ws(const std::string &s);
@@ -55,9 +58,7 @@ std::optional<nlohmann::json> get_remote_json(const std::string &url, const web:
 
 bool download_remote_file(const std::string &url, const std::string &local_path, bool use_fake_ua = false);
 
-int message_box(unsigned type, const std::string &text);
-
-std::string hmac_sha1_hex(std::string key, std::string msg);
+int message_box(const unsigned type, const std::string &text);
 
 bool is_emoji(uint32_t codepoint);
 

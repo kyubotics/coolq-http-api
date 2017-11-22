@@ -1,6 +1,8 @@
 #include "./http_service_class.h"
 #include "./service_impl_common.h"
 
+#include <fstream>
+
 using namespace std;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 
@@ -49,9 +51,9 @@ void HttpService::init() {
                         auto body_string = request->content.string();
                         Log::d(TAG, u8"HTTP 正文内容：" + body_string);
 
-                        if (boost::starts_with(content_type, "application/x-www-form-urlencoded")) {
+                        if (string_starts_with(content_type, "application/x-www-form-urlencoded")) {
                             form = SimpleWeb::QueryString::parse(body_string);
-                        } else if (boost::starts_with(content_type, "application/json")) {
+                        } else if (string_starts_with(content_type, "application/json")) {
                             try {
                                 json_params = json::parse(body_string); // may throw invalid_argument
                                 if (!json_params.is_object()) {
@@ -104,10 +106,10 @@ void HttpService::init() {
         }
 
         auto relpath = request->path_match.str(1);
-        boost::algorithm::replace_all(relpath, "/", "\\");
+        string_replace(relpath, "/", "\\");
         Log::d(TAG, u8"收到 GET 数据文件请求，相对路径：" + relpath);
 
-        if (boost::algorithm::contains(relpath, "..")) {
+        if (string_contains(relpath, "..")) {
             Log::d(TAG, u8"请求的数据文件路径中有非法字符，已拒绝请求");
             response->write(SimpleWeb::StatusCode::client_error_forbidden);
             return;

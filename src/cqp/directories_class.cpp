@@ -2,10 +2,10 @@
 
 #include "app.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = experimental::filesystem;
 
 string Sdk::Directories::app() const {
     return string_from_coolq(CQ_getAppDirectory(this->ac_));

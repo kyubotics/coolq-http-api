@@ -21,19 +21,14 @@
 
 #include <ctime>
 #include <regex>
-#include <boost/filesystem.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ini_parser.hpp>
-#include <websocketpp/common/md5.hpp>
+#include <filesystem>
+#include <fstream>
 
 #include "./message_class.h"
-#include "utils/rest_client.h"
+#include "utils/crypt.h"
 
 using namespace std;
-namespace fs = boost::filesystem;
-
-using boost::algorithm::starts_with;
-using websocketpp::md5::md5_hash_hex;
+namespace fs = experimental::filesystem;
 
 static Message::Segment enhance_send_file(const Message::Segment &raw, const string &data_dir);
 static Message::Segment enhance_receive_image(const Message::Segment &raw);
@@ -67,7 +62,7 @@ static Message::Segment enhance_send_file(const Message::Segment &raw, const str
     auto segment = raw;
     auto file = (*file_it).second;
 
-    if (starts_with(file, "http://") || starts_with(file, "https://")) {
+    if (string_starts_with(file, "http://") || string_starts_with(file, "https://")) {
         const auto &url = file;
         const auto ws_url = s2ws(url);
         const auto filename = md5_hash_hex(url) + ".tmp"; // despite of the format, we store all images as ".tmp"
@@ -85,18 +80,18 @@ static Message::Segment enhance_send_file(const Message::Segment &raw, const str
             || download_remote_file(url, filepath, true) /* or perform download */) {
             segment.data["file"] = filename;
         }
-    } else if (starts_with(file, "file://")) {
+    } else if (string_starts_with(file, "file://")) {
         const auto path = file.substr(strlen("file://"));
         const auto new_filename = md5_hash_hex(path) + ".tmp";
 
         const auto new_filepath = sdk->directories().coolq() + "data\\" + data_dir + "\\" + new_filename;
         try {
-            copy_file(ansi(path), ansi(new_filepath), fs::copy_option::overwrite_if_exists);
+            copy_file(ansi(path), ansi(new_filepath), fs::copy_options::overwrite_existing);
             segment.data["file"] = new_filename;
         } catch (fs::filesystem_error &) {
             // copy failed
         }
-    } else if (starts_with(file, "base64://")) {
+    } else if (string_starts_with(file, "base64://")) {
         const auto base64_encoded = file.substr(strlen("base64://"));
         const auto filename = "from_base64_" + to_string(time(nullptr)) + "_" + to_string(random_int(1, 1000)) + ".tmp";
         const auto filepath = sdk->directories().coolq() + "data\\" + data_dir + "\\" + filename;
@@ -125,11 +120,15 @@ static Message::Segment enhance_receive_image(const Message::Segment &raw) {
         const auto cqimg_filepath = sdk->directories().coolq() + "data\\image\\" + cqimg_filename;
 
         if (ifstream istrm(ansi(cqimg_filepath), ios::binary); istrm.is_open()) {
-            boost::property_tree::ptree pt;
-            read_ini(istrm, pt);
-            auto url = pt.get_optional<string>("image.url");
-            if (url && !url->empty()) {
-                segment.data["url"] = url.value();
+            string url, line;
+            while (!istrm.eof()) {
+                if (istrm >> line; string_starts_with(line, "url=")) {
+                    url = line.substr(4);
+                    break;
+                }
+            }
+            if (!url.empty()) {
+                segment.data["url"] = url;
             }
         }
     }
