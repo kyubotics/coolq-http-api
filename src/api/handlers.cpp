@@ -20,7 +20,8 @@
 #include "app.h"
 
 #include <filesystem>
-#include <boost/process.hpp>
+#include <fstream>
+#include <process.h>
 
 #include "./types.h"
 #include "structs.h"
@@ -450,15 +451,17 @@ HANDLER(set_restart) {
     GetModuleFileName(nullptr, w_exec_path, size);
 
     const auto restart_batch_path = sdk->directories().app_tmp() + "restart.bat";
-    const auto ansi_restart_batch_path = ansi(restart_batch_path);
-    if (ofstream f(ansi_restart_batch_path); f.is_open()) {
+    const auto w_restart_batch_path = s2ws(restart_batch_path);
+    if (ofstream f(w_restart_batch_path); f.is_open()) {
         f << "taskkill /F /PID " << _getpid() << "\r\n"
                 << "timeout 1 > NUL\r\n"
                 << "start \"\" \"" << ansi(ws2s(w_exec_path)) << "\" /account " << sdk->get_login_qq();
     }
 
     try {
-        boost::process::spawn(ansi_restart_batch_path);
+        //boost::process::spawn(ansi_restart_batch_path);
+        CreateProcess(nullptr, const_cast<LPWSTR>(w_restart_batch_path.c_str()),
+                      nullptr, nullptr, FALSE, 0, nullptr, nullptr, nullptr, nullptr);
         result.retcode = RetCodes::OK;
     } catch (exception &) { }
 }

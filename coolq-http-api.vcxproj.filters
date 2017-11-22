@@ -19,9 +19,6 @@
     <Filter Include="src\event">
       <UniqueIdentifier>{54a79ccc-b4dd-4fb8-a618-5497dc9513c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\web_server">
-      <UniqueIdentifier>{2903b17e-34c2-448f-8b71-32dcf9583e3e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\api">
       <UniqueIdentifier>{d107b753-1225-4f23-9b00-2a1e7cfa7679}</UniqueIdentifier>
     </Filter>
@@ -96,12 +93,6 @@
     <ClCompile Include="src\service\hub_class.cpp">
       <Filter>src\service</Filter>
     </ClCompile>
-    <ClCompile Include="src\service\impl\ws_service_class.cpp">
-      <Filter>src\service\impl</Filter>
-    </ClCompile>
-    <ClCompile Include="src\service\impl\ws_reverse_service_class.cpp">
-      <Filter>src\service\impl</Filter>
-    </ClCompile>
     <ClCompile Include="src\api\api.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
@@ -109,6 +100,9 @@
       <Filter>src\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\crypt.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\curl_wrapper.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
   </ItemGroup>
@@ -135,9 +129,6 @@
       <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\encoding.h">
-      <Filter>src\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\rest_client.h">
       <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\message\message_class.h">
@@ -179,30 +170,6 @@
     <ClInclude Include="src\update.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\web_server\server_ws.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\server_wss.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\status_code.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\utility.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\crypto.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\server_http.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\client_ws.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\client_wss.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
     <ClInclude Include="src\service\service_base_class.h">
       <Filter>src\service</Filter>
     </ClInclude>
@@ -215,14 +182,8 @@
     <ClInclude Include="src\service\hub_class.h">
       <Filter>src\service</Filter>
     </ClInclude>
-    <ClInclude Include="src\service\impl\ws_service_class.h">
-      <Filter>src\service\impl</Filter>
-    </ClInclude>
     <ClInclude Include="src\service\pushable_interface.h">
       <Filter>src\service</Filter>
-    </ClInclude>
-    <ClInclude Include="src\service\impl\ws_reverse_service_class.h">
-      <Filter>src\service\impl</Filter>
     </ClInclude>
     <ClInclude Include="src\api\api.h">
       <Filter>src\api</Filter>
@@ -234,6 +195,9 @@
       <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\ini_reader.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\curl_wrapper.h">
       <Filter>src\utils</Filter>
     </ClInclude>
   </ItemGroup>

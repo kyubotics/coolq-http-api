@@ -8,4 +8,5 @@ post_build.d.bat
 *.opensdf
 *.suo
 ipch
-!lib/*.lib
+!lib/lib/debug
+!lib/lib/**/*.lib

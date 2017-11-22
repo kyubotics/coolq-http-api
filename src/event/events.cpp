@@ -21,12 +21,12 @@
 
 #include "app.h"
 
-#include "utils/rest_client.h"
 #include "utils/params_class.h"
 #include "utils/crypt.h"
 #include "message/message_class.h"
 #include "structs.h"
 #include "service/hub_class.h"
+#include "utils/curl_wrapper.h"
 
 using namespace std;
 
@@ -37,42 +37,29 @@ static const auto TAG = u8"上报";
         return CQEVENT_IGNORE; \
     }
 
-static pplx::task<json> http_post(const json &json_body) {
-    http_request request(http::methods::POST);
-    request.headers().add(L"User-Agent", CQAPP_USER_AGENT);
-    request.headers().add(L"Content-Type", L"application/json; charset=UTF-8");
+static json http_post(const json &json_body) {
     const auto body = json_body.dump();
-    request.set_body(body);
+    auto request = curl::Request(config.post_url, "application/json; charset=UTF-8", body);
+    request.headers["User-Agent"] = CQAPP_USER_AGENT;
     if (!config.secret.empty()) {
-        request.headers().add(L"X-Signature", s2ws("sha1=" + hmac_sha1_hex(config.secret, body)));
+        request.headers["X-Signature"] = "sha1=" + hmac_sha1_hex(config.secret, body);
     }
-    return http_client(s2ws(config.post_url))
-            .request(request)
-            .then([](pplx::task<http_response> task) {
-                auto next_task = pplx::task_from_result<string>("");
-                try {
-                    auto resp = task.get();
-                    auto succeeded = false;
-                    if (resp.status_code() < 300 && resp.status_code() >= 200) {
-                        succeeded = true;
-                        next_task = resp.extract_utf8string(true);
-                    }
-                    Log::d(TAG,
-                           u8"通过 HTTP 上报数据到 " + config.post_url + (succeeded ? u8" 成功" : u8" 失败")
-                           + u8"，状态码：" + to_string(resp.status_code()));
-                } catch (http_exception &) {
-                    // failed to request
-                    Log::d(TAG, u8"HTTP 上报地址 " + config.post_url + u8" 无法访问");
-                }
-                return next_task;
-            })
-            .then([](string &body) {
-                if (!body.empty()) {
-                    Log::d(TAG, u8"收到响应 " + body);
-                    return pplx::task_from_result(json::parse(body)); // may throw invalid_argument due to invalid json
-                }
-                return pplx::task_from_result(json());
-            });
+
+    auto succeeded = false;
+    if (const auto response = request.post();
+        response.status_code >= 200 && response.status_code < 300) {
+        succeeded = true;
+        Log::d(TAG, u8"通过 HTTP 上报数据到 " + config.post_url + (succeeded ? u8" 成功" : u8" 失败")
+               + u8"，状态码：" + to_string(response.status_code));
+
+        const auto resp_body = response.body;
+        if (!resp_body.empty()) {
+            Log::d(TAG, u8"收到响应 " + resp_body);
+            return json::parse(resp_body); // may throw invalid_argument if json is not valid
+        }
+    }
+
+    return nullptr;
 }
 
 static int32_t post_event(const json &payload, const function<void(const Params &)> response_handler = nullptr) {
@@ -82,7 +69,7 @@ static int32_t post_event(const json &payload, const function<void(const Params 
         // do http post and handle response
         Log::d(TAG, u8"开始通过 HTTP 上报事件");
         try {
-            if (const auto resp_payload = http_post(payload).get(); resp_payload.is_object()) {
+            if (const auto resp_payload = http_post(payload); resp_payload.is_object()) {
                 Params params;
                 if (resp_payload.is_object()) {
                     params = Params(resp_payload);

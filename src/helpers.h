@@ -28,6 +28,7 @@ void string_replace(std::string &str, const std::string &search, const std::stri
 bool string_starts_with(const std::string &input, const std::string &test);
 bool string_ends_with(const std::string &input, const std::string &test);
 bool string_contains(const std::string &input, const std::string &test);
+std::vector<std::string> string_split(const std::string &str, const std::string &sep_regex);
 
 std::string ws2s(const std::wstring &ws);
 std::wstring s2ws(const std::string &s);
@@ -54,7 +55,6 @@ namespace web {
 
 std::optional<nlohmann::json> get_remote_json(const std::string &url, bool use_fake_ua = false,
                                               const std::string &cookies = "");
-std::optional<nlohmann::json> get_remote_json(const std::string &url, const web::http::http_request &request);
 
 bool download_remote_file(const std::string &url, const std::string &local_path, bool use_fake_ua = false);
 

@@ -24,9 +24,11 @@
 #include <codecvt>
 #include <regex>
 #include <filesystem>
+#include <fstream>
+#include <random>
 
-#include "utils/rest_client.h"
 #include "utils/encoding.h"
+#include "utils/curl_wrapper.h"
 
 using namespace std;
 namespace fs = experimental::filesystem;
@@ -59,6 +61,22 @@ bool string_ends_with(const string &input, const string &test) {
 
 bool string_contains(const string &input, const string &test) {
     return input.find(test) != string::npos;
+}
+
+vector<string> string_split(const string &str, const string &sep_regex) {
+    vector<string> result;
+    smatch m;
+    auto it = str.cbegin();
+    while (regex_search(it, str.cend(), m, regex(sep_regex))) {
+        if (m.position() != 0) {
+            result.push_back(string(it, it + m.position()));
+        }
+        it = it + m.position() + m.size();
+    }
+    if (it != str.cend()) {
+        result.push_back(string(it, str.cend()));
+    }
+    return result;
 }
 
 string ws2s(const wstring &ws) {
@@ -105,85 +123,61 @@ namespace std {
     "Chrome/56.0.2924.87 Safari/537.36"
 
 optional<json> get_remote_json(const string &url, const bool use_fake_ua, const string &cookies) {
-    http_request request(http::methods::GET);
-    request.headers().add(L"User-Agent", s2ws(use_fake_ua ? FAKE_USER_AGENT : CQAPP_USER_AGENT));
-    request.headers().add(L"Referer", s2ws(url));
+    auto request = curl::Request(url, curl::Headers{
+        {"User-Agent", use_fake_ua ? FAKE_USER_AGENT : CQAPP_USER_AGENT},
+        {"Referer", url}
+    });
     if (!cookies.empty()) {
-        request.headers().add(L"Cookie", s2ws(cookies));
+        request.headers["Cookie"] = cookies;
     }
-    return get_remote_json(url, request);
-}
 
-optional<nlohmann::json> get_remote_json(const string &url, const http_request &request) {
-    auto task = http_client(s2ws(url))
-            .request(request)
-            .then([](pplx::task<http_response> task) {
-                auto next_task = pplx::task_from_result<string>("");
-                try {
-                    auto resp = task.get();
-                    if (resp.status_code() == 200) {
-                        next_task = resp.extract_utf8string(true);
-                    }
-                } catch (http_exception &) {
-                    // failed to request
-                }
-                return next_task;
-            })
-            .then([](string &body) {
-                if (smatch m; regex_search(body, m, regex("\\);?\\s*$"))) {
-                    // is jsonp
-                    if (auto start = body.find("("); start != string::npos) {
-                        body = body.substr(start + 1, body.size() - (start + 1) - m.length());
-                    }
-                }
-                if (!body.empty()) {
-                    return pplx::task_from_result(make_optional<json>(json::parse(body)));
-                    // may throw invalid_argument due to invalid json
-                }
-                return pplx::task_from_result(optional<json>());
-            });
-
-    try {
-        return task.get();
-    } catch (invalid_argument &) {
-        return nullopt;
+    if (const auto response = request.get();
+        response.status_code >= 200 && response.status_code < 300) {
+        auto body = response.body;
+        if (smatch m; regex_search(body, m, regex("\\);?\\s*$"))) {
+            // is jsonp
+            if (const auto start = body.find("("); start != string::npos) {
+                body = body.substr(start + 1, body.size() - (start + 1) - m.length());
+            }
+        }
+        if (!body.empty()) {
+            try {
+                return json::parse(body);
+            } catch (invalid_argument &) {}
+        }
     }
+
+    return nullopt;
 }
 
 bool download_remote_file(const string &url, const string &local_path, const bool use_fake_ua) {
-    using concurrency::streams::container_buffer;
-
     auto succeeded = false;
+    const auto ansi_local_path = ansi(local_path);
 
-    auto ansi_local_path = ansi(local_path);
+    auto request = curl::Request(url, curl::Headers{
+        {"User-Agent", use_fake_ua ? FAKE_USER_AGENT : CQAPP_USER_AGENT},
+        {"Referer", url}
+    });
 
-    http_request request(http::methods::GET);
-    request.headers().add(L"User-Agent", s2ws(use_fake_ua ? FAKE_USER_AGENT : CQAPP_USER_AGENT));
-    request.headers().add(L"Referer", s2ws(url));
+    struct WriteDataWrapper {
+        size_t read_count;
+        ofstream file;
+    } write_data_wrapper{0, ofstream(ansi_local_path, ios::out | ios::binary)};
 
-    http_client(s2ws(url)).request(request).then([&](http_response response) {
-        if (ofstream f(ansi_local_path, ios::out | ios::binary); f.is_open()) {
-            auto length = response.headers().content_length();
-            decltype(length) read_count = 0;
-            auto body_stream = response.body();
+    request.write_data = &write_data_wrapper;
+    request.write_func = [](char *buf, size_t size, size_t count, void *data) -> size_t {
+        auto wrapper = static_cast<WriteDataWrapper *>(data);
+        wrapper->file.write(buf, count);
+        wrapper->read_count += size * count;
+        return size * count;
+    };
 
-            size_t last_read_count = 0;
-            do {
-                container_buffer<string> buffer;
-                body_stream.read(buffer, 8192).then([&](size_t count) {
-                    read_count += count;
-                    last_read_count = count;
-                }).wait();
-
-                f << buffer.collection().substr(0, last_read_count);
-            } while (last_read_count > 0);
-
-            if (length > 0 && read_count == length
-                || length == 0 && read_count > 0) {
-                succeeded = true;
-            }
-        }
-    }).wait();
+    if (const auto response = request.get();
+        response.status_code >= 200 && response.status_code < 300
+        && (response.content_length > 0 && write_data_wrapper.read_count == response.content_length
+            || response.content_length == 0 && write_data_wrapper.read_count > 0)) {
+        succeeded = true;
+    }
 
     if (!succeeded && fs::exists(ansi_local_path)) {
         fs::remove(ansi_local_path);

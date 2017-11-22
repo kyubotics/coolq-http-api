@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -28,11 +28,10 @@
     <ClCompile Include="src\helpers.cpp" />
     <ClCompile Include="src\service\hub_class.cpp" />
     <ClCompile Include="src\service\impl\http_service_class.cpp" />
-    <ClCompile Include="src\service\impl\ws_reverse_service_class.cpp" />
-    <ClCompile Include="src\service\impl\ws_service_class.cpp" />
     <ClCompile Include="src\update.cpp" />
     <ClCompile Include="src\utils\base64.cpp" />
     <ClCompile Include="src\utils\crypt.cpp" />
+    <ClCompile Include="src\utils\curl_wrapper.cpp" />
     <ClCompile Include="src\utils\md5.cpp" />
     <ClCompile Include="src\utils\pack_class.cpp" />
     <ClCompile Include="src\utils\params_class.cpp" />
@@ -57,28 +56,18 @@
     <ClInclude Include="src\service\hub_class.h" />
     <ClInclude Include="src\service\impl\http_service_class.h" />
     <ClInclude Include="src\service\impl\service_impl_common.h" />
-    <ClInclude Include="src\service\impl\ws_reverse_service_class.h" />
-    <ClInclude Include="src\service\impl\ws_service_class.h" />
     <ClInclude Include="src\service\pushable_interface.h" />
     <ClInclude Include="src\service\service_base_class.h" />
     <ClInclude Include="src\structs.h" />
     <ClInclude Include="src\update.h" />
     <ClInclude Include="src\utils\base64.h" />
     <ClInclude Include="src\utils\crypt.h" />
+    <ClInclude Include="src\utils\curl_wrapper.h" />
     <ClInclude Include="src\utils\encoding.h" />
     <ClInclude Include="src\utils\ini_reader.h" />
     <ClInclude Include="src\utils\md5.h" />
     <ClInclude Include="src\utils\pack_class.h" />
     <ClInclude Include="src\utils\params_class.h" />
-    <ClInclude Include="src\utils\rest_client.h" />
-    <ClInclude Include="src\web_server\client_ws.hpp" />
-    <ClInclude Include="src\web_server\client_wss.hpp" />
-    <ClInclude Include="src\web_server\crypto.hpp" />
-    <ClInclude Include="src\web_server\server_http.hpp" />
-    <ClInclude Include="src\web_server\server_ws.hpp" />
-    <ClInclude Include="src\web_server\server_wss.hpp" />
-    <ClInclude Include="src\web_server\status_code.hpp" />
-    <ClInclude Include="src\web_server\utility.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
@@ -89,8 +78,6 @@
     <ProjectGuid>{86D67665-C6C5-4140-B37F-73052B9C5126}</ProjectGuid>
     <RootNamespace>coolqhttpapi</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-    <VcpkgTriplet>x86-windows-static</VcpkgTriplet>
-    <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -143,14 +130,15 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;USE_STANDALONE_ASIO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>crypt32.lib;bcrypt.lib;winhttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcurl.lib;zlib.lib;Ws2_32.lib;Wldap32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>if exist ".\post_build.bat" (call ".\post_build.bat" Debug)</Command>
@@ -166,7 +154,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;USE_STANDALONE_ASIO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -175,7 +163,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>crypt32.lib;bcrypt.lib;winhttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcurl.lib;zlib.lib;Ws2_32.lib;Wldap32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Command>if exist ".\post_build.bat" (call ".\post_build.bat" Release)</Command>
