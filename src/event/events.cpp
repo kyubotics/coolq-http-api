@@ -196,6 +196,10 @@ int32_t event_group_msg(int32_t sub_type, int32_t msg_id, int64_t from_group, in
             sdk->send_group_msg(from_group, prefix + reply);
         }
 
+        if (params.get_bool("delete", false)) {
+            sdk->delete_msg(msg_id);
+        }
+
         if (params.get_bool("kick", false) && !is_anonymous) {
             sdk->set_group_kick(from_group, from_qq, false);
         }
