@@ -27,7 +27,7 @@
 #include <boost/filesystem.hpp>
 
 #include "helpers.h"
-#include "config_struct.h"
+#include "./config_struct.h"
 
 using namespace std;
 namespace fs = boost::filesystem;

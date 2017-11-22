@@ -186,7 +186,7 @@ int message_box(unsigned type, const string &text) {
                        type | MB_SETFOREGROUND | MB_TASKMODAL | MB_TOPMOST);
 }
 
-string hmac_sha1_hex(string key, string msg) {
+string hmac_sha1_hex(const string &key, const string &msg) {
     unsigned digest_len = 20;
     const auto digest = new unsigned char[digest_len];
     HMAC_CTX ctx;

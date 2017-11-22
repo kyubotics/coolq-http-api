@@ -3,8 +3,6 @@
 
 #include "app.h"
 
-#include <algorithm>
-
 #include "./impl/http_service_class.h"
 #include "./impl/ws_service_class.h"
 #include "./impl/ws_reverse_service_class.h"
