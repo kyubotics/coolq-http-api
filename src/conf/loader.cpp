@@ -52,7 +52,7 @@ optional<Config> load_configuration(const string &filepath) {
                     << "port=5700" << endl
                     << "use_http=yes" << endl
                     << "ws_host=0.0.0.0" << endl
-                    << "ws_port=5700" << endl
+                    << "ws_port=6700" << endl
                     << "use_ws=no" << endl
                     << "post_url=" << endl
                     << "access_token=" << endl
