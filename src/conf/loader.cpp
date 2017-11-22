@@ -22,12 +22,10 @@
 #include "app.h"
 
 #include <fstream>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ini_parser.hpp>
 #include <filesystem>
 
-#include "helpers.h"
 #include "./config_struct.h"
+#include "utils/ini_reader.h"
 
 using namespace std;
 namespace fs = experimental::filesystem;
@@ -74,46 +72,51 @@ optional<Config> load_configuration(const string &filepath) {
     try {
         const auto login_qq_str = to_string(sdk->get_login_qq());
 
-        boost::property_tree::ptree pt;
-        read_ini(ansi_filepath, pt);
+        INIReader reader(ansi_filepath);
+        if (const auto err = reader.ParseError(); err != 0) {
+            throw err;
+        }
 
-        static struct {
-            boost::optional<bool> get_value(const string &s) const {
-                auto b_opt = to_bool(s);
-                return b_opt ? boost::make_optional<bool>(b_opt.value()) : boost::none;
-            }
-        } bool_translator;
-
-        #define GET_CONFIG(key, type) \
-            auto __general_##key = pt.get<type>("general." #key, config.key); \
-            config.key = pt.get<type>(login_qq_str + "." #key, __general_##key); \
-            Log::d(TAG, #key "=" + to_string(config.key))
+        #define LOG(key) Log::d(TAG, #key "=" + to_string(config.key))
+        #define GET_STR_CONFIG(key) \
+            const auto __general_##key = reader.Get("general", #key, config.key); \
+            config.key = reader.Get(login_qq_str, #key, __general_##key); \
+            LOG(key)
+        #define GET_INT_CONFIG(key, type) \
+            const auto __general_##key = reader.Get("general", #key, to_string(config.key)); \
+            config.key = static_cast<type>(stoll(reader.Get(login_qq_str, #key, __general_##key))); \
+            LOG(key)
         #define GET_BOOL_CONFIG(key) \
-            auto __general_##key = pt.get<bool>("general." #key, config.key, bool_translator); \
-            config.key = pt.get<bool>(login_qq_str + "." #key, __general_##key, bool_translator); \
-            Log::d(TAG, #key "=" + to_string(config.key))
-        GET_CONFIG(host, string);
-        GET_CONFIG(port, unsigned short);
+            const auto __general_##key = reader.Get("general", #key, to_string(config.key)); \
+            config.key = to_bool(reader.Get(login_qq_str, #key, __general_##key)).value_or(config.key); \
+            LOG(key)
+
+        GET_STR_CONFIG(host);
+        GET_INT_CONFIG(port, unsigned short);
         GET_BOOL_CONFIG(use_http);
-        GET_CONFIG(ws_host, string);
-        GET_CONFIG(ws_port, unsigned short);
+        GET_STR_CONFIG(ws_host);
+        GET_INT_CONFIG(ws_port, unsigned short);
         GET_BOOL_CONFIG(use_ws);
-        GET_CONFIG(ws_reverse_api_url, string);
-        GET_CONFIG(ws_reverse_event_url, string);
-        GET_CONFIG(ws_reverse_reconnect_interval, unsigned long);
+        GET_STR_CONFIG(ws_reverse_api_url);
+        GET_STR_CONFIG(ws_reverse_event_url);
+        GET_INT_CONFIG(ws_reverse_reconnect_interval, unsigned long);
         GET_BOOL_CONFIG(use_ws_reverse);
-        GET_CONFIG(post_url, string);
-        GET_CONFIG(access_token, string);
-        GET_CONFIG(secret, string);
-        GET_CONFIG(post_message_format, string);
+        GET_STR_CONFIG(post_url);
+        GET_STR_CONFIG(access_token);
+        GET_STR_CONFIG(secret);
+        GET_STR_CONFIG(post_message_format);
         GET_BOOL_CONFIG(serve_data_files);
-        GET_CONFIG(update_source, string);
-        GET_CONFIG(update_channel, string);
+        GET_STR_CONFIG(update_source);
+        GET_STR_CONFIG(update_channel);
         GET_BOOL_CONFIG(auto_check_update);
         GET_BOOL_CONFIG(auto_perform_update);
-        GET_CONFIG(thread_pool_size, size_t);
-        GET_CONFIG(server_thread_pool_size, size_t);
-        #undef GET_CONFIG
+        GET_INT_CONFIG(thread_pool_size, size_t);
+        GET_INT_CONFIG(server_thread_pool_size, size_t);
+
+        #undef LOG
+        #undef GET_STR_CONFIG
+        #undef GET_INT_CONFIG
+        #undef GET_BOOL_CONFIG
 
         Log::i(TAG, u8"加载配置文件成功");
     } catch (...) {
