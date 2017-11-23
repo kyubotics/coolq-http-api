@@ -70,6 +70,9 @@
     <ClInclude Include="src\utils\md5.h" />
     <ClInclude Include="src\utils\pack_class.h" />
     <ClInclude Include="src\utils\params_class.h" />
+    <ClInclude Include="src\web_server\server_http.hpp" />
+    <ClInclude Include="src\web_server\status_code.hpp" />
+    <ClInclude Include="src\web_server\utility.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
@@ -132,7 +135,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;CURL_STATICLIB;USE_STANDALONE_ASIO;ASIO_STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -156,7 +159,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>false</EnableModules>
       <AdditionalIncludeDirectories>$(StlIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NO_ASYNCRTIMP;_NO_PPLXIMP;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;CURL_STATICLIB;USE_STANDALONE_ASIO;ASIO_STANDALONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>

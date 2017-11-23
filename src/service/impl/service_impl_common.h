@@ -4,54 +4,54 @@
 
 #include "api/api.h"
 #include "utils/filesystem.h"
-//#include "web_server/utility.hpp"
+#include "web_server/utility.hpp"
 
 namespace fs = filesystem;
 
 static const auto TAG = u8"API·þÎñ";
 
-///**
-// * Do authorization (check access token),
-// * should be called on incomming connection request (http server and websocket server)
-// */
-//static bool authorize(const SimpleWeb::CaseInsensitiveMultimap &headers, const json &query_args,
-//                      const std::function<void(SimpleWeb::StatusCode)> on_failed = nullptr) {
-//    if (config.access_token.empty()) {
-//        return true;
-//    }
-//
-//    std::string token_given;
-//    if (const auto headers_it = headers.find("Authorization");
-//        headers_it != headers.end()
-//        && (string_starts_with(headers_it->second, "Token ") || string_starts_with(headers_it->second, "token "))) {
-//        token_given = headers_it->second.substr(strlen("Token "));
-//    } else if (const auto args_it = query_args.find("access_token"); args_it != query_args.end()) {
-//        token_given = args_it->get<std::string>();
-//    }
-//
-//    if (token_given.empty()) {
-//        if (on_failed) {
-//            on_failed(SimpleWeb::StatusCode::client_error_unauthorized);
-//        }
-//        return false;
-//    }
-//
-//    if (token_given != config.access_token) {
-//        if (on_failed) {
-//            on_failed(SimpleWeb::StatusCode::client_error_forbidden);
-//        }
-//        return false;
-//    }
-//
-//    return true; // token_given == config.token
-//}
-//
-//static auto server_thread_pool_size() {
-//    return config.server_thread_pool_size > 0
-//               ? config.server_thread_pool_size
-//               : std::thread::hardware_concurrency() * 2 + 1;
-//}
-//
+/**
+ * Do authorization (check access token),
+ * should be called on incomming connection request (http server and websocket server)
+ */
+static bool authorize(const SimpleWeb::CaseInsensitiveMultimap &headers, const json &query_args,
+                      const std::function<void(SimpleWeb::StatusCode)> on_failed = nullptr) {
+    if (config.access_token.empty()) {
+        return true;
+    }
+
+    std::string token_given;
+    if (const auto headers_it = headers.find("Authorization");
+        headers_it != headers.end()
+        && (string_starts_with(headers_it->second, "Token ") || string_starts_with(headers_it->second, "token "))) {
+        token_given = headers_it->second.substr(strlen("Token "));
+    } else if (const auto args_it = query_args.find("access_token"); args_it != query_args.end()) {
+        token_given = args_it->get<std::string>();
+    }
+
+    if (token_given.empty()) {
+        if (on_failed) {
+            on_failed(SimpleWeb::StatusCode::client_error_unauthorized);
+        }
+        return false;
+    }
+
+    if (token_given != config.access_token) {
+        if (on_failed) {
+            on_failed(SimpleWeb::StatusCode::client_error_forbidden);
+        }
+        return false;
+    }
+
+    return true; // token_given == config.token
+}
+
+static auto server_thread_pool_size() {
+    return config.server_thread_pool_size > 0
+               ? config.server_thread_pool_size
+               : std::thread::hardware_concurrency() * 2 + 1;
+}
+
 ///**
 // * \brief Common "on_message" callback for websocket server's api endpoint and reverse websocket api client.
 // * \tparam WsT WsServer (websocket server /api/ endpoint) or WsClient (reverse websocket api client)

@@ -31,6 +31,9 @@
     <Filter Include="src\service\impl">
       <UniqueIdentifier>{98eb6e06-c259-42a2-a8c9-6b9ed5fd54ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\web_server">
+      <UniqueIdentifier>{6bd3ed5c-ac7b-4b15-83a3-f4268a8a2b17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\conf\loader.cpp">
@@ -205,6 +208,15 @@
     </ClInclude>
     <ClInclude Include="src\utils\filesystem.h">
       <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\server_http.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\status_code.hpp">
+      <Filter>src\web_server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\web_server\utility.hpp">
+      <Filter>src\web_server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

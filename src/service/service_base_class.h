@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common.h"
+
 class ServiceBase {
 public:
     ServiceBase() = default;

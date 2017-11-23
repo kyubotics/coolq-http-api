@@ -3,8 +3,6 @@
 
 #include "app.h"
 
-#include <algorithm>
-
 //#include "./impl/http_service_class.h"
 //#include "./impl/ws_service_class.h"
 //#include "./impl/ws_reverse_service_class.h"
@@ -17,20 +15,20 @@ void ServiceHub::start() {
 //        services_["http"] = service;
 //        service->start();
 //    }
-//
-//    if (config.use_ws) {
-//        auto service = make_shared<WsService>();
-//        services_["ws"] = service;
-//        pushable_services_.push_back(service);
-//        service->start();
-//    }
-//
-//    if (config.use_ws_reverse) {
-//        auto service = make_shared<WsReverseService>();
-//        services_["ws_reverse"] = service;
-//        pushable_services_.push_back(service);
-//        service->start();
-//    }
+
+    //    if (config.use_ws) {
+    //        auto service = make_shared<WsService>();
+    //        services_["ws"] = service;
+    //        pushable_services_.push_back(service);
+    //        service->start();
+    //    }
+    //
+    //    if (config.use_ws_reverse) {
+    //        auto service = make_shared<WsReverseService>();
+    //        services_["ws_reverse"] = service;
+    //        pushable_services_.push_back(service);
+    //        service->start();
+    //    }
 
     Log::d(TAG, u8"已开启 API 服务");
 }
