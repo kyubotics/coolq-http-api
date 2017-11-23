@@ -24,4 +24,5 @@ using namespace std;
 Application app; // always available while CoolQ is running
 optional<Sdk> sdk; // will be initialized in "Initialize" event
 Config config; // will be initiated in "Enable" event
+ServiceHub service_hub;
 shared_ptr<ctpl::thread_pool> pool; // will be initiated in "Enable" event

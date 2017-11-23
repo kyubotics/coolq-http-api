@@ -33,7 +33,7 @@ using namespace std;
 static const auto TAG = u8"…œ±®";
 
 #define ENSURE_POST_NEEDED \
-    if (config.post_url.empty() && !ServiceHub::instance().has_pushable_services()) { \
+    if (config.post_url.empty() && !service_hub.has_pushable_services()) { \
         return CQEVENT_IGNORE; \
     }
 
@@ -88,7 +88,7 @@ static int32_t post_event(const json &payload, const function<void(const Params 
         }
     }
 
-    ServiceHub::instance().push_event(payload);
+    service_hub.push_event(payload);
 
     return should_block ? CQEVENT_BLOCK : CQEVENT_IGNORE;
 }

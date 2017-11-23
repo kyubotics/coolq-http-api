@@ -407,7 +407,7 @@ HANDLER(get_status) {
         {"app_enabled", app.is_enabled()}
     };
 
-    for (const auto &entry : ServiceHub::instance().get_services()) {
+    for (const auto &entry : service_hub.get_services()) {
         result.data[entry.first + "_service_good"] = entry.second->good();
     }
 
@@ -418,7 +418,7 @@ HANDLER(get_status) {
     result.data["online"] = online;
 
     result.data["good"] = app.is_initialized()
-            && (app.is_enabled() && ServiceHub::instance().good()
+            && (app.is_enabled() && service_hub.good()
                 || !app.is_enabled())
             && online;
 }

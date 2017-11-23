@@ -37,6 +37,9 @@ extern std::optional<Sdk> sdk;
 #include "conf/config_struct.h"
 extern Config config;
 
+#include "service/hub_class.h"
+extern ServiceHub service_hub;
+
 #include "ctpl/ctpl_stl.h"
 extern std::shared_ptr<ctpl::thread_pool> pool;
 

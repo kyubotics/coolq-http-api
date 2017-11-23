@@ -60,11 +60,11 @@ void Application::enable() {
     Log::d(TAG, CQAPP_FULLNAME);
     Log::d(TAG, u8"开始初始化");
 
-    if (const auto c = load_configuration(sdk->directories().app() + "config.cfg")) {
-        config = c.value();
-    }
+//    if (const auto c = load_configuration(sdk->directories().app() + "config.cfg")) {
+//        config = c.value();
+//    }
 
-    ServiceHub::instance().start();
+    service_hub.start();
 
     if (!pool) {
         Log::d(TAG, u8"工作线程池创建成功");
@@ -84,7 +84,7 @@ void Application::disable() {
         return;
     }
 
-    ServiceHub::instance().stop();
+    service_hub.stop();
 
     if (pool) {
         pool->stop();

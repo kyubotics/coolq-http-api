@@ -7,11 +7,6 @@
 
 class ServiceHub final : public ServiceBase, public IPushable {
 public:
-    static ServiceHub &instance() {
-        static ServiceHub hub;
-        return hub;
-    }
-
     void start() override;
     void stop() override;
     bool good() const override;
