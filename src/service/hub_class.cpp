@@ -3,18 +3,18 @@
 
 #include "app.h"
 
-//#include "./impl/http_service_class.h"
+#include "./impl/http_service_class.h"
 //#include "./impl/ws_service_class.h"
 //#include "./impl/ws_reverse_service_class.h"
 
 using namespace std;
 
 void ServiceHub::start() {
-//    if (config.use_http) {
-//        auto service = make_shared<HttpService>();
-//        services_["http"] = service;
-//        service->start();
-//    }
+    if (config.use_http) {
+        auto service = make_shared<HttpService>();
+        services_["http"] = service;
+        service->start();
+    }
 
     //    if (config.use_ws) {
     //        auto service = make_shared<WsService>();
