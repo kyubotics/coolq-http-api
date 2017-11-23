@@ -19,6 +19,8 @@
 
 #include "./curl_wrapper.h"
 
+#include "app.h"
+
 using namespace std;
 
 curl::Response curl::Request::send() {

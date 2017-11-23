@@ -32,6 +32,7 @@
     <ClCompile Include="src\utils\base64.cpp" />
     <ClCompile Include="src\utils\crypt.cpp" />
     <ClCompile Include="src\utils\curl_wrapper.cpp" />
+    <ClCompile Include="src\utils\filesystem.cpp" />
     <ClCompile Include="src\utils\md5.cpp" />
     <ClCompile Include="src\utils\pack_class.cpp" />
     <ClCompile Include="src\utils\params_class.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="src\utils\crypt.h" />
     <ClInclude Include="src\utils\curl_wrapper.h" />
     <ClInclude Include="src\utils\encoding.h" />
+    <ClInclude Include="src\utils\filesystem.h" />
     <ClInclude Include="src\utils\ini_reader.h" />
     <ClInclude Include="src\utils\md5.h" />
     <ClInclude Include="src\utils\pack_class.h" />

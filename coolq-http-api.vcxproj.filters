@@ -105,6 +105,9 @@
     <ClCompile Include="src\utils\curl_wrapper.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\filesystem.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
@@ -198,6 +201,9 @@
       <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\curl_wrapper.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\filesystem.h">
       <Filter>src\utils</Filter>
     </ClInclude>
   </ItemGroup>

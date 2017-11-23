@@ -21,12 +21,11 @@
 
 #include "app.h"
 
-#include <filesystem>
-
 #include "api/api.h"
+#include "utils/filesystem.h"
 
 using namespace std;
-namespace fs = experimental::filesystem;
+namespace fs = filesystem;
 
 static string update_source() {
     if (string_ends_with(config.update_source, "/")) {
@@ -89,7 +88,7 @@ bool perform_update(const string &version, const int build_number) {
 
     const auto local_cpk_path = sdk->directories().coolq() + "app\\" CQAPP_ID ".cpk";
     try {
-        copy_file(ansi(tmp_path), ansi(local_cpk_path), fs::copy_options::overwrite_existing);
+        fs::copy_file(ansi(tmp_path), ansi(local_cpk_path), true);
         fs::remove(ansi(tmp_path));
         return true;
     } catch (fs::filesystem_error &) {

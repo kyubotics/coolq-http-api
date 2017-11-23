@@ -60,9 +60,9 @@ void Application::enable() {
     Log::d(TAG, CQAPP_FULLNAME);
     Log::d(TAG, u8"开始初始化");
 
-//    if (const auto c = load_configuration(sdk->directories().app() + "config.cfg")) {
-//        config = c.value();
-//    }
+    if (const auto c = load_configuration(sdk->directories().app() + "config.cfg")) {
+        config = c.value();
+    }
 
     service_hub.start();
 

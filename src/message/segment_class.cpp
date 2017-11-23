@@ -21,14 +21,14 @@
 
 #include <ctime>
 #include <regex>
-#include <filesystem>
 #include <fstream>
 
 #include "./message_class.h"
 #include "utils/crypt.h"
+#include "utils/filesystem.h"
 
 using namespace std;
-namespace fs = experimental::filesystem;
+namespace fs = filesystem;
 
 static Message::Segment enhance_send_file(const Message::Segment &raw, const string &data_dir);
 static Message::Segment enhance_receive_image(const Message::Segment &raw);
@@ -64,17 +64,15 @@ static Message::Segment enhance_send_file(const Message::Segment &raw, const str
 
     if (string_starts_with(file, "http://") || string_starts_with(file, "https://")) {
         const auto &url = file;
-        const auto ws_url = s2ws(url);
         const auto filename = md5_hash_hex(url) + ".tmp"; // despite of the format, we store all images as ".tmp"
         const auto filepath = sdk->directories().coolq() + "data\\" + data_dir + "\\" + filename;
-        const auto ws_filepath = s2ws(filepath);
 
         // check if to use cache
         auto use_cache = true; // use cache by default
         if (segment.data.find("cache") != segment.data.end() && segment.data["cache"] == "0") {
             use_cache = false;
         }
-        const auto cached = fs::is_regular_file(ws_filepath);
+        const auto cached = fs::is_regular_file(ansi(filepath));
 
         if (use_cache && cached /* use cache */
             || download_remote_file(url, filepath, true) /* or perform download */) {
@@ -86,7 +84,7 @@ static Message::Segment enhance_send_file(const Message::Segment &raw, const str
 
         const auto new_filepath = sdk->directories().coolq() + "data\\" + data_dir + "\\" + new_filename;
         try {
-            copy_file(ansi(path), ansi(new_filepath), fs::copy_options::overwrite_existing);
+            fs::copy_file(ansi(path), ansi(new_filepath), true);
             segment.data["file"] = new_filename;
         } catch (fs::filesystem_error &) {
             // copy failed

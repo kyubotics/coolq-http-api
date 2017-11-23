@@ -46,12 +46,18 @@ static json http_post(const json &json_body) {
     }
 
     auto succeeded = false;
-    if (const auto response = request.post();
-        response.status_code >= 200 && response.status_code < 300) {
-        succeeded = true;
+    const auto response = request.post();
+    if (response.status_code == 0) {
+        Log::d(TAG, u8"HTTP 上报地址 " + config.post_url + u8" 无法访问");
+    } else {
+        if (response.status_code >= 200 && response.status_code < 300) {
+            succeeded = true;
+        }
         Log::d(TAG, u8"通过 HTTP 上报数据到 " + config.post_url + (succeeded ? u8" 成功" : u8" 失败")
                + u8"，状态码：" + to_string(response.status_code));
+    }
 
+    if (succeeded) {
         const auto resp_body = response.body;
         if (!resp_body.empty()) {
             Log::d(TAG, u8"收到响应 " + resp_body);
