@@ -34,8 +34,13 @@ bool to_bool(const std::string &str, const bool default_val);
 std::optional<bool> to_bool(const std::string &str);
 
 namespace std {
-    string to_string(const string &val);
-    string to_string(bool val);
+    inline string to_string(const string &val) {
+        return val;
+    }
+
+    inline string to_string(const bool val) {
+        return val ? "true" : "false";
+    }
 }
 
 template <typename T>

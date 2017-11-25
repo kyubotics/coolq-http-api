@@ -25,6 +25,7 @@
 #include <regex>
 #include <openssl/hmac.h>
 #include <boost/filesystem.hpp>
+#include <boost/compute/detail/lru_cache.hpp>
 #include <cpprest/filestream.h>
 
 #include "utils/rest_client.h"
@@ -50,11 +51,11 @@ void string_replace(string &str, const string &search, const string &replace) {
 }
 
 string ws2s(const wstring &ws) {
-    return std::wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().to_bytes(ws);
+    return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().to_bytes(ws);
 }
 
 wstring s2ws(const string &s) {
-    return std::wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s);
+    return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s);
 }
 
 string ansi(const string &s) {
@@ -75,16 +76,6 @@ optional<bool> to_bool(const string &str) {
         return false;
     }
     return nullopt;
-}
-
-namespace std {
-    string to_string(const string &val) {
-        return val;
-    }
-
-    string to_string(const bool val) {
-        return val ? "true" : "false";
-    }
 }
 
 #define FAKE_USER_AGENT "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
@@ -255,18 +246,34 @@ static const uint32_t EMOJI_RANGES_5[][2] = {
     {0x1F95F, 0x1F96B},{0x1F980, 0x1F984},{0x1F985, 0x1F991},{0x1F992, 0x1F997},{0x1F9C0, 0x1F9C0},{0x1F9D0, 0x1F9E6}
 };
 
+static boost::compute::detail::lru_cache<uint32_t, bool> emoji_cache(200);
+
 bool is_emoji(const uint32_t codepoint) {
+    if (codepoint >= 0x203C && codepoint <= 0x3299
+        || codepoint >= 0x1F004 && codepoint <= 0x1F9E6) {
+        // it's likely an emoji
+        if (emoji_cache.get(codepoint).value_or(false)) {
+            return true;
+        }
+    } else {
+        // it's impossible to be an emoji
+        return false;
+    }
+
+    auto yes = false;
+
     #define CHECK_RANGE(Start, End, RangeMap) \
         if (codepoint >= Start && codepoint <= End) { \
             for (const auto &pair : RangeMap) { \
                 if (codepoint < pair[0]) { \
-                    return false; \
+                    break; \
                 } \
                 if (codepoint <= pair[1]) { \
-                    return true; \
+                    yes = true; \
+                    break; \
                 } \
             } \
-            return false; \
+            goto FINAL; \
         }
 
     CHECK_RANGE(0x203C, 0x26AB, EMOJI_RANGES_1)
@@ -277,7 +284,9 @@ bool is_emoji(const uint32_t codepoint) {
 
     #undef CHECK_RANGE
 
-    return false;
+FINAL:
+    emoji_cache.insert(codepoint, yes);
+    return yes;
 }
 
 string string_to_coolq(const string &str) {
@@ -287,7 +296,8 @@ string string_to_coolq(const string &str) {
     wstring_convert<codecvt_utf8<uint32_t>, uint32_t> uint32_conv;
     auto uint32_str = uint32_conv.from_bytes(str);
 
-    auto append_text = [&](decltype(uint32_str.cbegin()) begin, decltype(uint32_str.cbegin()) end) {
+    auto append_text = [&](const decltype(uint32_str.cbegin()) &begin,
+                           const decltype(uint32_str.cbegin()) &end) {
         decltype(uint32_str) uint32_part_str(begin, end);
         auto utf8_part_str = uint32_conv.to_bytes(uint32_part_str);
         processed_str += utf8_part_str;
@@ -309,7 +319,7 @@ string string_to_coolq(const string &str) {
 }
 
 string string_from_coolq(const string &str) {
-    // handle CoolQ event and data
+    // handle CoolQ event or data
     auto utf8_str = string_decode(str, Encodings::ANSI);
     string processed_str;
 

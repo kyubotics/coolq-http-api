@@ -28,14 +28,14 @@
 
 using bytes = std::string;
 
-static auto multibyte_to_widechar(const int code_page, const char *multibyte_str) {
+static std::shared_ptr<wchar_t> multibyte_to_widechar(const int code_page, const char *multibyte_str) {
     const auto len = MultiByteToWideChar(code_page, 0, multibyte_str, -1, nullptr, 0);
     auto c_wstr_sptr = make_shared_array<wchar_t>(len + 1);
     MultiByteToWideChar(code_page, 0, multibyte_str, -1, c_wstr_sptr.get(), len);
     return c_wstr_sptr;
 }
 
-static auto widechar_to_multibyte(const int code_page, const wchar_t *widechar_str) {
+static std::shared_ptr<char> widechar_to_multibyte(const int code_page, const wchar_t *widechar_str) {
     const auto len = WideCharToMultiByte(code_page, 0, widechar_str, -1, nullptr, 0, nullptr, nullptr);
     auto c_str_sptr = make_shared_array<char>(len + 1);
     WideCharToMultiByte(code_page, 0, widechar_str, -1, c_str_sptr.get(), len, nullptr, nullptr);
@@ -66,7 +66,7 @@ enum class Encodings {
  */
 static bytes string_encode(const std::string &s, const Encodings encoding = Encodings::UTF8) {
     const auto ws = s2ws(s);
-    return bytes(widechar_to_multibyte(static_cast<int>(encoding), ws.c_str()).get());
+    return widechar_to_multibyte(static_cast<int>(encoding), ws.c_str()).get();
 }
 
 /**
@@ -92,6 +92,5 @@ static std::string string_decode(const bytes &b, Encodings encoding = Encodings:
         encoding = Encodings::GB18030;
     }
 
-    const auto ws = std::wstring(multibyte_to_widechar(static_cast<int>(encoding), b.c_str()).get());
-    return ws2s(ws);
+    return ws2s(std::wstring(multibyte_to_widechar(static_cast<int>(encoding), b.c_str()).get()));
 }
