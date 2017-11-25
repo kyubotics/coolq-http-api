@@ -29,7 +29,7 @@ class BytesNotEnoughError : std::exception {
 class Pack {
 public:
     Pack() : bytes_(""), curr_(0) {}
-    Pack(const bytes &b) : bytes_(b), curr_(0) {}
+    explicit Pack(const bytes &b) : bytes_(b), curr_(0) {}
 
     size_t size() const { return bytes_.size() - curr_; }
     bool empty() const { return size() == 0; }
@@ -37,7 +37,7 @@ public:
     template <typename IntType>
     IntType pop_int() {
         constexpr auto size = sizeof(IntType);
-        _check_enough(size);
+        check_enough(size);
 
         auto s = this->bytes_.substr(this->curr_, size);
         this->curr_ += size;
@@ -57,5 +57,5 @@ private:
     bytes bytes_;
     size_t curr_;
 
-    void _check_enough(const size_t needed) const;
+    void check_enough(const size_t needed) const;
 };

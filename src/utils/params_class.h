@@ -25,8 +25,8 @@
 class Params {
 public:
     Params() : params_(nullptr) {}
-    Params(const json &j) : params_(j) {}
-    Params(const json &&j) : params_(j) {}
+    explicit Params(const json &j) : params_(j) {}
+    explicit Params(const json &&j) : params_(j) {}
 
     /**
      * Return std::nullopt if the key does not exist.

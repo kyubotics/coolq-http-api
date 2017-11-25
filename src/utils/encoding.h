@@ -42,37 +42,39 @@ static std::shared_ptr<char> widechar_to_multibyte(const int code_page, const wc
     return c_str_sptr;
 }
 
-enum class Encodings {
+using Encoding = UINT;
+
+struct Encodings {
     // https://msdn.microsoft.com/en-us/library/windows/desktop/dd317756.aspx
 
-    ANSI = CP_ACP,
-    UTF7 = CP_UTF7,
-    UTF8 = CP_UTF8,
-    SHIFT_JIS = 932,
-    GB2312 = 936,
-    KS_C_5601_1987 = 949,
-    BIG5 = 950,
-    JOHAB = 1361,
-    EUC_JP = 51932,
-    EUC_CN = 51936,
-    EUC_KR = 51949,
-    EUC_TW = 51950,
-    GB18030 = 54936,
-    GBK = GB18030,
+    static const Encoding ANSI = CP_ACP;
+    static const Encoding UTF7 = CP_UTF7;
+    static const Encoding UTF8 = CP_UTF8;
+    static const Encoding SHIFT_JIS = 932;
+    static const Encoding GB2312 = 936;
+    static const Encoding KS_C_5601_1987 = 949;
+    static const Encoding BIG5 = 950;
+    static const Encoding JOHAB = 1361;
+    static const Encoding EUC_JP = 51932;
+    static const Encoding EUC_CN = 51936;
+    static const Encoding EUC_KR = 51949;
+    static const Encoding EUC_TW = 51950;
+    static const Encoding GB18030 = 54936;
+    static const Encoding GBK = GB18030;
 };
 
 /**
  * Encode a UTF-8 string into bytes, using the encoding specified.
  */
-static bytes string_encode(const std::string &s, const Encodings encoding = Encodings::UTF8) {
+static bytes string_encode(const std::string &s, const Encoding encoding = Encodings::UTF8) {
     const auto ws = s2ws(s);
-    return widechar_to_multibyte(static_cast<int>(encoding), ws.c_str()).get();
+    return widechar_to_multibyte(encoding, ws.c_str()).get();
 }
 
 /**
  * Decode bytes into a UTF-8 string, using the encoding specified.
  */
-static std::string string_decode(const bytes &b, Encodings encoding = Encodings::UTF8) {
+static std::string string_decode(const bytes &b, Encoding encoding = Encodings::UTF8) {
     // check if in WinNT (not Wine)
     static auto in_nt = false;
 
@@ -87,10 +89,10 @@ static std::string string_decode(const bytes &b, Encodings encoding = Encodings:
     }
 
     // special case for Windows NT
-    if (in_nt && encoding == Encodings::ANSI && GetACP() == static_cast<unsigned>(Encodings::GB2312)) {
+    if (in_nt && encoding == Encodings::ANSI && GetACP() == Encodings::GB2312) {
         // do encoding rise
         encoding = Encodings::GB18030;
     }
 
-    return ws2s(std::wstring(multibyte_to_widechar(static_cast<int>(encoding), b.c_str()).get()));
+    return ws2s(std::wstring(multibyte_to_widechar(encoding, b.c_str()).get()));
 }

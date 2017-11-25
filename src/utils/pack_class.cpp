@@ -21,7 +21,7 @@
 
 using namespace std;
 
-void Pack::_check_enough(const size_t needed) const {
+void Pack::check_enough(const size_t needed) const {
     if (this->size() < needed) {
         throw BytesNotEnoughError(
             (string("there aren't enough bytes to pop (") + to_string(needed) + " bytes needed)").c_str());
@@ -33,7 +33,7 @@ string Pack::pop_string() {
     if (len == 0) {
         return string();
     }
-    _check_enough(len);
+    check_enough(len);
     auto result = string_from_coolq(this->bytes_.substr(this->curr_, len));
     this->curr_ += len;
     return result;
