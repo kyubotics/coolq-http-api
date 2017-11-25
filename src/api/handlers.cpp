@@ -44,10 +44,10 @@ static bool __add_api_handler(const string &name, ApiHandler handler) {
     static bool __dummy_##handler_name = __add_api_handler(#handler_name, __##handler_name); \
     static void __##handler_name(const Params &params, ApiResult &result)
 
-static void handle_async(const Params &params, ApiResult &result, ApiHandler handler) {
+static void handle_async(const ApiHandler handler, const Params &params, ApiResult &result) {
     static const auto TAG = u8"APIÒì²½";
     if (pool) {
-        pool->push([params, result, handler](int) {
+        pool->push([handler, params, result](int) {
             // copy "params" and "result" in the async task
             auto async_params = params;
             auto async_result = result;
@@ -81,7 +81,7 @@ HANDLER(send_private_msg) {
 }
 
 HANDLER(send_private_msg_async) {
-    handle_async(params, result, __send_private_msg);
+    handle_async(__send_private_msg, params, result);
 }
 
 HANDLER(send_group_msg) {
@@ -97,7 +97,7 @@ HANDLER(send_group_msg) {
 }
 
 HANDLER(send_group_msg_async) {
-    handle_async(params, result, __send_group_msg);
+    handle_async(__send_group_msg, params, result);
 }
 
 HANDLER(send_discuss_msg) {
@@ -113,7 +113,7 @@ HANDLER(send_discuss_msg) {
 }
 
 HANDLER(send_discuss_msg_async) {
-    handle_async(params, result, __send_discuss_msg);
+    handle_async(__send_discuss_msg, params, result);
 }
 
 HANDLER(send_msg) {
@@ -128,7 +128,7 @@ HANDLER(send_msg) {
 }
 
 HANDLER(send_msg_async) {
-    handle_async(params, result, __send_msg);
+    handle_async(__send_msg, params, result);
 }
 
 HANDLER(delete_msg) {

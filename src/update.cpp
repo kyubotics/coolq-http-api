@@ -99,8 +99,7 @@ bool perform_update(const string &version, const int build_number) {
 }
 
 static void restart_coolq() {
-    ApiResult tmp_result;
-    invoke_api("set_restart", Params(), tmp_result);
+    invoke_api("set_restart");
 }
 
 void check_update(const bool is_automatically) {

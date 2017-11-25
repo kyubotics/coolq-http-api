@@ -65,7 +65,7 @@ static void ws_api_on_message(std::shared_ptr<typename WsT::Connection> connecti
 
     ApiResult result;
 
-    auto send_result = [&]() {
+    auto send_result = [&connection, &result]() {
         auto resp_body = result.json().dump();
         Log::d(TAG, u8"响应数据已准备完毕：" + resp_body);
         auto send_stream = std::make_shared<typename WsT::SendStream>();
@@ -93,7 +93,7 @@ static void ws_api_on_message(std::shared_ptr<typename WsT::Connection> connecti
     if (payload.find("params") != payload.end() && payload["params"].is_object()) {
         json_params = payload["params"];
     }
-    const Params params(json_params);
+    const Params params(move(json_params));
 
     try {
         invoke_api(action, params, result);

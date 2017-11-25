@@ -80,7 +80,7 @@ void HttpService::init() {
 
                     Log::d(TAG, u8"API 处理函数 " + handler_kv.first + u8" 开始处理请求");
                     ApiResult result;
-                    Params params(json_params);
+                    Params params(move(json_params));
                     handler_kv.second(params, result); // call the real handler
 
                     decltype(request->header) headers{

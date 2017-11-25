@@ -20,11 +20,12 @@
 #include "app.h"
 
 #include "update.h"
+#include "api/api.h"
 
 using namespace std;
 
 /**
- * Menu: Reload.
+ * Menu: Restart.
  */
 CQEVENT(int32_t, __menu_restart, 0)() {
     app.restart_async();
@@ -38,5 +39,13 @@ CQEVENT(int32_t, __menu_check_update, 0)() {
     pool->push([](int) {
         check_update(false);
     });
+    return 0;
+}
+
+/**
+ * Menu: Restart CoolQ.
+ */
+CQEVENT(int32_t, __menu_restart_coolq, 0)() {
+    invoke_api("set_restart");
     return 0;
 }

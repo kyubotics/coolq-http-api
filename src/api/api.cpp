@@ -11,3 +11,8 @@ void invoke_api(const string &action, const Params &params, ApiResult &result) {
         throw invalid_argument("there is no api handler matching the given \"action\"");
     }
 }
+
+void invoke_api(const string &action, const Params &params) {
+    static ApiResult result;
+    invoke_api(action, params, result);
+}

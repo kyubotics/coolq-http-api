@@ -42,38 +42,37 @@ static auto widechar_to_multibyte(const int code_page, const wchar_t *widechar_s
     return c_str_sptr;
 }
 
-struct Encodings {
+enum class Encodings {
     // https://msdn.microsoft.com/en-us/library/windows/desktop/dd317756.aspx
-    enum {
-        ANSI = CP_ACP,
-        UTF7 = CP_UTF7,
-        UTF8 = CP_UTF8,
-        SHIFT_JIS = 932,
-        GB2312 = 936,
-        KS_C_5601_1987 = 949,
-        BIG5 = 950,
-        JOHAB = 1361,
-        EUC_JP = 51932,
-        EUC_CN = 51936,
-        EUC_KR = 51949,
-        EUC_TW = 51950,
-        GB18030 = 54936,
-        GBK = GB18030,
-    };
+
+    ANSI = CP_ACP,
+    UTF7 = CP_UTF7,
+    UTF8 = CP_UTF8,
+    SHIFT_JIS = 932,
+    GB2312 = 936,
+    KS_C_5601_1987 = 949,
+    BIG5 = 950,
+    JOHAB = 1361,
+    EUC_JP = 51932,
+    EUC_CN = 51936,
+    EUC_KR = 51949,
+    EUC_TW = 51950,
+    GB18030 = 54936,
+    GBK = GB18030,
 };
 
 /**
  * Encode a UTF-8 string into bytes, using the encoding specified.
  */
-static bytes string_encode(const std::string &s, int encoding = Encodings::UTF8) {
-    auto ws = s2ws(s);
-    return bytes(widechar_to_multibyte(encoding, ws.c_str()).get());
+static bytes string_encode(const std::string &s, const Encodings encoding = Encodings::UTF8) {
+    const auto ws = s2ws(s);
+    return bytes(widechar_to_multibyte(static_cast<int>(encoding), ws.c_str()).get());
 }
 
 /**
  * Decode bytes into a UTF-8 string, using the encoding specified.
  */
-static std::string string_decode(const bytes &b, int encoding = Encodings::UTF8) {
+static std::string string_decode(const bytes &b, Encodings encoding = Encodings::UTF8) {
     // check if in WinNT (not Wine)
     static auto in_nt = false;
 
@@ -88,11 +87,11 @@ static std::string string_decode(const bytes &b, int encoding = Encodings::UTF8)
     }
 
     // special case for Windows NT
-    if (in_nt && encoding == Encodings::ANSI && GetACP() == Encodings::GB2312) {
+    if (in_nt && encoding == Encodings::ANSI && GetACP() == static_cast<unsigned>(Encodings::GB2312)) {
         // do encoding rise
         encoding = Encodings::GB18030;
     }
 
-    auto ws = std::wstring(multibyte_to_widechar(encoding, b.c_str()).get());
+    const auto ws = std::wstring(multibyte_to_widechar(static_cast<int>(encoding), b.c_str()).get());
     return ws2s(ws);
 }

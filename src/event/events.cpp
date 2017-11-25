@@ -41,7 +41,7 @@ static pplx::task<json> http_post(const json &json_body) {
     request.headers().add(L"User-Agent", CQAPP_USER_AGENT);
     request.headers().add(L"Content-Type", L"application/json; charset=UTF-8");
     const auto body = json_body.dump();
-    request.set_body(body);
+    request.set_body(json_body.dump());
     if (!config.secret.empty()) {
         request.headers().add(L"X-Signature", s2ws("sha1=" + hmac_sha1_hex(config.secret, body)));
     }
@@ -82,10 +82,7 @@ static int32_t post_event(const json &payload, const function<void(const Params 
         Log::d(TAG, u8"开始通过 HTTP 上报事件");
         try {
             if (const auto resp_payload = http_post(payload).get(); resp_payload.is_object()) {
-                Params params;
-                if (resp_payload.is_object()) {
-                    params = Params(resp_payload);
-                }
+                Params params(move(resp_payload));
 
                 // custom handler
                 if (response_handler) response_handler(params);
