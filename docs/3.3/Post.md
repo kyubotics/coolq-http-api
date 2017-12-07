@@ -77,10 +77,10 @@ X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2
 
 #### 响应数据
 
-| 字段名 | 数据类型 | 允许的值 | 说明 |
-| ----- | ------- | ------ | ---- |
-| `reply` | string/array | - | 要回复的内容 |
-| `auto_escape` | boolean | `true`, `false` | 消息内容是否作为纯文本发送（即不解析 CQ 码），`message` 数据类型为 `array` 时无效 |
+| 字段名 | 数据类型 | 说明 | 默认情况 |
+| ----- | ------- | --- | ------- |
+| `reply` | string/array | 要回复的内容 | 不回复 |
+| `auto_escape` | boolean | 消息内容是否作为纯文本发送（即不解析 CQ 码），`message` 数据类型为 `array` 时无效 | 不转义 |
 
 ### 群消息
 
@@ -101,14 +101,14 @@ X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2
 
 #### 响应数据
 
-| 字段名 | 数据类型 | 允许的值 | 说明 |
-| ----- | ------- | ------- | --- |
-| `reply` | string/array | - | 要回复的内容 |
-| `auto_escape` | boolean | `true`, `false` | 消息内容是否作为纯文本发送（即不解析 CQ 码），`message` 数据类型为 `array` 时无效 |
-| `at_sender` | boolean | `true`, `false` | 是否要在回复开头 at 发送者（自动添加），默认为 `true`，发送者是匿名用户时无效 |
-| `delete` | boolean | `true`, `false` | （v3.3.1 新增）撤回该条消息 |
-| `kick` | boolean | `true`, `false` | 把发送者踢出群组（需要登录号权限足够），**不拒绝**此人后续加群请求，默认为 `false`，发送者是匿名用户时无效 |
-| `ban` | boolean | `true`, `false` | 把发送者禁言 30 分钟（需要登录号权限足够），对匿名用户也有效，不支持指定禁言时长（如需指定，请调用相应 API），默认为 `false` |
+| 字段名 | 数据类型 | 说明 | 默认情况 |
+| ----- | ------- | --- | ------- |
+| `reply` | string/array | 要回复的内容 | 不回复 |
+| `auto_escape` | boolean | 消息内容是否作为纯文本发送（即不解析 CQ 码），`message` 数据类型为 `array` 时无效 | 不转义 |
+| `at_sender` | boolean | 是否要在回复开头 at 发送者（自动添加），发送者是匿名用户时无效 | at 发送者 |
+| `delete` | boolean | （v3.3.1 新增）撤回该条消息 | 不撤回 |
+| `kick` | boolean | 把发送者踢出群组（需要登录号权限足够），**不拒绝**此人后续加群请求，发送者是匿名用户时无效 | 不踢 |
+| `ban` | boolean | 把发送者禁言 30 分钟（需要登录号权限足够），对匿名用户也有效，不支持指定禁言时长（如需指定，请调用相应 API） | 不禁言 |
 
 ### 讨论组消息
 
@@ -126,11 +126,11 @@ X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2
 
 #### 响应数据
 
-| 字段名 | 数据类型 | 允许的值 | 说明 |
-| ----- | ------- | ------- | --- |
-| `reply` | string/array  | - | 要回复的内容 |
-| `auto_escape` | boolean | `true`, `false` | 消息内容是否作为纯文本发送（即不解析 CQ 码），`message` 数据类型为 `array` 时无效 |
-| `at_sender` | boolean | `true`, `false` | 是否要在回复开头 at 发送者（自动添加），默认为 `true` |
+| 字段名 | 数据类型 | 说明 | 默认情况 |
+| ----- | ------- | --- | ------- |
+| `reply` | string/array | 要回复的内容 | 不回复 |
+| `auto_escape` | boolean | 消息内容是否作为纯文本发送（即不解析 CQ 码），`message` 数据类型为 `array` 时无效 | 不转义 |
+| `at_sender` | boolean | 是否要在回复开头 at 发送者（自动添加） | at 发送者 |
 
 ### 群文件上传
 
@@ -217,10 +217,10 @@ X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2
 
 #### 响应数据
 
-| 字段名 | 数据类型 | 允许的值 | 说明 |
-| ----- | ------- | ------- | --- |
-| `approve` | boolean | `true`, `false` | 是否同意请求 |
-| `remark` | string  | - | 添加后的好友备注（仅在同意时有效） |
+| 字段名 | 数据类型 | 说明 | 默认情况 |
+| ----- | ------- | --- | ------- |
+| `approve` | boolean | 是否同意请求 | 不处理 |
+| `remark` | string  | 添加后的好友备注（仅在同意时有效） | 无备注 |
 
 ### 加群请求／邀请
 
@@ -238,7 +238,7 @@ X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2
 
 #### 响应数据
 
-| 字段名 | 数据类型 | 允许的值 | 说明 |
-| ----- | ------- | ------- | --- |
-| `approve` | boolean | `true`, `false` | 是否同意请求／邀请 |
-| `reason` | string | - | 拒绝理由（仅在拒绝时有效） |
+| 字段名 | 数据类型 | 说明 | 默认情况 |
+| ----- | ------- | --- | ------- |
+| `approve` | boolean | 是否同意请求／邀请 | 不处理 |
+| `reason` | string | 拒绝理由（仅在拒绝时有效） | 无理由 |
