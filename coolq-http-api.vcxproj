@@ -32,6 +32,7 @@
     <ClCompile Include="src\service\impl\ws_service_class.cpp" />
     <ClCompile Include="src\update.cpp" />
     <ClCompile Include="src\utils\base64.cpp" />
+    <ClCompile Include="src\utils\encoding.cpp" />
     <ClCompile Include="src\utils\pack_class.cpp" />
     <ClCompile Include="src\utils\params_class.cpp" />
   </ItemGroup>

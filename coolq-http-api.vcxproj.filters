@@ -105,6 +105,9 @@
     <ClCompile Include="src\api\api.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\encoding.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
