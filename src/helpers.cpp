@@ -289,6 +289,36 @@ FINAL:
     return yes;
 }
 
+static bool is_in_winnt() {
+    // check if in WinNT (not Wine)
+    static optional<bool> winnt;
+
+    if (!winnt.has_value()) {
+        if (const auto hntdll = GetModuleHandleW(L"ntdll.dll")) {
+            if (const auto pwine_get_version = GetProcAddress(hntdll, "wine_get_version");
+                !pwine_get_version) {
+                // has ntdll.dll but not Wine, we assume it is NT
+                winnt = true;
+            } else {
+                winnt = false;
+            }
+        } else {
+            winnt = false;
+        }
+    }
+
+    return winnt.value();
+}
+
+static Encoding get_coolq_encoding() {
+    // special case for Windows NT
+    if (is_in_winnt() && GetACP() == Encodings::GB2312) {
+        // do encoding rise
+        return Encodings::GB18030;
+    }
+    return Encodings::ANSI;
+}
+
 string string_to_coolq(const string &str) {
     // call CoolQ API
     string processed_str;
@@ -315,12 +345,12 @@ string string_to_coolq(const string &str) {
     }
     append_text(last_it, uint32_str.cend());
 
-    return string_encode(processed_str, Encodings::ANSI);
+    return string_encode(processed_str, get_coolq_encoding());
 }
 
 string string_from_coolq(const string &str) {
     // handle CoolQ event or data
-    auto utf8_str = string_decode(str, Encodings::ANSI);
+    auto utf8_str = string_decode(str, get_coolq_encoding());
     string processed_str;
 
     const regex r(R"(\[CQ:emoji,\s*id=(\d+)\])");

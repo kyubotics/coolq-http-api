@@ -67,32 +67,12 @@ struct Encodings {
  * Encode a UTF-8 string into bytes, using the encoding specified.
  */
 static bytes string_encode(const std::string &s, const Encoding encoding = Encodings::UTF8) {
-    const auto ws = s2ws(s);
-    return widechar_to_multibyte(encoding, ws.c_str()).get();
+    return widechar_to_multibyte(encoding, s2ws(s).c_str()).get();
 }
 
 /**
  * Decode bytes into a UTF-8 string, using the encoding specified.
  */
-static std::string string_decode(const bytes &b, Encoding encoding = Encodings::UTF8) {
-    // check if in WinNT (not Wine)
-    static auto in_nt = false;
-
-    if (!in_nt) {
-        if (const auto hntdll = GetModuleHandleW(L"ntdll.dll")) {
-            if (const auto pwine_get_version = GetProcAddress(hntdll, "wine_get_version");
-                !pwine_get_version) {
-                // has ntdll.dll but not Wine, we assume it is NT
-                in_nt = true;
-            }
-        }
-    }
-
-    // special case for Windows NT
-    if (in_nt && encoding == Encodings::ANSI && GetACP() == Encodings::GB2312) {
-        // do encoding rise
-        encoding = Encodings::GB18030;
-    }
-
+static std::string string_decode(const bytes &b, const Encoding encoding = Encodings::UTF8) {
     return ws2s(std::wstring(multibyte_to_widechar(encoding, b.c_str()).get()));
 }
