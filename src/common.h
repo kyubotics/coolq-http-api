@@ -32,4 +32,4 @@
 using json = nlohmann::json;
 
 #include "helpers.h"
-using bytes = std::string;
+#include "utils/encoding.h"

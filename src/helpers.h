@@ -26,10 +26,6 @@
 
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
 
-std::string ws2s(const std::wstring &ws);
-std::wstring s2ws(const std::string &s);
-std::string ansi(const std::string &s);
-
 bool to_bool(const std::string &str, const bool default_val);
 std::optional<bool> to_bool(const std::string &str);
 
@@ -60,11 +56,11 @@ std::optional<nlohmann::json> get_remote_json(const std::string &url, const web:
 
 bool download_remote_file(const std::string &url, const std::string &local_path, bool use_fake_ua = false);
 
-int message_box(unsigned type, const std::string &text);
+int message_box(const unsigned type, const std::string &text);
 
 std::string hmac_sha1_hex(const std::string &key, const std::string &msg);
 
-bool is_emoji(uint32_t codepoint);
+bool is_emoji(const uint32_t codepoint);
 
 std::string string_to_coolq(const std::string &str);
 std::string string_from_coolq(const std::string &str);

@@ -19,27 +19,35 @@
 
 #pragma once
 
-#include <Windows.h>
-
 #include <string>
 
-using Encoding = UINT;
+using bytes = std::string;
+using Encoding = unsigned;
 
 struct Encodings {
     // https://msdn.microsoft.com/en-us/library/windows/desktop/dd317756.aspx
 
-    static const Encoding ANSI = CP_ACP;
-    static const Encoding UTF8 = CP_UTF8;
+    static const Encoding ANSI = 0;
+    static const Encoding UTF8 = 65001;
     static const Encoding GB2312 = 936;
     static const Encoding GB18030 = 54936;
 };
 
+std::string ws2s(const std::wstring &ws);
+std::wstring s2ws(const std::string &s);
+std::string ansi(const std::string &s);
+
 /**
  * Encode a UTF-8 string into bytes, using the encoding specified.
  */
-std::string string_encode(const std::string &s, const Encoding encoding = Encodings::UTF8);
+bytes string_encode(const std::string &s, const Encoding encoding = Encodings::UTF8);
 
 /**
  * Decode bytes into a UTF-8 string, using the encoding specified.
  */
-std::string string_decode(const std::string &b, const Encoding encoding = Encodings::UTF8);
+std::string string_decode(const bytes &b, const Encoding encoding = Encodings::UTF8);
+
+bytes iconv_string_encode(const std::string &s, const std::string &encoding,
+                          const float capability_factor = 2.0f);
+std::string iconv_string_decode(const bytes &b, const std::string &encoding,
+                                const float capability_factor = 2.0f);

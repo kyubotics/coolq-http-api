@@ -27,10 +27,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/compute/detail/lru_cache.hpp>
 #include <cpprest/filestream.h>
-#include <iconv.h>
 
 #include "utils/rest_client.h"
-#include "utils/encoding.h"
 
 using namespace std;
 namespace fs = boost::filesystem;
@@ -49,18 +47,6 @@ void string_replace(string &str, const string &search, const string &replace) {
     }
     ws_ret += str.substr(start_pos);
     str.swap(ws_ret); // faster than str = wsRet;
-}
-
-string ws2s(const wstring &ws) {
-    return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().to_bytes(ws);
-}
-
-wstring s2ws(const string &s) {
-    return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s);
-}
-
-string ansi(const string &s) {
-    return string_encode(s, Encodings::ANSI);
 }
 
 bool to_bool(const string &str, const bool default_val) {
@@ -171,7 +157,7 @@ bool download_remote_file(const string &url, const string &local_path, const boo
     return succeeded;
 }
 
-int message_box(unsigned type, const string &text) {
+int message_box(const unsigned type, const string &text) {
     return MessageBoxW(nullptr,
                        s2ws(text).c_str(),
                        s2ws(CQAPP_NAME).c_str(),
@@ -290,35 +276,6 @@ FINAL:
     return yes;
 }
 
-static string convert_encoding(const string &text, const string &from_enc, const string &to_enc,
-                               const float capability_factor = 2.0f) {
-    string result;
-
-    const auto cd = iconv_open(to_enc.c_str(), from_enc.c_str());
-    auto in = const_cast<char *>(text.data());
-    auto in_bytes_left = text.size();
-
-    if (in_bytes_left == 0) {
-        return result;
-    }
-
-    auto out_bytes_left = static_cast<decltype(in_bytes_left)>(static_cast<double>(in_bytes_left) * capability_factor);
-    auto out = new char[out_bytes_left]{0};
-    const auto out_begin = out;
-
-    try {
-        if (static_cast<size_t>(-1) != iconv(cd, &in, &in_bytes_left, &out, &out_bytes_left)) {
-            // successfully converted
-            result = out_begin;
-        }
-    } catch (...) { }
-
-    delete[] out_begin;
-    iconv_close(cd);
-
-    return result;
-}
-
 string string_to_coolq(const string &str) {
     // call CoolQ API
     string processed_str;
@@ -345,12 +302,12 @@ string string_to_coolq(const string &str) {
     }
     append_text(last_it, uint32_str.cend());
 
-    return convert_encoding(processed_str, "utf-8", "gb18030");
+    return iconv_string_encode(processed_str, "gb18030");
 }
 
 string string_from_coolq(const string &str) {
     // handle CoolQ event or data
-    auto utf8_str = convert_encoding(str, "gb18030", "utf-8");
+    auto utf8_str = iconv_string_decode(str, "gb18030");
     string processed_str;
 
     const regex r(R"(\[CQ:emoji,\s*id=(\d+)\])");
