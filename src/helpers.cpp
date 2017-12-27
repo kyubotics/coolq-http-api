@@ -27,6 +27,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/compute/detail/lru_cache.hpp>
 #include <cpprest/filestream.h>
+#include <iconv.h>
 
 #include "utils/rest_client.h"
 #include "utils/encoding.h"
@@ -289,34 +290,33 @@ FINAL:
     return yes;
 }
 
-static bool is_in_winnt() {
-    // check if in WinNT (not Wine)
-    static optional<bool> winnt;
+static string convert_encoding(const string &text, const string &from_enc, const string &to_enc,
+                               const float capability_factor = 2.0f) {
+    string result;
 
-    if (!winnt.has_value()) {
-        if (const auto hntdll = GetModuleHandleW(L"ntdll.dll")) {
-            if (const auto pwine_get_version = GetProcAddress(hntdll, "wine_get_version");
-                !pwine_get_version) {
-                // has ntdll.dll but not Wine, we assume it is NT
-                winnt = true;
-            } else {
-                winnt = false;
-            }
-        } else {
-            winnt = false;
+    const auto cd = iconv_open(to_enc.c_str(), from_enc.c_str());
+    auto in = const_cast<char *>(text.data());
+    auto in_bytes_left = text.size();
+
+    if (in_bytes_left == 0) {
+        return result;
+    }
+
+    auto out_bytes_left = static_cast<decltype(in_bytes_left)>(static_cast<double>(in_bytes_left) * capability_factor);
+    auto out = new char[out_bytes_left]{0};
+    const auto out_begin = out;
+
+    try {
+        if (static_cast<size_t>(-1) != iconv(cd, &in, &in_bytes_left, &out, &out_bytes_left)) {
+            // successfully converted
+            result = out_begin;
         }
-    }
+    } catch (...) { }
 
-    return winnt.value();
-}
+    delete[] out_begin;
+    iconv_close(cd);
 
-static Encoding get_coolq_encoding() {
-    // special case for Windows NT
-    if (is_in_winnt() && GetACP() == Encodings::GB2312) {
-        // do encoding rise
-        return Encodings::GB18030;
-    }
-    return Encodings::ANSI;
+    return result;
 }
 
 string string_to_coolq(const string &str) {
@@ -345,12 +345,12 @@ string string_to_coolq(const string &str) {
     }
     append_text(last_it, uint32_str.cend());
 
-    return string_encode(processed_str, get_coolq_encoding());
+    return convert_encoding(processed_str, "utf-8", "gb18030");
 }
 
 string string_from_coolq(const string &str) {
     // handle CoolQ event or data
-    auto utf8_str = string_decode(str, get_coolq_encoding());
+    auto utf8_str = convert_encoding(str, "gb18030", "utf-8");
     string processed_str;
 
     const regex r(R"(\[CQ:emoji,\s*id=(\d+)\])");
