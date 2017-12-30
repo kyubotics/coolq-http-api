@@ -23,9 +23,19 @@
 | 语言 | 地址 | 作者 | 备注 |
 | --- | ---- | --- | --- |
 | PHP | https://github.com/slight-sky/coolq-sdk-php | slight-sky | - |
-| Python (HTTP) | https://github.com/richardchien/cqhttp-python-sdk | richardchien | 已兼容 v3.0 |
-| Node.js (HTTP) | https://github.com/richardchien/cqhttp-node-sdk | richardchien | 已兼容 v3.0 |
-| Node.js (WebSocket) | https://github.com/momocow/node-cq-websocket | momocow | 已兼容 v3.0 |
+| Python (HTTP) | https://github.com/richardchien/cqhttp-python-sdk | richardchien | 已兼容 v3.x |
+| Node.js (HTTP) | https://github.com/richardchien/cqhttp-node-sdk | richardchien | 已兼容 v3.x |
+| Node.js (WebSocket) | https://github.com/momocow/node-cq-websocket | momocow | 已兼容 v3.x |
+| Java (HTTP、WebSocket) | https://github.com/yangjinhe/maintain-robot | yangjinhe | 已兼容 v3.x |
+
+## 应用案例
+
+QQ 机器人可以用来做很多有意思的事情，下面列出一些基于本插件的应用案例：
+
+| 项目地址 | 简介 |
+| ------- | --- |
+| [CCZU-DEV/xiaokai-bot](https://github.com/CCZU-DEV/xiaokai-bot) | 用 Python 编写的即时聊天平台机器人，通过适配器模式支持使用多种 bot 框架／平台作为消息源（目前支持 Mojo-Webqq、Mojo-Weixin、CoolQ HTTP API），支持自定义插件 |
+| [jqqqqqqqqqq/coolq-telegram-bot](https://github.com/jqqqqqqqqqq/coolq-telegram-bot) | QQ <-> Telegram Bot Framework & Forwarder |
 
 ## 修改、编译
 
