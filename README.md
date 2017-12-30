@@ -26,7 +26,7 @@
 | Python (HTTP) | https://github.com/richardchien/cqhttp-python-sdk | richardchien | 已兼容 v3.x |
 | Node.js (HTTP) | https://github.com/richardchien/cqhttp-node-sdk | richardchien | 已兼容 v3.x |
 | Node.js (WebSocket) | https://github.com/momocow/node-cq-websocket | momocow | 已兼容 v3.x |
-| Java (HTTP、WebSocket) | https://github.com/yangjinhe/maintain-robot | yangjinhe | 已兼容 v3.x |
+| Java (HTTP, WebSocket) | https://github.com/yangjinhe/maintain-robot | yangjinhe | 已兼容 v3.x |
 
 ## 应用案例
 
