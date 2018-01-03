@@ -21,10 +21,13 @@
 
 #include "app.h"
 
+#include <boost/filesystem.hpp>
+
 #include "conf/loader.h"
 #include "service/hub_class.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
 
 void Application::initialize(const int32_t auth_code) {
     init_sdk(auth_code);
@@ -108,4 +111,8 @@ void Application::exit() {
 void Application::restart_async(const unsigned long delay_millisecond) {
     restart_delay_ = delay_millisecond;
     should_restart_ = true; // this will let the restart worker do it
+}
+
+bool Application::is_locked() const {
+    return fs::exists(ansi(sdk->directories().app() + "app.lock"));
 }

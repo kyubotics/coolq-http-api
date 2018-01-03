@@ -33,6 +33,8 @@ public:
     bool is_initialized() const { return initialized_; }
     bool is_enabled() const { return enabled_; }
 
+    bool is_locked() const;
+
 private:
     bool initialized_ = false;
     bool enabled_ = false;

@@ -48,10 +48,6 @@ static string version_cpk_url(const string &version, const int build_number) {
     return update_source() + "versions/" + version + "(b" + to_string(build_number) + ")/" CQAPP_ID ".cpk";
 }
 
-static bool is_locked() {
-    return fs::exists(ansi(sdk->directories().app() + "app.lock"));
-}
-
 // return tuple<is_newer, version, build_number, description>
 optional<tuple<bool, string, int, string>> get_latest_version() {
     const auto data_opt = get_remote_json(latest_url());
@@ -116,11 +112,11 @@ void check_update(const bool is_automatically) {
         if (is_newer) {
             // should update
             if (is_automatically) Log::i(TAG, u8"发现新版本：" + version + u8", build " + to_string(build_number));
-            if (is_locked()) {
+            if (app.is_locked()) {
                 message_box(MB_OK | MB_ICONWARNING, u8"发现新版本：" + version
                             + u8"\r\n\r\n更新信息：\r\n"
                             + (description.empty() ? u8"无" : description)
-                            + u8"\r\n\r\n当前环境下不允许自动更新，如果你正在使用 Docker，请拉取最新版本的 Docker 镜像。");
+                            + u8"\r\n\r\n当前环境下不允许自动更新，如果你正在使用 Docker，请拉取最新版本的 Docker 镜像或解除环境锁（删除 app/io.github.richardchien.coolqhttpapi/app.lock）。");
             } else {
                 if (is_automatically && config.auto_perform_update) {
                     // auto update
