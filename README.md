@@ -94,10 +94,14 @@ git checkout 2e39b6195fbc14a655474b019234890df94a2ed0 -- ports/cpprestsdk
 
 [这里](https://github.com/richardchien/thanks) 列出了捐助者名单，由于一些收款渠道无法知道对方是谁，如有遗漏请联系我修改。
 
-### 支付宝
+### 支付宝免费红包
+
+![AliPay Red Bag](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/alipay-redbag.jpg)
+
+### 支付宝转账
 
 ![AliPay](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/alipay.png)
 
-### 微信支付
+### 微信转账
 
 ![WeChat](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/wechat.png)
