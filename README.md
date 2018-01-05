@@ -38,7 +38,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [CCZU-DEV/xiaokai-bot](https://github.com/CCZU-DEV/xiaokai-bot) | 用 Python 编写的即时聊天平台机器人，通过适配器模式支持使用多种 bot 框架／平台作为消息源（目前支持 Mojo-Webqq、Mojo-Weixin、CoolQ HTTP API），支持自定义插件 |
 | [jqqqqqqqqqq/coolq-telegram-bot](https://github.com/jqqqqqqqqqq/coolq-telegram-bot) | QQ <-> Telegram Bot Framework & Forwarder |
 | [Arsenolite/cabbageWeb](https://github.com/Arsenolite/cabbageWeb) | 基于 Java Web 的 osu! 游戏数据查询机器人 |
-| [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 🤖 A scalable multi-purpose QQ group robot. 多功能、可扩展的QQ群机器人。 |
+| [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 🤖 A scalable multi-purpose QQ group robot. 多功能、可扩展的 QQ 群机器人。 |
 
 ## 修改、编译
 
