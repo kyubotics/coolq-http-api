@@ -111,6 +111,23 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 | `message` | string/array | - | 消息内容 |
 | `font` | number | - | 字体 |
 
+##### 示例
+
+```json
+{
+    "time": 1515204254,
+    "post_type": "message",
+    "message_type": "private",
+    "sub_type": "friend",
+    "message_id": 12,
+    "user_id": 12345678,
+    "message": "你好～",
+    "font": 456
+}
+```
+
+下面的其它事件同这个类似，将不再给出。
+
 #### 响应数据
 
 | 字段名 | 数据类型 | 说明 | 默认情况 |
