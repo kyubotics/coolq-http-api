@@ -13,6 +13,42 @@ X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2
 
 签名以 `secret` 作为密钥，HTTP 正文作为消息，进行 HMAC SHA1 哈希，你的后端可以通过该哈希值来验证上报的数据确实来自 HTTP API 插件。HMAC 介绍见 [密钥散列消息认证码](https://zh.wikipedia.org/zh-cn/%E9%87%91%E9%91%B0%E9%9B%9C%E6%B9%8A%E8%A8%8A%E6%81%AF%E9%91%91%E5%88%A5%E7%A2%BC)。
 
+### HMAC SHA1 校验的示例
+
+#### Python + Flask
+
+```python
+import hmac
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/', methods=['POST'])
+def receive():
+    sig = hmac.new(b'<your-key>', request.get_data(), 'sha1').hexdigest()
+    received_sig = request.headers['X-Signature'][len('sha1='):]
+    if sig == received_sig:
+        # 请求确实来自于插件
+        pass
+    else:
+        # 假的上报
+        pass
+```
+
+#### Node.js + Koa
+
+```js
+const crypto = require('crypto');
+const secret = 'some-secret';
+
+// in Koa's request context
+ctx.assert(ctx.request.headers['x-signature'] !== undefined, 401);
+const hmac = crypto.createHmac('sha1', secret);
+hmac.update(ctx.request.rawBody);
+const sig = hmac.digest('hex');
+ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
+```
+
 ## 上报数据格式
 
 每次上报的数据中必有的一个字段是 `post_type`，数据类型为字符串，用来指示此次上报的类型，有如下三种：
