@@ -21,6 +21,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/process.hpp>
+#include <set>
 
 #include "./types.h"
 #include "structs.h"
@@ -391,6 +392,8 @@ HANDLER(get_record) {
         if (!out_file.empty()) {
             result.retcode = RetCodes::OK;
             result.data = {{"file", out_file}};
+        } else {
+            result.retcode = RetCodes::INVALID_DATA;
         }
     }
 }
@@ -460,12 +463,33 @@ HANDLER(set_restart) {
     try {
         boost::process::spawn(ansi_restart_batch_path);
         result.retcode = RetCodes::OK;
-    } catch (exception &) { }
+    } catch (exception &) {
+        result.retcode = RetCodes::OPERATION_FAILED;
+    }
 }
 
 HANDLER(set_restart_plugin) {
     app.restart_async(2000);
     result.retcode = RetCodes::ASYNC;
+}
+
+HANDLER(clear_data_dir) {
+    const auto data_dir = params.get_string("data_dir");
+    set<string> allowed_data_dirs = {"image", "record", "show", "bface"};
+    if (allowed_data_dirs.find(data_dir) != allowed_data_dirs.cend()) {
+        const auto ws_dir_fullpath = s2ws(data_file_full_path(data_dir, ""));
+        try {
+            fs::remove_all(ws_dir_fullpath);
+            fs::create_directory(ws_dir_fullpath);
+            result.retcode = RetCodes::OK;
+        } catch (fs::filesystem_error &) {
+            result.retcode = RetCodes::OPERATION_FAILED;
+        }
+    }
+}
+
+HANDLER(clear_data_dir_async) {
+    handle_async(__clear_data_dir, params, result);
 }
 
 #pragma endregion

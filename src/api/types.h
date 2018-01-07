@@ -31,6 +31,7 @@ struct ApiResult {
         static const RetCode ASYNC = 1;
         static const RetCode DEFAULT_ERROR = 100;
         static const RetCode INVALID_DATA = 102; // the data that CoolQ returns is invalid
+        static const RetCode OPERATION_FAILED = 103; // the data that CoolQ returns is invalid
         static const RetCode BAD_THREAD_POOL = 201; // the thread pool isn't properly initiated
 
         // retcodes that represent HTTP status codes
