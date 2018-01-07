@@ -21,6 +21,7 @@
 
 #include <ctime>
 #include <regex>
+#include <unordered_set>
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
@@ -65,46 +66,87 @@ static Message::Segment enhance_send_file(const Message::Segment &raw, const str
     }
 
     auto segment = raw;
-    auto file = (*file_it).second;
+    auto &file = (*file_it).second;
+
+    string filename;
+    function<bool()> make_file = nullptr;
 
     if (starts_with(file, "http://") || starts_with(file, "https://")) {
         const auto &url = file;
-        const auto ws_url = s2ws(url);
-        const auto filename = md5_hash_hex(url) + ".tmp"; // despite of the format, we store all images as ".tmp"
-        const auto filepath = sdk->directories().coolq() + "data\\" + data_dir + "\\" + filename;
-        const auto ws_filepath = s2ws(filepath);
 
         // check if to use cache
         auto use_cache = true; // use cache by default
         if (segment.data.find("cache") != segment.data.end() && segment.data["cache"] == "0") {
             use_cache = false;
         }
-        const auto cached = fs::is_regular_file(ws_filepath);
 
-        if (use_cache && cached /* use cache */
-            || download_remote_file(url, filepath, true) /* or perform download */) {
-            segment.data["file"] = filename;
+        if (use_cache) {
+            filename = md5_hash_hex(url) + ".tmp";
+        } else {
+            filename = md5_hash_hex(url + to_string(random_int(1, 10000))) + ".tmp";
         }
+
+        make_file = [=] {
+            const auto filepath = data_file_full_path(data_dir, filename);
+
+            if (use_cache && fs::is_regular_file(s2ws(filepath)) /* use cache */
+                || download_remote_file(url, filepath, true) /* or perform download */) {
+                return true;
+            }
+            return false;
+        };
     } else if (starts_with(file, "file://")) {
-        const auto path = file.substr(strlen("file://"));
-        const auto new_filename = md5_hash_hex(path) + ".tmp";
+        const auto src_filepath = file.substr(strlen("file://"));
+        filename = md5_hash_hex(src_filepath) + ".tmp";
+        make_file = [=] {
+            const auto filepath = data_file_full_path(data_dir, filename);
 
-        const auto new_filepath = sdk->directories().coolq() + "data\\" + data_dir + "\\" + new_filename;
-        try {
-            copy_file(ansi(path), ansi(new_filepath), fs::copy_option::overwrite_if_exists);
-            segment.data["file"] = new_filename;
-        } catch (fs::filesystem_error &) {
-            // copy failed
-        }
+            try {
+                copy_file(s2ws(src_filepath), s2ws(filepath), fs::copy_option::overwrite_if_exists);
+                return true;
+            } catch (fs::filesystem_error &) {
+                // copy failed
+                return false;
+            }
+        };
     } else if (starts_with(file, "base64://")) {
-        const auto base64_encoded = file.substr(strlen("base64://"));
-        const auto filename = "from_base64_" + to_string(time(nullptr)) + "_" + to_string(random_int(1, 1000)) + ".tmp";
-        const auto filepath = sdk->directories().coolq() + "data\\" + data_dir + "\\" + filename;
+        filename = md5_hash_hex("from_base64_"
+            + to_string(time(nullptr)) + "_"
+            + to_string(random_int(1, 10000))) + ".tmp";
+        make_file = [=, &file] {
+            const auto filepath = data_file_full_path(data_dir, filename);
+            const auto base64_encoded = file.substr(strlen("base64://"));
 
-        if (ofstream f(ansi(filepath), ios::binary | ios::out); f.is_open()) {
-            f << base64_decode(base64_encoded);
+            if (ofstream f(ansi(filepath), ios::binary | ios::out); f.is_open()) {
+                f << base64_decode(base64_encoded);
+                return true;
+            }
+            return false;
+        };
+    }
+
+    static unordered_set<string> files_in_process;
+    static mutex files_in_process_mutex;
+    static condition_variable cv;
+
+    if (!filename.empty() && make_file != nullptr) {
+        unique_lock<mutex> lk(files_in_process_mutex);
+        // wait until there is no other thread processing the same file
+        cv.wait(lk, [=] { return files_in_process.find(filename) == files_in_process.cend(); });
+        files_in_process.insert(filename);
+        lk.unlock();
+
+        // we are now sure that only our current thread is processing the file
+        if (make_file()) {
+            // succeeded
             segment.data["file"] = filename;
         }
+
+        // ok, we can let other threads play
+        lk.lock();
+        files_in_process.erase(filename);
+        lk.unlock();
+        cv.notify_all();
     }
 
     return segment;

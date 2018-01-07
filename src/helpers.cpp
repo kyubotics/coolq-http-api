@@ -336,3 +336,7 @@ unsigned random_int(const unsigned min, const unsigned max) {
     const uniform_int_distribution<mt19937::result_type> dist(min, max);
     return dist(rng);
 }
+
+string data_file_full_path(const string &data_dir, const string &filename) {
+    return sdk->directories().coolq() + "data\\" + data_dir + "\\" + filename;
+}

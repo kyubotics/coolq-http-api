@@ -66,3 +66,5 @@ std::string string_to_coolq(const std::string &str);
 std::string string_from_coolq(const std::string &str);
 
 unsigned random_int(const unsigned min, const unsigned max);
+
+std::string data_file_full_path(const std::string &data_dir, const std::string &filename);
