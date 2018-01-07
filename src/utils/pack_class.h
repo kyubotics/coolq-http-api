@@ -22,7 +22,7 @@
 
 #include "common.h"
 
-class BytesNotEnoughError : std::exception {
+class BytesNotEnoughError : public std::exception {
     using exception::exception;
 };
 
