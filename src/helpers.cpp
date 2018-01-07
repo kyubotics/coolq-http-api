@@ -212,26 +212,58 @@ string string_to_coolq(const string &str) {
 string string_from_coolq(const string &str) {
     // handle CoolQ event or data
     auto utf8_str = iconv_string_decode(str, "gb18030");
-    string processed_str;
 
-    const regex r(R"(\[CQ:emoji,\s*id=(\d+)\])");
     smatch m;
-    auto it = utf8_str.cbegin();
-    while (regex_search(it, utf8_str.cend(), m, r)) {
-        processed_str += string(it, it + m.position());
 
-        const auto codepoint = static_cast<char32_t>(stoul(m.str(1)));
-        const u32string u32_str = {codepoint};
+    string processed_str_1;
+    auto it_1 = utf8_str.cbegin();
+    while (regex_search(it_1, utf8_str.cend(), m, regex(R"(\[CQ:emoji,\s*id=(\d+)\])"))) {
+        processed_str_1 += string(it_1, it_1 + m.position());
+
+        const auto codepoint_str = m.str(1);
+        u32string u32_str;
+
+        if (boost::starts_with(codepoint_str, "100000")) {
+            // keycap # to keycap 9
+            const auto codepoint = static_cast<char32_t>(stoul(codepoint_str.substr(strlen("100000"))));
+            u32_str.append({codepoint, 0xFE0F, 0x20E3});
+        } else {
+            const auto codepoint = static_cast<char32_t>(stoul(codepoint_str));
+            u32_str.append({codepoint});
+        }
+
         const auto p = reinterpret_cast<const uint32_t *>(u32_str.data());
         wstring_convert<codecvt_utf8<uint32_t>, uint32_t> conv;
         const auto emoji_utf8_str = conv.to_bytes(p, p + u32_str.size());
-        processed_str += emoji_utf8_str;
+        processed_str_1 += emoji_utf8_str;
 
-        it += m.position() + m.length();
+        it_1 += m.position() + m.length();
     }
-    processed_str += string(it, utf8_str.cend());
+    processed_str_1 += string(it_1, utf8_str.cend());
 
-    return processed_str;
+    // CoolQ sometimes use "#\uFE0F" to represent "#\uFE0F\u20E3"
+    // we should convert them into correct emoji codepoints here
+    //     \uFE0F == \xef\xb8\x8f
+    //     \u20E3 == \xe2\x83\xa3
+    string processed_str_2;
+    auto it_2 = processed_str_1.cbegin();
+    while (regex_search(it_2, processed_str_1.cend(), m, regex("[#*0-9]\xef\xb8\x8f"))) {
+        processed_str_2 += string(it_2, it_2 + m.position());
+
+        const auto pos = m.position();
+        if (processed_str_1.cend() - (it_2 + pos) < strlen("\xef\xb8\x8f\xe2\x83\xa3")
+            || string(it_2 + pos + 4, it_2 + pos + 7) != "\xe2\x83\xa3") {
+            // there is no "\u20E3" behind this match
+            processed_str_2 += m.str(0) + "\xe2\x83\xa3";
+        } else {
+            processed_str_2 += m.str(0);
+        }
+
+        it_2 += m.position() + m.length();
+    }
+    processed_str_2 += string(it_2, processed_str_1.cend());
+
+    return processed_str_2;
 }
 
 unsigned random_int(const unsigned min, const unsigned max) {
