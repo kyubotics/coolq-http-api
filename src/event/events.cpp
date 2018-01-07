@@ -21,79 +21,55 @@
 
 #include "app.h"
 
-#include "utils/rest_client.h"
 #include "utils/params_class.h"
 #include "message/message_class.h"
 #include "structs.h"
 #include "service/hub_class.h"
+#include "utils/http_utils.h"
 
 using namespace std;
-
-static const auto TAG = u8"上报";
 
 #define ENSURE_POST_NEEDED \
     if (config.post_url.empty() && !ServiceHub::instance().has_pushable_services()) { \
         return CQEVENT_IGNORE; \
     }
 
-static pplx::task<json> http_post(const json &json_body) {
-    http_request request(http::methods::POST);
-    request.headers().add(L"User-Agent", CQAPP_USER_AGENT);
-    request.headers().add(L"Content-Type", L"application/json; charset=UTF-8");
-    const auto body = json_body.dump();
-    request.set_body(json_body.dump());
-    if (!config.secret.empty()) {
-        request.headers().add(L"X-Signature", s2ws("sha1=" + hmac_sha1_hex(config.secret, body)));
-    }
-    return http_client(s2ws(config.post_url))
-            .request(request)
-            .then([](pplx::task<http_response> task) {
-                auto next_task = pplx::task_from_result<string>("");
-                try {
-                    auto resp = task.get();
-                    auto succeeded = false;
-                    if (resp.status_code() < 300 && resp.status_code() >= 200) {
-                        succeeded = true;
-                        next_task = resp.extract_utf8string(true);
-                    }
-                    Log::d(TAG,
-                           u8"通过 HTTP 上报数据到 " + config.post_url + (succeeded ? u8" 成功" : u8" 失败")
-                           + u8"，状态码：" + to_string(resp.status_code()));
-                } catch (http_exception &) {
-                    // failed to request
-                    Log::d(TAG, u8"HTTP 上报地址 " + config.post_url + u8" 无法访问");
-                }
-                return next_task;
-            })
-            .then([](string &body) {
-                if (!body.empty()) {
-                    Log::d(TAG, u8"收到响应 " + body);
-                    return pplx::task_from_result(json::parse(body)); // may throw invalid_argument due to invalid json
-                }
-                return pplx::task_from_result(json());
-            });
-}
-
 static int32_t post_event(const json &payload, const function<void(const Params &)> response_handler = nullptr) {
+    static const auto TAG = u8"上报";
+
     auto should_block = false;
 
     if (!config.post_url.empty()) {
         // do http post and handle response
         Log::d(TAG, u8"开始通过 HTTP 上报事件");
-        try {
-            if (const auto resp_payload = http_post(payload).get(); resp_payload.is_object()) {
-                Params params(move(resp_payload));
 
-                // custom handler
-                if (response_handler) response_handler(params);
+        const auto resp = post_json(config.post_url, payload);
 
-                if (params.get_bool("block", false)) {
-                    should_block = true;
+        if (resp.status_code == 0) {
+            Log::d(TAG, u8"HTTP 上报地址 " + config.post_url + u8" 无法访问");
+        } else {
+            Log::d(TAG, u8"通过 HTTP 上报数据到 " + config.post_url + (resp.ok() ? u8" 成功" : u8" 失败")
+                   + u8"，状态码：" + to_string(resp.status_code));
+        }
+
+        if (resp.ok() && !resp.body.empty()) {
+            Log::d(TAG, u8"收到响应 " + resp.body);
+
+            try {
+                if (const auto resp_payload = json::parse(resp.body); resp_payload.is_object()) {
+                    Params params(move(resp_payload));
+
+                    // custom handler
+                    if (response_handler) response_handler(params);
+
+                    if (params.get_bool("block", false)) {
+                        should_block = true;
+                    }
                 }
+            } catch (invalid_argument &) {
+                // failed to parse json
+                Log::d(TAG, u8"上报响应不是有效的 JSON，已忽略");
             }
-        } catch (invalid_argument &) {
-            // failed to parse json
-            Log::d(TAG, u8"上报响应不是有效的 JSON，已忽略");
         }
     }
 

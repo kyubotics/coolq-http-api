@@ -28,7 +28,7 @@
 #include <websocketpp/common/md5.hpp>
 
 #include "./message_class.h"
-#include "utils/rest_client.h"
+#include "utils/http_utils.h"
 
 using namespace std;
 namespace fs = boost::filesystem;
@@ -164,7 +164,7 @@ static Message::Segment enhance_receive_image(const Message::Segment &raw) {
 
     if (!filename.empty()) {
         const auto cqimg_filename = filename + ".cqimg";
-        const auto cqimg_filepath = sdk->directories().coolq() + "data\\image\\" + cqimg_filename;
+        const auto cqimg_filepath = data_file_full_path("image", cqimg_filename);
 
         if (ifstream istrm(ansi(cqimg_filepath), ios::binary); istrm.is_open()) {
             boost::property_tree::ptree pt;

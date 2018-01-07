@@ -108,6 +108,12 @@
     <ClCompile Include="src\utils\encoding.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\curl_wrapper.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\http_utils.cpp">
+      <Filter>src\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
@@ -132,9 +138,6 @@
       <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\encoding.h">
-      <Filter>src\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\rest_client.h">
       <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\message\message_class.h">
@@ -226,6 +229,12 @@
     </ClInclude>
     <ClInclude Include="src\api\api.h">
       <Filter>src\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\curl_wrapper.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\http_utils.h">
+      <Filter>src\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

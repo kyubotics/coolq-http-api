@@ -24,6 +24,7 @@
 #include <boost/filesystem.hpp>
 
 #include "api/api.h"
+#include "utils/http_utils.h"
 
 using namespace std;
 using boost::algorithm::ends_with;

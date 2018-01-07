@@ -26,6 +26,7 @@
 #include "./types.h"
 #include "structs.h"
 #include "utils/params_class.h"
+#include "utils/http_utils.h"
 #include "service/hub_class.h"
 
 using namespace std;

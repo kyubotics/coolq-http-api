@@ -40,21 +40,9 @@ namespace std {
 }
 
 template <typename T>
-static std::shared_ptr<T> make_shared_array(size_t size) {
+static std::shared_ptr<T> make_shared_array(const size_t size) {
     return std::shared_ptr<T>(new T[size], [](T *p) { delete[] p; });
 }
-
-namespace web {
-    namespace http {
-        class http_request;
-    }
-}
-
-std::optional<nlohmann::json> get_remote_json(const std::string &url, bool use_fake_ua = false,
-                                              const std::string &cookies = "");
-std::optional<nlohmann::json> get_remote_json(const std::string &url, const web::http::http_request &request);
-
-bool download_remote_file(const std::string &url, const std::string &local_path, bool use_fake_ua = false);
 
 int message_box(const unsigned type, const std::string &text);
 
@@ -68,3 +56,5 @@ std::string string_from_coolq(const std::string &str);
 unsigned random_int(const unsigned min, const unsigned max);
 
 std::string data_file_full_path(const std::string &data_dir, const std::string &filename);
+
+bool is_in_wine();
