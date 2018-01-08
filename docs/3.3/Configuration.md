@@ -56,3 +56,4 @@ secret=kP9yK2lrGxoymmpo
 | `auto_perform_update` | `no` | 是否自动执行更新，仅在 `auto_check_update` 启用时有效，`yes` 或 `true` 表示启用，否则不启用，若启用，则插件将在自动检查更新后，自动下载新版本并重启酷 Q 生效 |
 | `thread_pool_size` | `4` | 工作线程池大小，用于异步发送消息和一些其它小的异步任务，应根据计算机性能和实际需求适当调节，若设为 0，则使用 `CPU 核心数 * 2 + 1` |
 | `server_thread_pool_size` | `1` | API 服务器线程池大小，用于异步处理请求，应根据计算机性能和实际需求适当调节，若设为 0，则使用 `CPU 核心数 * 2 + 1` |
+| `convert_unicode_emoji` | `yes` | （v3.3.4 新增）是否在 CQ:emoji 和实际的 Unicode 之间进行转换，转换可能耗更多时间，但日常情况下影响不大，如果你的机器人需要处理非常大段的消息（上千字），且对性能有要求，可以考虑关闭转换 |
