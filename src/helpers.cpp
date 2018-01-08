@@ -182,88 +182,97 @@ FINAL:
 
 string string_to_coolq(const string &str) {
     // call CoolQ API
-    string processed_str;
 
-    wstring_convert<codecvt_utf8<uint32_t>, uint32_t> uint32_conv;
-    auto uint32_str = uint32_conv.from_bytes(str);
+    if (config.convert_unicode_emoji) {
+        string processed_str;
 
-    auto append_text = [&](const decltype(uint32_str.cbegin()) &begin,
-                           const decltype(uint32_str.cbegin()) &end) {
-        decltype(uint32_str) uint32_part_str(begin, end);
-        auto utf8_part_str = uint32_conv.to_bytes(uint32_part_str);
-        processed_str += utf8_part_str;
-    };
+        wstring_convert<codecvt_utf8<uint32_t>, uint32_t> uint32_conv;
+        auto uint32_str = uint32_conv.from_bytes(str);
 
-    auto last_it = uint32_str.cbegin();
-    for (auto it = uint32_str.cbegin(); it != uint32_str.cend(); ++it) {
-        const auto codepoint = *it;
-        if (is_emoji(codepoint)) {
-            // is emoji
-            append_text(last_it, it);
-            processed_str += "[CQ:emoji,id=" + to_string(codepoint) + "]";
-            last_it = it + 1;
+        auto append_text = [&](const decltype(uint32_str.cbegin()) &begin,
+                               const decltype(uint32_str.cbegin()) &end) {
+            decltype(uint32_str) uint32_part_str(begin, end);
+            auto utf8_part_str = uint32_conv.to_bytes(uint32_part_str);
+            processed_str += utf8_part_str;
+        };
+
+        auto last_it = uint32_str.cbegin();
+        for (auto it = uint32_str.cbegin(); it != uint32_str.cend(); ++it) {
+            const auto codepoint = *it;
+            if (is_emoji(codepoint)) {
+                // is emoji
+                append_text(last_it, it);
+                processed_str += "[CQ:emoji,id=" + to_string(codepoint) + "]";
+                last_it = it + 1;
+            }
         }
-    }
-    append_text(last_it, uint32_str.cend());
+        append_text(last_it, uint32_str.cend());
 
-    return iconv_string_encode(processed_str, "gb18030");
+        return iconv_string_encode(processed_str, "gb18030");
+    }
+
+    return iconv_string_encode(str, "gb18030");
 }
 
 string string_from_coolq(const string &str) {
     // handle CoolQ event or data
     auto utf8_str = iconv_string_decode(str, "gb18030");
 
-    smatch m;
+    if (config.convert_unicode_emoji) {
+        smatch m;
 
-    string processed_str_1;
-    auto it_1 = utf8_str.cbegin();
-    while (regex_search(it_1, utf8_str.cend(), m, regex(R"(\[CQ:emoji,\s*id=(\d+)\])"))) {
-        processed_str_1 += string(it_1, it_1 + m.position());
+        string processed_str_1;
+        auto it_1 = utf8_str.cbegin();
+        while (regex_search(it_1, utf8_str.cend(), m, regex(R"(\[CQ:emoji,\s*id=(\d+)\])"))) {
+            processed_str_1 += string(it_1, it_1 + m.position());
 
-        const auto codepoint_str = m.str(1);
-        u32string u32_str;
+            const auto codepoint_str = m.str(1);
+            u32string u32_str;
 
-        if (boost::starts_with(codepoint_str, "100000")) {
-            // keycap # to keycap 9
-            const auto codepoint = static_cast<char32_t>(stoul(codepoint_str.substr(strlen("100000"))));
-            u32_str.append({codepoint, 0xFE0F, 0x20E3});
-        } else {
-            const auto codepoint = static_cast<char32_t>(stoul(codepoint_str));
-            u32_str.append({codepoint});
+            if (boost::starts_with(codepoint_str, "100000")) {
+                // keycap # to keycap 9
+                const auto codepoint = static_cast<char32_t>(stoul(codepoint_str.substr(strlen("100000"))));
+                u32_str.append({codepoint, 0xFE0F, 0x20E3});
+            } else {
+                const auto codepoint = static_cast<char32_t>(stoul(codepoint_str));
+                u32_str.append({codepoint});
+            }
+
+            const auto p = reinterpret_cast<const uint32_t *>(u32_str.data());
+            wstring_convert<codecvt_utf8<uint32_t>, uint32_t> conv;
+            const auto emoji_utf8_str = conv.to_bytes(p, p + u32_str.size());
+            processed_str_1 += emoji_utf8_str;
+
+            it_1 += m.position() + m.length();
         }
+        processed_str_1 += string(it_1, utf8_str.cend());
 
-        const auto p = reinterpret_cast<const uint32_t *>(u32_str.data());
-        wstring_convert<codecvt_utf8<uint32_t>, uint32_t> conv;
-        const auto emoji_utf8_str = conv.to_bytes(p, p + u32_str.size());
-        processed_str_1 += emoji_utf8_str;
+        // CoolQ sometimes use "#\uFE0F" to represent "#\uFE0F\u20E3"
+        // we should convert them into correct emoji codepoints here
+        //     \uFE0F == \xef\xb8\x8f
+        //     \u20E3 == \xe2\x83\xa3
+        string processed_str_2;
+        auto it_2 = processed_str_1.cbegin();
+        while (regex_search(it_2, processed_str_1.cend(), m, regex("[#*0-9]\xef\xb8\x8f"))) {
+            processed_str_2 += string(it_2, it_2 + m.position());
 
-        it_1 += m.position() + m.length();
-    }
-    processed_str_1 += string(it_1, utf8_str.cend());
+            const auto pos = m.position();
+            if (processed_str_1.cend() - (it_2 + pos) < strlen("\xef\xb8\x8f\xe2\x83\xa3")
+                || string(it_2 + pos + 4, it_2 + pos + 7) != "\xe2\x83\xa3") {
+                // there is no "\u20E3" behind this match
+                processed_str_2 += m.str(0) + "\xe2\x83\xa3";
+            } else {
+                processed_str_2 += m.str(0);
+            }
 
-    // CoolQ sometimes use "#\uFE0F" to represent "#\uFE0F\u20E3"
-    // we should convert them into correct emoji codepoints here
-    //     \uFE0F == \xef\xb8\x8f
-    //     \u20E3 == \xe2\x83\xa3
-    string processed_str_2;
-    auto it_2 = processed_str_1.cbegin();
-    while (regex_search(it_2, processed_str_1.cend(), m, regex("[#*0-9]\xef\xb8\x8f"))) {
-        processed_str_2 += string(it_2, it_2 + m.position());
-
-        const auto pos = m.position();
-        if (processed_str_1.cend() - (it_2 + pos) < strlen("\xef\xb8\x8f\xe2\x83\xa3")
-            || string(it_2 + pos + 4, it_2 + pos + 7) != "\xe2\x83\xa3") {
-            // there is no "\u20E3" behind this match
-            processed_str_2 += m.str(0) + "\xe2\x83\xa3";
-        } else {
-            processed_str_2 += m.str(0);
+            it_2 += m.position() + m.length();
         }
+        processed_str_2 += string(it_2, processed_str_1.cend());
 
-        it_2 += m.position() + m.length();
+        return processed_str_2;
     }
-    processed_str_2 += string(it_2, processed_str_1.cend());
 
-    return processed_str_2;
+    return utf8_str;
 }
 
 unsigned random_int(const unsigned min, const unsigned max) {
