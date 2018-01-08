@@ -474,7 +474,7 @@ HANDLER(set_restart_plugin) {
     result.retcode = RetCodes::ASYNC;
 }
 
-HANDLER(clear_data_dir) {
+HANDLER(clean_data_dir) {
     const auto data_dir = params.get_string("data_dir");
     set<string> allowed_data_dirs = {"image", "record", "show", "bface"};
     if (allowed_data_dirs.find(data_dir) != allowed_data_dirs.cend()) {
@@ -489,8 +489,8 @@ HANDLER(clear_data_dir) {
     }
 }
 
-HANDLER(clear_data_dir_async) {
-    handle_async(__clear_data_dir, params, result);
+HANDLER(clean_data_dir_async) {
+    handle_async(__clean_data_dir, params, result);
 }
 
 #pragma endregion
