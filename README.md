@@ -58,6 +58,14 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 
 由于 triplet 的名字是在 VS 工程文件里写死的，所以建议将 triplet 命名为 `x86-windows-static.cmake`。要编译项目的话，需要先安装这些依赖：`boost`、`cpprestsdk`、`curl`、`nlohmann-json`、`openssl`。
 
+注意，依赖中的 `cpprestsdk`，需要安装 2.9.0 版本，因为更新版本在一些版本的 Windows Server 上不能正常工作，要安装 2.9.0 版，需要先进 vcpkg 根目录，运行：
+
+```bash
+git checkout 2e39b6195fbc14a655474b019234890df94a2ed0 -- ports/cpprestsdk
+```
+
+然后再安装 `cpprestsdk`。
+
 ## 开源许可证、重新分发
 
 本程序使用 [GPLv3 许可证](https://github.com/richardchien/coolq-http-api/blob/master/LICENSE)，并按其第 7 节添加如下附加条款：
