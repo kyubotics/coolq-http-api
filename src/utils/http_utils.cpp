@@ -201,20 +201,19 @@ static HttpSimpleResponse post_json_cpprestsdk(const string &url, const json &pa
     if (!config.secret.empty()) {
         request.headers().add(L"X-Signature", s2ws("sha1=" + hmac_sha1_hex(config.secret, body)));
     }
-    return http_client(s2ws(url))
-            .request(request)
-            .then([](pplx::task<http_response> task) {
-                HttpSimpleResponse result;
-                try {
-                    auto resp = task.get();
-                    result.status_code = resp.status_code();
-                    result.body = resp.extract_utf8string(true).get();
-                } catch (http_exception &) {
-                    // failed to request
-                }
-                return pplx::task_from_result<HttpSimpleResponse>(result);
-            })
-            .get();
+
+    auto client = http_client(s2ws(url));
+    auto task = client.request(request);
+
+    HttpSimpleResponse result;
+    try {
+        auto resp = task.get();
+        result.status_code = resp.status_code();
+        result.body = resp.extract_utf8string(true).get();
+    } catch (...) {
+        // failed to request
+    }
+    return result;
 }
 
 static HttpSimpleResponse post_json_libcurl(const string &url, const json &payload) {
