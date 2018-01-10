@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -48,6 +48,7 @@
     <ClInclude Include="src\conf\loader.h" />
     <ClInclude Include="src\cqp\sdk_class.h" />
     <ClInclude Include="src\ctpl\ctpl_stl.h" />
+    <ClInclude Include="src\emoji_data.h" />
     <ClInclude Include="src\event\events.h" />
     <ClInclude Include="src\log_class.h" />
     <ClInclude Include="src\message\message_class.h" />

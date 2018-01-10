@@ -236,6 +236,9 @@
     <ClInclude Include="src\utils\http_utils.h">
       <Filter>src\utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\emoji_data.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
