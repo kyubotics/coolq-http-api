@@ -2,8 +2,8 @@
   "ret": 1,
   "apiver": 9,
   "name": "HTTP API",
-  "version": "3.3.4",
-  "version_id": 319,
+  "version": "3.3.5",
+  "version_id": 320,
   "author": "Richard Chien",
   "description": "CoolQ HTTP API\r\nhttps://github.com/richardchien/coolq-http-api",
   "event": [
