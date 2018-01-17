@@ -4,6 +4,6 @@
 
 class IPushable {
 public:
-    virtual ~IPushable() {}
+    virtual ~IPushable() = default;
     virtual void push_event(const json &payload) const = 0;
 };
