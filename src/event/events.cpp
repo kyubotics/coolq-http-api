@@ -86,7 +86,7 @@ static int32_t post_event(json payload, const function<void(const Params &)> res
 int32_t event_private_msg(int32_t sub_type, int32_t msg_id, int64_t from_qq, const string &msg, int32_t font) {
     ENSURE_POST_NEEDED;
 
-    const auto sub_type_str = [&sub_type]() {
+    const auto sub_type_str = [&]() {
         switch (sub_type) {
         case 11:
             return "friend";
@@ -236,7 +236,7 @@ int32_t event_group_upload(int32_t sub_type, int32_t send_time, int64_t from_gro
 int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq) {
     ENSURE_POST_NEEDED;
 
-    const auto sub_type_str = [&sub_type]() {
+    const auto sub_type_str = [&]() {
         switch (sub_type) {
         case 1:
             return "unset";
@@ -263,7 +263,7 @@ int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t
                                     int64_t being_operate_qq) {
     ENSURE_POST_NEEDED;
 
-    const auto sub_type_str = [&sub_type, &being_operate_qq]() {
+    const auto sub_type_str = [&]() {
         switch (sub_type) {
         case 1:
             return "leave";
@@ -296,7 +296,7 @@ int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t
                                     int64_t being_operate_qq) {
     ENSURE_POST_NEEDED;
 
-    const auto sub_type_str = [&sub_type]() {
+    const auto sub_type_str = [&]() {
         switch (sub_type) {
         case 1:
             return "approve";
@@ -359,7 +359,7 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
                                 const string &msg, const string &response_flag) {
     ENSURE_POST_NEEDED;
 
-    const auto sub_type_str = [&sub_type]() {
+    const auto sub_type_str = [&]() {
         switch (sub_type) {
         case 1:
             return "add";
