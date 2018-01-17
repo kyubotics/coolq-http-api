@@ -34,8 +34,13 @@ using namespace std;
         return CQEVENT_IGNORE; \
     }
 
-static int32_t post_event(const json &payload, const function<void(const Params &)> response_handler = nullptr) {
+static int32_t post_event(json payload, const function<void(const Params &)> response_handler = nullptr) {
     static const auto TAG = u8"ÉÏ±¨";
+
+    payload["self_id"] = sdk->get_login_qq();
+    if (payload.find("time") == payload.end()) {
+        payload["time"] = time(nullptr);
+    }
 
     auto should_block = false;
 
@@ -95,18 +100,18 @@ int32_t event_private_msg(int32_t sub_type, int32_t msg_id, int64_t from_qq, con
             return "unknown";
         }
     }();
+
     const json payload = {
         {"post_type", "message"},
         {"message_type", "private"},
         {"sub_type", sub_type_str},
-        {"time", time(nullptr)},
         {"message_id", msg_id},
         {"user_id", from_qq},
         {"message", Message(msg).process_inward()},
         {"font", font}
     };
 
-    return post_event(payload, [&](const Params &params) {
+    return post_event(move(payload), [&](const Params &params) {
         const auto reply = params.get_message("reply");
         if (!reply.empty()) {
             sdk->send_private_msg(from_qq, reply);
@@ -152,7 +157,6 @@ int32_t event_group_msg(int32_t sub_type, int32_t msg_id, int64_t from_group, in
         {"post_type", "message"},
         {"message_type", "group"},
         {"sub_type", sub_type_str},
-        {"time", time(nullptr)},
         {"message_id", msg_id},
         {"group_id", from_group},
         {"user_id", from_qq},
@@ -162,7 +166,7 @@ int32_t event_group_msg(int32_t sub_type, int32_t msg_id, int64_t from_group, in
         {"font", font}
     };
 
-    return post_event(payload, [&](const Params &params) {
+    return post_event(move(payload), [&](const Params &params) {
         const auto reply = params.get_message("reply");
         if (!reply.empty()) {
             auto prefix = params.get_bool("at_sender", true) ? "[CQ:at,qq=" + to_string(from_qq) + "] " : "";
@@ -195,7 +199,6 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t msg_id, int64_t from_discuss
     const json payload = {
         {"post_type", "message"},
         {"message_type", "discuss"},
-        {"time", time(nullptr)},
         {"message_id", msg_id},
         {"discuss_id", from_discuss},
         {"user_id", from_qq},
@@ -203,7 +206,7 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t msg_id, int64_t from_discuss
         {"font", font}
     };
 
-    return post_event(payload, [&](const Params &params) {
+    return post_event(move(payload), [&](const Params &params) {
         const auto reply = params.get_message("reply");
         if (!reply.empty()) {
             auto prefix = params.get_bool("at_sender", true) ? "[CQ:at,qq=" + to_string(from_qq) + "] " : "";
@@ -217,6 +220,7 @@ int32_t event_group_upload(int32_t sub_type, int32_t send_time, int64_t from_gro
     ENSURE_POST_NEEDED;
 
     const auto file_bin = base64_decode(file);
+
     const json payload = {
         {"post_type", "event"},
         {"event", "group_upload"},
@@ -226,7 +230,7 @@ int32_t event_group_upload(int32_t sub_type, int32_t send_time, int64_t from_gro
         {"file", file_bin.size() >= GroupFile::MIN_SIZE ? GroupFile::from_bytes(file_bin).json() : nullptr}
     };
 
-    return post_event(payload);
+    return post_event(move(payload));
 }
 
 int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq) {
@@ -242,6 +246,7 @@ int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_grou
             return "unknown";
         }
     }();
+
     const json payload = {
         {"post_type", "event"},
         {"event", "group_admin"},
@@ -251,7 +256,7 @@ int32_t event_group_admin(int32_t sub_type, int32_t send_time, int64_t from_grou
         {"user_id", being_operate_qq}
     };
 
-    return post_event(payload);
+    return post_event(move(payload));
 }
 
 int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq,
@@ -273,6 +278,7 @@ int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t
             return "unknown";
         }
     }();
+
     const json payload = {
         {"post_type", "event"},
         {"event", "group_decrease"},
@@ -283,7 +289,7 @@ int32_t event_group_member_decrease(int32_t sub_type, int32_t send_time, int64_t
         {"user_id", being_operate_qq}
     };
 
-    return post_event(payload);
+    return post_event(move(payload));
 }
 
 int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq,
@@ -300,6 +306,7 @@ int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t
             return "unknown";
         }
     }();
+
     const json payload = {
         {"post_type", "event"},
         {"event", "group_increase"},
@@ -310,7 +317,7 @@ int32_t event_group_member_increase(int32_t sub_type, int32_t send_time, int64_t
         {"user_id", being_operate_qq}
     };
 
-    return post_event(payload);
+    return post_event(move(payload));
 }
 
 int32_t event_friend_add(int32_t sub_type, int32_t send_time, int64_t from_qq) {
@@ -323,7 +330,7 @@ int32_t event_friend_add(int32_t sub_type, int32_t send_time, int64_t from_qq) {
         {"user_id", from_qq}
     };
 
-    return post_event(payload);
+    return post_event(move(payload));
 }
 
 int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t from_qq, const string &msg,
@@ -339,7 +346,7 @@ int32_t event_add_friend_request(int32_t sub_type, int32_t send_time, int64_t fr
         {"flag", response_flag}
     };
 
-    return post_event(payload, [&](const Params &params) {
+    return post_event(move(payload), [&](const Params &params) {
         if (auto approve_opt = params.get<bool>("approve"); approve_opt) {
             auto approve = approve_opt.value();
             sdk->set_friend_add_request(response_flag, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY,
@@ -362,6 +369,7 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
             return "unknown";
         }
     }();
+
     const json payload = {
         {"post_type", "request"},
         {"request_type", "group"},
@@ -373,7 +381,7 @@ int32_t event_add_group_request(int32_t sub_type, int32_t send_time, int64_t fro
         {"flag", response_flag}
     };
 
-    return post_event(payload, [&](const Params &params) {
+    return post_event(move(payload), [&](const Params &params) {
         if (auto approve_opt = params.get<bool>("approve"); approve_opt) {
             auto approve = approve_opt.value();
             sdk->set_group_add_request(response_flag, sub_type, approve ? CQREQUEST_ALLOW : CQREQUEST_DENY,
