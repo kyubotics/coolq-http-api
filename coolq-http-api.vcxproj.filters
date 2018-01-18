@@ -114,6 +114,9 @@
     <ClCompile Include="src\utils\http_utils.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\event\filter.cpp">
+      <Filter>src\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
@@ -238,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="src\emoji_data.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\filter.h">
+      <Filter>src\event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

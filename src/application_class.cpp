@@ -25,6 +25,7 @@
 
 #include "conf/loader.h"
 #include "service/hub_class.h"
+#include "event/filter.h"
 
 using namespace std;
 namespace fs = boost::filesystem;
@@ -68,6 +69,8 @@ void Application::enable() {
     }
 
     ServiceHub::instance().start();
+
+    GlobalFilter::load(sdk->directories().app() + "filter.json");
 
     if (!pool) {
         Log::d(TAG, u8"工作线程池创建成功");

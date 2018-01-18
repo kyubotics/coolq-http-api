@@ -20,6 +20,7 @@
     <ClCompile Include="src\dllentry.cpp" />
     <ClCompile Include="src\event\entry.cpp" />
     <ClCompile Include="src\event\events.cpp" />
+    <ClCompile Include="src\event\filter.cpp" />
     <ClCompile Include="src\globals.cpp" />
     <ClCompile Include="src\menuentry.cpp" />
     <ClCompile Include="src\message\message_class.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="src\ctpl\ctpl_stl.h" />
     <ClInclude Include="src\emoji_data.h" />
     <ClInclude Include="src\event\events.h" />
+    <ClInclude Include="src\event\filter.h" />
     <ClInclude Include="src\log_class.h" />
     <ClInclude Include="src\message\message_class.h" />
     <ClInclude Include="src\cqp\funcs.h" />

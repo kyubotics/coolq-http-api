@@ -26,6 +26,7 @@
 #include "structs.h"
 #include "service/hub_class.h"
 #include "utils/http_utils.h"
+#include "./filter.h"
 
 using namespace std;
 
@@ -43,6 +44,18 @@ static int32_t post_event(json payload, const function<void(const Params &)> res
     }
 
     auto should_block = false;
+
+
+    if (!GlobalFilter::eval(payload)) {
+        Log::d(TAG, u8"事件已被过滤器拦截，停止上报");
+        goto finish;
+    }
+
+    if (payload.find("message") != payload.end()) {
+        // convert message to the needed format
+        payload["message"] = Message(payload["message"].get<string>()).process_inward();
+    }
+
 
     if (!config.post_url.empty()) {
         // do http post and handle response
@@ -80,6 +93,7 @@ static int32_t post_event(json payload, const function<void(const Params &)> res
 
     ServiceHub::instance().push_event(payload);
 
+finish:
     return should_block ? CQEVENT_BLOCK : CQEVENT_IGNORE;
 }
 
@@ -107,7 +121,7 @@ int32_t event_private_msg(int32_t sub_type, int32_t msg_id, int64_t from_qq, con
         {"sub_type", sub_type_str},
         {"message_id", msg_id},
         {"user_id", from_qq},
-        {"message", Message(msg).process_inward()},
+        {"message", msg},
         {"font", font}
     };
 
@@ -162,7 +176,7 @@ int32_t event_group_msg(int32_t sub_type, int32_t msg_id, int64_t from_group, in
         {"user_id", from_qq},
         {"anonymous", anonymous},
         {"anonymous_flag", from_anonymous},
-        {"message", Message(final_msg).process_inward()},
+        {"message", final_msg},
         {"font", font}
     };
 
@@ -202,7 +216,7 @@ int32_t event_discuss_msg(int32_t sub_type, int32_t msg_id, int64_t from_discuss
         {"message_id", msg_id},
         {"discuss_id", from_discuss},
         {"user_id", from_qq},
-        {"message", Message(msg).process_inward()},
+        {"message", msg},
         {"font", font}
     };
 
