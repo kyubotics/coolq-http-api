@@ -21,8 +21,8 @@
 
 #define CQAPP_ID "io.github.richardchien.coolqhttpapi"
 #define CQAPP_NAME "CoolQ HTTP API"
-#define CQAPP_VERSION "3.3.5"
-#define CQAPP_BUILD_NUMBER 320
+#define CQAPP_VERSION "3.4.0-beta-1"
+#define CQAPP_BUILD_NUMBER 321
 #define CQAPP_FULLNAME CQAPP_NAME " v" CQAPP_VERSION
 #define CQAPP_USER_AGENT "CoolQHttpApi/" CQAPP_VERSION
 
