@@ -66,7 +66,7 @@ optional<Config> load_configuration(const string &filepath) {
                     << "thread_pool_size=4" << endl
                     << "server_thread_pool_size=1" << endl;
         } else {
-            Log::e(TAG, u8"写入默认配置失败，请检查文件系统权限");
+            Log::e(TAG, u8"默认配置写入失败，请检查文件系统权限");
         }
     }
 
@@ -116,10 +116,10 @@ optional<Config> load_configuration(const string &filepath) {
         GET_BOOL_CONFIG(convert_unicode_emoji);
         #undef GET_CONFIG
 
-        Log::i(TAG, u8"加载配置文件成功");
+        Log::i(TAG, u8"配置文件加载成功");
     } catch (...) {
         // failed to load configurations
-        Log::e(TAG, u8"加载配置文件失败，请检查配置文件格式和访问权限");
+        Log::e(TAG, u8"配置文件加载失败，请检查配置文件格式和访问权限");
         return nullopt;
     }
 
