@@ -259,11 +259,6 @@ shared_ptr<IFilter> construct_filter(const json &root_filter) {
     return construct_op("and", root_filter);
 }
 
-class BlockAllFilter : public IFilter {
-public:
-    bool eval(const json &payload) override { return false; }
-};
-
 shared_ptr<IFilter> GlobalFilter::filter_ = nullptr;
 
 void GlobalFilter::load(const string &path) {
@@ -280,6 +275,11 @@ void GlobalFilter::load(const string &path) {
                 filter_ = construct_filter(filter_json);
                 Log::i(TAG, u8"过滤规则加载成功");
             } catch (FilterSyntexError &e) {
+                class BlockAllFilter : public IFilter {
+                public:
+                    bool eval(const json &payload) override { return false; }
+                };
+
                 filter_ = make_shared<BlockAllFilter>(); // if the syntex is invalid, we block all event by default
                 Log::e(TAG, string(u8"过滤规则语法错误，事件将暂停上报，错误信息：") + e.what());
             }
