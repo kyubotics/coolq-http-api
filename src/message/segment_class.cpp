@@ -20,7 +20,6 @@
 #include "app.h"
 
 #include <ctime>
-#include <regex>
 #include <unordered_set>
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>

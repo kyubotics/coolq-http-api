@@ -22,7 +22,6 @@
 #include "app.h"
 
 #include <codecvt>
-#include <regex>
 #include <random>
 #include <openssl/hmac.h>
 #include <boost/compute/detail/lru_cache.hpp>
@@ -43,6 +42,17 @@ void string_replace(string &str, const string &search, const string &replace) {
     }
     ws_ret += str.substr(start_pos);
     str.swap(ws_ret);
+}
+
+string sregex_replace(const string &str, const regex &re, const function<string(const smatch &)> fmt_func) {
+    string result;
+    auto last_end_pos = 0;
+    for (sregex_iterator it(str.begin(), str.end(), re), end; it != end; ++it) {
+        result += it->prefix().str() + fmt_func(*it);
+        last_end_pos = it->position() + it->length();
+    }
+    result += str.substr(last_end_pos);
+    return result;
 }
 
 bool to_bool(const string &str, const bool default_val) {
@@ -128,16 +138,12 @@ string string_to_coolq(const string &str) {
 
 string string_from_coolq(const string &str) {
     // handle CoolQ event or data
-    auto utf8_str = iconv_string_decode(str, "gb18030");
+    auto result = iconv_string_decode(str, "gb18030");
 
     if (config.convert_unicode_emoji) {
         smatch m;
 
-        string processed_str_1;
-        auto it_1 = utf8_str.cbegin();
-        while (regex_search(it_1, utf8_str.cend(), m, regex(R"(\[CQ:emoji,\s*id=(\d+)\])"))) {
-            processed_str_1 += string(it_1, it_1 + m.position());
-
+        result = sregex_replace(result, regex(R"(\[CQ:emoji,\s*id=(\d+)\])"), [](const smatch &m) {
             const auto codepoint_str = m.str(1);
             u32string u32_str;
 
@@ -152,39 +158,19 @@ string string_from_coolq(const string &str) {
 
             const auto p = reinterpret_cast<const uint32_t *>(u32_str.data());
             wstring_convert<codecvt_utf8<uint32_t>, uint32_t> conv;
-            const auto emoji_utf8_str = conv.to_bytes(p, p + u32_str.size());
-            processed_str_1 += emoji_utf8_str;
-
-            it_1 += m.position() + m.length();
-        }
-        processed_str_1 += string(it_1, utf8_str.cend());
+            return conv.to_bytes(p, p + u32_str.size());
+        });
 
         // CoolQ sometimes use "#\uFE0F" to represent "#\uFE0F\u20E3"
         // we should convert them into correct emoji codepoints here
         //     \uFE0F == \xef\xb8\x8f
         //     \u20E3 == \xe2\x83\xa3
-        string processed_str_2;
-        auto it_2 = processed_str_1.cbegin();
-        while (regex_search(it_2, processed_str_1.cend(), m, regex("[#*0-9]\xef\xb8\x8f"))) {
-            processed_str_2 += string(it_2, it_2 + m.position());
-
-            const auto pos = m.position();
-            if (processed_str_1.cend() - (it_2 + pos) < strlen("\xef\xb8\x8f\xe2\x83\xa3")
-                || string(it_2 + pos + 4, it_2 + pos + 7) != "\xe2\x83\xa3") {
-                // there is no "\u20E3" behind this match
-                processed_str_2 += m.str(0) + "\xe2\x83\xa3";
-            } else {
-                processed_str_2 += m.str(0);
-            }
-
-            it_2 += m.position() + m.length();
-        }
-        processed_str_2 += string(it_2, processed_str_1.cend());
-
-        return processed_str_2;
+        result = sregex_replace(result, regex("([#*0-9]\xef\xb8\x8f)(\xe2\x83\xa3)?"), [](const smatch &m) {
+            return m.str(1) + "\xe2\x83\xa3";
+        });
     }
 
-    return utf8_str;
+    return result;
 }
 
 unsigned random_int(const unsigned min, const unsigned max) {

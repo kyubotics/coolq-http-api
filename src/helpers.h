@@ -20,11 +20,14 @@
 #pragma once
 
 #include <string>
+#include <regex>
 #include <memory>
 #include <optional>
 #include <nlohmann/json.hpp>
 
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
+std::string sregex_replace(const std::string &str, const std::regex &re,
+                           const std::function<std::string(const std::smatch &)> fmt_func);
 
 bool to_bool(const std::string &str, const bool default_val);
 std::optional<bool> to_bool(const std::string &str);
