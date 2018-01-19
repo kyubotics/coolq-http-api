@@ -291,7 +291,7 @@ void GlobalFilter::load(const string &path) {
             bool eval(const json &) override { return false; }
         };
 
-        filter_ = make_shared<BlockAllFilter>(); // if the syntex is invalid, we block all event by default
+        filter_ = make_shared<BlockAllFilter>();
         Log::e(TAG, u8"过滤规则加载失败，将暂停所有事件上报");
     }
 }
