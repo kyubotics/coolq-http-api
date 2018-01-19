@@ -44,4 +44,5 @@ struct Config {
     size_t thread_pool_size = 4;
     size_t server_thread_pool_size = 1;
     bool convert_unicode_emoji = true;
+    bool use_filter = false;
 };

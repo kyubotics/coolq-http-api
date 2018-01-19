@@ -114,6 +114,7 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(thread_pool_size, size_t);
         GET_CONFIG(server_thread_pool_size, size_t);
         GET_BOOL_CONFIG(convert_unicode_emoji);
+        GET_BOOL_CONFIG(use_filter);
         #undef GET_CONFIG
 
         Log::i(TAG, u8"配置文件加载成功");

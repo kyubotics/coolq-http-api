@@ -70,7 +70,10 @@ void Application::enable() {
 
     ServiceHub::instance().start();
 
-    GlobalFilter::load(sdk->directories().app() + "filter.json");
+    GlobalFilter::reset();
+    if (config.use_filter) {
+        GlobalFilter::load(sdk->directories().app() + "filter.json");
+    }
 
     if (!pool) {
         Log::d(TAG, u8"工作线程池创建成功");

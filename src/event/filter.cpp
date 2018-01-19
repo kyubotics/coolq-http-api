@@ -275,16 +275,29 @@ void GlobalFilter::load(const string &path) {
                 filter_ = construct_filter(filter_json);
                 Log::i(TAG, u8"过滤规则加载成功");
             } catch (FilterSyntexError &e) {
-                class BlockAllFilter : public IFilter {
-                public:
-                    bool eval(const json &payload) override { return false; }
-                };
-
-                filter_ = make_shared<BlockAllFilter>(); // if the syntex is invalid, we block all event by default
-                Log::e(TAG, string(u8"过滤规则语法错误，事件将暂停上报，错误信息：") + e.what());
+                Log::e(TAG, string(u8"过滤规则语法错误，错误信息：") + e.what());
             }
         }
+    } else {
+        Log::e(TAG, u8"没有找到过滤规则文件 filter.json");
     }
+
+    if (!filter_) {
+        // we was expecting to load a filter, but we failed
+        // so we should block all event by default
+
+        class BlockAllFilter : public IFilter {
+        public:
+            bool eval(const json &) override { return false; }
+        };
+
+        filter_ = make_shared<BlockAllFilter>(); // if the syntex is invalid, we block all event by default
+        Log::e(TAG, u8"过滤规则加载失败，将暂停所有事件上报");
+    }
+}
+
+void GlobalFilter::reset() {
+    filter_ = nullptr;
 }
 
 bool GlobalFilter::eval(const json &payload) {
