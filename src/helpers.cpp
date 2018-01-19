@@ -174,10 +174,10 @@ string string_from_coolq(const string &str) {
 }
 
 unsigned random_int(const unsigned min, const unsigned max) {
-    mt19937 rng;
-    rng.seed(random_device()());
-    const uniform_int_distribution<mt19937::result_type> dist(min, max);
-    return dist(rng);
+    default_random_engine engine;
+    engine.seed(random_device()());
+    const uniform_int_distribution<unsigned> dist(min, max);
+    return dist(engine);
 }
 
 string data_file_full_path(const string &data_dir, const string &filename) {
