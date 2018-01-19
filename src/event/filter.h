@@ -2,12 +2,6 @@
 
 #include "common.h"
 
-class FilterSyntexError : public std::exception {
-public:
-    using exception::exception;
-    FilterSyntexError(const std::string &msg) : FilterSyntexError(msg.c_str()) {}
-};
-
 class IFilter {
 public:
     virtual ~IFilter() = default;

@@ -8,6 +8,10 @@
 using namespace std;
 namespace fs = boost::filesystem;
 
+class FilterSyntexError : public invalid_argument {
+    using invalid_argument::invalid_argument;
+};
+
 static shared_ptr<IFilter> construct_op(const string &op_name, const json &op_argument);
 
 class NotOperator : public IFilter {

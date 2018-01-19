@@ -23,8 +23,7 @@ using namespace std;
 
 void Pack::check_enough(const size_t needed) const {
     if (this->size() < needed) {
-        throw BytesNotEnoughError(
-            (string("there aren't enough bytes to pop (") + to_string(needed) + " bytes needed)").c_str());
+        throw BytesNotEnoughError("there aren't enough bytes to pop (" + to_string(needed) + " bytes needed)");
     }
 }
 

@@ -22,8 +22,8 @@
 
 #include "common.h"
 
-class BytesNotEnoughError : public std::exception {
-    using exception::exception;
+class BytesNotEnoughError : public std::runtime_error {
+    using runtime_error::runtime_error;
 };
 
 class Pack {
