@@ -115,7 +115,7 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 | `post_type` | string | `"message"` | 上报类型 |
 | `message_type` | string | `"private"` | 消息类型 |
 | `sub_type` | string | `"friend"`、`"group"`、`"discuss"`、`"other"` | 消息子类型，如果是好友则是 `"friend"`，如果从群或讨论组来的临时会话则分别是 `"group"`、`"discuss"` |
-| `message_id` | number | - | （v3.3.1 新增）消息 ID |
+| `message_id` | number | - | 消息 ID |
 | `user_id` | number | - | 发送者 QQ 号 |
 | `message` | string/array | - | 消息内容 |
 | `font` | number | - | 字体 |
@@ -153,7 +153,7 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 | `post_type` | string | `"message"` | 上报类型 |
 | `message_type` | string | `"group"` | 消息类型 |
 | `sub_type` | string | `"normal"`、`"anonymous"`、`"notice"` | 消息子类型，正常消息是 `"normal"`，匿名消息是 `"anonymous"`，系统提示（如「管理员已禁止群内匿名聊天」）是 `"notice"` |
-| `message_id` | number | - | （v3.3.1 新增）消息 ID |
+| `message_id` | number | - | 消息 ID |
 | `group_id` | number | - | 群号 |
 | `user_id` | number | - | 发送者 QQ 号 |
 | `anonymous` | string | - | 匿名用户显示名 |
@@ -168,7 +168,7 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 | `reply` | string/array | 要回复的内容 | 不回复 |
 | `auto_escape` | boolean | 消息内容是否作为纯文本发送（即不解析 CQ 码），`message` 数据类型为 `array` 时无效 | 不转义 |
 | `at_sender` | boolean | 是否要在回复开头 at 发送者（自动添加），发送者是匿名用户时无效 | at 发送者 |
-| `delete` | boolean | （v3.3.1 新增）撤回该条消息 | 不撤回 |
+| `delete` | boolean | 撤回该条消息 | 不撤回 |
 | `kick` | boolean | 把发送者踢出群组（需要登录号权限足够），**不拒绝**此人后续加群请求，发送者是匿名用户时无效 | 不踢 |
 | `ban` | boolean | 把发送者禁言 30 分钟（需要登录号权限足够），对匿名用户也有效，不支持指定禁言时长（如需指定，请调用相应 API） | 不禁言 |
 
@@ -180,7 +180,7 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 | ----- | ------- | ------- | --- |
 | `post_type` | string | `"message"` | 上报类型 |
 | `message_type` | string | `"discuss"` | 消息类型 |
-| `message_id` | number | - | （v3.3.1 新增）消息 ID |
+| `message_id` | number | - | 消息 ID |
 | `discuss_id` | number | - | 讨论组 ID |
 | `user_id` | number | - | 发送者 QQ 号 |
 | `message` | string/array | - | 消息内容 |
