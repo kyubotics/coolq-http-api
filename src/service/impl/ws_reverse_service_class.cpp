@@ -14,7 +14,7 @@ shared_ptr<WsClientT> WsReverseService::SubServiceBase::init_ws_reverse_client(c
     }
     client->on_close = [&](shared_ptr<typename WsClientT::Connection> connection,
                            int code, string reason) {
-        if (code != 1000) {
+        if (config.ws_reverse_reconnect_on_code_1000 || code != 1000) {
             with_unique_lock(should_reconnect_mutex_, [&]() {
                 should_reconnect_ = true;
             });

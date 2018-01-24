@@ -101,6 +101,7 @@ optional<Config> load_configuration(const string &filepath) {
         GET_CONFIG(ws_reverse_api_url, string);
         GET_CONFIG(ws_reverse_event_url, string);
         GET_CONFIG(ws_reverse_reconnect_interval, unsigned long);
+        GET_BOOL_CONFIG(ws_reverse_reconnect_on_code_1000);
         GET_BOOL_CONFIG(use_ws_reverse);
         GET_CONFIG(post_url, string);
         GET_CONFIG(access_token, string);
