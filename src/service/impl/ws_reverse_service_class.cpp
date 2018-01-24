@@ -15,12 +15,16 @@ shared_ptr<WsClientT> WsReverseService::SubServiceBase::init_ws_reverse_client(c
     client->on_close = [&](shared_ptr<typename WsClientT::Connection> connection,
                            int code, string reason) {
         if (code != 1000) {
-            should_reconnect_ = true;
+            with_unique_lock(should_reconnect_mutex_, [&]() {
+                should_reconnect_ = true;
+            });
         }
     };
     client->on_error = [&](shared_ptr<typename WsClientT::Connection> connection,
                            const SimpleWeb::error_code &error_code) {
-        should_reconnect_ = true;
+        with_unique_lock(should_reconnect_mutex_, [&]() {
+            should_reconnect_ = true;
+        });
     };
     return client;
 }
@@ -59,27 +63,27 @@ void WsReverseService::SubServiceBase::start() {
 
         reconnect_worker_thread_ = thread([&]() {
             try {
-                set_reconnect_thread_running_flag(true);
-                while (get_reconnect_thread_running_flag()) {
-                    if (should_reconnect_) {
+                set_reconnect_worker_running(true);
+                while (is_reconnect_worker_running()) {
+                    auto should_reconn = false;
+                    with_unique_lock(should_reconnect_mutex_, [&]() {
+                        should_reconn = should_reconnect_;
+                        should_reconnect_ = false;
+                    });
+                    if (should_reconn) {
                         Log::d(TAG, u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
                                + to_string(config.ws_reverse_reconnect_interval) + u8" 毫秒后尝试重连");
-                        should_reconnect_ = false;
                         Sleep(config.ws_reverse_reconnect_interval);
                         stop();
                         start();
                     }
 
-                    if (get_reconnect_thread_running_flag()) {
+                    if (is_reconnect_worker_running()) {
                         Sleep(500); // wait 500 ms for the next check
                     } else {
                         break;
                     }
                 }
-            } catch (...) {}
-
-            try {
-                remove_reconnect_thread_running_flag();
             } catch (...) {}
         });
 
@@ -102,7 +106,7 @@ void WsReverseService::SubServiceBase::start() {
 }
 
 void WsReverseService::SubServiceBase::stop() {
-    set_reconnect_thread_running_flag(false, reconnect_worker_thread_.get_id());
+    set_reconnect_worker_running(false); // this will notify the reconnect worker to stop
     // detach but not join, because we want the thread continue to run until its next check
     reconnect_worker_thread_.detach();
 

@@ -202,3 +202,8 @@ bool is_in_wine() {
     result = tmp;
     return tmp;
 }
+
+void with_unique_lock(mutex &m, const function<void()> func) {
+    unique_lock<mutex> lock(m);
+    func();
+}

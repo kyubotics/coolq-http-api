@@ -23,6 +23,7 @@
 #include <regex>
 #include <memory>
 #include <optional>
+#include <mutex>
 #include <nlohmann/json.hpp>
 
 void string_replace(std::string &str, const std::string &search, const std::string &replace);
@@ -61,3 +62,5 @@ unsigned random_int(const unsigned min, const unsigned max);
 std::string data_file_full_path(const std::string &data_dir, const std::string &filename);
 
 bool is_in_wine();
+
+void with_unique_lock(std::mutex &m, std::function<void()> func);

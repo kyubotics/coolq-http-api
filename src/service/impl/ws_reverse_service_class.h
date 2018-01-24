@@ -64,28 +64,19 @@ private:
         std::shared_ptr<WsClientT> init_ws_reverse_client(const std::string &server_port_path);
 
         bool should_reconnect_ = false;
-        std::unordered_map<std::thread::id, bool> reconnect_thread_running_flag_map_;
-        std::mutex reconnect_thread_running_flag_map_mutex_;
+        std::mutex should_reconnect_mutex_;
         std::thread reconnect_worker_thread_;
+        bool reconnect_worker_running_ = false;
+        std::mutex reconnect_worker_running_mutex_;
 
-        bool get_reconnect_thread_running_flag(const std::thread::id tid = std::this_thread::get_id()) {
-            std::unique_lock<std::mutex> lock(reconnect_thread_running_flag_map_mutex_);
-            if (const auto &it = reconnect_thread_running_flag_map_.find(tid);
-                it != reconnect_thread_running_flag_map_.end()) {
-                return it->second;
-            }
-            return false;
+        bool is_reconnect_worker_running() {
+            std::unique_lock<std::mutex> lock(reconnect_worker_running_mutex_);
+            return reconnect_worker_running_;
         }
 
-        void set_reconnect_thread_running_flag(const bool flag,
-                                               const std::thread::id tid = std::this_thread::get_id()) {
-            std::unique_lock<std::mutex> lock(reconnect_thread_running_flag_map_mutex_);
-            reconnect_thread_running_flag_map_[tid] = flag;
-        }
-
-        void remove_reconnect_thread_running_flag(const std::thread::id tid = std::this_thread::get_id()) {
-            std::unique_lock<std::mutex> lock(reconnect_thread_running_flag_map_mutex_);
-            reconnect_thread_running_flag_map_.erase(tid);
+        void set_reconnect_worker_running(const bool yes_or_no) {
+            std::unique_lock<std::mutex> lock(reconnect_worker_running_mutex_);
+            reconnect_worker_running_ = yes_or_no;
         }
     };
 
