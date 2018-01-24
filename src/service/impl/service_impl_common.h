@@ -65,8 +65,12 @@ static void ws_api_on_message(std::shared_ptr<typename WsT::Connection> connecti
 
     ApiResult result;
 
-    auto send_result = [&connection, &result]() {
-        auto resp_body = result.json().dump();
+    auto send_result = [&connection, &result](const json &echo = nullptr) {
+        auto resp_json = result.json();
+        if (!echo.is_null()) {
+            resp_json["echo"] = echo;
+        }
+        auto resp_body = resp_json.dump();
         Log::d(TAG, u8"响应数据已准备完毕：" + resp_body);
         auto send_stream = std::make_shared<typename WsT::SendStream>();
         *send_stream << resp_body;
@@ -103,5 +107,10 @@ static void ws_api_on_message(std::shared_ptr<typename WsT::Connection> connecti
         result.retcode = ApiResult::RetCodes::HTTP_NOT_FOUND;
     }
 
-    send_result();
+    json echo;
+    try {
+        echo = payload.at("echo");
+    } catch (...) {}
+
+    send_result(echo);
 }
