@@ -44,6 +44,7 @@ secret=kP9yK2lrGxoymmpo
 | `ws_reverse_api_url` | 空 | 反向 WebSocket API 地址 |
 | `ws_reverse_event_url` | 空 | 反向 WebSocket 事件上报地址 |
 | `ws_reverse_reconnect_interval` | `3000` | 反向 WebSocket 客户端断线重连间隔，单位毫秒 |
+| `ws_reverse_reconnect_on_code_1000` | `no` | 是否在关闭状态码为 1000 的时候重连 |
 | `use_ws_reverse` | `no` | 是否使用反向 WebSocket 服务，即插件作为 WebSocket 客户端主动连接指定的 API 和事件上报地址，见 [通信方式的第三种](/CommunicationMethods#插件作为-websocket-客户端（反向-websocket）) |
 | `post_url` | 空 | 消息和事件的上报地址，通过 POST 方式请求，数据以 JSON 格式发送 |
 | `access_token` | 空 | API 访问 token，如果不为空，则会在接收到请求时验证 `Authorization` 请求头是否为 `Token xxxxxxxx`，`xxxxxxxx` 为 access token |

@@ -24,7 +24,7 @@ Authorization: Token kSLuTF2GC2Q4q4ugm3
 
 或者在 URI 中指定，如 `/api/?access_token=kSLuTF2GC2Q4q4ugm3`。
 
-## `/api/`
+## `/api/` 接口
 
 连接此接口后，向插件发送如下结构的 JSON 对象，即可调用相应的 API：
 
@@ -45,7 +45,7 @@ Authorization: Token kSLuTF2GC2Q4q4ugm3
 ```json
 {
     "status": "failed",
-    "retcode": 1404
+    "retcode": 1404,
     "data": null
 }
 ```
@@ -63,7 +63,7 @@ Authorization: Token kSLuTF2GC2Q4q4ugm3
 
 对于 `/api/` 接口，你可以保持连接，也可以每次请求是重新建立连接，区别不是很大。
 
-## `/event/`
+## `/event/` 接口
 
 连接此接口后，插件会在收到事件后推送至客户端，推送的格式和 HTTP POST 方式上报的完全一致，见 [上报数据格式](/Post#上报数据格式)，事件列表见 [事件列表](/Post#事件列表)。
 
