@@ -1,7 +1,5 @@
 # 事件过滤器
 
-**注：目前过滤机制还在测试阶段，可能有破坏性的 bug，请酌情使用。**
-
 将配置项 `use_filter` 设置为 `yes` 即可开启事件过滤器，插件启动时会在 `app\io.github.richardchien.coolqhttpapi` 文件夹下读取 `filter.json` 文件中定义的过滤规则（使用 JSON 编写），若文件不存在，或过滤规则语法错误，则会暂停所有上报。
 
 ## 示例
