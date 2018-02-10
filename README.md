@@ -56,7 +56,7 @@ set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_PLATFORM_TOOLSET v141)
 ```
 
-由于 triplet 的名字是在 VS 工程文件里写死的，所以建议将 triplet 命名为 `x86-windows-static.cmake`。要编译项目的话，需要先安装这些依赖：`boost`、`cpprestsdk`、`curl`、`nlohmann-json`、`openssl`。
+由于 triplet 的名字是在 VS 工程文件里写死的，所以建议将 triplet 命名为 `x86-windows-static.cmake`。要编译项目的话，需要先安装这些依赖：`boost`、`cpprestsdk`、`curl`、`nlohmann-json`、`openssl`、`libiconv`。
 
 注意，依赖中的 `cpprestsdk`，需要安装 2.9.0 版本，因为更新版本在一些版本的 Windows Server 上不能正常工作，要安装 2.9.0 版，需要先进 vcpkg 根目录，运行：
 
