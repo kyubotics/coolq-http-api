@@ -88,6 +88,7 @@ git checkout 2e39b6195fbc14a655474b019234890df94a2ed0 -- ports/cpprestsdk
 
 - [Hstb1230/http-to-cq](https://github.com/Hstb1230/http-to-cq)
 - [LEMOC](https://cqp.cc/t/29722)
+- [yukixz/cqsocketapi](https://github.com/yukixz/cqsocketapi)
 
 ## 捐助
 

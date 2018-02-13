@@ -42,7 +42,7 @@ $ docker run -ti --rm --name cqhttp-test \
              richardchien/cqhttp:latest
 ```
 
-其中，`CQHTTP_POST_URL`、`CQHTTP_SERVE_DATA_FILES` 是用于配置插件运行的，格式为「`CQHTTP_` + 插件配置项的大写」，具体的配置项，见 [配置文件说明](/Configuration)。
+其中，`CQHTTP_POST_URL`、`CQHTTP_SERVE_DATA_FILES` 是用于配置插件运行的，格式为「`CQHTTP_` + 插件配置项的大写」，具体的配置项，见 [配置](/Configuration)。
 
 然后访问 `http://<你的IP>:9000/` 进入 noVNC（默认密码 `MAX8char`），登录酷 Q，即可开始使用（插件已自动启用，配置文件也根据启动命令的环境变量自动生成了）。一般情况下，你不太需要关注插件是如何存在于容器中的。
 
