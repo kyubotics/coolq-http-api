@@ -2,31 +2,8 @@
 
 #include "./common.h"
 #include "./enums.h"
-
-namespace cq {
-    struct Target {
-        std::optional<int64_t> user_id;
-        std::optional<int64_t> group_id;
-        std::optional<int64_t> discuss_id;
-
-        enum Type {
-            PRIVATE,
-            GROUP,
-            DISCUSS
-        };
-
-        Target() = default;
-        Target(const int64_t user_id) : user_id(user_id) {}
-
-        Target(const int64_t user_id, const int64_t group_or_discuss_id, const Type type) : Target(user_id) {
-            if (type == Type::GROUP) {
-                group_id = group_or_discuss_id;
-            } else if (type == Type::DISCUSS) {
-                discuss_id = group_or_discuss_id;
-            }
-        }
-    };
-}
+#include "./target.h"
+#include "./message.h"
 
 namespace cq::event {
     struct Event {
@@ -38,7 +15,7 @@ namespace cq::event {
         message::Type message_type;
         message::SubType sub_type;
         int32_t message_id;
-        std::string message;
+        message::Message message;
         int32_t font;
     };
 

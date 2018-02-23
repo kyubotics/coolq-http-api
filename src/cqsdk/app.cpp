@@ -9,6 +9,7 @@ namespace cq {
 
     namespace app {
         int32_t auth_code = 0;
+        std::string id = "";
 
         std::function<void(int32_t)> on_initialize;
         std::function<void()> on_enable;
@@ -16,7 +17,6 @@ namespace cq {
         std::function<void()> on_start;
         std::function<void()> on_exit;
 
-        std::function<const char *()> __app_info;
         std::function<void()> __main;
     }
 }
@@ -31,7 +31,8 @@ using cq::utils::call_if_valid;
 CQEVENT(const char *, AppInfo, 0)
 () {
     // CoolQ API version: 9
-    return call_if_valid(app::__app_info);
+    static auto info = "9," + app::id;
+    return info.c_str();
 }
 
 /**

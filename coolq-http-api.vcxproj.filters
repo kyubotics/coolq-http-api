@@ -147,6 +147,12 @@
     <ClCompile Include="src\api\api_old.cpp">
       <Filter>src\api</Filter>
     </ClCompile>
+    <ClCompile Include="src\cqsdk\dir.cpp">
+      <Filter>src\cqsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqsdk\message.cpp">
+      <Filter>src\cqsdk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
@@ -313,6 +319,18 @@
     </ClInclude>
     <ClInclude Include="src\cqsdk\utils\base64.h">
       <Filter>src\cqsdk\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\dir.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\utils\memory.h">
+      <Filter>src\cqsdk\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\target.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\message.h">
+      <Filter>src\cqsdk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,8 @@
 #include "./utils/string.h"
 #include "./app.h"
 #include "./enums.h"
+#include "./target.h"
+#include "./message.h"
 
 namespace cq::api {
     void init();
@@ -53,24 +55,23 @@ namespace cq::api {
         return raw::CQ_setGroupKick(app::auth_code, group_id, user_id, reject_add_request);
     }
 
-    inline int32_t set_group_ban(const int64_t group_id, const int64_t user_id, const int64_t duration = 30 * 60) {
+    inline int32_t set_group_ban(const int64_t group_id, const int64_t user_id, const int64_t duration) {
         return raw::CQ_setGroupBan(app::auth_code, group_id, user_id, duration);
     }
 
-    inline int32_t set_group_anonymous_ban(const int64_t group_id, const std::string &flag,
-                                           const int64_t duration = 30 * 60) {
+    inline int32_t set_group_anonymous_ban(const int64_t group_id, const std::string &flag, const int64_t duration) {
         return raw::CQ_setGroupAnonymousBan(app::auth_code, group_id, utils::string_to_coolq(flag).c_str(), duration);
     }
 
-    inline int32_t set_group_whole_ban(const int64_t group_id, const bool enable = true) {
+    inline int32_t set_group_whole_ban(const int64_t group_id, const bool enable) {
         return raw::CQ_setGroupWholeBan(app::auth_code, group_id, enable);
     }
 
-    inline int32_t set_group_admin(const int64_t group_id, const int64_t user_id, const bool enable = true) {
+    inline int32_t set_group_admin(const int64_t group_id, const int64_t user_id, const bool enable) {
         return raw::CQ_setGroupAdmin(app::auth_code, group_id, user_id, enable);
     }
 
-    inline int32_t set_group_anonymous(const int64_t group_id, const bool enable = true) {
+    inline int32_t set_group_anonymous(const int64_t group_id, const bool enable) {
         return raw::CQ_setGroupAnonymous(app::auth_code, group_id, enable);
     }
 
@@ -78,13 +79,12 @@ namespace cq::api {
         return raw::CQ_setGroupCard(app::auth_code, group_id, user_id, utils::string_to_coolq(card).c_str());
     }
 
-    inline int32_t set_group_leave(const int64_t group_id, const bool is_dismiss = false) {
+    inline int32_t set_group_leave(const int64_t group_id, const bool is_dismiss) {
         return raw::CQ_setGroupLeave(app::auth_code, group_id, is_dismiss);
     }
 
     inline int32_t set_group_special_title(const int64_t group_id, const int64_t user_id,
-                                           const std::string &special_title,
-                                           const int64_t duration = -1 /* forever */) {
+                                           const std::string &special_title, const int64_t duration) {
         return raw::CQ_setGroupSpecialTitle(app::auth_code, group_id, user_id,
                                             utils::string_to_coolq(special_title).c_str(), duration);
     }
@@ -97,21 +97,19 @@ namespace cq::api {
 
     #pragma region Request Operation
 
-    inline int32_t set_friend_add_request(const std::string &flag,
-                                          const request::Operation operation = request::APPROVE,
-                                          const std::string &remark = "") {
+    inline int32_t set_friend_add_request(const std::string &flag, const request::Operation operation,
+                                          const std::string &remark) {
         return raw::CQ_setFriendAddRequest(app::auth_code, utils::string_to_coolq(flag).c_str(),
                                            operation, utils::string_to_coolq(remark).c_str());
     }
 
     inline int32_t set_group_add_request(const std::string &flag, const request::SubType type,
-                                         const request::Operation operation = request::APPROVE) {
+                                         const request::Operation operation) {
         return raw::CQ_setGroupAddRequest(app::auth_code, utils::string_to_coolq(flag).c_str(), type, operation);
     }
 
     inline int32_t set_group_add_request(const std::string &flag, const request::SubType type,
-                                         const request::Operation operation = request::APPROVE,
-                                         const std::string &reason = "") {
+                                         const request::Operation operation, const std::string &reason) {
         return raw::CQ_setGroupAddRequestV2(app::auth_code, utils::string_to_coolq(flag).c_str(), type, operation,
                                             utils::string_to_coolq(reason).c_str());
     }
@@ -129,7 +127,7 @@ namespace cq::api {
         return nick ? utils::string_from_coolq(nick) : std::string();
     }
 
-    inline std::string get_stranger_info_raw(const int64_t user_id, const bool no_cache = false) {
+    inline std::string get_stranger_info_raw(const int64_t user_id, const bool no_cache) {
         return utils::base64::decode(raw::CQ_getStrangerInfo(app::auth_code, user_id, no_cache));
     }
 
@@ -141,8 +139,7 @@ namespace cq::api {
         return utils::base64::decode(raw::CQ_getGroupMemberList(app::auth_code, group_id));
     }
 
-    inline std::string get_group_member_info_raw(const int64_t group_id, const int64_t user_id,
-                                                 const bool no_cache = false) {
+    inline std::string get_group_member_info_raw(const int64_t group_id, const int64_t user_id, const bool no_cache) {
         return utils::base64::decode(raw::CQ_getGroupMemberInfoV2(app::auth_code, group_id, user_id, no_cache));
     }
 
@@ -180,6 +177,39 @@ namespace cq::api {
     //int32_t set_restart() {
     //    return raw::CQ_setRestart(app::auth_code);
     //}
+
+    #pragma endregion
+
+    #pragma region SDK Bonus
+
+    inline int32_t send_msg(const Target &target, const std::string &msg) {
+        if (target.group_id.has_value()) {
+            return send_group_msg(target.group_id.value(), msg);
+        }
+        if (target.discuss_id.has_value()) {
+            return send_discuss_msg(target.discuss_id.value(), msg);
+        }
+        if (target.user_id.has_value()) {
+            return send_private_msg(target.user_id.value(), msg);
+        }
+        return -1;
+    }
+
+    inline int32_t send_private_msg(const int64_t user_id, const message::Message &msg) {
+        return send_private_msg(user_id, std::string(msg));
+    }
+
+    inline int32_t send_group_msg(const int64_t group_id, const message::Message &msg) {
+        return send_group_msg(group_id, std::string(msg));
+    }
+
+    inline int32_t send_discuss_msg(const int64_t discuss_id, const message::Message &msg) {
+        return send_discuss_msg(discuss_id, std::string(msg));
+    }
+
+    inline int32_t send_msg(const Target &target, const message::Message &msg) {
+        return send_msg(target, std::string(msg));
+    }
 
     #pragma endregion
 }

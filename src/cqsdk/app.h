@@ -11,6 +11,7 @@ namespace cq {
 
     namespace app {
         extern int32_t auth_code;
+        extern std::string id;
 
         extern std::function<void(int32_t auth_code)> on_initialize;
         extern std::function<void()> on_enable;
@@ -18,16 +19,13 @@ namespace cq {
         extern std::function<void()> on_start;
         extern std::function<void()> on_exit;
 
-        extern std::function<const char *()> __app_info;
         extern std::function<void()> __main;
     }
 }
 
 #define CQ_INITIALIZE(AppId) \
-    static const char *__cq_app_info(); \
-    static bool __cq_set_app_info_function() { cq::app::__app_info = __cq_app_info; return true; } \
-    static bool __cq_app_info_dummy = __cq_set_app_info_function(); \
-    static const char *__cq_app_info() { return "9," AppId; }
+    static bool __cq_set_id() { cq::app::id = AppId; return true; } \
+    static bool __cq_set_id_dummy = __cq_set_id()
 
 #define CQ_MAIN \
     static void __cq_main(); \
