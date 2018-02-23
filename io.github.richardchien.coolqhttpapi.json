@@ -1,126 +1,126 @@
 {
-  "ret": 1,
-  "apiver": 9,
-  "name": "HTTP API",
-  "version": "3.4.0",
-  "version_id": 323,
-  "author": "Richard Chien",
-  "description": "CoolQ HTTP API\r\nhttps://github.com/richardchien/coolq-http-api",
-  "event": [
-    {
-      "id": 1003,
-      "type": 1003,
-      "name": "App Enable",
-      "priority": 20000,
-      "function": "Enable"
-    },
-    {
-      "id": 1004,
-      "type": 1004,
-      "name": "App Disable",
-      "priority": 20000,
-      "function": "Disable"
-    },
-    {
-      "id": 1001,
-      "type": 1001,
-      "name": "CoolQ Start",
-      "priority": 20000,
-      "function": "Start"
-    },
-    {
-      "id": 1002,
-      "type": 1002,
-      "name": "CoolQ Exit",
-      "priority": 20000,
-      "function": "Exit"
-    },
-    {
-      "id": 1,
-      "type": 21,
-      "name": "Private Message",
-      "function": "_event_private_msg",
-      "priority": 20000
-    },
-    {
-      "id": 2,
-      "type": 2,
-      "name": "Group Message",
-      "function": "_event_group_msg",
-      "priority": 20000
-    },
-    {
-      "id": 3,
-      "type": 4,
-      "name": "Discuss Message",
-      "function": "_event_discuss_msg",
-      "priority": 20000
-    },
-    {
-      "id": 4,
-      "type": 11,
-      "name": "Group Upload",
-      "function": "_event_group_upload",
-      "priority": 20000
-    },
-    {
-      "id": 5,
-      "type": 101,
-      "name": "Group Admin",
-      "function": "_event_group_admin",
-      "priority": 20000
-    },
-    {
-      "id": 6,
-      "type": 102,
-      "name": "Group Decrease",
-      "function": "_event_group_member_decrease",
-      "priority": 20000
-    },
-    {
-      "id": 7,
-      "type": 103,
-      "name": "Group Increase",
-      "function": "_event_group_member_increase",
-      "priority": 20000
-    },
-    {
-      "id": 10,
-      "type": 201,
-      "name": "Friend Add",
-      "function": "_event_friend_add",
-      "priority": 20000
-    },
-    {
-      "id": 8,
-      "type": 301,
-      "name": "Add Friend Request",
-      "function": "_event_add_friend_request",
-      "priority": 20000
-    },
-    {
-      "id": 9,
-      "type": 302,
-      "name": "Add Group Request",
-      "function": "_event_add_group_request",
-      "priority": 20000
-    }
-  ],
-  "menu": [
-    {
-      "name": "重启插件",
-      "function": "_menu_restart"
-    },
-    {
-      "name": "检查更新",
-      "function": "_menu_check_update"
-    },
-    {
-      "name": "重启酷 Q",
-      "function": "_menu_restart_coolq"
-    }
-  ],
-  "status": [],
+    "ret": 1,
+    "apiver": 9,
+    "name": "HTTP API",
+    "version": "3.4.0",
+    "version_id": 323,
+    "author": "Richard Chien",
+    "description": "CoolQ HTTP API\r\nhttps://github.com/richardchien/coolq-http-api",
+    "event": [
+        {
+            "id": 1003,
+            "type": 1003,
+            "name": "App Enable",
+            "priority": 20000,
+            "function": "cq_app_enable"
+        },
+        {
+            "id": 1004,
+            "type": 1004,
+            "name": "App Disable",
+            "priority": 20000,
+            "function": "cq_app_disable"
+        },
+        {
+            "id": 1001,
+            "type": 1001,
+            "name": "CoolQ Start",
+            "priority": 20000,
+            "function": "cq_app_start"
+        },
+        {
+            "id": 1002,
+            "type": 1002,
+            "name": "CoolQ Exit",
+            "priority": 20000,
+            "function": "cq_app_exit"
+        },
+        {
+            "id": 1,
+            "type": 21,
+            "name": "Private Message",
+            "function": "cq_event_private_msg",
+            "priority": 20000
+        },
+        {
+            "id": 2,
+            "type": 2,
+            "name": "Group Message",
+            "function": "cq_event_group_msg",
+            "priority": 20000
+        },
+        {
+            "id": 3,
+            "type": 4,
+            "name": "Discuss Message",
+            "function": "cq_event_discuss_msg",
+            "priority": 20000
+        },
+        {
+            "id": 4,
+            "type": 11,
+            "name": "Group Upload",
+            "function": "cq_event_group_upload",
+            "priority": 20000
+        },
+        {
+            "id": 5,
+            "type": 101,
+            "name": "Group Admin",
+            "function": "cq_event_group_admin",
+            "priority": 20000
+        },
+        {
+            "id": 6,
+            "type": 102,
+            "name": "Group Decrease",
+            "function": "cq_event_group_member_decrease",
+            "priority": 20000
+        },
+        {
+            "id": 7,
+            "type": 103,
+            "name": "Group Increase",
+            "function": "cq_event_group_member_increase",
+            "priority": 20000
+        },
+        {
+            "id": 10,
+            "type": 201,
+            "name": "Friend Add",
+            "function": "cq_event_friend_add",
+            "priority": 20000
+        },
+        {
+            "id": 8,
+            "type": 301,
+            "name": "Add Friend Request",
+            "function": "cq_event_friend_request",
+            "priority": 20000
+        },
+        {
+            "id": 9,
+            "type": 302,
+            "name": "Add Group Request",
+            "function": "cq_event_group_request",
+            "priority": 20000
+        }
+    ],
+    "menu": [
+        {
+            "name": "重启插件",
+            "function": "_menu_restart"
+        },
+        {
+            "name": "检查更新",
+            "function": "_menu_check_update"
+        },
+        {
+            "name": "重启酷 Q",
+            "function": "_menu_restart_coolq"
+        }
+    ],
+    "status": [],
     "auth": [
         20, // getCookies / getCsrfToken
         30, // getRecord

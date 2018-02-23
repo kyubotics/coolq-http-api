@@ -1,22 +1,3 @@
-//
-// funcs.h : Declare CoolQ SDK functions (DEFINE them if included by sdk.cpp).
-//
-// Copyright (C) 2017  Richard Chien <richardchienthebest@gmail.com>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-
 // We don't use "#pragma once" here, because this file is intended to be included twice,
 // by sdk_class.h and sdk.cpp, respectively to declare and define SDK functions.
 // Except for the two files mentioned above, no file is allowed to include this.
@@ -30,7 +11,7 @@
 
 #include <cstdint>
 
-typedef int32_t cq_bool_t;
+using cq_bool_t = int32_t;
 
 // Send Message
 FUNC(int32_t, sendPrivateMsg, int32_t auth_code, int64_t qq, const char *msg)
@@ -79,7 +60,7 @@ FUNC(const char *, getRecord, int32_t auth_code, const char *file, const char *o
 
 FUNC(int32_t, addLog, int32_t auth_code, int32_t log_level, const char *category, const char *log_msg)
 FUNC(int32_t, setFatal, int32_t auth_code, const char *error_info)
-FUNC(int32_t, setRestart, int32_t auth_code) // currently banned by sdk
+FUNC(int32_t, setRestart, int32_t auth_code) // currently ineffective
 
 #ifdef DEFINED_FUNC_MACRO
 #undef FUNC

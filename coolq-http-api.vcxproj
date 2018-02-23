@@ -11,12 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\api\api.cpp" />
+    <ClCompile Include="src\api\api_old.cpp" />
     <ClCompile Include="src\api\handlers.cpp" />
     <ClCompile Include="src\appentry.cpp" />
     <ClCompile Include="src\application_class.cpp" />
     <ClCompile Include="src\conf\loader.cpp" />
     <ClCompile Include="src\cqp\directories_class.cpp" />
+    <ClCompile Include="src\cqsdk\api.cpp" />
+    <ClCompile Include="src\cqsdk\app.cpp" />
+    <ClCompile Include="src\cqsdk\dllmain.cpp" />
+    <ClCompile Include="src\cqsdk\event.cpp" />
+    <ClCompile Include="src\cqsdk\demo.cpp" />
+    <ClCompile Include="src\cqsdk\utils\base64.cpp" />
+    <ClCompile Include="src\cqsdk\utils\string.cpp" />
+    <ClCompile Include="src\cqsdk\utils\vendor\base64.cpp" />
     <ClCompile Include="src\dllentry.cpp" />
     <ClCompile Include="src\event\entry.cpp" />
     <ClCompile Include="src\event\events.cpp" />
@@ -32,7 +40,6 @@
     <ClCompile Include="src\service\impl\ws_reverse_service_class.cpp" />
     <ClCompile Include="src\service\impl\ws_service_class.cpp" />
     <ClCompile Include="src\update.cpp" />
-    <ClCompile Include="src\utils\base64.cpp" />
     <ClCompile Include="src\utils\curl_wrapper.cpp" />
     <ClCompile Include="src\utils\encoding.cpp" />
     <ClCompile Include="src\utils\http_utils.cpp" />
@@ -48,6 +55,19 @@
     <ClInclude Include="src\conf\config_struct.h" />
     <ClInclude Include="src\conf\loader.h" />
     <ClInclude Include="src\cqp\sdk_class.h" />
+    <ClInclude Include="src\cqsdk\api.h" />
+    <ClInclude Include="src\cqsdk\app.h" />
+    <ClInclude Include="src\cqsdk\common.h" />
+    <ClInclude Include="src\cqsdk\cqsdk.h" />
+    <ClInclude Include="src\cqsdk\event.h" />
+    <ClInclude Include="src\cqsdk\emoji_data.inc" />
+    <ClInclude Include="src\cqsdk\enums.h" />
+    <ClInclude Include="src\cqsdk\log.h" />
+    <ClInclude Include="src\cqsdk\def.h" />
+    <ClInclude Include="src\cqsdk\utils\base64.h" />
+    <ClInclude Include="src\cqsdk\utils\function.h" />
+    <ClInclude Include="src\cqsdk\utils\string.h" />
+    <ClInclude Include="src\cqsdk\utils\vendor\base64.h" />
     <ClInclude Include="src\ctpl\ctpl_stl.h" />
     <ClInclude Include="src\emoji_data.h" />
     <ClInclude Include="src\event\events.h" />
@@ -86,6 +106,7 @@
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
     <None Include="post_build.bat" />
+    <None Include="src\cqsdk\api_funcs.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

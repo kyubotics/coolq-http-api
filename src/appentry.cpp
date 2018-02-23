@@ -23,60 +23,60 @@
 
 using namespace std;
 
-/**
- * Return app info.
- */
-CQEVENT(const char *, AppInfo, 0)
-() {
-    // CoolQ API version: 9
-    return "9," CQAPP_ID;
-}
-
-/**
- * Initialize SDK using the auth code given by CoolQ.
- */
-CQEVENT(int32_t, Initialize, 4)
-(const int32_t auth_code) {
-    app.initialize(auth_code);
-    return 0;
-}
-
-/**
- * Event: Plugin is enabled.
- */
-CQEVENT(int32_t, Enable, 0)
-() {
-    app.enable();
-    if (config.auto_check_update) {
-        pool->push([](int) {
-            check_update(true);
-        });
-    }
-    return 0;
-}
-
-/**
- * Event: Plugin is disabled.
- */
-CQEVENT(int32_t, Disable, 0)
-() {
-    app.disable();
-    return 0;
-}
-
-/**
- * Event: CoolQ is starting.
- */
-CQEVENT(int32_t, Start, 0)
-() {
-    return 0;
-}
-
-/**
- * Event: CoolQ is exiting.
- */
-CQEVENT(int32_t, Exit, 0)
-() {
-    app.exit();
-    return 0;
-}
+///**
+// * Return app info.
+// */
+//CQEVENT(const char *, AppInfo, 0)
+//() {
+//    // CoolQ API version: 9
+//    return "9," CQAPP_ID;
+//}
+//
+///**
+// * Initialize SDK using the auth code given by CoolQ.
+// */
+//CQEVENT(int32_t, Initialize, 4)
+//(const int32_t auth_code) {
+//    app.initialize(auth_code);
+//    return 0;
+//}
+//
+///**
+// * Event: Plugin is enabled.
+// */
+//CQEVENT(int32_t, Enable, 0)
+//() {
+//    app.enable();
+//    if (config.auto_check_update) {
+//        pool->push([](int) {
+//            check_update(true);
+//        });
+//    }
+//    return 0;
+//}
+//
+///**
+// * Event: Plugin is disabled.
+// */
+//CQEVENT(int32_t, Disable, 0)
+//() {
+//    app.disable();
+//    return 0;
+//}
+//
+///**
+// * Event: CoolQ is starting.
+// */
+//CQEVENT(int32_t, Start, 0)
+//() {
+//    return 0;
+//}
+//
+///**
+// * Event: CoolQ is exiting.
+// */
+//CQEVENT(int32_t, Exit, 0)
+//() {
+//    app.exit();
+//    return 0;
+//}

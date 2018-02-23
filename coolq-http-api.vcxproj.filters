@@ -34,6 +34,15 @@
     <Filter Include="src\service\impl">
       <UniqueIdentifier>{98eb6e06-c259-42a2-a8c9-6b9ed5fd54ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\cqsdk">
+      <UniqueIdentifier>{d1bfe950-655e-44f6-b851-85359126970e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cqsdk\utils">
+      <UniqueIdentifier>{73504386-31fe-4a6a-9463-45560e49a518}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cqsdk\utils\vendor">
+      <UniqueIdentifier>{4aa21425-158f-481c-862f-f7b027735bad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\conf\loader.cpp">
@@ -41,9 +50,6 @@
     </ClCompile>
     <ClCompile Include="src\helpers.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\base64.cpp">
-      <Filter>src\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\message\segment_class.cpp">
       <Filter>src\message</Filter>
@@ -102,9 +108,6 @@
     <ClCompile Include="src\service\impl\ws_reverse_service_class.cpp">
       <Filter>src\service\impl</Filter>
     </ClCompile>
-    <ClCompile Include="src\api\api.cpp">
-      <Filter>src\api</Filter>
-    </ClCompile>
     <ClCompile Include="src\utils\encoding.cpp">
       <Filter>src\utils</Filter>
     </ClCompile>
@@ -116,6 +119,33 @@
     </ClCompile>
     <ClCompile Include="src\event\filter.cpp">
       <Filter>src\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqsdk\dllmain.cpp">
+      <Filter>src\cqsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqsdk\app.cpp">
+      <Filter>src\cqsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqsdk\event.cpp">
+      <Filter>src\cqsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqsdk\demo.cpp">
+      <Filter>src\cqsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqsdk\api.cpp">
+      <Filter>src\cqsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqsdk\utils\string.cpp">
+      <Filter>src\cqsdk\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqsdk\utils\vendor\base64.cpp">
+      <Filter>src\cqsdk\utils\vendor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqsdk\utils\base64.cpp">
+      <Filter>src\cqsdk\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\api_old.cpp">
+      <Filter>src\api</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,9 +275,51 @@
     <ClInclude Include="src\event\filter.h">
       <Filter>src\event</Filter>
     </ClInclude>
+    <ClInclude Include="src\cqsdk\enums.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\common.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\app.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\event.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\cqsdk.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\def.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\emoji_data.inc">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\api.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\log.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\utils\string.h">
+      <Filter>src\cqsdk\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\utils\function.h">
+      <Filter>src\cqsdk\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\utils\vendor\base64.h">
+      <Filter>src\cqsdk\utils\vendor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\utils\base64.h">
+      <Filter>src\cqsdk\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />
     <None Include="post_build.bat" />
+    <None Include="src\cqsdk\api_funcs.h">
+      <Filter>src\cqsdk</Filter>
+    </None>
   </ItemGroup>
 </Project>
