@@ -11,7 +11,7 @@ namespace cq {
         int32_t auth_code = 0;
         std::string id = "";
 
-        std::function<void(int32_t)> on_initialize;
+        std::function<void()> on_initialize;
         std::function<void()> on_enable;
         std::function<void()> on_disable;
         std::function<void()> on_coolq_start;
@@ -42,7 +42,7 @@ __CQ_EVENT(int32_t, Initialize, 4)
 (const int32_t auth_code) {
     app::auth_code = auth_code;
     api::__init();
-    call_if_valid(app::on_initialize, auth_code);
+    call_if_valid(app::on_initialize);
     return 0;
 }
 

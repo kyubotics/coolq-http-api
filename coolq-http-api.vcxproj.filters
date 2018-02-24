@@ -13,6 +13,27 @@
     <Filter Include="src\cqsdk\utils\vendor">
       <UniqueIdentifier>{4aa21425-158f-481c-862f-f7b027735bad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\cqhttp">
+      <UniqueIdentifier>{4309a459-0b42-45de-a672-ddcc3cb5f415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cqhttp\core">
+      <UniqueIdentifier>{8542ed97-e46b-4f30-9d1c-828ac08a39a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cqhttp\plugins">
+      <UniqueIdentifier>{8a8d6711-38e4-48c2-9f91-b8e9736cd3ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cqhttp\utils">
+      <UniqueIdentifier>{f7e1345a-f3a9-4bae-9095-ce1a21468477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cqhttp\vendor">
+      <UniqueIdentifier>{eb23fec9-feee-4055-8a0f-1958e84877a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cqhttp\plugins\http">
+      <UniqueIdentifier>{05ff8a52-bd3c-4bc5-9dd1-bbef29e540ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cqhttp\plugins\filter">
+      <UniqueIdentifier>{e398d7ce-8c8c-4979-869b-3b9c9fbee0a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cqsdk\dllmain.cpp">
@@ -42,8 +63,17 @@
     <ClCompile Include="src\cqsdk\message.cpp">
       <Filter>src\cqsdk</Filter>
     </ClCompile>
-    <ClCompile Include="src\cqsdk\demo.cpp">
-      <Filter>src\cqsdk</Filter>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqhttp\core\core.cpp">
+      <Filter>src\cqhttp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqhttp\plugins\http\http.cpp">
+      <Filter>src\cqhttp\plugins\http</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cqhttp\plugins\filter\filter.cpp">
+      <Filter>src\cqhttp\plugins\filter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +136,24 @@
     </ClInclude>
     <ClInclude Include="src\cqsdk\menu.h">
       <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqhttp\core\plugin.h">
+      <Filter>src\cqhttp\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqhttp\core\common.h">
+      <Filter>src\cqhttp\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqhttp\plugins\http\http.h">
+      <Filter>src\cqhttp\plugins\http</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqhttp\cqhttp.h">
+      <Filter>src\cqhttp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqhttp\core\core.h">
+      <Filter>src\cqhttp\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqhttp\plugins\filter\filter.h">
+      <Filter>src\cqhttp\plugins\filter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

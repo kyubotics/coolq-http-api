@@ -11,9 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\cqhttp\core\core.cpp" />
+    <ClCompile Include="src\cqhttp\plugins\filter\filter.cpp" />
+    <ClCompile Include="src\cqhttp\plugins\http\http.cpp" />
     <ClCompile Include="src\cqsdk\api.cpp" />
     <ClCompile Include="src\cqsdk\app.cpp" />
-    <ClCompile Include="src\cqsdk\demo.cpp" />
     <ClCompile Include="src\cqsdk\dir.cpp" />
     <ClCompile Include="src\cqsdk\dllmain.cpp" />
     <ClCompile Include="src\cqsdk\event.cpp" />
@@ -21,8 +23,15 @@
     <ClCompile Include="src\cqsdk\utils\base64.cpp" />
     <ClCompile Include="src\cqsdk\utils\string.cpp" />
     <ClCompile Include="src\cqsdk\utils\vendor\base64.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\cqhttp\core\common.h" />
+    <ClInclude Include="src\cqhttp\core\core.h" />
+    <ClInclude Include="src\cqhttp\core\plugin.h" />
+    <ClInclude Include="src\cqhttp\cqhttp.h" />
+    <ClInclude Include="src\cqhttp\plugins\filter\filter.h" />
+    <ClInclude Include="src\cqhttp\plugins\http\http.h" />
     <ClInclude Include="src\cqsdk\api.h" />
     <ClInclude Include="src\cqsdk\app.h" />
     <ClInclude Include="src\cqsdk\common.h" />

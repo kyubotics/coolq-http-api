@@ -52,7 +52,7 @@ namespace cq {
          * |    on_exit <---------+                |
          * +---------------------------------------+
          */
-        extern std::function<void(int32_t auth_code)> on_initialize;
+        extern std::function<void()> on_initialize;
         extern std::function<void()> on_enable;
         extern std::function<void()> on_disable;
         extern std::function<void()> on_coolq_start;
