@@ -22,7 +22,6 @@
     <ClCompile Include="src\cqsdk\dir.cpp" />
     <ClCompile Include="src\cqsdk\dllmain.cpp" />
     <ClCompile Include="src\cqsdk\event.cpp" />
-    <ClCompile Include="src\cqsdk\demo.cpp" />
     <ClCompile Include="src\cqsdk\message.cpp" />
     <ClCompile Include="src\cqsdk\utils\base64.cpp" />
     <ClCompile Include="src\cqsdk\utils\string.cpp" />
@@ -65,11 +64,13 @@
     <ClInclude Include="src\cqsdk\event.h" />
     <ClInclude Include="src\cqsdk\emoji_data.inc" />
     <ClInclude Include="src\cqsdk\enums.h" />
-    <ClInclude Include="src\cqsdk\log.h" />
+    <ClInclude Include="src\cqsdk\logging.h" />
     <ClInclude Include="src\cqsdk\def.h" />
     <ClInclude Include="src\cqsdk\message.h" />
     <ClInclude Include="src\cqsdk\target.h" />
+    <ClInclude Include="src\cqsdk\types.h" />
     <ClInclude Include="src\cqsdk\utils\base64.h" />
+    <ClInclude Include="src\cqsdk\utils\binpack.h" />
     <ClInclude Include="src\cqsdk\utils\function.h" />
     <ClInclude Include="src\cqsdk\utils\memory.h" />
     <ClInclude Include="src\cqsdk\utils\string.h" />
@@ -175,6 +176,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <ObjectFileName>$(IntDir)%(Directory)\</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -198,6 +200,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <ObjectFileName>$(IntDir)%(Directory)\</ObjectFileName>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

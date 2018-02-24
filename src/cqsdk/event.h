@@ -4,11 +4,15 @@
 #include "./enums.h"
 #include "./target.h"
 #include "./message.h"
+#include "./types.h"
 
 namespace cq::event {
     struct Event {
         Type type;
         Target target;
+
+        mutable Operation operation = IGNORE;
+        void block() const { operation = BLOCK; }
     };
 
     struct MessageEvent : virtual Event {
@@ -62,7 +66,9 @@ namespace cq::event {
             message_type = message::GROUP;
         }
 
-        std::string anonymous;
+        Anonymous anonymous;
+
+        bool is_anonymous() const { return !anonymous.name.empty(); }
     };
 
     struct DiscussMessageEvent final : MessageEvent, UserIdMixin, DiscussIdMixin {
@@ -78,7 +84,7 @@ namespace cq::event {
             notice_type = notice::GROUP_UPLOAD;
         }
 
-        std::string file;
+        File file;
     };
 
     struct GroupAdminEvent final : NoticeEvent, UserIdMixin, GroupIdMixin {
@@ -123,14 +129,14 @@ namespace cq::event {
         }
     };
 
-    extern std::function<Operation(const PrivateMessageEvent &)> on_private_msg;
-    extern std::function<Operation(const GroupMessageEvent &)> on_group_msg;
-    extern std::function<Operation(const DiscussMessageEvent &)> on_discuss_msg;
-    extern std::function<Operation(const GroupUploadEvent &)> on_group_upload;
-    extern std::function<Operation(const GroupAdminEvent &)> on_group_admin;
-    extern std::function<Operation(const GroupMemberDecreaseEvent &)> on_group_member_decrease;
-    extern std::function<Operation(const GroupMemberIncreaseEvent &)> on_group_member_increase;
-    extern std::function<Operation(const FriendAddEvent &)> on_friend_add;
-    extern std::function<Operation(const FriendRequestEvent &)> on_friend_request;
-    extern std::function<Operation(const GroupRequestEvent &)> on_group_request;
+    extern std::function<void(const PrivateMessageEvent &)> on_private_msg;
+    extern std::function<void(const GroupMessageEvent &)> on_group_msg;
+    extern std::function<void(const DiscussMessageEvent &)> on_discuss_msg;
+    extern std::function<void(const GroupUploadEvent &)> on_group_upload;
+    extern std::function<void(const GroupAdminEvent &)> on_group_admin;
+    extern std::function<void(const GroupMemberDecreaseEvent &)> on_group_member_decrease;
+    extern std::function<void(const GroupMemberIncreaseEvent &)> on_group_member_increase;
+    extern std::function<void(const FriendAddEvent &)> on_friend_add;
+    extern std::function<void(const FriendRequestEvent &)> on_friend_request;
+    extern std::function<void(const GroupRequestEvent &)> on_group_request;
 }

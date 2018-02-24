@@ -18,35 +18,36 @@ namespace cq::message {
      */
     std::string unescape(std::string str);
 
-    struct Segment {
+    struct MessageSegment {
         std::string type;
         std::map<std::string, std::string> data;
 
-        static Segment text(const std::string &text) { return {"text", {{"text", text}}}; }
-        static Segment face(const int id) { return {"face", {{"id", std::to_string(id)}}}; }
-        static Segment image(const std::string &file) { return {"image", {{"file", file}}}; }
+        static MessageSegment text(const std::string &text) { return {"text", {{"text", text}}}; }
+        static MessageSegment emoji(const uint32_t id) { return {"emoji", {{"id", std::to_string(id)}}}; }
+        static MessageSegment face(const int id) { return {"face", {{"id", std::to_string(id)}}}; }
+        static MessageSegment image(const std::string &file) { return {"image", {{"file", file}}}; }
 
-        static Segment record(const std::string &file, const bool magic = false) {
+        static MessageSegment record(const std::string &file, const bool magic = false) {
             return {"record", {{"file", file}, {"magic", std::to_string(magic)}}};
         }
 
-        static Segment at(const int64_t user_id) { return {"at", {{"qq", std::to_string(user_id)}}}; }
-        static Segment rps() { return {"rps", {}}; }
-        static Segment dice() { return {"dice", {}}; }
-        static Segment shake() { return {"shake", {}}; }
+        static MessageSegment at(const int64_t user_id) { return {"at", {{"qq", std::to_string(user_id)}}}; }
+        static MessageSegment rps() { return {"rps", {}}; }
+        static MessageSegment dice() { return {"dice", {}}; }
+        static MessageSegment shake() { return {"shake", {}}; }
 
-        static Segment anonymous(const bool ignore_failure = false) {
+        static MessageSegment anonymous(const bool ignore_failure = false) {
             return {"anonymous", {{"ignore", std::to_string(ignore_failure)}}};
         }
 
-        static Segment share(const std::string &url, const std::string &title, const std::string &content = "",
-                             const std::string &image_url = "") {
+        static MessageSegment share(const std::string &url, const std::string &title, const std::string &content = "",
+                                    const std::string &image_url = "") {
             return {"share", {{"url", url}, {"title", title}, {"content", content}, {"image", image_url}}};
         }
 
         enum class ContactType { USER, GROUP };
 
-        static Segment contact(const ContactType &type, const int64_t id) {
+        static MessageSegment contact(const ContactType &type, const int64_t id) {
             return {
                 "contact", {
                     {"type", type == ContactType::USER ? "qq" : "group"},
@@ -55,8 +56,8 @@ namespace cq::message {
             };
         }
 
-        static Segment location(const double latitude, const double longitude, const std::string &title = "",
-                                const std::string &content = "") {
+        static MessageSegment location(const double latitude, const double longitude, const std::string &title = "",
+                                       const std::string &content = "") {
             return {
                 "location", {
                     {"lat", std::to_string(latitude)},
@@ -66,12 +67,12 @@ namespace cq::message {
             };
         }
 
-        static Segment music(const std::string &type, const int64_t &id) {
+        static MessageSegment music(const std::string &type, const int64_t &id) {
             return {"music", {{"type", type}, {"id", std::to_string(id)}}};
         }
 
-        static Segment music(const std::string &url, const std::string &audio_url, const std::string &title,
-                             const std::string &content = "", const std::string &image_url = "") {
+        static MessageSegment music(const std::string &url, const std::string &audio_url, const std::string &title,
+                                    const std::string &content = "", const std::string &image_url = "") {
             return {
                 "music", {
                     {"type", "custom"}, {"url", url}, {"audio", audio_url},
@@ -81,7 +82,7 @@ namespace cq::message {
         }
     };
 
-    struct Message : std::list<Segment> {
+    struct Message : std::list<MessageSegment> {
         Message() = default;
 
         /**
@@ -90,7 +91,7 @@ namespace cq::message {
         Message(const std::string &msg_str);
         Message(const char *msg_str) : Message(std::string(msg_str)) {}
 
-        Message(const Segment &seg) {
+        Message(const MessageSegment &seg) {
             this->push_back(seg);
         }
 

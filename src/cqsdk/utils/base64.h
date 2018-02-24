@@ -3,6 +3,6 @@
 #include "../common.h"
 
 namespace cq::utils::base64 {
-    std::string encode(const unsigned char *bytes, unsigned int len);
+    std::string encode(const unsigned char *bytes, const unsigned int len);
     std::string decode(const std::string &str);
 }

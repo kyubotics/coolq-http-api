@@ -8,6 +8,8 @@
 #include "./enums.h"
 #include "./target.h"
 #include "./message.h"
+#include "./types.h"
+#include "./utils/binpack.h"
 
 namespace cq::api {
     /**
@@ -57,8 +59,7 @@ namespace cq::api {
 
     #pragma region Group & Discuss Operation
 
-    inline int32_t set_group_kick(const int64_t group_id, const int64_t user_id,
-                                  const bool reject_add_request = false) {
+    inline int32_t set_group_kick(const int64_t group_id, const int64_t user_id, const bool reject_add_request) {
         return raw::CQ_setGroupKick(app::auth_code, group_id, user_id, reject_add_request);
     }
 
@@ -125,16 +126,16 @@ namespace cq::api {
 
     #pragma region Get QQ Information
 
-    inline int64_t get_login_qq() {
+    inline int64_t get_login_user_id() {
         return raw::CQ_getLoginQQ(app::auth_code);
     }
 
-    inline std::string get_login_nick() {
+    inline std::string get_login_nickname() {
         const auto nick = raw::CQ_getLoginNick(app::auth_code);
         return nick ? utils::string_from_coolq(nick) : std::string();
     }
 
-    inline std::string get_stranger_info_raw(const int64_t user_id, const bool no_cache) {
+    inline std::string get_stranger_info_raw(const int64_t user_id, const bool no_cache = false) {
         return utils::base64::decode(raw::CQ_getStrangerInfo(app::auth_code, user_id, no_cache));
     }
 
@@ -146,7 +147,8 @@ namespace cq::api {
         return utils::base64::decode(raw::CQ_getGroupMemberList(app::auth_code, group_id));
     }
 
-    inline std::string get_group_member_info_raw(const int64_t group_id, const int64_t user_id, const bool no_cache) {
+    inline std::string get_group_member_info_raw(const int64_t group_id, const int64_t user_id,
+                                                 const bool no_cache = false) {
         return utils::base64::decode(raw::CQ_getGroupMemberInfoV2(app::auth_code, group_id, user_id, no_cache));
     }
 
@@ -187,7 +189,7 @@ namespace cq::api {
 
     #pragma endregion
 
-    #pragma region SDK Bonus
+    #pragma region CQSDK Bonus
 
     inline int32_t send_msg(const Target &target, const std::string &msg) {
         if (target.group_id.has_value()) {
@@ -216,6 +218,45 @@ namespace cq::api {
 
     inline int32_t send_msg(const Target &target, const message::Message &msg) {
         return send_msg(target, std::string(msg));
+    }
+
+    inline User get_stranger_info(const int64_t user_id, const bool no_cache = false) {
+        return User::from_bytes(get_stranger_info_raw(user_id, no_cache));
+    }
+
+    inline std::vector<Group> get_group_list() {
+        auto bytes = get_group_list_raw();
+        std::vector<Group> result;
+        if (bytes.size() > 4 /* at least has a count */) {
+            auto pack = utils::BinPack(bytes);
+            const auto count = pack.pop_int<int32_t>();
+            for (auto i = 0; i < count; i++) {
+                result.push_back(Group::from_bytes(pack.pop_token()));
+            }
+        }
+        return result;
+    }
+
+    inline std::vector<GroupMember> get_group_member_list(const int64_t group_id) {
+        auto bytes = get_group_member_list_raw(group_id);
+        std::vector<GroupMember> result;
+        if (bytes.size() > 4 /* at least has a count */) {
+            auto pack = utils::BinPack(bytes);
+            const auto count = pack.pop_int<int32_t>();
+            for (auto i = 0; i < count; i++) {
+                result.push_back(GroupMember::from_bytes(pack.pop_token()));
+            }
+        }
+        return result;
+    }
+
+    inline GroupMember get_group_member_info(const int64_t group_id, const int64_t user_id,
+                                             const bool no_cache = false) {
+        return GroupMember::from_bytes(get_group_member_info_raw(group_id, user_id, no_cache));
+    }
+
+    inline User get_login_info() {
+        return get_stranger_info(get_login_user_id());
     }
 
     #pragma endregion

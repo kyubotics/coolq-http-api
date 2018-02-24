@@ -2,7 +2,7 @@
 
 #include "./api.h"
 
-namespace cq::log {
+namespace cq::logging {
     enum Level {
         DEBUG = 0,
         INFO = 10,

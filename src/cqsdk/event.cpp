@@ -3,18 +3,19 @@
 #include "./def.h"
 #include "./utils/string.h"
 #include "./utils/function.h"
+#include "./utils/base64.h"
 
 namespace cq::event {
-    std::function<Operation(const PrivateMessageEvent &)> on_private_msg;
-    std::function<Operation(const GroupMessageEvent &)> on_group_msg;
-    std::function<Operation(const DiscussMessageEvent &)> on_discuss_msg;
-    std::function<Operation(const GroupUploadEvent &)> on_group_upload;
-    std::function<Operation(const GroupAdminEvent &)> on_group_admin;
-    std::function<Operation(const GroupMemberDecreaseEvent &)> on_group_member_decrease;
-    std::function<Operation(const GroupMemberIncreaseEvent &)> on_group_member_increase;
-    std::function<Operation(const FriendAddEvent &)> on_friend_add;
-    std::function<Operation(const FriendRequestEvent &)> on_friend_request;
-    std::function<Operation(const GroupRequestEvent &)> on_group_request;
+    std::function<void(const PrivateMessageEvent &)> on_private_msg;
+    std::function<void(const GroupMessageEvent &)> on_group_msg;
+    std::function<void(const DiscussMessageEvent &)> on_discuss_msg;
+    std::function<void(const GroupUploadEvent &)> on_group_upload;
+    std::function<void(const GroupAdminEvent &)> on_group_admin;
+    std::function<void(const GroupMemberDecreaseEvent &)> on_group_member_decrease;
+    std::function<void(const GroupMemberIncreaseEvent &)> on_group_member_increase;
+    std::function<void(const FriendAddEvent &)> on_friend_add;
+    std::function<void(const FriendRequestEvent &)> on_friend_request;
+    std::function<void(const GroupRequestEvent &)> on_group_request;
 }
 
 using namespace std;
@@ -35,7 +36,8 @@ CQEVENT(int32_t, cq_event_private_msg, 24)
     e.message = string_from_coolq(msg);
     e.font = font;
     e.user_id = from_qq;
-    return call_if_valid(event::on_private_msg, e);
+    call_if_valid(event::on_private_msg, e);
+    return e.operation;
 }
 
 /**
@@ -52,8 +54,9 @@ CQEVENT(int32_t, cq_event_group_msg, 36)
     e.font = font;
     e.user_id = from_qq;
     e.group_id = from_group;
-    e.anonymous = string_from_coolq(from_anonymous);
-    return call_if_valid(event::on_group_msg, e);
+    e.anonymous = Anonymous::from_bytes(utils::base64::decode(string_from_coolq(from_anonymous)));
+    call_if_valid(event::on_group_msg, e);
+    return e.operation;
 }
 
 /**
@@ -69,7 +72,8 @@ CQEVENT(int32_t, cq_event_discuss_msg, 32)
     e.font = font;
     e.user_id = from_qq;
     e.discuss_id = from_discuss;
-    return call_if_valid(event::on_discuss_msg, e);
+    call_if_valid(event::on_discuss_msg, e);
+    return e.operation;
 }
 
 /**
@@ -81,10 +85,11 @@ CQEVENT(int32_t, cq_event_group_upload, 28)
     e.target = Target(from_qq, from_group, Target::GROUP);
     e.time = send_time;
     e.sub_type = static_cast<notice::SubType>(sub_type);
-    e.file = string_from_coolq(file);
+    e.file = File::from_bytes(utils::base64::decode(string_from_coolq(file)));
     e.user_id = from_qq;
     e.group_id = from_group;
-    return call_if_valid(event::on_group_upload, e);
+    call_if_valid(event::on_group_upload, e);
+    return e.operation;
 }
 
 /**
@@ -99,7 +104,8 @@ CQEVENT(int32_t, cq_event_group_admin, 24)
     e.sub_type = static_cast<notice::SubType>(sub_type);
     e.user_id = being_operate_qq;
     e.group_id = from_group;
-    return call_if_valid(event::on_group_admin, e);
+    call_if_valid(event::on_group_admin, e);
+    return e.operation;
 }
 
 /**
@@ -117,7 +123,8 @@ CQEVENT(int32_t, cq_event_group_member_decrease, 32)
     e.user_id = being_operate_qq;
     e.group_id = from_group;
     e.operator_id = e.sub_type == notice::GROUP_MEMBER_DECREASE_LEAVE ? being_operate_qq : from_qq;
-    return call_if_valid(event::on_group_member_decrease, e);
+    call_if_valid(event::on_group_member_decrease, e);
+    return e.operation;
 }
 
 /**
@@ -135,7 +142,8 @@ CQEVENT(int32_t, cq_event_group_member_increase, 32)
     e.user_id = being_operate_qq;
     e.group_id = from_group;
     e.operator_id = from_qq;
-    return call_if_valid(event::on_group_member_increase, e);
+    call_if_valid(event::on_group_member_increase, e);
+    return e.operation;
 }
 
 /**
@@ -148,7 +156,8 @@ CQEVENT(int32_t, cq_event_friend_add, 16)
     e.time = send_time;
     e.sub_type = static_cast<notice::SubType>(sub_type);
     e.user_id = from_qq;
-    return call_if_valid(event::on_friend_add, e);
+    call_if_valid(event::on_friend_add, e);
+    return e.operation;
 }
 
 /**
@@ -165,7 +174,8 @@ CQEVENT(int32_t, cq_event_add_friend_request, 24)
     e.comment = string_from_coolq(msg);
     e.flag = string_from_coolq(response_flag);
     e.user_id = from_qq;
-    return call_if_valid(event::on_friend_request, e);
+    call_if_valid(event::on_friend_request, e);
+    return e.operation;
 }
 
 /**
@@ -184,5 +194,6 @@ CQEVENT(int32_t, cq_event_add_group_request, 32)
     e.flag = string_from_coolq(response_flag);
     e.user_id = from_qq;
     e.group_id = from_group;
-    return call_if_valid(event::on_group_request, e);
+    call_if_valid(event::on_group_request, e);
+    return e.operation;
 }

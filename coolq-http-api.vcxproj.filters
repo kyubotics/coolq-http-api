@@ -129,9 +129,6 @@
     <ClCompile Include="src\cqsdk\event.cpp">
       <Filter>src\cqsdk</Filter>
     </ClCompile>
-    <ClCompile Include="src\cqsdk\demo.cpp">
-      <Filter>src\cqsdk</Filter>
-    </ClCompile>
     <ClCompile Include="src\cqsdk\api.cpp">
       <Filter>src\cqsdk</Filter>
     </ClCompile>
@@ -305,9 +302,6 @@
     <ClInclude Include="src\cqsdk\api.h">
       <Filter>src\cqsdk</Filter>
     </ClInclude>
-    <ClInclude Include="src\cqsdk\log.h">
-      <Filter>src\cqsdk</Filter>
-    </ClInclude>
     <ClInclude Include="src\cqsdk\utils\string.h">
       <Filter>src\cqsdk\utils</Filter>
     </ClInclude>
@@ -330,6 +324,15 @@
       <Filter>src\cqsdk</Filter>
     </ClInclude>
     <ClInclude Include="src\cqsdk\message.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\utils\binpack.h">
+      <Filter>src\cqsdk\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\types.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\logging.h">
       <Filter>src\cqsdk</Filter>
     </ClInclude>
   </ItemGroup>

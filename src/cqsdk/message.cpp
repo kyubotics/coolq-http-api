@@ -76,7 +76,7 @@ namespace cq::message {
             params:
                 if (curr == ']') {
                     // CQ code end
-                    Segment seg;
+                    MessageSegment seg;
 
                     seg.type = function_name_s.str();
                     while (params_s.rdbuf()->in_avail()) {
@@ -89,7 +89,7 @@ namespace cq::message {
 
                     if (text_s.rdbuf()->in_avail()) {
                         // there is a text segment before this CQ code
-                        this->push_back(Segment{"text", {{"text", unescape(text_s.str())}}});
+                        this->push_back(MessageSegment{"text", {{"text", unescape(text_s.str())}}});
                         text_s = stringstream();
                     }
 
@@ -116,7 +116,7 @@ namespace cq::message {
             // should fall through
         case TEXT:
             if (text_s.rdbuf()->in_avail()) {
-                this->push_back(Segment{"text", {{"text", unescape(text_s.str())}}});
+                this->push_back(MessageSegment{"text", {{"text", unescape(text_s.str())}}});
             }
         default: break;
         }
@@ -145,6 +145,15 @@ namespace cq::message {
 
     int32_t Message::send(const Target &target) const {
         return api::send_msg(target, *this);
+    }
+
+    string Message::extract_plain_text() const {
+        string result;
+        for (const auto &seg : *this) {
+            if (seg.type == "text") { result += seg.data.at("text") + " "; }
+        }
+        if (result.size() > 0) { result.erase(result.end() - 1); }
+        return result;
     }
 
     void Message::reduce() {
