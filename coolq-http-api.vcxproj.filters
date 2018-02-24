@@ -150,6 +150,9 @@
     <ClCompile Include="src\cqsdk\message.cpp">
       <Filter>src\cqsdk</Filter>
     </ClCompile>
+    <ClCompile Include="src\cqsdk\demo.cpp">
+      <Filter>src\cqsdk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqp\def.h">
@@ -333,6 +336,9 @@
       <Filter>src\cqsdk</Filter>
     </ClInclude>
     <ClInclude Include="src\cqsdk\logging.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\menu.h">
       <Filter>src\cqsdk</Filter>
     </ClInclude>
   </ItemGroup>

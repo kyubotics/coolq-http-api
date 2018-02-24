@@ -19,6 +19,7 @@
     <ClCompile Include="src\cqp\directories_class.cpp" />
     <ClCompile Include="src\cqsdk\api.cpp" />
     <ClCompile Include="src\cqsdk\app.cpp" />
+    <ClCompile Include="src\cqsdk\demo.cpp" />
     <ClCompile Include="src\cqsdk\dir.cpp" />
     <ClCompile Include="src\cqsdk\dllmain.cpp" />
     <ClCompile Include="src\cqsdk\event.cpp" />
@@ -66,6 +67,7 @@
     <ClInclude Include="src\cqsdk\enums.h" />
     <ClInclude Include="src\cqsdk\logging.h" />
     <ClInclude Include="src\cqsdk\def.h" />
+    <ClInclude Include="src\cqsdk\menu.h" />
     <ClInclude Include="src\cqsdk\message.h" />
     <ClInclude Include="src\cqsdk\target.h" />
     <ClInclude Include="src\cqsdk\types.h" />

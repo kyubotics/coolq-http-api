@@ -28,7 +28,7 @@ using cq::utils::call_if_valid;
 /**
  * Return app info.
  */
-CQEVENT(const char *, AppInfo, 0)
+__CQ_EVENT(const char *, AppInfo, 0)
 () {
     // CoolQ API version: 9
     static auto info = "9," + app::id;
@@ -38,7 +38,7 @@ CQEVENT(const char *, AppInfo, 0)
 /**
  * Initialize SDK using the auth code given by CoolQ.
  */
-CQEVENT(int32_t, Initialize, 4)
+__CQ_EVENT(int32_t, Initialize, 4)
 (const int32_t auth_code) {
     app::auth_code = auth_code;
     api::__init();
@@ -49,7 +49,7 @@ CQEVENT(int32_t, Initialize, 4)
 /**
  * Event: Plugin is enabled.
  */
-CQEVENT(int32_t, cq_app_enable, 0)
+__CQ_EVENT(int32_t, cq_app_enable, 0)
 () {
     call_if_valid(app::on_enable);
     return 0;
@@ -58,7 +58,7 @@ CQEVENT(int32_t, cq_app_enable, 0)
 /**
  * Event: Plugin is disabled.
  */
-CQEVENT(int32_t, cq_app_disable, 0)
+__CQ_EVENT(int32_t, cq_app_disable, 0)
 () {
     call_if_valid(app::on_disable);
     return 0;
@@ -67,7 +67,7 @@ CQEVENT(int32_t, cq_app_disable, 0)
 /**
  * Event: CoolQ is starting.
  */
-CQEVENT(int32_t, cq_app_start, 0)
+__CQ_EVENT(int32_t, cq_app_start, 0)
 () {
     call_if_valid(app::on_start);
     return 0;
@@ -76,7 +76,7 @@ CQEVENT(int32_t, cq_app_start, 0)
 /**
  * Event: CoolQ is exiting.
  */
-CQEVENT(int32_t, cq_app_exit, 0)
+__CQ_EVENT(int32_t, cq_app_exit, 0)
 () {
     call_if_valid(app::on_exit);
     return 0;

@@ -9,6 +9,7 @@
 #include "./message.h"
 #include "./logging.h"
 #include "./dir.h"
+#include "./menu.h"
 
 namespace cq {
     using event::Event;

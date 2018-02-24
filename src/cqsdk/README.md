@@ -2,11 +2,9 @@
 
 CoolQ C++ SDK 封装了跟 DLL 接口相关的底层逻辑、提供了更现代的 C++ 接口从而为更方便地编写插件提供可能。
 
-具体文档暂时就不写了，顺着 `cqsdk.h` 头文件找进去基本就可以看明白代码。
+具体文档暂时就不写了，顺着 [`cqsdk.h`](cqsdk.h) 头文件找进去基本就可以看明白代码。
 
 请注意你再编写自己的插件时请确保你的 JSON 描述文件和 [`io.github.richardchien.coolqhttpapi.json`](../../io.github.richardchien.coolqhttpapi.json) 文件的 `event` 中的 `function` 字段完全一致，因为 DLL 导出函数名已经在 [`app.cpp`](app.cpp) 和 [`event.cpp`](event.cpp) 写死了。
-
-SDK 不支持添加菜单项，因为每个菜单都需要单独导出函数。
 
 ## 示例
 
@@ -26,13 +24,9 @@ CQ_INITIALIZE("io.github.richardchien.coolqhttpapi");
 CQ_MAIN {
     cq::config.convert_unicode_emoji = true; // 配置 SDK 自动转换 Emoji 到 Unicode（默认就是 true）
 
-    app::on_start = []() {
-        // logging、api、dir 等命名空间下的函数只能在事件回调函数内部调用，而不能直接在 CQ_MAIN 中调用
-        logging::info(u8"启用", u8"酷 Q 已启动");
-    };
-
     app::on_enable = []() {
-        logging::info(u8"启用", u8"插件已启动");
+        // logging、api、dir 等命名空间下的函数只能在事件回调函数内部调用，而不能直接在 CQ_MAIN 中调用
+        logging::debug(u8"启用", u8"插件已启动");
     };
 
     event::on_private_msg = [](const cq::PrivateMessageEvent &e) {
@@ -41,9 +35,9 @@ CQ_MAIN {
         api::send_private_msg(e.user_id, e.message); // echo 回去
         api::send_msg(e.target, e.message); // 使用 e.target 指定发送目标
 
-        // 使用 Message 类的 send 成员函数
-        cq::Message msg = u8"测试";
-        msg.send(e.target);
+        // MessageSegment 类提供一些静态成员函数以快速构造消息段
+        cq::Message msg = cq::MessageSegment::contact(cq::MessageSegment::ContactType::GROUP, 201865589);
+        msg.send(e.target); // 使用 Message 类的 send 成员函数
 
         e.block(); // 阻止事件继续传递给其它插件
     };
@@ -54,5 +48,15 @@ CQ_MAIN {
         msg += std::to_string(memlist.size()) + u8" 个成员"; // Message 类可以进行加法运算
         message::send(e.target, msg); // 使用 message 命名空间的 send 函数
     };
+}
+
+// 添加菜单项，需要同时在 <appid>.json 文件的 menu 字段添加相应的条目，function 字段为 menu_demo_1
+CQ_MENU(menu_demo_1) {
+    api::send_private_msg(10000, "hello");
+}
+
+// 不像 CQ_INITIALIZE 和 CQ_MAIN，CQ_MENU 可以多次调用来添加多个菜单
+CQ_MENU(menu_demo_2) {
+    logging::info(u8"菜单", u8"点击了示例菜单2");
 }
 ```

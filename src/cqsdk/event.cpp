@@ -27,7 +27,7 @@ using cq::utils::string_from_coolq;
  * Type=21 私聊消息
  * sub_type 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
  */
-CQEVENT(int32_t, cq_event_private_msg, 24)
+__CQ_EVENT(int32_t, cq_event_private_msg, 24)
 (int32_t sub_type, int32_t msg_id, int64_t from_qq, const char *msg, int32_t font) {
     event::PrivateMessageEvent e;
     e.target = Target(from_qq);
@@ -43,7 +43,7 @@ CQEVENT(int32_t, cq_event_private_msg, 24)
 /**
  * Type=2 群消息
  */
-CQEVENT(int32_t, cq_event_group_msg, 36)
+__CQ_EVENT(int32_t, cq_event_group_msg, 36)
 (int32_t sub_type, int32_t msg_id, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg,
  int32_t font) {
     event::GroupMessageEvent e;
@@ -62,7 +62,7 @@ CQEVENT(int32_t, cq_event_group_msg, 36)
 /**
  * Type=4 讨论组消息
  */
-CQEVENT(int32_t, cq_event_discuss_msg, 32)
+__CQ_EVENT(int32_t, cq_event_discuss_msg, 32)
 (int32_t sub_type, int32_t msg_id, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font) {
     event::DiscussMessageEvent e;
     e.target = Target(from_qq, from_discuss, Target::DISCUSS);
@@ -79,7 +79,7 @@ CQEVENT(int32_t, cq_event_discuss_msg, 32)
 /**
  * Type=11 群事件-文件上传
  */
-CQEVENT(int32_t, cq_event_group_upload, 28)
+__CQ_EVENT(int32_t, cq_event_group_upload, 28)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *file) {
     event::GroupUploadEvent e;
     e.target = Target(from_qq, from_group, Target::GROUP);
@@ -96,7 +96,7 @@ CQEVENT(int32_t, cq_event_group_upload, 28)
  * Type=101 群事件-管理员变动
  * sub_type 子类型，1/被取消管理员 2/被设置管理员
  */
-CQEVENT(int32_t, cq_event_group_admin, 24)
+__CQ_EVENT(int32_t, cq_event_group_admin, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq) {
     event::GroupAdminEvent e;
     e.target = Target(being_operate_qq, from_group, Target::GROUP);
@@ -114,7 +114,7 @@ CQEVENT(int32_t, cq_event_group_admin, 24)
  * from_qq 操作者QQ(仅subType为2、3时存在)
  * being_operate_qq 被操作QQ
  */
-CQEVENT(int32_t, cq_event_group_member_decrease, 32)
+__CQ_EVENT(int32_t, cq_event_group_member_decrease, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
     event::GroupMemberDecreaseEvent e;
     e.target = Target(being_operate_qq, from_group, Target::GROUP);
@@ -133,7 +133,7 @@ CQEVENT(int32_t, cq_event_group_member_decrease, 32)
  * from_qq 操作者QQ(即管理员QQ)
  * being_operate_qq 被操作QQ(即加群的QQ)
  */
-CQEVENT(int32_t, cq_event_group_member_increase, 32)
+__CQ_EVENT(int32_t, cq_event_group_member_increase, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
     event::GroupMemberIncreaseEvent e;
     e.target = Target(being_operate_qq, from_group, Target::GROUP);
@@ -149,7 +149,7 @@ CQEVENT(int32_t, cq_event_group_member_increase, 32)
 /**
  * Type=201 好友事件-好友已添加
  */
-CQEVENT(int32_t, cq_event_friend_add, 16)
+__CQ_EVENT(int32_t, cq_event_friend_add, 16)
 (int32_t sub_type, int32_t send_time, int64_t from_qq) {
     event::FriendAddEvent e;
     e.target = Target(from_qq);
@@ -165,7 +165,7 @@ CQEVENT(int32_t, cq_event_friend_add, 16)
  * msg 附言
  * response_flag 反馈标识(处理请求用)
  */
-CQEVENT(int32_t, cq_event_add_friend_request, 24)
+__CQ_EVENT(int32_t, cq_event_add_friend_request, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, const char *response_flag) {
     event::FriendRequestEvent e;
     e.target = Target(from_qq);
@@ -184,7 +184,7 @@ CQEVENT(int32_t, cq_event_add_friend_request, 24)
  * msg 附言
  * response_flag 反馈标识(处理请求用)
  */
-CQEVENT(int32_t, cq_event_add_group_request, 32)
+__CQ_EVENT(int32_t, cq_event_add_group_request, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *msg, const char *response_flag) {
     event::GroupRequestEvent e;
     e.target = Target(from_qq, from_group, Target::GROUP);

@@ -204,22 +204,6 @@ namespace cq::api {
         return -1;
     }
 
-    inline int32_t send_private_msg(const int64_t user_id, const message::Message &msg) {
-        return send_private_msg(user_id, std::string(msg));
-    }
-
-    inline int32_t send_group_msg(const int64_t group_id, const message::Message &msg) {
-        return send_group_msg(group_id, std::string(msg));
-    }
-
-    inline int32_t send_discuss_msg(const int64_t discuss_id, const message::Message &msg) {
-        return send_discuss_msg(discuss_id, std::string(msg));
-    }
-
-    inline int32_t send_msg(const Target &target, const message::Message &msg) {
-        return send_msg(target, std::string(msg));
-    }
-
     inline User get_stranger_info(const int64_t user_id, const bool no_cache = false) {
         return User::from_bytes(get_stranger_info_raw(user_id, no_cache));
     }
