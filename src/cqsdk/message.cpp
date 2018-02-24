@@ -8,20 +8,20 @@ using namespace std;
 using boost::algorithm::replace_all;
 
 namespace cq::message {
-    string escape(string msg) {
-        replace_all(msg, "&", "&amp;");
-        replace_all(msg, "[", "&#91;");
-        replace_all(msg, "]", "&#93;");
-        replace_all(msg, ",", "&#44;");
-        return msg;
+    string escape(string str) {
+        replace_all(str, "&", "&amp;");
+        replace_all(str, "[", "&#91;");
+        replace_all(str, "]", "&#93;");
+        replace_all(str, ",", "&#44;");
+        return str;
     }
 
-    string unescape(string msg) {
-        replace_all(msg, "&#91;", "[");
-        replace_all(msg, "&#93;", "]");
-        replace_all(msg, "&#44;", ",");
-        replace_all(msg, "&amp;", "&");
-        return msg;
+    string unescape(string str) {
+        replace_all(str, "&#91;", "[");
+        replace_all(str, "&#93;", "]");
+        replace_all(str, "&#44;", ",");
+        replace_all(str, "&amp;", "&");
+        return str;
     }
 
     Message::Message(const string &msg_str) {

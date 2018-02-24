@@ -9,15 +9,13 @@ namespace cq::utils {
                                const std::function<std::string(const std::smatch &)> fmt_func);
     bool is_emoji(const uint32_t codepoint);
 
-    using Encoding = unsigned;
-
-    struct Encodings {
+    enum class Encoding : unsigned {
         // https://msdn.microsoft.com/en-us/library/windows/desktop/dd317756.aspx
 
-        static const Encoding ANSI = 0;
-        static const Encoding UTF8 = 65001;
-        static const Encoding GB2312 = 936;
-        static const Encoding GB18030 = 54936;
+        ANSI = 0,
+        UTF8 = 65001,
+        GB2312 = 936,
+        GB18030 = 54936,
     };
 
     std::string string_encode(const std::string &s, const Encoding encoding);
@@ -36,4 +34,14 @@ namespace cq::utils {
     std::string ws2s(const std::wstring &ws);
     std::wstring s2ws(const std::string &s);
     std::string ansi(const std::string &s);
+}
+
+namespace std {
+    inline string to_string(const string &val) {
+        return val;
+    }
+
+    inline string to_string(const bool val) {
+        return val ? "true" : "false";
+    }
 }

@@ -30,14 +30,14 @@ namespace cq::utils {
         return emoji_set.find(codepoint) != emoji_set.end();
     }
 
-    static shared_ptr<wchar_t> multibyte_to_widechar(const int code_page, const char *multibyte_str) {
+    static shared_ptr<wchar_t> multibyte_to_widechar(const unsigned code_page, const char *multibyte_str) {
         const auto len = MultiByteToWideChar(code_page, 0, multibyte_str, -1, nullptr, 0);
         auto c_wstr_sptr = make_shared_array<wchar_t>(len + 1);
         MultiByteToWideChar(code_page, 0, multibyte_str, -1, c_wstr_sptr.get(), len);
         return c_wstr_sptr;
     }
 
-    static shared_ptr<char> widechar_to_multibyte(const int code_page, const wchar_t *widechar_str) {
+    static shared_ptr<char> widechar_to_multibyte(const unsigned code_page, const wchar_t *widechar_str) {
         const auto len = WideCharToMultiByte(code_page, 0, widechar_str, -1, nullptr, 0, nullptr, nullptr);
         auto c_str_sptr = make_shared_array<char>(len + 1);
         WideCharToMultiByte(code_page, 0, widechar_str, -1, c_str_sptr.get(), len, nullptr, nullptr);
@@ -45,11 +45,11 @@ namespace cq::utils {
     }
 
     string string_encode(const string &s, const Encoding encoding) {
-        return widechar_to_multibyte(encoding, s2ws(s).c_str()).get();
+        return widechar_to_multibyte(static_cast<unsigned>(encoding), s2ws(s).c_str()).get();
     }
 
     string string_decode(const string &b, const Encoding encoding) {
-        return ws2s(wstring(multibyte_to_widechar(encoding, b.c_str()).get()));
+        return ws2s(wstring(multibyte_to_widechar(static_cast<unsigned>(encoding), b.c_str()).get()));
     }
 
     string string_convert_encoding(const string &text, const string &from_enc, const string &to_enc,
@@ -170,6 +170,6 @@ namespace cq::utils {
     }
 
     string ansi(const string &s) {
-        return string_encode(s, Encodings::ANSI);
+        return string_encode(s, Encoding::ANSI);
     }
 }

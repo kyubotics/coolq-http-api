@@ -10,8 +10,15 @@
 #include "./message.h"
 
 namespace cq::api {
-    void init();
+    /**
+     * Init all API functions.
+     * This is internally called in the Initialize exported function.
+     */
+    void __init();
 
+    /**
+     * Provide ways to access the raw CoolQ API functions.
+     */
     namespace raw {
         #include "./api_funcs.h"
     }

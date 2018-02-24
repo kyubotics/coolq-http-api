@@ -41,7 +41,7 @@ CQEVENT(const char *, AppInfo, 0)
 CQEVENT(int32_t, Initialize, 4)
 (const int32_t auth_code) {
     app::auth_code = auth_code;
-    api::init();
+    api::__init();
     call_if_valid(app::on_initialize, auth_code);
     return 0;
 }
