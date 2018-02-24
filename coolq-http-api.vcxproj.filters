@@ -4,36 +4,6 @@
     <Filter Include="src">
       <UniqueIdentifier>{05a585ee-558b-4c0a-8138-14d8b1c7dc10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\cqp">
-      <UniqueIdentifier>{438eb2db-3ab9-4e68-9ded-a9c81b9644f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\conf">
-      <UniqueIdentifier>{8e37c943-54f7-4836-a366-8997db42ebb5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\utils">
-      <UniqueIdentifier>{99622cd1-6725-4225-be7b-6dc88e8dbc11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\message">
-      <UniqueIdentifier>{007d98a8-4e42-452c-b9d3-cbe0ec3f157e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\event">
-      <UniqueIdentifier>{54a79ccc-b4dd-4fb8-a618-5497dc9513c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\web_server">
-      <UniqueIdentifier>{2903b17e-34c2-448f-8b71-32dcf9583e3e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\api">
-      <UniqueIdentifier>{d107b753-1225-4f23-9b00-2a1e7cfa7679}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\ctpl">
-      <UniqueIdentifier>{3352b376-ce61-4273-9396-4ae11e988783}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\service">
-      <UniqueIdentifier>{e6b7997b-751a-4723-9446-40ee84903df8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\service\impl">
-      <UniqueIdentifier>{98eb6e06-c259-42a2-a8c9-6b9ed5fd54ee}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\cqsdk">
       <UniqueIdentifier>{d1bfe950-655e-44f6-b851-85359126970e}</UniqueIdentifier>
     </Filter>
@@ -45,81 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\conf\loader.cpp">
-      <Filter>src\conf</Filter>
-    </ClCompile>
-    <ClCompile Include="src\helpers.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\message\segment_class.cpp">
-      <Filter>src\message</Filter>
-    </ClCompile>
-    <ClCompile Include="src\message\message_class.cpp">
-      <Filter>src\message</Filter>
-    </ClCompile>
-    <ClCompile Include="src\event\entry.cpp">
-      <Filter>src\event</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dllentry.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\event\events.cpp">
-      <Filter>src\event</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\pack_class.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\appentry.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\globals.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cqp\sdk.cpp">
-      <Filter>src\cqp</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\params_class.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\menuentry.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\application_class.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cqp\directories_class.cpp">
-      <Filter>src\cqp</Filter>
-    </ClCompile>
-    <ClCompile Include="src\update.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\api\handlers.cpp">
-      <Filter>src\api</Filter>
-    </ClCompile>
-    <ClCompile Include="src\service\impl\http_service_class.cpp">
-      <Filter>src\service\impl</Filter>
-    </ClCompile>
-    <ClCompile Include="src\service\hub_class.cpp">
-      <Filter>src\service</Filter>
-    </ClCompile>
-    <ClCompile Include="src\service\impl\ws_service_class.cpp">
-      <Filter>src\service\impl</Filter>
-    </ClCompile>
-    <ClCompile Include="src\service\impl\ws_reverse_service_class.cpp">
-      <Filter>src\service\impl</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\encoding.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\curl_wrapper.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\http_utils.cpp">
-      <Filter>src\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="src\event\filter.cpp">
-      <Filter>src\event</Filter>
-    </ClCompile>
     <ClCompile Include="src\cqsdk\dllmain.cpp">
       <Filter>src\cqsdk</Filter>
     </ClCompile>
@@ -141,9 +36,6 @@
     <ClCompile Include="src\cqsdk\utils\base64.cpp">
       <Filter>src\cqsdk\utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\api\api_old.cpp">
-      <Filter>src\api</Filter>
-    </ClCompile>
     <ClCompile Include="src\cqsdk\dir.cpp">
       <Filter>src\cqsdk</Filter>
     </ClCompile>
@@ -155,132 +47,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\cqp\def.h">
-      <Filter>src\cqp</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\app.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\helpers.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\log_class.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\conf\loader.h">
-      <Filter>src\conf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\base64.h">
-      <Filter>src\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\encoding.h">
-      <Filter>src\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\message\message_class.h">
-      <Filter>src\message</Filter>
-    </ClInclude>
-    <ClInclude Include="src\event\events.h">
-      <Filter>src\event</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\pack_class.h">
-      <Filter>src\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\structs.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\conf\config_struct.h">
-      <Filter>src\conf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\api\types.h">
-      <Filter>src\api</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ctpl\ctpl_stl.h">
-      <Filter>src\ctpl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cqp\funcs.h">
-      <Filter>src\cqp</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cqp\sdk.h">
-      <Filter>src\cqp</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cqp\sdk_class.h">
-      <Filter>src\cqp</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\params_class.h">
-      <Filter>src\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\application_class.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\update.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\server_https.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\server_ws.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\server_wss.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\status_code.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\utility.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\crypto.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\server_http.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\client_ws.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\web_server\client_wss.hpp">
-      <Filter>src\web_server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\service\service_base_class.h">
-      <Filter>src\service</Filter>
-    </ClInclude>
-    <ClInclude Include="src\service\impl\http_service_class.h">
-      <Filter>src\service\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\service\impl\service_impl_common.h">
-      <Filter>src\service\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\service\hub_class.h">
-      <Filter>src\service</Filter>
-    </ClInclude>
-    <ClInclude Include="src\service\impl\ws_service_class.h">
-      <Filter>src\service\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\service\pushable_interface.h">
-      <Filter>src\service</Filter>
-    </ClInclude>
-    <ClInclude Include="src\service\impl\ws_reverse_service_class.h">
-      <Filter>src\service\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\api\api.h">
-      <Filter>src\api</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\curl_wrapper.h">
-      <Filter>src\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\http_utils.h">
-      <Filter>src\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\emoji_data.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\event\filter.h">
-      <Filter>src\event</Filter>
-    </ClInclude>
     <ClInclude Include="src\cqsdk\enums.h">
       <Filter>src\cqsdk</Filter>
     </ClInclude>
