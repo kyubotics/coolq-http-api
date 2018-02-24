@@ -14,8 +14,8 @@ namespace cq {
         std::function<void(int32_t)> on_initialize;
         std::function<void()> on_enable;
         std::function<void()> on_disable;
-        std::function<void()> on_start;
-        std::function<void()> on_exit;
+        std::function<void()> on_coolq_start;
+        std::function<void()> on_coolq_exit;
 
         std::function<void()> __main;
     }
@@ -67,17 +67,17 @@ __CQ_EVENT(int32_t, cq_app_disable, 0)
 /**
  * Event: CoolQ is starting.
  */
-__CQ_EVENT(int32_t, cq_app_start, 0)
+__CQ_EVENT(int32_t, cq_coolq_start, 0)
 () {
-    call_if_valid(app::on_start);
+    call_if_valid(app::on_coolq_start);
     return 0;
 }
 
 /**
  * Event: CoolQ is exiting.
  */
-__CQ_EVENT(int32_t, cq_app_exit, 0)
+__CQ_EVENT(int32_t, cq_coolq_exit, 0)
 () {
-    call_if_valid(app::on_exit);
+    call_if_valid(app::on_coolq_exit);
     return 0;
 }

@@ -13,11 +13,50 @@ namespace cq {
         extern int32_t auth_code;
         extern std::string id;
 
+        /**
+         * Lifecycle:
+         * 
+         * +-----------------------------------------+
+         * |             Enabled At Start            |
+         * +-----------------------------------------+
+         * | on_initialize                           |
+         * |       +                                 |
+         * |       |                                 |
+         * |       v                                 |
+         * |   on_start                              |
+         * |       +                                 |
+         * |       |                                 |
+         * |       v     disabled by user            |
+         * |   on_enable +--------------> on_disable |
+         * |       +                           +     |
+         * |       |                           |     |
+         * |       v                           |     |
+         * |    on_exit <----------------------+     |
+         * +-----------------------------------------+
+         * 
+         * +---------------------------------------+
+         * |            Disabled At Start          |
+         * +---------------------------------------+
+         * | on_initialize +------+                |
+         * |       +              |enabled by user |
+         * |       |              |                |
+         * |       |              v                |
+         * |       |          on_start             |
+         * |       |              +                |
+         * |       |              |                |
+         * |       |              v                |
+         * |       |          on_enable            |
+         * |       |              +                |
+         * |       |              |                |
+         * |       v              |                |
+         * |    on_exit <---------+                |
+         * +---------------------------------------+
+         */
         extern std::function<void(int32_t auth_code)> on_initialize;
         extern std::function<void()> on_enable;
         extern std::function<void()> on_disable;
-        extern std::function<void()> on_start;
-        extern std::function<void()> on_exit;
+        extern std::function<void()> on_coolq_start;
+        extern std::function<void()> on_coolq_exit;
 
         extern std::function<void()> __main;
     }
