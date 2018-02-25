@@ -56,15 +56,21 @@ set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_PLATFORM_TOOLSET v141)
 ```
 
-由于 triplet 的名字是在 VS 工程文件里写死的，所以建议将 triplet 命名为 `x86-windows-static.cmake`。要编译项目的话，需要先安装这些依赖：`boost`、`cpprestsdk`、`curl`、`nlohmann-json`、`openssl`、`libiconv`。
+由于 triplet 的名字是在 VS 工程文件里写死的，所以建议将 triplet 命名为 `x86-windows-static.cmake`。要编译项目的话，需要先安装依赖，如下表：
 
-注意，依赖中的 `cpprestsdk`，需要安装 2.9.0 版本，因为更新版本在一些版本的 Windows Server 上不能正常工作，要安装 2.9.0 版，需要先进 vcpkg 根目录，运行：
+| 模块名 | 依赖项 |
+| ----- | ----- |
+| `cqsdk` | `boost-algorithm`<br>`boost-filesystem`<br>`libiconv` |
+| `cqhttp/core` | `cqsdk` 的依赖项<br>`nlohmann-json` |
+
+注意，**在安装依赖之前**，首先要在 vcpkg 根目录运行下面命令：
 
 ```bash
 git checkout 2e39b6195fbc14a655474b019234890df94a2ed0 -- ports/cpprestsdk
+git checkout d0d38919bb3878e281b62bb69137cd94279b690d -- ports/curl
 ```
 
-然后再安装 `cpprestsdk`。
+这会把 `cpprestsdk` 固定在 2.9.0 版本（更新版本在一些版本的 Windows Server 上不能正常工作），`curl` 固定在 7.58.0 版本（更新版本依赖的 `nghttp2` 无法静态编译）。
 
 ## 开源许可证、重新分发
 

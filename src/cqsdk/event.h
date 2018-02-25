@@ -19,6 +19,7 @@ namespace cq::event {
         message::Type message_type;
         message::SubType sub_type;
         int32_t message_id;
+        std::string raw_message;
         message::Message message;
         int32_t font;
     };

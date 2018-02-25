@@ -132,6 +132,9 @@ namespace cq::message {
          */
         std::string extract_plain_text() const;
 
+        list<MessageSegment> &segments() { return *this; }
+        const list<MessageSegment> &segments() const { return *this; }
+
     private:
         /**
          * Merge adjacent "text" segments.

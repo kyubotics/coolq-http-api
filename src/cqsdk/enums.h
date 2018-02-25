@@ -47,7 +47,7 @@ namespace cq {
             GROUP_ADMIN_SET = 2,
             GROUP_MEMBER_DECREASE_LEAVE = 1,
             GROUP_MEMBER_DECREASE_KICK = 2,
-            GROUP_MEMBER_INCREASE_APPROVE = 2,
+            GROUP_MEMBER_INCREASE_APPROVE = 1,
             GROUP_MEMBER_INCREASE_INVITE = 2,
         };
     }

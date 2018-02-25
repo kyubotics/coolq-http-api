@@ -3,13 +3,12 @@
 #include "cqhttp/plugins/http/http.h"
 #include "cqhttp/plugins/filter/filter.h"
 
-using namespace cqhttp;
-
 CQ_INITIALIZE("io.github.richardchien.coolqhttpapi");
 
 CQ_MAIN {
-    auto app = std::make_shared<Application>();
-    app->use(plugins::filter);
-    app->use(plugins::http);
-    apply(app);
+    cqhttp::init();
+    auto app = std::make_shared<cqhttp::Application>();
+    app->use(cqhttp::plugins::filter);
+    app->use(cqhttp::plugins::http);
+    cqhttp::apply(app);
 }

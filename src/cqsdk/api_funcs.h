@@ -13,7 +13,7 @@
 
 using cq_bool_t = int32_t;
 
-// Send Message
+// Message
 FUNC(int32_t, sendPrivateMsg, int32_t auth_code, int64_t qq, const char *msg)
 FUNC(int32_t, sendGroupMsg, int32_t auth_code, int64_t group_id, const char *msg)
 FUNC(int32_t, sendDiscussMsg, int32_t auth_code, int64_t discuss_id, const char *msg)

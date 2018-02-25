@@ -3,6 +3,15 @@
 #include "../common.h"
 
 #include "./string.h"
+#include "../exception.h"
+
+namespace cq::exception {
+    struct BytesNotEnough : LogicError {
+        BytesNotEnough(const size_t have, const size_t needed) :
+            LogicError("there aren't enough bytes remained "
+                "(have " + std::to_string(have) + ", but " + std::to_string(needed) + " are/is needed)") {}
+    };
+}
 
 namespace cq::utils {
     class BinPack {
@@ -18,8 +27,8 @@ namespace cq::utils {
             constexpr auto size = sizeof(IntType);
             check_enough(size);
 
-            auto s = this->bytes_.substr(this->curr_, size);
-            this->curr_ += size;
+            auto s = bytes_.substr(curr_, size);
+            curr_ += size;
             std::reverse(s.begin(), s.end());
 
             IntType result;
@@ -33,19 +42,19 @@ namespace cq::utils {
                 return std::string();
             }
             check_enough(len);
-            auto result = string_from_coolq(this->bytes_.substr(this->curr_, len));
-            this->curr_ += len;
+            auto result = string_from_coolq(bytes_.substr(curr_, len));
+            curr_ += len;
             return result;
         }
 
         std::string pop_bytes(const size_t len) {
-            auto result = this->bytes_.substr(this->curr_, len);
-            this->curr_ += len;
+            auto result = bytes_.substr(curr_, len);
+            curr_ += len;
             return result;
         }
 
         std::string pop_token() {
-            return this->pop_bytes(this->pop_int<int16_t>());
+            return pop_bytes(pop_int<int16_t>());
         }
 
         bool pop_bool() {
@@ -57,9 +66,8 @@ namespace cq::utils {
         size_t curr_;
 
         void check_enough(const size_t needed) const {
-            if (this->size() < needed) {
-                throw std::out_of_range(
-                    "there aren't enough bytes to pop (" + std::to_string(needed) + " bytes needed)");
+            if (size() < needed) {
+                throw exception::BytesNotEnough(size(), needed);
             }
         }
     };

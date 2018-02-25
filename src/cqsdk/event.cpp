@@ -4,6 +4,7 @@
 #include "./utils/string.h"
 #include "./utils/function.h"
 #include "./utils/base64.h"
+#include "./exception.h"
 
 namespace cq::event {
     std::function<void(const PrivateMessageEvent &)> on_private_msg;
@@ -33,7 +34,8 @@ __CQ_EVENT(int32_t, cq_event_private_msg, 24)
     e.target = Target(from_qq);
     e.sub_type = static_cast<message::SubType>(sub_type);
     e.message_id = msg_id;
-    e.message = string_from_coolq(msg);
+    e.raw_message = string_from_coolq(msg);
+    e.message = e.raw_message;
     e.font = font;
     e.user_id = from_qq;
     call_if_valid(event::on_private_msg, e);
@@ -50,11 +52,25 @@ __CQ_EVENT(int32_t, cq_event_group_msg, 36)
     e.target = Target(from_qq, from_group, Target::GROUP);
     e.sub_type = static_cast<message::SubType>(sub_type);
     e.message_id = msg_id;
-    e.message = string_from_coolq(msg);
+    e.raw_message = string_from_coolq(msg);
+    //e.message = e.raw_message; // moved to the bottom
     e.font = font;
     e.user_id = from_qq;
     e.group_id = from_group;
-    e.anonymous = Anonymous::from_bytes(utils::base64::decode(string_from_coolq(from_anonymous)));
+    try {
+        e.anonymous = ObjectHelper::from_base64<Anonymous>(string_from_coolq(from_anonymous));
+    } catch (cq::exception::ParseError &) {}
+
+    if (e.is_anonymous()) {
+        // in CoolQ Air, there is a prefix in the message
+        auto prefix = "&#91;" + e.anonymous.name + "&#93;:";
+        if (boost::starts_with(e.raw_message, prefix)) {
+            e.raw_message = e.raw_message.substr(prefix.length());
+        }
+    }
+
+    e.message = e.raw_message;
+
     call_if_valid(event::on_group_msg, e);
     return e.operation;
 }
@@ -68,7 +84,8 @@ __CQ_EVENT(int32_t, cq_event_discuss_msg, 32)
     e.target = Target(from_qq, from_discuss, Target::DISCUSS);
     e.sub_type = static_cast<message::SubType>(sub_type);
     e.message_id = msg_id;
-    e.message = string_from_coolq(msg);
+    e.raw_message = string_from_coolq(msg);
+    e.message = e.raw_message;
     e.font = font;
     e.user_id = from_qq;
     e.discuss_id = from_discuss;
@@ -85,7 +102,9 @@ __CQ_EVENT(int32_t, cq_event_group_upload, 28)
     e.target = Target(from_qq, from_group, Target::GROUP);
     e.time = send_time;
     e.sub_type = static_cast<notice::SubType>(sub_type);
-    e.file = File::from_bytes(utils::base64::decode(string_from_coolq(file)));
+    try {
+        e.file = ObjectHelper::from_base64<File>(string_from_coolq(file));
+    } catch (cq::exception::ParseError &) {}
     e.user_id = from_qq;
     e.group_id = from_group;
     call_if_valid(event::on_group_upload, e);

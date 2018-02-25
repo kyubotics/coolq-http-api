@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\cqhttp\core\action.cpp" />
     <ClCompile Include="src\cqhttp\core\core.cpp" />
     <ClCompile Include="src\cqhttp\plugins\filter\filter.cpp" />
     <ClCompile Include="src\cqhttp\plugins\http\http.cpp" />
@@ -26,8 +27,10 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\cqhttp\core\action.h" />
     <ClInclude Include="src\cqhttp\core\common.h" />
     <ClInclude Include="src\cqhttp\core\core.h" />
+    <ClInclude Include="src\cqhttp\core\json_convertor.h" />
     <ClInclude Include="src\cqhttp\core\plugin.h" />
     <ClInclude Include="src\cqhttp\cqhttp.h" />
     <ClInclude Include="src\cqhttp\plugins\filter\filter.h" />
@@ -40,6 +43,7 @@
     <ClInclude Include="src\cqsdk\event.h" />
     <ClInclude Include="src\cqsdk\emoji_data.inc" />
     <ClInclude Include="src\cqsdk\enums.h" />
+    <ClInclude Include="src\cqsdk\exception.h" />
     <ClInclude Include="src\cqsdk\logging.h" />
     <ClInclude Include="src\cqsdk\def.h" />
     <ClInclude Include="src\cqsdk\menu.h" />

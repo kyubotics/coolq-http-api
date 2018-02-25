@@ -75,6 +75,9 @@
     <ClCompile Include="src\cqhttp\plugins\filter\filter.cpp">
       <Filter>src\cqhttp\plugins\filter</Filter>
     </ClCompile>
+    <ClCompile Include="src\cqhttp\core\action.cpp">
+      <Filter>src\cqhttp\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cqsdk\enums.h">
@@ -128,9 +131,6 @@
     <ClInclude Include="src\cqsdk\utils\binpack.h">
       <Filter>src\cqsdk\utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\cqsdk\types.h">
-      <Filter>src\cqsdk</Filter>
-    </ClInclude>
     <ClInclude Include="src\cqsdk\logging.h">
       <Filter>src\cqsdk</Filter>
     </ClInclude>
@@ -154,6 +154,18 @@
     </ClInclude>
     <ClInclude Include="src\cqhttp\plugins\filter\filter.h">
       <Filter>src\cqhttp\plugins\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\exception.h">
+      <Filter>src\cqsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqhttp\core\json_convertor.h">
+      <Filter>src\cqhttp\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqhttp\core\action.h">
+      <Filter>src\cqhttp\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cqsdk\types.h">
+      <Filter>src\cqsdk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

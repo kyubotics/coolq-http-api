@@ -10,8 +10,11 @@ namespace cqhttp {
             plugins_.push_back(plugin);
         }
 
+        /**
+         * Generate lifecycle hooks.
+         */
         #define LIFECYCLE(Name) \
-            void on_##Name() { \
+            void __hook_##Name() { \
                 auto it = plugins_.begin(); \
                 Plugin::Next next = [&]() { \
                     if (it == plugins_.end()) { return; } \
@@ -28,8 +31,11 @@ namespace cqhttp {
 
         #undef LIFECYCLE
 
+        /**
+         * Generate event hooks.
+         */
         #define EVENT(EventType) \
-            void on_##EventType##_event(const cq::EventType::Type type, const cq::EventType::SubType sub_type, \
+            void __hook_##EventType##_event(const cq::EventType::Type type, const cq::EventType::SubType sub_type, \
                                         json &data) { \
                 auto it = plugins_.begin(); \
                 Plugin::Next next = [&]() { \
@@ -45,20 +51,29 @@ namespace cqhttp {
 
         #undef EVENT
 
-        void on_before_action(const std::string &name, json &params) {
+        void __hook_before_action(const std::string &action, json &params) {
             auto it = plugins_.begin();
             Plugin::Next next = [&]() {
                 if (it == plugins_.end()) { return; }
-                (*it++)->hook_before_action(name, params, next);
+                (*it++)->hook_before_action(action, params, next);
             };
             next();
         }
 
-        void on_after_action(const std::string &name, json &result) {
+        void __hook_missed_action(const std::string &action, json &params, json &result) {
             auto it = plugins_.begin();
             Plugin::Next next = [&]() {
                 if (it == plugins_.end()) { return; }
-                (*it++)->hook_after_action(name, result, next);
+                (*it++)->hook_missed_action(action, params, result, next);
+            };
+            next();
+        }
+
+        void __hook_after_action(const std::string &action, json &result) {
+            auto it = plugins_.begin();
+            Plugin::Next next = [&]() {
+                if (it == plugins_.end()) { return; }
+                (*it++)->hook_after_action(action, result, next);
             };
             next();
         }
@@ -67,5 +82,14 @@ namespace cqhttp {
         std::vector<std::shared_ptr<Plugin>> plugins_;
     };
 
+    /**
+     * Initialize the module.
+     * This will assign the event handlers of "cqhttp" module to "cqsdk" module.
+     */
+    void init();
+
+    /**
+     * Apply the given application. This will override any previous applied applications.
+     */
     void apply(const std::shared_ptr<Application> app);
 }

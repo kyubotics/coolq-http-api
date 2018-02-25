@@ -11,6 +11,16 @@
 #include "./types.h"
 #include "./utils/binpack.h"
 
+namespace cq::exception {
+    struct ApiError : RuntimeError {
+        int code;
+        ApiError(const int code) : RuntimeError("failed to call coolq api") { this->code = code; }
+
+        static const auto INVALID_DATA = 100;
+        static const auto INVALID_TARGET = 101;
+    };
+}
+
 namespace cq::api {
     /**
      * Init all API functions.
@@ -25,101 +35,121 @@ namespace cq::api {
         #include "./api_funcs.h"
     }
 
-    #pragma region Send Message
-
-    inline int32_t send_private_msg(const int64_t user_id, const std::string &msg) {
-        return raw::CQ_sendPrivateMsg(app::auth_code, user_id, utils::string_to_coolq(msg).c_str());
+    static void throw_if_needed(const int32_t ret) {
+        if (ret < 0) {
+            throw exception::ApiError(ret);
+        }
     }
 
-    inline int32_t send_group_msg(const int64_t group_id, const std::string &msg) {
-        return raw::CQ_sendGroupMsg(app::auth_code, group_id, utils::string_to_coolq(msg).c_str());
+    static void throw_if_needed(const void * const ret_ptr) {
+        if (!ret_ptr) {
+            throw exception::ApiError(exception::ApiError::INVALID_DATA);
+        }
     }
 
-    inline int32_t send_discuss_msg(const int64_t discuss_id, const std::string &msg) {
-        return raw::CQ_sendDiscussMsg(app::auth_code, discuss_id, utils::string_to_coolq(msg).c_str());
+    #pragma region Message
+
+    inline int64_t send_private_msg(const int64_t user_id, const std::string &msg) {
+        const auto ret = raw::CQ_sendPrivateMsg(app::auth_code, user_id, utils::string_to_coolq(msg).c_str());
+        throw_if_needed(ret);
+        return ret;
     }
 
-    inline int32_t delete_msg(const int64_t msg_id) {
-        return raw::CQ_deleteMsg(app::auth_code, msg_id);
+    inline int64_t send_group_msg(const int64_t group_id, const std::string &msg) {
+        const auto ret = raw::CQ_sendGroupMsg(app::auth_code, group_id, utils::string_to_coolq(msg).c_str());
+        throw_if_needed(ret);
+        return ret;
+    }
+
+    inline int64_t send_discuss_msg(const int64_t discuss_id, const std::string &msg) {
+        const auto ret = raw::CQ_sendDiscussMsg(app::auth_code, discuss_id, utils::string_to_coolq(msg).c_str());
+        throw_if_needed(ret);
+        return ret;
+    }
+
+    inline void delete_msg(const int64_t msg_id) {
+        throw_if_needed(raw::CQ_deleteMsg(app::auth_code, msg_id));
     }
 
     #pragma endregion
 
     #pragma region Send Like
 
-    inline int32_t send_like(const int64_t user_id) {
-        return raw::CQ_sendLike(app::auth_code, user_id);
+    inline void send_like(const int64_t user_id) {
+        throw_if_needed(raw::CQ_sendLike(app::auth_code, user_id));
     }
 
-    inline int32_t send_like(const int64_t user_id, const int32_t times) {
-        return raw::CQ_sendLikeV2(app::auth_code, user_id, times);
+    inline void send_like(const int64_t user_id, const int32_t times) {
+        throw_if_needed(raw::CQ_sendLikeV2(app::auth_code, user_id, times));
     }
 
     #pragma endregion
 
     #pragma region Group & Discuss Operation
 
-    inline int32_t set_group_kick(const int64_t group_id, const int64_t user_id, const bool reject_add_request) {
-        return raw::CQ_setGroupKick(app::auth_code, group_id, user_id, reject_add_request);
+    inline void set_group_kick(const int64_t group_id, const int64_t user_id, const bool reject_add_request) {
+        throw_if_needed(raw::CQ_setGroupKick(app::auth_code, group_id, user_id, reject_add_request));
     }
 
-    inline int32_t set_group_ban(const int64_t group_id, const int64_t user_id, const int64_t duration) {
-        return raw::CQ_setGroupBan(app::auth_code, group_id, user_id, duration);
+    inline void set_group_ban(const int64_t group_id, const int64_t user_id, const int64_t duration) {
+        throw_if_needed(raw::CQ_setGroupBan(app::auth_code, group_id, user_id, duration));
     }
 
-    inline int32_t set_group_anonymous_ban(const int64_t group_id, const std::string &flag, const int64_t duration) {
-        return raw::CQ_setGroupAnonymousBan(app::auth_code, group_id, utils::string_to_coolq(flag).c_str(), duration);
+    inline void set_group_anonymous_ban(const int64_t group_id, const std::string &flag, const int64_t duration) {
+        throw_if_needed(raw::CQ_setGroupAnonymousBan(app::auth_code, group_id, utils::string_to_coolq(flag).c_str(),
+                                                     duration));
     }
 
-    inline int32_t set_group_whole_ban(const int64_t group_id, const bool enable) {
-        return raw::CQ_setGroupWholeBan(app::auth_code, group_id, enable);
+    inline void set_group_whole_ban(const int64_t group_id, const bool enable) {
+        throw_if_needed(raw::CQ_setGroupWholeBan(app::auth_code, group_id, enable));
     }
 
-    inline int32_t set_group_admin(const int64_t group_id, const int64_t user_id, const bool enable) {
-        return raw::CQ_setGroupAdmin(app::auth_code, group_id, user_id, enable);
+    inline void set_group_admin(const int64_t group_id, const int64_t user_id, const bool enable) {
+        throw_if_needed(raw::CQ_setGroupAdmin(app::auth_code, group_id, user_id, enable));
     }
 
-    inline int32_t set_group_anonymous(const int64_t group_id, const bool enable) {
-        return raw::CQ_setGroupAnonymous(app::auth_code, group_id, enable);
+    inline void set_group_anonymous(const int64_t group_id, const bool enable) {
+        throw_if_needed(raw::CQ_setGroupAnonymous(app::auth_code, group_id, enable));
     }
 
-    inline int32_t set_group_card(const int64_t group_id, const int64_t user_id, const std::string &card) {
-        return raw::CQ_setGroupCard(app::auth_code, group_id, user_id, utils::string_to_coolq(card).c_str());
+    inline void set_group_card(const int64_t group_id, const int64_t user_id, const std::string &card) {
+        throw_if_needed(raw::CQ_setGroupCard(app::auth_code, group_id, user_id, utils::string_to_coolq(card).c_str()));
     }
 
-    inline int32_t set_group_leave(const int64_t group_id, const bool is_dismiss) {
-        return raw::CQ_setGroupLeave(app::auth_code, group_id, is_dismiss);
+    inline void set_group_leave(const int64_t group_id, const bool is_dismiss) {
+        throw_if_needed(raw::CQ_setGroupLeave(app::auth_code, group_id, is_dismiss));
     }
 
-    inline int32_t set_group_special_title(const int64_t group_id, const int64_t user_id,
-                                           const std::string &special_title, const int64_t duration) {
-        return raw::CQ_setGroupSpecialTitle(app::auth_code, group_id, user_id,
-                                            utils::string_to_coolq(special_title).c_str(), duration);
+    inline void set_group_special_title(const int64_t group_id, const int64_t user_id,
+                                        const std::string &special_title, const int64_t duration) {
+        throw_if_needed(raw::CQ_setGroupSpecialTitle(app::auth_code, group_id, user_id,
+                                                     utils::string_to_coolq(special_title).c_str(), duration));
     }
 
-    inline int32_t set_discuss_leave(const int64_t discuss_id) {
-        return raw::CQ_setDiscussLeave(app::auth_code, discuss_id);
+    inline void set_discuss_leave(const int64_t discuss_id) {
+        throw_if_needed(raw::CQ_setDiscussLeave(app::auth_code, discuss_id));
     }
 
     #pragma endregion
 
     #pragma region Request Operation
 
-    inline int32_t set_friend_add_request(const std::string &flag, const request::Operation operation,
-                                          const std::string &remark) {
-        return raw::CQ_setFriendAddRequest(app::auth_code, utils::string_to_coolq(flag).c_str(),
-                                           operation, utils::string_to_coolq(remark).c_str());
+    inline void set_friend_add_request(const std::string &flag, const request::Operation operation,
+                                       const std::string &remark) {
+        throw_if_needed(raw::CQ_setFriendAddRequest(app::auth_code, utils::string_to_coolq(flag).c_str(),
+                                                    operation, utils::string_to_coolq(remark).c_str()));
     }
 
-    inline int32_t set_group_add_request(const std::string &flag, const request::SubType type,
-                                         const request::Operation operation) {
-        return raw::CQ_setGroupAddRequest(app::auth_code, utils::string_to_coolq(flag).c_str(), type, operation);
+    inline void set_group_add_request(const std::string &flag, const request::SubType type,
+                                      const request::Operation operation) {
+        throw_if_needed(raw::CQ_setGroupAddRequest(app::auth_code, utils::string_to_coolq(flag).c_str(), type,
+                                                   operation));
     }
 
-    inline int32_t set_group_add_request(const std::string &flag, const request::SubType type,
-                                         const request::Operation operation, const std::string &reason) {
-        return raw::CQ_setGroupAddRequestV2(app::auth_code, utils::string_to_coolq(flag).c_str(), type, operation,
-                                            utils::string_to_coolq(reason).c_str());
+    inline void set_group_add_request(const std::string &flag, const request::SubType type,
+                                      const request::Operation operation, const std::string &reason) {
+        throw_if_needed(raw::CQ_setGroupAddRequestV2(app::auth_code, utils::string_to_coolq(flag).c_str(), type,
+                                                     operation, utils::string_to_coolq(reason).c_str()));
     }
 
     #pragma endregion
@@ -131,25 +161,34 @@ namespace cq::api {
     }
 
     inline std::string get_login_nickname() {
-        const auto nick = raw::CQ_getLoginNick(app::auth_code);
-        return nick ? utils::string_from_coolq(nick) : std::string();
+        const auto ret = raw::CQ_getLoginNick(app::auth_code);
+        throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
     }
 
-    inline std::string get_stranger_info_raw(const int64_t user_id, const bool no_cache = false) {
-        return utils::base64::decode(raw::CQ_getStrangerInfo(app::auth_code, user_id, no_cache));
+    inline std::string get_stranger_info_base64(const int64_t user_id, const bool no_cache = false) {
+        const auto ret = raw::CQ_getStrangerInfo(app::auth_code, user_id, no_cache);
+        throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
     }
 
-    inline std::string get_group_list_raw() {
-        return utils::base64::decode(raw::CQ_getGroupList(app::auth_code));
+    inline std::string get_group_list_base64() {
+        const auto ret = raw::CQ_getGroupList(app::auth_code);
+        throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
     }
 
-    inline std::string get_group_member_list_raw(const int64_t group_id) {
-        return utils::base64::decode(raw::CQ_getGroupMemberList(app::auth_code, group_id));
+    inline std::string get_group_member_list_base64(const int64_t group_id) {
+        const auto ret = raw::CQ_getGroupMemberList(app::auth_code, group_id);
+        throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
     }
 
-    inline std::string get_group_member_info_raw(const int64_t group_id, const int64_t user_id,
-                                                 const bool no_cache = false) {
-        return utils::base64::decode(raw::CQ_getGroupMemberInfoV2(app::auth_code, group_id, user_id, no_cache));
+    inline std::string get_group_member_info_base64(const int64_t group_id, const int64_t user_id,
+                                                    const bool no_cache = false) {
+        const auto ret = raw::CQ_getGroupMemberInfoV2(app::auth_code, group_id, user_id, no_cache);
+        throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
     }
 
     #pragma endregion
@@ -157,8 +196,9 @@ namespace cq::api {
     #pragma region Get CoolQ Information
 
     inline std::string get_cookies() {
-        const auto cookies = raw::CQ_getCookies(app::auth_code);
-        return cookies ? utils::string_from_coolq(cookies) : std::string();
+        const auto ret = raw::CQ_getCookies(app::auth_code);
+        throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
     }
 
     inline int32_t get_csrf_token() {
@@ -166,13 +206,16 @@ namespace cq::api {
     }
 
     inline std::string get_app_directory() {
-        return utils::string_from_coolq(raw::CQ_getAppDirectory(app::auth_code));
+        const auto ret = raw::CQ_getAppDirectory(app::auth_code);
+        throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
     }
 
     inline std::string get_record(const std::string &file, const std::string &out_format) {
-        const auto raw = raw::CQ_getRecord(app::auth_code, utils::string_to_coolq(file).c_str(),
+        const auto ret = raw::CQ_getRecord(app::auth_code, utils::string_to_coolq(file).c_str(),
                                            utils::string_to_coolq(out_format).c_str());
-        return utils::string_from_coolq(raw);
+        throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
     }
 
     #pragma endregion
@@ -191,7 +234,7 @@ namespace cq::api {
 
     #pragma region CQSDK Bonus
 
-    inline int32_t send_msg(const Target &target, const std::string &msg) {
+    inline int64_t send_msg(const Target &target, const std::string &msg) {
         if (target.group_id.has_value()) {
             return send_group_msg(target.group_id.value(), msg);
         }
@@ -201,42 +244,40 @@ namespace cq::api {
         if (target.user_id.has_value()) {
             return send_private_msg(target.user_id.value(), msg);
         }
-        return -1;
+        throw exception::ApiError(exception::ApiError::INVALID_TARGET);
     }
 
     inline User get_stranger_info(const int64_t user_id, const bool no_cache = false) {
-        return User::from_bytes(get_stranger_info_raw(user_id, no_cache));
+        try {
+            return ObjectHelper::from_base64<User>(get_stranger_info_base64(user_id, no_cache));
+        } catch (exception::ParseError &) {
+            throw exception::ApiError(exception::ApiError::INVALID_DATA);
+        }
     }
 
     inline std::vector<Group> get_group_list() {
-        auto bytes = get_group_list_raw();
-        std::vector<Group> result;
-        if (bytes.size() > 4 /* at least has a count */) {
-            auto pack = utils::BinPack(bytes);
-            const auto count = pack.pop_int<int32_t>();
-            for (auto i = 0; i < count; i++) {
-                result.push_back(Group::from_bytes(pack.pop_token()));
-            }
+        try {
+            return ObjectHelper::multi_from_base64<std::vector<Group>>(get_group_list_base64());
+        } catch (exception::ParseError &) {
+            throw exception::ApiError(exception::ApiError::INVALID_DATA);
         }
-        return result;
     }
 
     inline std::vector<GroupMember> get_group_member_list(const int64_t group_id) {
-        auto bytes = get_group_member_list_raw(group_id);
-        std::vector<GroupMember> result;
-        if (bytes.size() > 4 /* at least has a count */) {
-            auto pack = utils::BinPack(bytes);
-            const auto count = pack.pop_int<int32_t>();
-            for (auto i = 0; i < count; i++) {
-                result.push_back(GroupMember::from_bytes(pack.pop_token()));
-            }
+        try {
+            return ObjectHelper::multi_from_base64<std::vector<GroupMember>>(get_group_member_list_base64(group_id));
+        } catch (exception::ParseError &) {
+            throw exception::ApiError(exception::ApiError::INVALID_DATA);
         }
-        return result;
     }
 
     inline GroupMember get_group_member_info(const int64_t group_id, const int64_t user_id,
                                              const bool no_cache = false) {
-        return GroupMember::from_bytes(get_group_member_info_raw(group_id, user_id, no_cache));
+        try {
+            return ObjectHelper::from_base64<GroupMember>(get_group_member_info_base64(group_id, user_id, no_cache));
+        } catch (exception::Exception &) {
+            throw exception::ApiError(exception::ApiError::INVALID_DATA);
+        }
     }
 
     inline User get_login_info() {

@@ -1,3 +1,3 @@
 #pragma once
 
-#include "./core/core.h"
+#include "cqhttp/core/core.h"
