@@ -2,14 +2,11 @@
 
 #include "./common.h"
 
-#include "./utils/base64.h"
 #include "./utils/string.h"
 #include "./app.h"
 #include "./enums.h"
 #include "./target.h"
-#include "./message.h"
 #include "./types.h"
-#include "./utils/binpack.h"
 
 namespace cq::exception {
     struct ApiError : RuntimeError {

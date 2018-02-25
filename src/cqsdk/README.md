@@ -32,7 +32,13 @@ CQ_MAIN {
     event::on_private_msg = [](const cq::PrivateMessageEvent &e) {
         logging::debug(u8"消息", u8"收到私聊消息：" + e.message + u8"，发送者：" + std::to_string(e.user_id));
 
-        api::send_private_msg(e.user_id, e.message); // echo 回去
+        try {
+            api::send_private_msg(e.user_id, e.message); // echo 回去
+        } catch (const cq::exception::ApiError &err) {
+            // API 调用失败
+            logging::debug(u8"API", u8"调用失败，错误码：" + std::to_string(err.code));
+        }
+
         api::send_msg(e.target, e.message); // 使用 e.target 指定发送目标
 
         // MessageSegment 类提供一些静态成员函数以快速构造消息段
