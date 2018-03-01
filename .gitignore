@@ -1,10 +1,8 @@
 .vs
-.vscode
+.vscode/c_cpp_properties.json
 build
 Release
 Debug
-post_build.bat
-post_build.d.bat
 *.sdf
 *.opensdf
 *.suo

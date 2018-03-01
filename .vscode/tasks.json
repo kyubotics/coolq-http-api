@@ -1,0 +1,48 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "generate",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "'${workspaceFolder}/scripts/generate.ps1'"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "build debug",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "'${workspaceFolder}/scripts/build.ps1'",
+                "Debug"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build",
+            "dependsOn": [
+                "generate"
+            ]
+        },
+        {
+            "label": "build release",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "'${workspaceFolder}/scripts/build.ps1'",
+                "Release"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build",
+            "dependsOn": [
+                "generate"
+            ]
+        }
+    ]
+}
