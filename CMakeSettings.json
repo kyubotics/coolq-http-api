@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "x86-Debug",
+            "generator": "Visual Studio 15 2017",
+            "configurationType": "Debug",
+            "inheritEnvironments": [
+                "msvc_x86"
+            ],
+            "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
+            "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
+            "cmakeCommandArgs": "-DCMAKE_TOOLCHAIN_FILE=C:/CLI/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x86-windows-static",
+            "buildCommandArgs": "-v",
+            "ctestCommandArgs": ""
+        },
+        {
+            "name": "x86-Release",
+            "generator": "Visual Studio 15 2017",
+            "configurationType": "Release",
+            "inheritEnvironments": [
+                "msvc_x86"
+            ],
+            "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
+            "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
+            "cmakeCommandArgs": "-DCMAKE_TOOLCHAIN_FILE=C:/CLI/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x86-windows-static",
+            "buildCommandArgs": "-v",
+            "ctestCommandArgs": ""
+        }
+    ]
+}
