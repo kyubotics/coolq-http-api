@@ -9,9 +9,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 include(UseStaticCRT)
 include(FindVcpkgIncludeDir)
 
-find_package(Boost COMPONENTS filesystem REQUIRED)
-find_package(Iconv REQUIRED)
-
 include_directories(${VCPKG_INCLUDE_DIR})
 include_directories(src)
 
@@ -19,6 +16,9 @@ add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
                 -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
                 -DWIN32_LEAN_AND_MEAN
                 -DCURL_STATICLIB)
+
+find_package(Boost REQUIRED COMPONENTS filesystem)
+find_package(Iconv REQUIRED)
 
 set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMTD")
 
