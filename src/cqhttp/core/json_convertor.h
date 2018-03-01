@@ -41,14 +41,14 @@ namespace cq {
             {"user_id", u.user_id},
             {"nickname", u.nickname},
             {"sex", u.sex},
-            {"age", u.age}
+            {"age", u.age},
         };
     }
 
     inline void to_json(json &j, const Group &g) {
         j = {
             {"group_id", g.group_id},
-            {"group_name", g.group_name}
+            {"group_name", g.group_name},
         };
     }
 
@@ -68,14 +68,14 @@ namespace cq {
             {"unfriendly", m.unfriendly},
             {"title", m.title},
             {"title_expire_time", m.title_expire_time},
-            {"card_changeable", m.card_changeable}
+            {"card_changeable", m.card_changeable},
         };
     }
 
     inline void to_json(json &j, const Anonymous &a) {
         j = {
             {"id", a.id},
-            {"name", a.name}
+            {"name", a.name},
         };
     }
 
@@ -84,10 +84,10 @@ namespace cq {
             {"id", f.id},
             {"name", f.name},
             {"size", f.size},
-            {"busid", f.busid}
+            {"busid", f.busid},
         };
     }
-}
+}  // namespace cq
 
 namespace cq::message {
     inline void to_json(json &j, const MessageSegment &segment) {
@@ -99,9 +99,7 @@ namespace cq::message {
         segment.data = j.at("data").get<std::map<std::string, std::string>>();
     }
 
-    inline void to_json(json &j, const Message &message) {
-        j = message.segments();
-    }
+    inline void to_json(json &j, const Message &message) { j = message.segments(); }
 
     inline void from_json(const json &j, Message &message) {
         if (j.is_string()) {
@@ -126,7 +124,7 @@ namespace cq::message {
             break;
         }
     }
-}
+}  // namespace cq::message
 
 namespace cq::notice {
     inline void to_json(json &j, const Type &type) {
@@ -151,7 +149,7 @@ namespace cq::notice {
             break;
         }
     }
-}
+}  // namespace cq::notice
 
 namespace cq::request {
     inline void to_json(json &j, const Type &type) {
@@ -167,7 +165,7 @@ namespace cq::request {
             break;
         }
     }
-}
+}  // namespace cq::request
 
 namespace cq::event {
     inline void to_json(json &j, const Type &type) {
@@ -176,7 +174,7 @@ namespace cq::event {
             j = "message";
             break;
         case NOTICE:
-            j = "event"; // for backward compatibility
+            j = "event";  // for backward compatibility
             break;
         case REQUEST:
             j = "request";
@@ -190,16 +188,21 @@ namespace cq::event {
     inline void to_json(json &j, const PrivateMessageEvent &e) {
         const auto sub_type_str = [&]() {
             switch (e.sub_type) {
-            case message::PRIVATE_FRIEND: return "friend";
-            case message::PRIVATE_GROUP: return "group";
-            case message::PRIVATE_DISCUSS: return "discuss";
-            case message::PRIVATE_OTHER: return "other";
-            default: return "unknown";
+            case message::PRIVATE_FRIEND:
+                return "friend";
+            case message::PRIVATE_GROUP:
+                return "group";
+            case message::PRIVATE_DISCUSS:
+                return "discuss";
+            case message::PRIVATE_OTHER:
+                return "other";
+            default:
+                return "unknown";
             }
         }();
 
         j = {
-            {"time", time(nullptr)}, // for backward compatibility
+            {"time", time(nullptr)},  // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"sub_type", sub_type_str},
@@ -207,7 +210,7 @@ namespace cq::event {
             {"user_id", e.user_id},
             {"message", e.message},
             {"raw_message", e.raw_message},
-            {"font", e.font}
+            {"font", e.font},
         };
     }
 
@@ -223,7 +226,7 @@ namespace cq::event {
         }();
 
         j = {
-            {"time", time(nullptr)}, // for backward compatibility
+            {"time", time(nullptr)},  // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"sub_type", sub_type_str},
@@ -231,16 +234,16 @@ namespace cq::event {
             {"group_id", e.group_id},
             {"user_id", e.user_id},
             {"anonymous", e.anonymous},
-            {"anonymous_flag", e.anonymous.flag}, // for backward compatibility
+            {"anonymous_flag", e.anonymous.flag},  // for backward compatibility
             {"message", e.message},
             {"raw_message", e.raw_message},
-            {"font", e.font}
+            {"font", e.font},
         };
     }
 
     inline void to_json(json &j, const DiscussMessageEvent &e) {
         j = {
-            {"time", time(nullptr)}, // for backward compatibility
+            {"time", time(nullptr)},  // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"message_id", e.message_id},
@@ -248,7 +251,7 @@ namespace cq::event {
             {"user_id", e.user_id},
             {"message", e.message},
             {"raw_message", e.raw_message},
-            {"font", e.font}
+            {"font", e.font},
         };
     }
 
@@ -259,16 +262,19 @@ namespace cq::event {
             {"event", e.notice_type},
             {"group_id", e.group_id},
             {"user_id", e.user_id},
-            {"file", e.file}
+            {"file", e.file},
         };
     }
 
     inline void to_json(json &j, const GroupAdminEvent &e) {
         const auto sub_type_str = [&]() {
             switch (e.sub_type) {
-            case notice::GROUP_ADMIN_UNSET: return "unset";
-            case notice::GROUP_ADMIN_SET: return "set";
-            default: return "unknown";
+            case notice::GROUP_ADMIN_UNSET:
+                return "unset";
+            case notice::GROUP_ADMIN_SET:
+                return "set";
+            default:
+                return "unknown";
             }
         }();
 
@@ -278,21 +284,24 @@ namespace cq::event {
             {"event", e.notice_type},
             {"sub_type", sub_type_str},
             {"group_id", e.group_id},
-            {"user_id", e.user_id}
+            {"user_id", e.user_id},
         };
     }
 
     inline void to_json(json &j, const GroupMemberDecreaseEvent &e) {
         const auto sub_type_str = [&]() {
             switch (e.sub_type) {
-            case notice::GROUP_MEMBER_DECREASE_LEAVE: return "leave";
+            case notice::GROUP_MEMBER_DECREASE_LEAVE:
+                return "leave";
             case notice::GROUP_MEMBER_DECREASE_KICK:
                 if (e.user_id != api::get_login_user_id()) {
                     // the one been kicked out is not me
                     return "kick";
                 }
-            case -1: return "kick_me";
-            default: return "unknown";
+            case -1:
+                return "kick_me";
+            default:
+                return "unknown";
             }
         }();
 
@@ -303,16 +312,19 @@ namespace cq::event {
             {"time", e.time},
             {"group_id", e.group_id},
             {"operator_id", e.operator_id},
-            {"user_id", e.user_id}
+            {"user_id", e.user_id},
         };
     }
 
     inline void to_json(json &j, const GroupMemberIncreaseEvent &e) {
         const auto sub_type_str = [&]() {
             switch (e.sub_type) {
-            case notice::GROUP_MEMBER_INCREASE_APPROVE: return "approve";
-            case notice::GROUP_MEMBER_INCREASE_INVITE: return "invite";
-            default: return "unknown";
+            case notice::GROUP_MEMBER_INCREASE_APPROVE:
+                return "approve";
+            case notice::GROUP_MEMBER_INCREASE_INVITE:
+                return "invite";
+            default:
+                return "unknown";
             }
         }();
 
@@ -323,7 +335,7 @@ namespace cq::event {
             {"time", e.time},
             {"group_id", e.group_id},
             {"operator_id", e.operator_id},
-            {"user_id", e.user_id}
+            {"user_id", e.user_id},
         };
     }
 
@@ -332,7 +344,7 @@ namespace cq::event {
             {"post_type", e.type},
             {"event", e.notice_type},
             {"time", e.time},
-            {"user_id", e.user_id}
+            {"user_id", e.user_id},
         };
     }
 
@@ -342,17 +354,20 @@ namespace cq::event {
             {"request_type", "friend"},
             {"time", e.time},
             {"user_id", e.user_id},
-            {"message", e.comment}, // for backward compatibility
-            {"flag", e.flag}
+            {"message", e.comment},  // for backward compatibility
+            {"flag", e.flag},
         };
     }
 
     inline void to_json(json &j, const GroupRequestEvent &e) {
         const auto sub_type_str = [&]() {
             switch (e.sub_type) {
-            case request::GROUP_ADD: return "add";
-            case request::GROUP_INVITE: return "invite";
-            default: return "unknown";
+            case request::GROUP_ADD:
+                return "add";
+            case request::GROUP_INVITE:
+                return "invite";
+            default:
+                return "unknown";
             }
         }();
 
@@ -363,8 +378,8 @@ namespace cq::event {
             {"time", e.time},
             {"group_id", e.group_id},
             {"user_id", e.user_id},
-            {"message", e.comment}, // for backward compatibility
-            {"flag", e.flag}
+            {"message", e.comment},  // for backward compatibility
+            {"flag", e.flag},
         };
     }
-}
+}  // namespace cq::event

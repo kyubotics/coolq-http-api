@@ -120,7 +120,7 @@ namespace cqhttp::action {
         j = {
             {"status", status},
             {"retcode", r.code},
-            {"data", r.data}
+            {"data", r.data},
         };
     }
-}
+}  // namespace cqhttp::action

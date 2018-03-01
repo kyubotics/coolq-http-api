@@ -23,10 +23,8 @@ namespace cq::utils {
 
     std::string string_convert_encoding(const std::string &text, const std::string &from_enc, const std::string &to_enc,
                                         const float capability_factor);
-    std::string string_encode(const std::string &s, const std::string &encoding,
-                              const float capability_factor = 2.0f);
-    std::string string_decode(const std::string &b, const std::string &encoding,
-                              const float capability_factor = 2.0f);
+    std::string string_encode(const std::string &s, const std::string &encoding, const float capability_factor = 2.0f);
+    std::string string_decode(const std::string &b, const std::string &encoding, const float capability_factor = 2.0f);
 
     std::string string_to_coolq(const std::string &str);
     std::string string_from_coolq(const std::string &str);
@@ -34,14 +32,10 @@ namespace cq::utils {
     std::string ws2s(const std::wstring &ws);
     std::wstring s2ws(const std::string &s);
     std::string ansi(const std::string &s);
-}
+}  // namespace cq::utils
 
 namespace std {
-    inline string to_string(const string &val) {
-        return val;
-    }
+    inline string to_string(const string &val) { return val; }
 
-    inline string to_string(const bool val) {
-        return val ? "true" : "false";
-    }
-}
+    inline string to_string(const bool val) { return val ? "true" : "false"; }
+}  // namespace std

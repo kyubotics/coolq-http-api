@@ -6,7 +6,7 @@ namespace cqhttp::plugins {
     struct Http : Plugin {
         //void hook_initialize(const Next next) override;
         void hook_enable(const Next next) override {
-            logging::debug("wow", "enabled");
+            logging::debug("wow", "你好");
             next();
         }
         //void hook_disable(const Next next) override;

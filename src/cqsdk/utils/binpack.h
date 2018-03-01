@@ -2,16 +2,16 @@
 
 #include "../common.h"
 
-#include "./string.h"
 #include "../exception.h"
+#include "./string.h"
 
 namespace cq::exception {
     struct BytesNotEnough : LogicError {
-        BytesNotEnough(const size_t have, const size_t needed) :
-            LogicError("there aren't enough bytes remained "
-                "(have " + std::to_string(have) + ", but " + std::to_string(needed) + " are/is needed)") {}
+        BytesNotEnough(const size_t have, const size_t needed)
+            : LogicError("there aren't enough bytes remained (have " + std::to_string(have) + ", but "
+                         + std::to_string(needed) + " are/is needed)") {}
     };
-}
+}  // namespace cq::exception
 
 namespace cq::utils {
     class BinPack {
@@ -53,13 +53,9 @@ namespace cq::utils {
             return result;
         }
 
-        std::string pop_token() {
-            return pop_bytes(pop_int<int16_t>());
-        }
+        std::string pop_token() { return pop_bytes(pop_int<int16_t>()); }
 
-        bool pop_bool() {
-            return static_cast<bool>(pop_int<int32_t>());
-        }
+        bool pop_bool() { return static_cast<bool>(pop_int<int32_t>()); }
 
     private:
         std::string bytes_;
@@ -71,4 +67,4 @@ namespace cq::utils {
             }
         }
     };
-}
+}  // namespace cq::utils

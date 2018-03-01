@@ -1,9 +1,9 @@
 #include "./string.h"
 
+#include <Windows.h>
+#include <iconv.h>
 #include <codecvt>
 #include <unordered_set>
-#include <iconv.h>
-#include <Windows.h>
 
 #include "../app.h"
 #include "./memory.h"
@@ -24,7 +24,7 @@ namespace cq::utils {
 
     bool is_emoji(const uint32_t codepoint) {
         static unordered_set<uint32_t> emoji_set = {
-        #include "../emoji_data.inc"
+#include "../emoji_data.inc"
         };
 
         return emoji_set.find(codepoint) != emoji_set.end();
@@ -64,9 +64,9 @@ namespace cq::utils {
             return result;
         }
 
-        auto out_bytes_left = static_cast<decltype(in_bytes_left)>(static_cast<double>(in_bytes_left) *
-            capability_factor);
-        auto out = new char[out_bytes_left] {0};
+        auto out_bytes_left =
+            static_cast<decltype(in_bytes_left)>(static_cast<double>(in_bytes_left) * capability_factor);
+        auto out = new char[out_bytes_left]{0};
         const auto out_begin = out;
 
         try {
@@ -74,7 +74,8 @@ namespace cq::utils {
                 // successfully converted
                 result = out_begin;
             }
-        } catch (...) {}
+        } catch (...) {
+        }
 
         delete[] out_begin;
         iconv_close(cd);
@@ -161,15 +162,9 @@ namespace cq::utils {
         return result;
     }
 
-    string ws2s(const wstring &ws) {
-        return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().to_bytes(ws);
-    }
+    string ws2s(const wstring &ws) { return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().to_bytes(ws); }
 
-    wstring s2ws(const string &s) {
-        return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s);
-    }
+    wstring s2ws(const string &s) { return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s); }
 
-    string ansi(const string &s) {
-        return string_encode(s, Encoding::ANSI);
-    }
-}
+    string ansi(const string &s) { return string_encode(s, Encoding::ANSI); }
+}  // namespace cq::utils

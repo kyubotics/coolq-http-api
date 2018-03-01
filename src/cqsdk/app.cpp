@@ -1,8 +1,8 @@
 #include "./app.h"
 
+#include "./api.h"
 #include "./def.h"
 #include "./utils/function.h"
-#include "./api.h"
 
 namespace cq {
     Config config;
@@ -18,8 +18,8 @@ namespace cq {
         std::function<void()> on_coolq_exit;
 
         std::function<void()> __main;
-    }
-}
+    }  // namespace app
+}  // namespace cq
 
 using namespace std;
 using namespace cq;

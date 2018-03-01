@@ -4,9 +4,9 @@
 
 #ifndef FUNC
 #define DEFINED_FUNC_MACRO
-#define FUNC(ReturnType, FuncName, ...) \
-    typedef ReturnType (__stdcall *__CQ_##FuncName##_T)(__VA_ARGS__); \
-    extern __CQ_##FuncName##_T CQ_##FuncName; // only DECLARE the functions
+#define FUNC(ReturnType, FuncName, ...)                              \
+    typedef ReturnType(__stdcall *__CQ_##FuncName##_T)(__VA_ARGS__); \
+    extern __CQ_##FuncName##_T CQ_##FuncName;  // only DECLARE the functions
 #endif
 
 #include <cstdint>
@@ -33,16 +33,16 @@ FUNC(int32_t, setGroupAnonymous, int32_t auth_code, int64_t group_id, cq_bool_t 
 FUNC(int32_t, setGroupCard, int32_t auth_code, int64_t group_id, int64_t qq, const char *new_card)
 FUNC(int32_t, setGroupLeave, int32_t auth_code, int64_t group_id, cq_bool_t is_dismiss)
 FUNC(int32_t, setGroupSpecialTitle, int32_t auth_code, int64_t group_id, int64_t qq, const char *new_special_title,
-    int64_t duration)
+     int64_t duration)
 FUNC(int32_t, setDiscussLeave, int32_t auth_code, int64_t discuss_id)
 
 // Request Operation
 FUNC(int32_t, setFriendAddRequest, int32_t auth_code, const char *response_flag, int32_t response_operation,
-    const char *remark)
+     const char *remark)
 FUNC(int32_t, setGroupAddRequest, int32_t auth_code, const char *response_flag, int32_t request_type,
-    int32_t response_operation)
+     int32_t response_operation)
 FUNC(int32_t, setGroupAddRequestV2, int32_t auth_code, const char *response_flag, int32_t request_type,
-    int32_t response_operation, const char *reason)
+     int32_t response_operation, const char *reason)
 
 // Get QQ Information
 FUNC(int64_t, getLoginQQ, int32_t auth_code)
@@ -60,7 +60,7 @@ FUNC(const char *, getRecord, int32_t auth_code, const char *file, const char *o
 
 FUNC(int32_t, addLog, int32_t auth_code, int32_t log_level, const char *category, const char *log_msg)
 FUNC(int32_t, setFatal, int32_t auth_code, const char *error_info)
-FUNC(int32_t, setRestart, int32_t auth_code) // currently ineffective
+FUNC(int32_t, setRestart, int32_t auth_code)  // currently ineffective
 
 #ifdef DEFINED_FUNC_MACRO
 #undef FUNC

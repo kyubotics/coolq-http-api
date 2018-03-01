@@ -8,11 +8,7 @@ namespace cq {
         std::optional<int64_t> group_id;
         std::optional<int64_t> discuss_id;
 
-        enum Type {
-            PRIVATE,
-            GROUP,
-            DISCUSS
-        };
+        enum Type { PRIVATE, GROUP, DISCUSS };
 
         Target() = default;
 
@@ -26,9 +22,9 @@ namespace cq {
             }
         }
 
-        explicit Target(const int64_t user_id, const int64_t group_or_discuss_id, const Type type) :
-            Target(group_or_discuss_id, type) {
+        explicit Target(const int64_t user_id, const int64_t group_or_discuss_id, const Type type)
+            : Target(group_or_discuss_id, type) {
             this->user_id = user_id;
         }
     };
-}
+}  // namespace cq

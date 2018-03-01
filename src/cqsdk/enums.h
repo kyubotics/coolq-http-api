@@ -12,7 +12,7 @@ namespace cq {
             NOTICE,
             REQUEST,
         };
-    }
+    }  // namespace event
 
     namespace message {
         enum Type {
@@ -29,7 +29,7 @@ namespace cq {
             PRIVATE_GROUP = 2,
             PRIVATE_DISCUSS = 3,
         };
-    }
+    }  // namespace message
 
     namespace notice {
         enum Type {
@@ -50,7 +50,7 @@ namespace cq {
             GROUP_MEMBER_INCREASE_APPROVE = 1,
             GROUP_MEMBER_INCREASE_INVITE = 2,
         };
-    }
+    }  // namespace notice
 
     namespace request {
         enum Operation {
@@ -69,5 +69,5 @@ namespace cq {
             GROUP_ADD = 1,
             GROUP_INVITE = 2,
         };
-    }
-}
+    }  // namespace request
+}  // namespace cq

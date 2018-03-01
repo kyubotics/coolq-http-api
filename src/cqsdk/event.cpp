@@ -1,10 +1,10 @@
 #include "./event.h"
 
 #include "./def.h"
-#include "./utils/string.h"
-#include "./utils/function.h"
-#include "./utils/base64.h"
 #include "./exception.h"
+#include "./utils/base64.h"
+#include "./utils/function.h"
+#include "./utils/string.h"
 
 namespace cq::event {
     std::function<void(const PrivateMessageEvent &)> on_private_msg;
@@ -17,7 +17,7 @@ namespace cq::event {
     std::function<void(const FriendAddEvent &)> on_friend_add;
     std::function<void(const FriendRequestEvent &)> on_friend_request;
     std::function<void(const GroupRequestEvent &)> on_group_request;
-}
+}  // namespace cq::event
 
 using namespace std;
 using namespace cq;
@@ -25,8 +25,8 @@ using cq::utils::call_if_valid;
 using cq::utils::string_from_coolq;
 
 /**
- * Type=21 Ë½ÁÄÏûÏ¢
- * sub_type ×ÓÀàĞÍ£¬11/À´×ÔºÃÓÑ 1/À´×ÔÔÚÏß×´Ì¬ 2/À´×ÔÈº 3/À´×ÔÌÖÂÛ×é
+ * Type=21 ç§èŠæ¶ˆæ¯
+ * sub_type å­ç±»å‹ï¼Œ11/æ¥è‡ªå¥½å‹ 1/æ¥è‡ªåœ¨çº¿çŠ¶æ€ 2/æ¥è‡ªç¾¤ 3/æ¥è‡ªè®¨è®ºç»„
  */
 __CQ_EVENT(int32_t, cq_event_private_msg, 24)
 (int32_t sub_type, int32_t msg_id, int64_t from_qq, const char *msg, int32_t font) {
@@ -43,7 +43,7 @@ __CQ_EVENT(int32_t, cq_event_private_msg, 24)
 }
 
 /**
- * Type=2 ÈºÏûÏ¢
+ * Type=2 ç¾¤æ¶ˆæ¯
  */
 __CQ_EVENT(int32_t, cq_event_group_msg, 36)
 (int32_t sub_type, int32_t msg_id, int64_t from_group, int64_t from_qq, const char *from_anonymous, const char *msg,
@@ -53,13 +53,14 @@ __CQ_EVENT(int32_t, cq_event_group_msg, 36)
     e.sub_type = static_cast<message::SubType>(sub_type);
     e.message_id = msg_id;
     e.raw_message = string_from_coolq(msg);
-    //e.message = e.raw_message; // moved to the bottom
+    // e.message = e.raw_message; // moved to the bottom
     e.font = font;
     e.user_id = from_qq;
     e.group_id = from_group;
     try {
         e.anonymous = ObjectHelper::from_base64<Anonymous>(string_from_coolq(from_anonymous));
-    } catch (cq::exception::ParseError &) {}
+    } catch (cq::exception::ParseError &) {
+    }
 
     if (e.is_anonymous()) {
         // in CoolQ Air, there is a prefix in the message
@@ -76,7 +77,7 @@ __CQ_EVENT(int32_t, cq_event_group_msg, 36)
 }
 
 /**
- * Type=4 ÌÖÂÛ×éÏûÏ¢
+ * Type=4 è®¨è®ºç»„æ¶ˆæ¯
  */
 __CQ_EVENT(int32_t, cq_event_discuss_msg, 32)
 (int32_t sub_type, int32_t msg_id, int64_t from_discuss, int64_t from_qq, const char *msg, int32_t font) {
@@ -94,7 +95,7 @@ __CQ_EVENT(int32_t, cq_event_discuss_msg, 32)
 }
 
 /**
- * Type=11 ÈºÊÂ¼ş-ÎÄ¼şÉÏ´«
+ * Type=11 ç¾¤äº‹ä»¶-æ–‡ä»¶ä¸Šä¼ 
  */
 __CQ_EVENT(int32_t, cq_event_group_upload, 28)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *file) {
@@ -104,7 +105,8 @@ __CQ_EVENT(int32_t, cq_event_group_upload, 28)
     e.sub_type = static_cast<notice::SubType>(sub_type);
     try {
         e.file = ObjectHelper::from_base64<File>(string_from_coolq(file));
-    } catch (cq::exception::ParseError &) {}
+    } catch (cq::exception::ParseError &) {
+    }
     e.user_id = from_qq;
     e.group_id = from_group;
     call_if_valid(event::on_group_upload, e);
@@ -112,8 +114,8 @@ __CQ_EVENT(int32_t, cq_event_group_upload, 28)
 }
 
 /**
- * Type=101 ÈºÊÂ¼ş-¹ÜÀíÔ±±ä¶¯
- * sub_type ×ÓÀàĞÍ£¬1/±»È¡Ïû¹ÜÀíÔ± 2/±»ÉèÖÃ¹ÜÀíÔ±
+ * Type=101 ç¾¤äº‹ä»¶-ç®¡ç†å‘˜å˜åŠ¨
+ * sub_type å­ç±»å‹ï¼Œ1/è¢«å–æ¶ˆç®¡ç†å‘˜ 2/è¢«è®¾ç½®ç®¡ç†å‘˜
  */
 __CQ_EVENT(int32_t, cq_event_group_admin, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t being_operate_qq) {
@@ -128,10 +130,10 @@ __CQ_EVENT(int32_t, cq_event_group_admin, 24)
 }
 
 /**
- * Type=102 ÈºÊÂ¼ş-Èº³ÉÔ±¼õÉÙ
- * sub_type ×ÓÀàĞÍ£¬1/ÈºÔ±Àë¿ª 2/ÈºÔ±±»Ìß 3/×Ô¼º(¼´µÇÂ¼ºÅ)±»Ìß
- * from_qq ²Ù×÷ÕßQQ(½ösubTypeÎª2¡¢3Ê±´æÔÚ)
- * being_operate_qq ±»²Ù×÷QQ
+ * Type=102 ç¾¤äº‹ä»¶-ç¾¤æˆå‘˜å‡å°‘
+ * sub_type å­ç±»å‹ï¼Œ1/ç¾¤å‘˜ç¦»å¼€ 2/ç¾¤å‘˜è¢«è¸¢ 3/è‡ªå·±(å³ç™»å½•å·)è¢«è¸¢
+ * from_qq æ“ä½œè€…QQ(ä»…subTypeä¸º2ã€3æ—¶å­˜åœ¨)
+ * being_operate_qq è¢«æ“ä½œQQ
  */
 __CQ_EVENT(int32_t, cq_event_group_member_decrease, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
@@ -147,10 +149,10 @@ __CQ_EVENT(int32_t, cq_event_group_member_decrease, 32)
 }
 
 /**
- * Type=103 ÈºÊÂ¼ş-Èº³ÉÔ±Ôö¼Ó
- * sub_type ×ÓÀàĞÍ£¬1/¹ÜÀíÔ±ÒÑÍ¬Òâ 2/¹ÜÀíÔ±ÑûÇë
- * from_qq ²Ù×÷ÕßQQ(¼´¹ÜÀíÔ±QQ)
- * being_operate_qq ±»²Ù×÷QQ(¼´¼ÓÈºµÄQQ)
+ * Type=103 ç¾¤äº‹ä»¶-ç¾¤æˆå‘˜å¢åŠ 
+ * sub_type å­ç±»å‹ï¼Œ1/ç®¡ç†å‘˜å·²åŒæ„ 2/ç®¡ç†å‘˜é‚€è¯·
+ * from_qq æ“ä½œè€…QQ(å³ç®¡ç†å‘˜QQ)
+ * being_operate_qq è¢«æ“ä½œQQ(å³åŠ ç¾¤çš„QQ)
  */
 __CQ_EVENT(int32_t, cq_event_group_member_increase, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq) {
@@ -166,7 +168,7 @@ __CQ_EVENT(int32_t, cq_event_group_member_increase, 32)
 }
 
 /**
- * Type=201 ºÃÓÑÊÂ¼ş-ºÃÓÑÒÑÌí¼Ó
+ * Type=201 å¥½å‹äº‹ä»¶-å¥½å‹å·²æ·»åŠ 
  */
 __CQ_EVENT(int32_t, cq_event_friend_add, 16)
 (int32_t sub_type, int32_t send_time, int64_t from_qq) {
@@ -180,9 +182,9 @@ __CQ_EVENT(int32_t, cq_event_friend_add, 16)
 }
 
 /**
- * Type=301 ÇëÇó-ºÃÓÑÌí¼Ó
- * msg ¸½ÑÔ
- * response_flag ·´À¡±êÊ¶(´¦ÀíÇëÇóÓÃ)
+ * Type=301 è¯·æ±‚-å¥½å‹æ·»åŠ 
+ * msg é™„è¨€
+ * response_flag åé¦ˆæ ‡è¯†(å¤„ç†è¯·æ±‚ç”¨)
  */
 __CQ_EVENT(int32_t, cq_event_add_friend_request, 24)
 (int32_t sub_type, int32_t send_time, int64_t from_qq, const char *msg, const char *response_flag) {
@@ -198,10 +200,10 @@ __CQ_EVENT(int32_t, cq_event_add_friend_request, 24)
 }
 
 /**
- * Type=302 ÇëÇó-ÈºÌí¼Ó
- * sub_type ×ÓÀàĞÍ£¬1/ËûÈËÉêÇëÈëÈº 2/×Ô¼º(¼´µÇÂ¼ºÅ)ÊÜÑûÈëÈº
- * msg ¸½ÑÔ
- * response_flag ·´À¡±êÊ¶(´¦ÀíÇëÇóÓÃ)
+ * Type=302 è¯·æ±‚-ç¾¤æ·»åŠ 
+ * sub_type å­ç±»å‹ï¼Œ1/ä»–äººç”³è¯·å…¥ç¾¤ 2/è‡ªå·±(å³ç™»å½•å·)å—é‚€å…¥ç¾¤
+ * msg é™„è¨€
+ * response_flag åé¦ˆæ ‡è¯†(å¤„ç†è¯·æ±‚ç”¨)
  */
 __CQ_EVENT(int32_t, cq_event_add_group_request, 32)
 (int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, const char *msg, const char *response_flag) {

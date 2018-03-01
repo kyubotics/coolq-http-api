@@ -1,3 +1,3 @@
 #include "./http.h"
 
-namespace cqhttp::plugins { }
+namespace cqhttp::plugins {}

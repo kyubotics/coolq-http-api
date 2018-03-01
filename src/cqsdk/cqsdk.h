@@ -1,15 +1,15 @@
 #pragma once
 
-#include "./enums.h"
-#include "./types.h"
-#include "./target.h"
-#include "./app.h"
-#include "./event.h"
 #include "./api.h"
-#include "./message.h"
-#include "./logging.h"
+#include "./app.h"
 #include "./dir.h"
+#include "./enums.h"
+#include "./event.h"
+#include "./logging.h"
 #include "./menu.h"
+#include "./message.h"
+#include "./target.h"
+#include "./types.h"
 
 namespace cq {
     using event::Event;
@@ -29,4 +29,4 @@ namespace cq {
 
     using message::Message;
     using message::MessageSegment;
-}
+}  // namespace cq

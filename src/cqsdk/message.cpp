@@ -50,9 +50,7 @@ namespace cq::message {
                 break;
             }
             case FUNCTION_NAME: {
-                if (curr >= 'A' && curr <= 'Z'
-                    || curr >= 'a' && curr <= 'z'
-                    || curr >= '0' && curr <= '9') {
+                if (curr >= 'A' && curr <= 'Z' || curr >= 'a' && curr <= 'z' || curr >= '0' && curr <= '9') {
                     function_name_s << curr;
                 } else if (curr == ',') {
                     // function name out, params in
@@ -62,7 +60,7 @@ namespace cq::message {
                     goto params;
                 } else {
                     // unrecognized character
-                    text_s << string(curr_cq_start, it); // mark as text
+                    text_s << string(curr_cq_start, it);  // mark as text
                     curr_cq_start = end;
                     function_name_s = stringstream();
                     params_s = stringstream();
@@ -103,7 +101,8 @@ namespace cq::message {
                     params_s << curr;
                 }
             }
-            default: break;
+            default:
+                break;
             }
         }
 
@@ -118,7 +117,8 @@ namespace cq::message {
             if (text_s.rdbuf()->in_avail()) {
                 this->push_back(MessageSegment{"text", {{"text", unescape(text_s.str())}}});
             }
-        default: break;
+        default:
+            break;
         }
     }
 
@@ -143,16 +143,18 @@ namespace cq::message {
         return ss.str();
     }
 
-    int64_t Message::send(const Target &target) const {
-        return api::send_msg(target, *this);
-    }
+    int64_t Message::send(const Target &target) const { return api::send_msg(target, *this); }
 
     string Message::extract_plain_text() const {
         string result;
         for (const auto &seg : *this) {
-            if (seg.type == "text") { result += seg.data.at("text") + " "; }
+            if (seg.type == "text") {
+                result += seg.data.at("text") + " ";
+            }
         }
-        if (result.size() > 0) { result.erase(result.end() - 1); }
+        if (result.size() > 0) {
+            result.erase(result.end() - 1);
+        }
         return result;
     }
 
@@ -163,8 +165,7 @@ namespace cq::message {
 
         auto last_seg_it = this->begin();
         for (auto it = this->begin(); ++it != this->end();) {
-            if (it->type == "text" && last_seg_it->type == "text"
-                && it->data.find("text") != it->data.end()
+            if (it->type == "text" && last_seg_it->type == "text" && it->data.find("text") != it->data.end()
                 && last_seg_it->data.find("text") != last_seg_it->data.end()) {
                 // found adjacent "text" segments
                 last_seg_it->data["text"] += it->data["text"];
@@ -176,4 +177,4 @@ namespace cq::message {
             }
         }
     }
-}
+}  // namespace cq::message

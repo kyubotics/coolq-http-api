@@ -18,21 +18,19 @@ namespace cqhttp {
         }
     }
 
-    void apply(const shared_ptr<Application> app) {
-        cqhttp::app = app;
+    void apply(const shared_ptr<Application> app) { cqhttp::app = app; }
+
+#define APP(FuncName, ...)              \
+    if (app) {                          \
+        app->__##FuncName(__VA_ARGS__); \
     }
 
-    #define APP(FuncName, ...) \
-        if (app) { app->__##FuncName(__VA_ARGS__); }
-
-    /**
-     * Generate lifecycle callbacks.
-     */
-    #define LIFECYCLE(Name) \
-        static void __on_##Name() { APP(hook_##Name); } \
-        static bool __dummy_on_##Name = add_callback_initializer([]() { \
-            cq::app::on_##Name = __on_##Name; \
-        })
+/**
+ * Generate lifecycle callbacks.
+ */
+#define LIFECYCLE(Name)                             \
+    static void __on_##Name() { APP(hook_##Name); } \
+    static bool __dummy_on_##Name = add_callback_initializer([]() { cq::app::on_##Name = __on_##Name; })
 
     LIFECYCLE(initialize);
     LIFECYCLE(enable);
@@ -40,15 +38,13 @@ namespace cqhttp {
     LIFECYCLE(coolq_start);
     LIFECYCLE(coolq_exit);
 
-    /**
-     * Generate event callbacks.
-     */
-    #define EVENT(Name, ...) \
-        static void __##Name##_event(__VA_ARGS__); \
-        static bool __dummy_##Name##_event = add_callback_initializer([]() { \
-            cq::event::Name = __##Name##_event; \
-        }); \
-        static void __##Name##_event(__VA_ARGS__)
+/**
+ * Generate event callbacks.
+ */
+#define EVENT(Name, ...)                                                                                         \
+    static void __##Name##_event(__VA_ARGS__);                                                                   \
+    static bool __dummy_##Name##_event = add_callback_initializer([]() { cq::event::Name = __##Name##_event; }); \
+    static void __##Name##_event(__VA_ARGS__)
 
     EVENT(on_private_msg, const cq::PrivateMessageEvent &e) {
         json data = e;
@@ -99,4 +95,4 @@ namespace cqhttp {
         json data = e;
         APP(hook_request_event, e.request_type, e.sub_type, data);
     }
-}
+}  // namespace cqhttp

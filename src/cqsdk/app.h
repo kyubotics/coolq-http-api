@@ -15,7 +15,7 @@ namespace cq {
 
         /**
          * Lifecycle:
-         * 
+         *
          * +-----------------------------------------+
          * |             Enabled At Start            |
          * +-----------------------------------------+
@@ -33,7 +33,7 @@ namespace cq {
          * |       v                           |     |
          * | on_coolq_exit <-------------------+     |
          * +-----------------------------------------+
-         * 
+         *
          * +---------------------------------------+
          * |            Disabled At Start          |
          * +---------------------------------------+
@@ -59,15 +59,21 @@ namespace cq {
         extern std::function<void()> on_coolq_exit;
 
         extern std::function<void()> __main;
-    }
-}
+    }  // namespace app
+}  // namespace cq
 
-#define CQ_INITIALIZE(AppId) \
-    static bool __cq_set_id() { cq::app::id = AppId; return true; } \
+#define CQ_INITIALIZE(AppId)    \
+    static bool __cq_set_id() { \
+        cq::app::id = AppId;    \
+        return true;            \
+    }                           \
     static bool __cq_set_id_dummy = __cq_set_id()
 
-#define CQ_MAIN \
-    static void __cq_main(); \
-    static bool __cq_set_main_function() { cq::app::__main = __cq_main; return true; } \
+#define CQ_MAIN                                             \
+    static void __cq_main();                                \
+    static bool __cq_set_main_function() {                  \
+        cq::app::__main = __cq_main;                        \
+        return true;                                        \
+    }                                                       \
     static bool __cq_main_dummy = __cq_set_main_function(); \
     static void __cq_main()

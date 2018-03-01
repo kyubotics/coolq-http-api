@@ -20,13 +20,13 @@ namespace cq::api {
     }
 
     namespace raw {
-        #define FUNC(ReturnType, FuncName, ...) \
-            typedef __declspec(dllimport) ReturnType (__stdcall *__CQ_##FuncName##_T)(__VA_ARGS__); \
-            __CQ_##FuncName##_T CQ_##FuncName; \
-            static bool __dummy_CQ_##FuncName = add_func_initializer([](auto dll) { \
-                CQ_##FuncName = reinterpret_cast<__CQ_##FuncName##_T>(GetProcAddress(dll, "CQ_"#FuncName)); \
-            });
+#define FUNC(ReturnType, FuncName, ...)                                                              \
+    typedef __declspec(dllimport) ReturnType(__stdcall *__CQ_##FuncName##_T)(__VA_ARGS__);           \
+    __CQ_##FuncName##_T CQ_##FuncName;                                                               \
+    static bool __dummy_CQ_##FuncName = add_func_initializer([](auto dll) {                          \
+        CQ_##FuncName = reinterpret_cast<__CQ_##FuncName##_T>(GetProcAddress(dll, "CQ_" #FuncName)); \
+    });
 
-        #include "./api_funcs.h"
+#include "./api_funcs.h"
     }
-}
+}  // namespace cq::api
