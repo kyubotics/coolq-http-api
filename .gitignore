@@ -1,5 +1,6 @@
 .vs
 .vscode
+build
 Release
 Debug
 post_build.bat

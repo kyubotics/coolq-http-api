@@ -176,7 +176,7 @@ namespace cq::event {
             j = "message";
             break;
         case NOTICE:
-            j = "event"; // for backward capibility
+            j = "event"; // for backward compatibility
             break;
         case REQUEST:
             j = "request";
@@ -199,7 +199,7 @@ namespace cq::event {
         }();
 
         j = {
-            {"time", time(nullptr)}, // for backward capibility
+            {"time", time(nullptr)}, // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"sub_type", sub_type_str},
@@ -223,7 +223,7 @@ namespace cq::event {
         }();
 
         j = {
-            {"time", time(nullptr)}, // for backward capibility
+            {"time", time(nullptr)}, // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"sub_type", sub_type_str},
@@ -231,7 +231,7 @@ namespace cq::event {
             {"group_id", e.group_id},
             {"user_id", e.user_id},
             {"anonymous", e.anonymous},
-            {"anonymous_flag", e.anonymous.flag}, // for backward capibility
+            {"anonymous_flag", e.anonymous.flag}, // for backward compatibility
             {"message", e.message},
             {"raw_message", e.raw_message},
             {"font", e.font}
@@ -240,7 +240,7 @@ namespace cq::event {
 
     inline void to_json(json &j, const DiscussMessageEvent &e) {
         j = {
-            {"time", time(nullptr)}, // for backward capibility
+            {"time", time(nullptr)}, // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"message_id", e.message_id},
@@ -342,7 +342,7 @@ namespace cq::event {
             {"request_type", "friend"},
             {"time", e.time},
             {"user_id", e.user_id},
-            {"message", e.comment}, // for backward capibility
+            {"message", e.comment}, // for backward compatibility
             {"flag", e.flag}
         };
     }
@@ -363,7 +363,7 @@ namespace cq::event {
             {"time", e.time},
             {"group_id", e.group_id},
             {"user_id", e.user_id},
-            {"message", e.comment}, // for backward capibility
+            {"message", e.comment}, // for backward compatibility
             {"flag", e.flag}
         };
     }

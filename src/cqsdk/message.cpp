@@ -143,7 +143,7 @@ namespace cq::message {
         return ss.str();
     }
 
-    int32_t Message::send(const Target &target) const {
+    int64_t Message::send(const Target &target) const {
         return api::send_msg(target, *this);
     }
 

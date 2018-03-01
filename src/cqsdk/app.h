@@ -23,7 +23,7 @@ namespace cq {
          * |       +                                 |
          * |       |                                 |
          * |       v                                 |
-         * |   on_start                              |
+         * | on_coolq_start                          |
          * |       +                                 |
          * |       |                                 |
          * |       v     disabled by user            |
@@ -31,7 +31,7 @@ namespace cq {
          * |       +                           +     |
          * |       |                           |     |
          * |       v                           |     |
-         * |    on_exit <----------------------+     |
+         * | on_coolq_exit <-------------------+     |
          * +-----------------------------------------+
          * 
          * +---------------------------------------+
@@ -41,7 +41,7 @@ namespace cq {
          * |       +              |enabled by user |
          * |       |              |                |
          * |       |              v                |
-         * |       |          on_start             |
+         * |       |       on_coolq_start          |
          * |       |              +                |
          * |       |              |                |
          * |       |              v                |
@@ -49,7 +49,7 @@ namespace cq {
          * |       |              +                |
          * |       |              |                |
          * |       v              |                |
-         * |    on_exit <---------+                |
+         * | on_coolq_exit <------+                |
          * +---------------------------------------+
          */
         extern std::function<void()> on_initialize;

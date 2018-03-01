@@ -167,6 +167,9 @@
     <ClInclude Include="src\cqsdk\types.h">
       <Filter>src\cqsdk</Filter>
     </ClInclude>
+    <ClInclude Include="src\cqhttp\utils\string.h">
+      <Filter>src\cqhttp\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="io.github.richardchien.coolqhttpapi.json" />

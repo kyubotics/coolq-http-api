@@ -35,6 +35,7 @@
     <ClInclude Include="src\cqhttp\cqhttp.h" />
     <ClInclude Include="src\cqhttp\plugins\filter\filter.h" />
     <ClInclude Include="src\cqhttp\plugins\http\http.h" />
+    <ClInclude Include="src\cqhttp\utils\string.h" />
     <ClInclude Include="src\cqsdk\api.h" />
     <ClInclude Include="src\cqsdk\app.h" />
     <ClInclude Include="src\cqsdk\common.h" />
@@ -99,7 +100,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>io.github.richardchien.coolqhttpapi</TargetName>
     <TargetExt>.dll</TargetExt>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)intermediate\</IntDir>
     <IncludePath>$(ProjectDir)src;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -107,7 +108,7 @@
     <TargetName>io.github.richardchien.coolqhttpapi</TargetName>
     <TargetExt>.dll</TargetExt>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
     <IntDir>$(OutDir)intermediate\</IntDir>
     <IncludePath>$(ProjectDir)src;$(IncludePath)</IncludePath>
   </PropertyGroup>

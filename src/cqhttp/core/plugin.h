@@ -23,12 +23,16 @@ namespace cqhttp {
         virtual void hook_request_event(const cq::request::Type type, const cq::request::SubType sub_type, json &data,
                                         const Next next) { next(); }
 
-        virtual void hook_before_action(const std::string &action, json &params, const Next next) { next(); }
+        virtual void hook_before_action(const std::string &action, json &params, json &result, const Next next) {
+            next();
+        }
 
         virtual void hook_missed_action(const std::string &action, json &params, json &result, const Next next) {
             next();
         }
 
-        virtual void hook_after_action(const std::string &action, json &result, const Next next) { next(); }
+        virtual void hook_after_action(const std::string &action, json &params, json &result, const Next next) {
+            next();
+        }
     };
 }

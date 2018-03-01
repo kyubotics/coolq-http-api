@@ -125,7 +125,7 @@ namespace cq::message {
         /**
          * Send the message to a given target.
          */
-        int32_t send(const Target &target) const;
+        int64_t send(const Target &target) const;
 
         /**
          * Extract and merge plain text segments in the message.
@@ -151,7 +151,7 @@ namespace cq::message {
      * Send a message to the given target.
      * Thanks to the auto type conversion, a Segment object can also be passed in.
      */
-    inline int32_t send(const Target &target, const Message &msg) {
+    inline int64_t send(const Target &target, const Message &msg) {
         return msg.send(target);
     }
 }

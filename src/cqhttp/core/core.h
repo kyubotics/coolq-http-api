@@ -51,11 +51,11 @@ namespace cqhttp {
 
         #undef EVENT
 
-        void __hook_before_action(const std::string &action, json &params) {
+        void __hook_before_action(const std::string &action, json &params, json &result) {
             auto it = plugins_.begin();
             Plugin::Next next = [&]() {
                 if (it == plugins_.end()) { return; }
-                (*it++)->hook_before_action(action, params, next);
+                (*it++)->hook_before_action(action, params, result, next);
             };
             next();
         }
@@ -69,11 +69,11 @@ namespace cqhttp {
             next();
         }
 
-        void __hook_after_action(const std::string &action, json &result) {
+        void __hook_after_action(const std::string &action, json &params, json &result) {
             auto it = plugins_.begin();
             Plugin::Next next = [&]() {
                 if (it == plugins_.end()) { return; }
-                (*it++)->hook_after_action(action, result, next);
+                (*it++)->hook_after_action(action, params, result, next);
             };
             next();
         }
