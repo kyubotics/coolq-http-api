@@ -7,4 +7,4 @@ using json = nlohmann::json;
 
 namespace logging = cq::logging;
 
-#include "./json_convertor.h"
+#include "cqhttp/core/json_convertor.h"
