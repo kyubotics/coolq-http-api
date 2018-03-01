@@ -1,10 +1,4 @@
 .vs
 .vscode/c_cpp_properties.json
 build
-Release
-Debug
-*.sdf
-*.opensdf
-*.suo
-ipch
 !lib/*.lib

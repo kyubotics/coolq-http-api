@@ -43,9 +43,9 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 ## 修改、编译
 
-整个项目目录是一个 VS 2017 工程，使用了 VS 2017 (v141) 工具集，直接打开 `coolq-http-api.sln` 即可修改。
+项目使用 CMake 工具链构建，[`scripts/generate.ps1`](scripts/generate.ps1)、[`scripts/build.ps1`](scripts/build.ps1)、[`scripts/post_build.ps1`](scripts/post_build.ps1) 分别给出了生成、构建、安装的脚本，你可能需要对它们中的一些变量做适当修改以在你的系统中运行。
 
-除了 `README.md` 为 UTF-8 编码，其它代码文件和 `io.github.richardchien.coolqhttpapi.json` 文件均为 GBK 编码（VS 创建新文件默认使用 ANSI 编码，中文环境下即 GBK）。
+除了 [`io.github.richardchien.coolqhttpapi.json`](io.github.richardchien.coolqhttpapi.json) 文件为 GBK 编码，其它代码文件均为 UTF-8 编码。
 
 项目的依赖项通过 [vcpkg](https://github.com/Microsoft/vcpkg) 管理，使用 triplet 如下：
 
@@ -56,7 +56,9 @@ set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_PLATFORM_TOOLSET v141)
 ```
 
-由于 triplet 的名字是在 VS 工程文件里写死的，所以建议将 triplet 命名为 `x86-windows-static.cmake`。要编译项目的话，需要先安装依赖，如下表：
+创建了这个 triplet 之后，你需要将 [`scripts/generate.ps1`](scripts/generate.ps1) 中的 `$vcpkg_root` 和 `$vcpkg_triplet` 设置成你系统中的相应值。
+
+除此之外，还需要安装如下依赖（使用上面的 triplet）：
 
 | 模块名 | 依赖项 |
 | ----- | ----- |

@@ -1,30 +1,52 @@
 {
+    "environments": [
+        {
+            "VCPKG_ROOT": "C:\\CLI\\vcpkg",
+            "VCPKG_CMAKE": "${env.VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake",
+            "VCPKG_TRIPLET": "x86-windows-static",
+            "MSVC_TOOLSET": "v141"
+        }
+    ],
     "configurations": [
         {
-            "name": "x86-Debug",
+            "name": "Debug",
             "generator": "Visual Studio 15 2017",
             "configurationType": "Debug",
-            "inheritEnvironments": [
-                "msvc_x86"
-            ],
-            "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
-            "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
-            "cmakeCommandArgs": "-DCMAKE_TOOLCHAIN_FILE=C:/CLI/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x86-windows-static",
-            "buildCommandArgs": "-v",
-            "ctestCommandArgs": ""
+            "inheritEnvironments": [ "msvc_x86" ],
+            "buildRoot": "${projectDir}\\build\\${name}",
+            "cmakeCommandArgs": "-T ${env.MSVC_TOOLSET}",
+            "buildCommandArgs": "",
+            "ctestCommandArgs": "",
+            "variables": [
+                {
+                    "name": "CMAKE_TOOLCHAIN_FILE",
+                    "value": "${env.VCPKG_CMAKE}"
+                },
+                {
+                    "name": "VCPKG_TARGET_TRIPLET",
+                    "value": "${env.VCPKG_TRIPLET}"
+                }
+            ]
         },
         {
-            "name": "x86-Release",
+            "name": "Release",
             "generator": "Visual Studio 15 2017",
             "configurationType": "Release",
-            "inheritEnvironments": [
-                "msvc_x86"
-            ],
-            "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
-            "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
-            "cmakeCommandArgs": "-DCMAKE_TOOLCHAIN_FILE=C:/CLI/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x86-windows-static",
-            "buildCommandArgs": "-v",
-            "ctestCommandArgs": ""
+            "inheritEnvironments": [ "msvc_x86" ],
+            "buildRoot": "${projectDir}\\build\\${name}",
+            "cmakeCommandArgs": "-T ${env.MSVC_TOOLSET}",
+            "buildCommandArgs": "",
+            "ctestCommandArgs": "",
+            "variables": [
+                {
+                    "name": "CMAKE_TOOLCHAIN_FILE",
+                    "value": "${env.VCPKG_CMAKE}"
+                },
+                {
+                    "name": "VCPKG_TARGET_TRIPLET",
+                    "value": "${env.VCPKG_TRIPLET}"
+                }
+            ]
         }
     ]
 }

@@ -28,3 +28,8 @@ add_library(${LIB_NAME} SHARED ${SOURCE_FILES})
 
 target_link_libraries(${LIB_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${LIB_NAME} ${ICONV_LIBRARIES})
+
+add_custom_command(TARGET ${LIB_NAME}
+                   POST_BUILD
+                   COMMAND
+                   powershell -ExecutionPolicy Bypass -NoProfile -File "${PROJECT_SOURCE_DIR}/scripts/post_build.ps1" "$<TARGET_FILE:${LIB_NAME}>")
