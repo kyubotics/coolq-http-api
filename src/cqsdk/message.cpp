@@ -60,7 +60,7 @@ namespace cq::message {
                     goto params;
                 } else {
                     // unrecognized character
-                    text_s << string(curr_cq_start, it);  // mark as text
+                    text_s << string(curr_cq_start, it); // mark as text
                     curr_cq_start = end;
                     function_name_s = stringstream();
                     params_s = stringstream();
@@ -177,4 +177,4 @@ namespace cq::message {
             }
         }
     }
-}  // namespace cq::message
+} // namespace cq::message

@@ -34,4 +34,4 @@ namespace cq::logging {
     inline void error(const std::string &tag, const std::string &msg) { log(ERROR, tag, msg); }
 
     inline void fatal(const std::string &tag, const std::string &msg) { log(FATAL, tag, msg); }
-}  // namespace cq::logging
+} // namespace cq::logging

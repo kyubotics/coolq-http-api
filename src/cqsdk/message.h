@@ -113,7 +113,7 @@ namespace cq::message {
 
         Message operator+(const Message &other) const {
             auto result = *this;
-            result += other;  // use operator+=
+            result += other; // use operator+=
             return result;
         }
 
@@ -152,8 +152,8 @@ namespace cq::message {
      * Thanks to the auto type conversion, a Segment object can also be passed in.
      */
     inline int64_t send(const Target &target, const Message &msg) { return msg.send(target); }
-}  // namespace cq::message
+} // namespace cq::message
 
 namespace std {
     inline string to_string(const cq::message::Message &msg) { return string(msg); }
-}  // namespace std
+} // namespace std

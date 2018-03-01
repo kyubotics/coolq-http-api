@@ -26,4 +26,4 @@ namespace cq::dir {
         }
         return tmpdir;
     }
-}  // namespace cq::dir
+} // namespace cq::dir

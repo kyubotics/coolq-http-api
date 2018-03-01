@@ -41,4 +41,4 @@ namespace cqhttp {
             next();
         }
     };
-}  // namespace cqhttp
+} // namespace cqhttp

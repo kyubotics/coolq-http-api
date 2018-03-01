@@ -100,4 +100,4 @@ namespace cqhttp {
      * Apply the given application. This will override any previous applied applications.
      */
     void apply(const std::shared_ptr<Application> app);
-}  // namespace cqhttp
+} // namespace cqhttp

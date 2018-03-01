@@ -140,4 +140,4 @@ namespace cq::event {
     extern std::function<void(const FriendAddEvent &)> on_friend_add;
     extern std::function<void(const FriendRequestEvent &)> on_friend_request;
     extern std::function<void(const GroupRequestEvent &)> on_group_request;
-}  // namespace cq::event
+} // namespace cq::event

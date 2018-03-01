@@ -16,7 +16,7 @@ namespace cq::exception {
         static const auto INVALID_DATA = 100;
         static const auto INVALID_TARGET = 101;
     };
-}  // namespace cq::exception
+} // namespace cq::exception
 
 namespace cq::api {
     /**
@@ -275,4 +275,4 @@ namespace cq::api {
     inline User get_login_info() { return get_stranger_info(get_login_user_id()); }
 
 #pragma endregion
-}  // namespace cq::api
+} // namespace cq::api

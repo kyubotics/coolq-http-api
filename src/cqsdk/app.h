@@ -59,8 +59,8 @@ namespace cq {
         extern std::function<void()> on_coolq_exit;
 
         extern std::function<void()> __main;
-    }  // namespace app
-}  // namespace cq
+    } // namespace app
+} // namespace cq
 
 #define CQ_INITIALIZE(AppId)    \
     static bool __cq_set_id() { \

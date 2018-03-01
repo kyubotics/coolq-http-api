@@ -29,4 +29,4 @@ namespace cq::api {
 
 #include "./api_funcs.h"
     }
-}  // namespace cq::api
+} // namespace cq::api

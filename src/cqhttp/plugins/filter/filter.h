@@ -6,4 +6,4 @@ namespace cqhttp::plugins {
     struct Filter : Plugin {};
 
     static std::shared_ptr<Filter> filter = std::make_shared<Filter>();
-}  // namespace cqhttp::plugins
+} // namespace cqhttp::plugins

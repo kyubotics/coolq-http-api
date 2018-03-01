@@ -29,4 +29,4 @@ namespace cq {
 
     using message::Message;
     using message::MessageSegment;
-}  // namespace cq
+} // namespace cq

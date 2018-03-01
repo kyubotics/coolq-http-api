@@ -11,7 +11,7 @@ namespace cq::exception {
             : LogicError("there aren't enough bytes remained (have " + std::to_string(have) + ", but "
                          + std::to_string(needed) + " are/is needed)") {}
     };
-}  // namespace cq::exception
+} // namespace cq::exception
 
 namespace cq::utils {
     class BinPack {
@@ -67,4 +67,4 @@ namespace cq::utils {
             }
         }
     };
-}  // namespace cq::utils
+} // namespace cq::utils

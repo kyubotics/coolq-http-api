@@ -95,4 +95,4 @@ namespace cqhttp {
         json data = e;
         APP(hook_request_event, e.request_type, e.sub_type, data);
     }
-}  // namespace cqhttp
+} // namespace cqhttp

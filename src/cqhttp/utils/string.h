@@ -18,4 +18,4 @@ namespace cqhttp::utils {
         auto result = to_bool(str);
         return result ? result.value() : default_val;
     }
-}  // namespace cqhttp::utils
+} // namespace cqhttp::utils

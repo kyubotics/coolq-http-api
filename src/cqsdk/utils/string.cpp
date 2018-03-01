@@ -167,4 +167,4 @@ namespace cq::utils {
     wstring s2ws(const string &s) { return wstring_convert<codecvt_utf8<wchar_t>, wchar_t>().from_bytes(s); }
 
     string ansi(const string &s) { return string_encode(s, Encoding::ANSI); }
-}  // namespace cq::utils
+} // namespace cq::utils

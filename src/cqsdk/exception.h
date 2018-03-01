@@ -28,4 +28,4 @@ namespace cq::exception {
     struct ParseError : RuntimeError {
         using RuntimeError::RuntimeError;
     };
-}  // namespace cq::exception
+} // namespace cq::exception

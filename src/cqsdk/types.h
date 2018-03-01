@@ -134,8 +134,8 @@ namespace cq {
 
         int64_t id = 0;
         std::string name;
-        std::string token;  // binary
-        std::string flag;   // base64 of the whole Anonymous object
+        std::string token; // binary
+        std::string flag;  // base64 of the whole Anonymous object
 
         static Anonymous from_bytes(const std::string &bytes) {
             auto pack = utils::BinPack(bytes);
@@ -183,4 +183,4 @@ namespace cq {
             return file;
         }
     };
-}  // namespace cq
+} // namespace cq

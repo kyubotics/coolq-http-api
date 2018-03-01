@@ -77,4 +77,4 @@ namespace cqhttp::utils {
             return result;
         }
     };
-}  // namespace cqhttp::utils
+} // namespace cqhttp::utils

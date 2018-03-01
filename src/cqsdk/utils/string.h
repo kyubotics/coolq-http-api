@@ -32,10 +32,10 @@ namespace cq::utils {
     std::string ws2s(const std::wstring &ws);
     std::wstring s2ws(const std::string &s);
     std::string ansi(const std::string &s);
-}  // namespace cq::utils
+} // namespace cq::utils
 
 namespace std {
     inline string to_string(const string &val) { return val; }
 
     inline string to_string(const bool val) { return val ? "true" : "false"; }
-}  // namespace std
+} // namespace std

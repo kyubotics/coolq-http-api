@@ -27,4 +27,4 @@ namespace cq {
             this->user_id = user_id;
         }
     };
-}  // namespace cq
+} // namespace cq

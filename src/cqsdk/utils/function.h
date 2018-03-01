@@ -17,4 +17,4 @@ namespace cq::utils {
             func(args...);
         }
     }
-}  // namespace cq::utils
+} // namespace cq::utils

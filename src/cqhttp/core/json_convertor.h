@@ -87,7 +87,7 @@ namespace cq {
             {"busid", f.busid},
         };
     }
-}  // namespace cq
+} // namespace cq
 
 namespace cq::message {
     inline void to_json(json &j, const MessageSegment &segment) {
@@ -124,7 +124,7 @@ namespace cq::message {
             break;
         }
     }
-}  // namespace cq::message
+} // namespace cq::message
 
 namespace cq::notice {
     inline void to_json(json &j, const Type &type) {
@@ -149,7 +149,7 @@ namespace cq::notice {
             break;
         }
     }
-}  // namespace cq::notice
+} // namespace cq::notice
 
 namespace cq::request {
     inline void to_json(json &j, const Type &type) {
@@ -165,7 +165,7 @@ namespace cq::request {
             break;
         }
     }
-}  // namespace cq::request
+} // namespace cq::request
 
 namespace cq::event {
     inline void to_json(json &j, const Type &type) {
@@ -174,7 +174,7 @@ namespace cq::event {
             j = "message";
             break;
         case NOTICE:
-            j = "event";  // for backward compatibility
+            j = "event"; // for backward compatibility
             break;
         case REQUEST:
             j = "request";
@@ -202,7 +202,7 @@ namespace cq::event {
         }();
 
         j = {
-            {"time", time(nullptr)},  // for backward compatibility
+            {"time", time(nullptr)}, // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"sub_type", sub_type_str},
@@ -226,7 +226,7 @@ namespace cq::event {
         }();
 
         j = {
-            {"time", time(nullptr)},  // for backward compatibility
+            {"time", time(nullptr)}, // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"sub_type", sub_type_str},
@@ -234,7 +234,7 @@ namespace cq::event {
             {"group_id", e.group_id},
             {"user_id", e.user_id},
             {"anonymous", e.anonymous},
-            {"anonymous_flag", e.anonymous.flag},  // for backward compatibility
+            {"anonymous_flag", e.anonymous.flag}, // for backward compatibility
             {"message", e.message},
             {"raw_message", e.raw_message},
             {"font", e.font},
@@ -243,7 +243,7 @@ namespace cq::event {
 
     inline void to_json(json &j, const DiscussMessageEvent &e) {
         j = {
-            {"time", time(nullptr)},  // for backward compatibility
+            {"time", time(nullptr)}, // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"message_id", e.message_id},
@@ -354,7 +354,7 @@ namespace cq::event {
             {"request_type", "friend"},
             {"time", e.time},
             {"user_id", e.user_id},
-            {"message", e.comment},  // for backward compatibility
+            {"message", e.comment}, // for backward compatibility
             {"flag", e.flag},
         };
     }
@@ -378,8 +378,8 @@ namespace cq::event {
             {"time", e.time},
             {"group_id", e.group_id},
             {"user_id", e.user_id},
-            {"message", e.comment},  // for backward compatibility
+            {"message", e.comment}, // for backward compatibility
             {"flag", e.flag},
         };
     }
-}  // namespace cq::event
+} // namespace cq::event

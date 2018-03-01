@@ -47,4 +47,4 @@ namespace cqhttp::action {
             {"data", r.data},
         };
     }
-}  // namespace cqhttp::action
+} // namespace cqhttp::action

@@ -6,7 +6,7 @@
 #define DEFINED_FUNC_MACRO
 #define FUNC(ReturnType, FuncName, ...)                              \
     typedef ReturnType(__stdcall *__CQ_##FuncName##_T)(__VA_ARGS__); \
-    extern __CQ_##FuncName##_T CQ_##FuncName;  // only DECLARE the functions
+    extern __CQ_##FuncName##_T CQ_##FuncName; // only DECLARE the functions
 #endif
 
 #include <cstdint>
@@ -60,7 +60,7 @@ FUNC(const char *, getRecord, int32_t auth_code, const char *file, const char *o
 
 FUNC(int32_t, addLog, int32_t auth_code, int32_t log_level, const char *category, const char *log_msg)
 FUNC(int32_t, setFatal, int32_t auth_code, const char *error_info)
-FUNC(int32_t, setRestart, int32_t auth_code)  // currently ineffective
+FUNC(int32_t, setRestart, int32_t auth_code) // currently ineffective
 
 #ifdef DEFINED_FUNC_MACRO
 #undef FUNC

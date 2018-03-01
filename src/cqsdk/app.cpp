@@ -18,8 +18,8 @@ namespace cq {
         std::function<void()> on_coolq_exit;
 
         std::function<void()> __main;
-    }  // namespace app
-}  // namespace cq
+    } // namespace app
+} // namespace cq
 
 using namespace std;
 using namespace cq;

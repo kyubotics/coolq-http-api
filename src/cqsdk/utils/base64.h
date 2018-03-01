@@ -5,4 +5,4 @@
 namespace cq::utils::base64 {
     std::string encode(const unsigned char *bytes, const unsigned int len);
     std::string decode(const std::string &str);
-}  // namespace cq::utils::base64
+} // namespace cq::utils::base64

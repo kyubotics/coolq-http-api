@@ -7,3 +7,6 @@ IndentCaseLabels: false
 BinPackArguments: false
 SortUsingDeclarations: false
 BreakBeforeBinaryOperators: NonAssignment
+SpacesBeforeTrailingComments: 1
+DerivePointerAlignment: true
+PointerAlignment: Right
