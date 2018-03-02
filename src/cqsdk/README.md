@@ -4,7 +4,7 @@ CoolQ C++ SDK 封装了跟 DLL 接口相关的底层逻辑、提供了更现代�
 
 具体文档暂时就不写了，顺着 [`cqsdk.h`](cqsdk.h) 头文件找进去基本就可以看明白代码。
 
-请注意你再编写自己的插件时请确保你的 JSON 描述文件和 [`io.github.richardchien.coolqhttpapi.json`](../../io.github.richardchien.coolqhttpapi.json) 文件的 `event` 中的 `function` 字段完全一致，因为 DLL 导出函数名已经在 [`app.cpp`](app.cpp) 和 [`event.cpp`](event.cpp) 写死了。
+请注意你在编写自己的插件时请确保你的 JSON 描述文件和 [`io.github.richardchien.coolqhttpapi.json`](../../io.github.richardchien.coolqhttpapi.json) 文件的 `event` 中的 `function` 字段完全一致，因为 DLL 导出函数名已经在 [`app.cpp`](app.cpp) 和 [`event.cpp`](event.cpp) 写死了。
 
 ## 示例
 
