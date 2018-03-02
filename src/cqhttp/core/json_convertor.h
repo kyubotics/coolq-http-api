@@ -1,8 +1,8 @@
 #pragma once
 
-#include <ctime>
-
 #include "cqhttp/core/common.h"
+
+#include <ctime>
 
 namespace cq {
     inline void to_json(json &j, const Sex &sex) {
