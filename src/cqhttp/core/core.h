@@ -8,86 +8,55 @@ namespace cqhttp {
     public:
         void use(const std::shared_ptr<Plugin> plugin) { plugins_.push_back(plugin); }
 
-/**
- * Generate lifecycle hooks.
- */
-#define LIFECYCLE(Name)                 \
-    void __hook_##Name() {              \
-        auto it = plugins_.begin();     \
-        Plugin::Next next = [&]() {     \
-            if (it == plugins_.end()) { \
-                return;                 \
-            }                           \
-            (*it++)->hook_##Name(next); \
-        };                              \
-        next();                         \
-    }
+        void __hook_initialize() { iterate_hooks(&Plugin::hook_initialize); }
 
-        LIFECYCLE(initialize);
-        LIFECYCLE(enable);
-        LIFECYCLE(disable);
-        LIFECYCLE(coolq_start);
-        LIFECYCLE(coolq_exit);
+        void __hook_enable() { iterate_hooks(&Plugin::hook_enable); }
 
-#undef LIFECYCLE
+        void __hook_disable() { iterate_hooks(&Plugin::hook_disable); }
 
-/**
- * Generate event hooks.
- */
-#define EVENT(EventType)                                                                     \
-    void __hook_##EventType##_event(                                                         \
-        const cq::EventType::Type type, const cq::EventType::SubType sub_type, json &data) { \
-        auto it = plugins_.begin();                                                          \
-        Plugin::Next next = [&]() {                                                          \
-            if (it == plugins_.end()) {                                                      \
-                return;                                                                      \
-            }                                                                                \
-            (*it++)->hook_##EventType##_event(type, sub_type, data, next);                   \
-        };                                                                                   \
-        next();                                                                              \
-    }
+        void __hook_coolq_start() { iterate_hooks(&Plugin::hook_coolq_start); }
 
-        EVENT(message);
-        EVENT(notice);
-        EVENT(request);
+        void __hook_coolq_exit() { iterate_hooks(&Plugin::hook_coolq_exit); }
 
-#undef EVENT
+        void __hook_message_event(const cq::message::Type type, const cq::message::SubType sub_type, json &data) {
+            iterate_hooks(&Plugin::hook_message_event, type, sub_type, data);
+        }
+
+        void __hook_notice_event(const cq::notice::Type type, const cq::notice::SubType sub_type, json &data) {
+            iterate_hooks(&Plugin::hook_notice_event, type, sub_type, data);
+        }
+
+        void __hook_request_event(const cq::request::Type type, const cq::request::SubType sub_type, json &data) {
+            iterate_hooks(&Plugin::hook_request_event, type, sub_type, data);
+        }
 
         void __hook_before_action(const std::string &action, json &params, json &result) {
-            auto it = plugins_.begin();
-            Plugin::Next next = [&]() {
-                if (it == plugins_.end()) {
-                    return;
-                }
-                (*it++)->hook_before_action(action, params, result, next);
-            };
-            next();
+            iterate_hooks(&Plugin::hook_before_action, action, params, result);
         }
 
         void __hook_missed_action(const std::string &action, json &params, json &result) {
-            auto it = plugins_.begin();
-            Plugin::Next next = [&]() {
-                if (it == plugins_.end()) {
-                    return;
-                }
-                (*it++)->hook_missed_action(action, params, result, next);
-            };
-            next();
+            iterate_hooks(&Plugin::hook_missed_action, action, params, result);
         }
 
         void __hook_after_action(const std::string &action, json &params, json &result) {
-            auto it = plugins_.begin();
-            Plugin::Next next = [&]() {
-                if (it == plugins_.end()) {
-                    return;
-                }
-                (*it++)->hook_after_action(action, params, result, next);
-            };
-            next();
+            iterate_hooks(&Plugin::hook_after_action, action, params, result);
         }
 
     private:
         std::vector<std::shared_ptr<Plugin>> plugins_;
+
+        template <typename HookFunc, typename... Args>
+        void iterate_hooks(const HookFunc &hook_func, Args &&... args) {
+            auto it = plugins_.begin();
+            Plugin::Next next = [&]() {
+                if (it == plugins_.end()) {
+                    return;
+                }
+
+                (**it++.*hook_func)(std::forward<Args>(args)..., next);
+            };
+            next();
+        }
     };
 
     /**
