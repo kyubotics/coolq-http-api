@@ -7,8 +7,14 @@ namespace cqhttp::utils {
     struct JsonEx {
         json raw;
 
-        JsonEx() : raw(nullptr) {}
+        JsonEx() : raw(json::object()) {}
         explicit JsonEx(const json &j) : raw(j) {}
+
+        /**
+         * Put a key-value pair into the json object.
+         * If "raw" is not an object, a json::type_error may be throwed.
+         */
+        void put(const std::string &key, const json &value) { raw[key] = value; }
 
         /**
          * Return std::nullopt if the key does not exist.

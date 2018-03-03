@@ -19,14 +19,17 @@ namespace cqhttp {
 
         void __hook_message_event(const cq::MessageEvent &event, json &data) {
             iterate_hooks(&Plugin::hook_message_event, EventContext<cq::MessageEvent>(event, data));
+            iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
         }
 
         void __hook_notice_event(const cq::NoticeEvent &event, json &data) {
             iterate_hooks(&Plugin::hook_notice_event, EventContext<cq::NoticeEvent>(event, data));
+            iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
         }
 
         void __hook_request_event(const cq::RequestEvent &event, json &data) {
             iterate_hooks(&Plugin::hook_request_event, EventContext<cq::RequestEvent>(event, data));
+            iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
         }
 
         void __hook_before_action(const std::string &action, utils::JsonEx &params, json &result) {
@@ -43,10 +46,11 @@ namespace cqhttp {
 
     private:
         std::vector<std::shared_ptr<Plugin>> plugins_;
+        utils::JsonEx config_;
 
         template <typename HookFunc, typename Ctx>
         void iterate_hooks(const HookFunc hook_func, Ctx &&ctx) {
-            ctx.config = nullptr;
+            ctx.config = &config_;
 
             auto it = plugins_.begin();
             Context::Next next = [&]() {

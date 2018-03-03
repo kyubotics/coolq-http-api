@@ -17,6 +17,7 @@ namespace cqhttp {
         virtual void hook_message_event(EventContext<cq::MessageEvent> &ctx) { ctx.next(); }
         virtual void hook_notice_event(EventContext<cq::NoticeEvent> &ctx) { ctx.next(); }
         virtual void hook_request_event(EventContext<cq::RequestEvent> &ctx) { ctx.next(); }
+        virtual void hook_event(EventContext<cq::Event> &ctx) { ctx.next(); }
 
         virtual void hook_before_action(ActionContext &ctx) { ctx.next(); }
         virtual void hook_missed_action(ActionContext &ctx) { ctx.next(); }
