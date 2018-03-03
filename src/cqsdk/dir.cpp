@@ -18,7 +18,7 @@ namespace cq::dir {
 
     string app() { return api::get_app_directory(); }
 
-    string tmp() {
+    string app_tmp() {
         const auto tmpdir = app() + "\\tmp\\";
         const auto ansi_tmpdir = utils::ansi(tmpdir);
         if (!fs::exists(ansi_tmpdir)) {

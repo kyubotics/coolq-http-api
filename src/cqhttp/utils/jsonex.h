@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cqhttp/core/common.h"
+
 #include "cqhttp/utils/string.h"
 
 namespace cqhttp::utils {
@@ -83,4 +84,7 @@ namespace cqhttp::utils {
             return result;
         }
     };
+
+    inline void from_json(const json &j, JsonEx &jsonex) { jsonex.raw = j; }
+    inline void to_json(json &j, const JsonEx &jsonex) { j = jsonex.raw; }
 } // namespace cqhttp::utils

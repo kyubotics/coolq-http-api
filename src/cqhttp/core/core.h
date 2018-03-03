@@ -6,47 +6,66 @@
 #include "cqhttp/core/plugin.h"
 
 namespace cqhttp {
-
     class Application {
     public:
-        void use(const std::shared_ptr<Plugin> plugin) { plugins_.push_back(plugin); }
+        void on_initialize() {
+            initialized_ = true;
+            iterate_hooks(&Plugin::hook_initialize, Context());
+        }
 
-        void __hook_initialize() { iterate_hooks(&Plugin::hook_initialize, Context()); }
-        void __hook_enable() { iterate_hooks(&Plugin::hook_enable, Context()); }
-        void __hook_disable() { iterate_hooks(&Plugin::hook_disable, Context()); }
-        void __hook_coolq_start() { iterate_hooks(&Plugin::hook_coolq_start, Context()); }
-        void __hook_coolq_exit() { iterate_hooks(&Plugin::hook_coolq_exit, Context()); }
+        void on_enable() {
+            enabled_ = true;
+            iterate_hooks(&Plugin::hook_enable, Context());
+        }
 
-        void __hook_message_event(const cq::MessageEvent &event, json &data) {
+        void on_disable() {
+            enabled_ = false;
+            iterate_hooks(&Plugin::hook_disable, Context());
+        }
+
+        void on_coolq_start() { iterate_hooks(&Plugin::hook_coolq_start, Context()); }
+
+        void on_coolq_exit() {
+            enabled_ = false;
+            iterate_hooks(&Plugin::hook_coolq_exit, Context());
+        }
+
+        void on_message_event(const cq::MessageEvent &event, json &data) {
             iterate_hooks(&Plugin::hook_message_event, EventContext<cq::MessageEvent>(event, data));
             iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
         }
 
-        void __hook_notice_event(const cq::NoticeEvent &event, json &data) {
+        void on_notice_event(const cq::NoticeEvent &event, json &data) {
             iterate_hooks(&Plugin::hook_notice_event, EventContext<cq::NoticeEvent>(event, data));
             iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
         }
 
-        void __hook_request_event(const cq::RequestEvent &event, json &data) {
+        void on_request_event(const cq::RequestEvent &event, json &data) {
             iterate_hooks(&Plugin::hook_request_event, EventContext<cq::RequestEvent>(event, data));
             iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
         }
 
-        void __hook_before_action(const std::string &action, utils::JsonEx &params, json &result) {
+        void on_before_action(const std::string &action, utils::JsonEx &params, json &result) {
             iterate_hooks(&Plugin::hook_before_action, ActionContext(action, params, result));
         }
 
-        void __hook_missed_action(const std::string &action, utils::JsonEx &params, json &result) {
+        void on_missed_action(const std::string &action, utils::JsonEx &params, json &result) {
             iterate_hooks(&Plugin::hook_missed_action, ActionContext(action, params, result));
         }
 
-        void __hook_after_action(const std::string &action, utils::JsonEx &params, json &result) {
+        void on_after_action(const std::string &action, utils::JsonEx &params, json &result) {
             iterate_hooks(&Plugin::hook_after_action, ActionContext(action, params, result));
         }
+
+        bool is_initialized() const { return initialized_; }
+        bool is_enabled() const { return enabled_; }
 
     private:
         std::vector<std::shared_ptr<Plugin>> plugins_;
         utils::JsonEx config_;
+
+        bool initialized_ = false;
+        bool enabled_ = false;
 
         template <typename HookFunc, typename Ctx>
         void iterate_hooks(const HookFunc hook_func, Ctx &&ctx) {
@@ -63,7 +82,11 @@ namespace cqhttp {
             };
             next();
         }
+
+        friend void use(const std::shared_ptr<Plugin> plugin);
     };
+
+    extern Application __app;
 
     /**
      * Initialize the module.
@@ -71,8 +94,5 @@ namespace cqhttp {
      */
     void init();
 
-    /**
-     * Apply the given application. This will override any previous applied applications.
-     */
-    void apply(const std::shared_ptr<Application> app);
+    inline void use(const std::shared_ptr<Plugin> plugin) { __app.plugins_.push_back(plugin); }
 } // namespace cqhttp

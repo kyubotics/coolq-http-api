@@ -63,7 +63,7 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 | 模块名 | 依赖项 |
 | ----- | ----- |
 | `cqsdk` | `boost-algorithm`<br>`boost-filesystem`<br>`libiconv` |
-| `cqhttp/core` | `cqsdk` 的依赖项<br>`nlohmann-json` |
+| `cqhttp/core` | `cqsdk` 的依赖项<br>`nlohmann-json`<br>`boost-process` |
 
 注意，**在安装依赖之前**，首先要在 vcpkg 根目录运行下面命令：
 

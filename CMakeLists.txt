@@ -14,6 +14,7 @@ include_directories(src)
 
 add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
                 -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+                -D_SCL_SECURE_NO_WARNINGS
                 -DWIN32_LEAN_AND_MEAN
                 -DCURL_STATICLIB)
 
