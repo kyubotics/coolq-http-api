@@ -2,6 +2,7 @@
 
 #include "cqhttp/core/common.h"
 
+#include "cqhttp/core/action.h"
 #include "cqhttp/utils/jsonex.h"
 
 namespace cqhttp {
@@ -48,9 +49,9 @@ namespace cqhttp {
         /**
          * The jsonified action result. It may be modified by plugins' hook functions.
          */
-        json &result;
+        ActionResult &result;
 
-        ActionContext(const std::string &action, utils::JsonEx &params, json &result)
+        ActionContext(const std::string &action, utils::JsonEx &params, ActionResult &result)
             : action(action), params(params), result(result) {}
     };
 } // namespace cqhttp

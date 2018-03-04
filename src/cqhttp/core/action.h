@@ -26,7 +26,7 @@ namespace cqhttp {
         json data;
     };
 
-    void to_json(json &j, const ActionResult &r) {
+    inline void to_json(json &j, const ActionResult &r) {
         std::string status;
         switch (r.code) {
         case ActionResult::Codes::OK:
@@ -47,5 +47,5 @@ namespace cqhttp {
         };
     }
 
-    ActionResult call_action(const std::string &action, utils::JsonEx &params);
+    ActionResult call_action(const std::string &action, const json &params = json::object());
 } // namespace cqhttp

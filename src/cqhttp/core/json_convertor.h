@@ -104,8 +104,9 @@ namespace cq::message {
     inline void from_json(const json &j, Message &message) {
         if (j.is_string()) {
             message = j.get<std::string>();
+        } else {
+            message.segments() = j.get<std::remove_reference<decltype(message.segments())>::type>();
         }
-        message.segments() = j.get<std::remove_reference<decltype(message.segments())>::type>();
     }
 
     inline void to_json(json &j, const Type &type) {

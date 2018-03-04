@@ -13,6 +13,11 @@ namespace cqhttp::plugins {
             logging::debug("你好", "wow");
             ctx.next();
         }
+
+        void hook_after_action(ActionContext &ctx) override {
+            ctx.result.data = {{"injected", 1}, {"raw", ctx.result.data}};
+            ctx.next();
+        }
     };
 
     static std::shared_ptr<Http> http = std::make_shared<Http>();

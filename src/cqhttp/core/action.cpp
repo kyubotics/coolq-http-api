@@ -20,15 +20,26 @@ namespace cqhttp {
 
     using ApiError = cq::exception::ApiError;
 
-    static ActionHandlerMap api_handlers;
+    static ActionHandlerMap action_handlers;
 
-    ActionResult call_action(const string &action, utils::JsonEx &params) {
-        // TODO
-        return ActionResult{};
+    ActionResult call_action(const string &action, const json &params) {
+        utils::JsonEx params_ex = params;
+
+        ActionResult result;
+        __app.on_before_action(action, params_ex, result);
+
+        if (const auto it = action_handlers.find(action); it != action_handlers.end()) {
+            it->second(params_ex, result);
+        } else {
+            __app.on_missed_action(action, params_ex, result);
+        }
+
+        __app.on_after_action(action, params_ex, result);
+        return result;
     }
 
     static bool add_action_handler(const string &name, const ActionHandler handler) {
-        api_handlers[name] = handler;
+        action_handlers[name] = handler;
         return true;
     }
 

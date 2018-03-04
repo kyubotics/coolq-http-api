@@ -2,6 +2,7 @@
 
 #include "cqhttp/core/common.h"
 
+#include "cqhttp/core/action.h"
 #include "cqhttp/core/context.h"
 #include "cqhttp/core/plugin.h"
 
@@ -45,15 +46,15 @@ namespace cqhttp {
             iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
         }
 
-        void on_before_action(const std::string &action, utils::JsonEx &params, json &result) {
+        void on_before_action(const std::string &action, utils::JsonEx &params, ActionResult &result) {
             iterate_hooks(&Plugin::hook_before_action, ActionContext(action, params, result));
         }
 
-        void on_missed_action(const std::string &action, utils::JsonEx &params, json &result) {
+        void on_missed_action(const std::string &action, utils::JsonEx &params, ActionResult &result) {
             iterate_hooks(&Plugin::hook_missed_action, ActionContext(action, params, result));
         }
 
-        void on_after_action(const std::string &action, utils::JsonEx &params, json &result) {
+        void on_after_action(const std::string &action, utils::JsonEx &params, ActionResult &result) {
             iterate_hooks(&Plugin::hook_after_action, ActionContext(action, params, result));
         }
 
