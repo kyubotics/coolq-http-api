@@ -60,21 +60,18 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 
 除此之外，还需要安装如下依赖（使用上面的 triplet）：
 
-| 模块名 | 依赖项 |
-| ----- | ----- |
+| 模块 | 依赖项 |
+| --- | ----- |
 | `cqsdk` | `boost-algorithm`<br>`boost-filesystem`<br>`libiconv` |
-| `cqhttp` | `cqsdk` 的依赖项<br>`nlohmann-json` |
-| `cqhttp/core` | `cqhttp` 的依赖项<br>`boost-process` |
-| `cqhttp/utils` | `cqhttp` 的依赖项 |
+| `cqhttp` | `cqsdk` 的依赖项<br>`nlohmann-json`<br>`boost-process`<br>`curl` |
 
 注意，**在安装依赖之前**，首先要在 vcpkg 根目录运行下面命令：
 
 ```bash
 git checkout 2e39b6195fbc14a655474b019234890df94a2ed0 -- ports/cpprestsdk
-git checkout d0d38919bb3878e281b62bb69137cd94279b690d -- ports/curl
 ```
 
-这会把 `cpprestsdk` 固定在 2.9.0 版本（更新版本在一些版本的 Windows Server 上不能正常工作），`curl` 固定在 7.58.0 版本（更新版本依赖的 `nghttp2` 无法静态编译）。
+这会把 `cpprestsdk` 固定在 2.9.0 版本（更新版本在一些版本的 Windows Server 上不能正常工作）。
 
 ## 开源许可证、重新分发
 

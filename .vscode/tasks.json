@@ -11,7 +11,7 @@
                 "'${workspaceFolder}/scripts/generate.ps1'",
                 "Debug"
             ],
-            "group": "none"
+            "group": "build"
         },
         {
             "label": "build debug",
@@ -39,7 +39,7 @@
                 "'${workspaceFolder}/scripts/generate.ps1'",
                 "Release"
             ],
-            "group": "none"
+            "group": "build"
         },
         {
             "label": "build release",

@@ -1,59 +1,23 @@
-# - Try to find Iconv
-# Once done this will define
-#
-#  ICONV_FOUND - system has Iconv
-#  ICONV_INCLUDE_DIR - the Iconv include directory
-#  ICONV_LIBRARIES - Link these to use Iconv
-#  ICONV_SECOND_ARGUMENT_IS_CONST - the second argument for iconv() is const
-#
-include(CheckCXXSourceCompiles)
+find_path(ICONV_INCLUDE_DIR iconv.h)
 
-IF (ICONV_INCLUDE_DIR AND ICONV_LIBRARIES)
-  # Already in cache, be silent
-  SET(ICONV_FIND_QUIETLY TRUE)
-ENDIF (ICONV_INCLUDE_DIR AND ICONV_LIBRARIES)
+find_library(ICONV_LIBRARY NAMES iconv libiconv libiconv-2 c)
+find_library(CHARSET_LIBRARY NAMES charset libcharset)
 
-FIND_PATH(ICONV_INCLUDE_DIR iconv.h)
+if(ICONV_INCLUDE_DIR AND ICONV_LIBRARY)
+   set(ICONV_FOUND TRUE)
+endif(ICONV_INCLUDE_DIR AND ICONV_LIBRARY)
 
-FIND_LIBRARY(ICONV_LIBRARIES NAMES iconv libiconv libiconv-2 c)
-FIND_LIBRARY(CHARSET_LIBRARY NAMES charset libcharset)
-
-IF(ICONV_INCLUDE_DIR AND ICONV_LIBRARIES)
-   SET(ICONV_FOUND TRUE)
-   SET(ICONV_LIBRARIES ${ICONV_LIBRARIES} ${CHARSET_LIBRARY})
-ENDIF(ICONV_INCLUDE_DIR AND ICONV_LIBRARIES)
-
-SET(CMAKE_REQUIRED_INCLUDES ${ICONV_INCLUDE_DIR})
-SET(CMAKE_REQUIRED_LIBRARIES ${ICONV_LIBRARIES})
-IF(ICONV_FOUND)
-  check_cxx_source_compiles("
-  #include <iconv.h>
-  int main(){
-    iconv_t conv = 0;
-    const char* in = 0;
-    size_t ilen = 0;
-    char* out = 0;
-    size_t olen = 0;
-    iconv(conv, &in, &ilen, &out, &olen);
-    return 0;
-  }
-" ICONV_SECOND_ARGUMENT_IS_CONST )
-ENDIF(ICONV_FOUND)
-set(CMAKE_REQUIRED_INCLUDES)
-set(CMAKE_REQUIRED_LIBRARIES)
-
-IF(ICONV_FOUND)
-  IF(NOT ICONV_FIND_QUIETLY)
-    MESSAGE(STATUS "Found Iconv: ${ICONV_LIBRARIES}")
-  ENDIF(NOT ICONV_FIND_QUIETLY)
-ELSE(ICONV_FOUND)
-  IF(Iconv_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "Could not find Iconv")
-  ENDIF(Iconv_FIND_REQUIRED)
-ENDIF(ICONV_FOUND)
-
-MARK_AS_ADVANCED(
+mark_as_advanced(
   ICONV_INCLUDE_DIR
-  ICONV_LIBRARIES
-  ICONV_SECOND_ARGUMENT_IS_CONST
+  ICONV_LIBRARY
+  CHARSET_LIBRARY
 )
+
+if(ICONV_FOUND)
+  set(ICONV_INCLUDE_DIRS ${ICONV_INCLUDE_DIR})
+  set(ICONV_LIBRARIES ${ICONV_LIBRARY})
+  set(ICONV_AND_DEPS_LIBRARIES ${ICONV_LIBRARY} ${CHARSET_LIBRARY})
+  message(STATUS "Found Iconv and it's dependencies: ${ICONV_AND_DEPS_LIBRARIES}")
+else(ICONV_FOUND)
+  message(FATAL_ERROR "Could not find Iconv")
+endif(ICONV_FOUND)

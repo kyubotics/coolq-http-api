@@ -15,7 +15,6 @@ namespace cqhttp::plugins {
         }
 
         void hook_after_action(ActionContext &ctx) override {
-            ctx.result.data = {{"injected", 1}, {"raw", ctx.result.data}};
             ctx.next();
         }
     };

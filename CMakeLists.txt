@@ -20,15 +20,19 @@ add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
 
 find_package(Boost REQUIRED COMPONENTS filesystem)
 find_package(Iconv REQUIRED)
+find_package(CURL REQUIRED)
 
-set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMTD")
+set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:LIBCMT")
+set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /NODEFAULTLIB:LIBCMTD")
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 set(LIB_NAME "io.github.richardchien.coolqhttpapi")
 add_library(${LIB_NAME} SHARED ${SOURCE_FILES})
 
 target_link_libraries(${LIB_NAME} ${Boost_LIBRARIES})
-target_link_libraries(${LIB_NAME} ${ICONV_LIBRARIES})
+target_link_libraries(${LIB_NAME} ${ICONV_AND_DEPS_LIBRARIES})
+target_link_libraries(${LIB_NAME} ${CURL_AND_DEPS_LIBRARIES})
+target_link_libraries(${LIB_NAME} crypt32 bcrypt Wldap32 Ws2_32)
 
 add_custom_command(TARGET ${LIB_NAME}
                    POST_BUILD
