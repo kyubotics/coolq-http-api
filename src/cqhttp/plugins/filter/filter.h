@@ -2,8 +2,6 @@
 
 #include "cqhttp/core/plugin.h"
 
-#include "cqhttp/core/action.h"
-
 namespace cqhttp::plugins {
     struct Filter : Plugin {
         void hook_message_event(EventContext<cq::MessageEvent> &ctx) override {
