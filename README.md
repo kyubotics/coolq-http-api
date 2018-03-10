@@ -13,9 +13,9 @@
 
 ## 使用方法
 
-使用方法见 [https://richardchien.github.io/coolq-http-api/](https://richardchien.github.io/coolq-http-api/)。v1.x、v2.x 的旧版本文档在 [https://richardchien.github.io/coolq-http-api/legacy/](https://richardchien.github.io/coolq-http-api/legacy/)。
+使用方法见 [https://cqhttp.cc/docs/](https://cqhttp.cc/docs/)。v1.x、v2.x 的旧版本文档在 [https://cqhttp.cc/docs/legacy/](https://cqhttp.cc/docs/legacy/)。
 
-如果由于一些原因访问这个文档非常慢，请尝试国内的地址 [http://richardchien.gitee.io/coolq-http-api/docs/](http://richardchien.gitee.io/coolq-http-api/docs/)。
+如果访问这个文档非常慢，请尝试国内的地址 [http://richardchien.gitee.io/coolq-http-api/docs/](http://richardchien.gitee.io/coolq-http-api/docs/)。
 
 ## SDK
 
