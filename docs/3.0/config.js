@@ -1,4 +1,4 @@
-docute.init({
+let config = {
     title: 'CoolQ HTTP API 插件文档',
     home: 'Home.md',
     repo: 'richardchien/coolq-http-api',
@@ -36,4 +36,4 @@ docute.init({
     ],
     tocVisibleDepth: 2,
     plugins: []
-});
+};
