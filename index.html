@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <title>CoolQ HTTP API 插件文档</title>
+  <link href="https://unpkg.com/docute/dist/docute.css" rel="stylesheet">
+</head>
+<body>
+  <div id="app"></div>
+  <script src="https://unpkg.com/docute/dist/docute.js"></script>
+  <script src="https://unpkg.com/prismjs/components/prism-bash.min.js"></script>
+  <script>
+    docute.init({
+      title: 'CoolQ HTTP API 插件文档',
+      repo: 'richardchien/coolq-http-api',
+      tocVisibleDepth: 2,
+      sidebar: false,
+      routerMode: 'history'
+  });
+  </script>
+
+  <!-- Google Analytics -->
+  <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-115509121-1', 'auto');
+    ga('send', 'pageview');
+    docute.router.afterEach(function (to) {
+      ga('set', 'page', to.fullPath);
+      ga('send', 'pageview');
+    });
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async></script>
+  <!-- End Google Analytics -->
+</body>
+</html>
