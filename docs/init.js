@@ -35,7 +35,8 @@ config.nav.push({
 if (currentVersionIndex > latestVersionIndex) {
     config.announcement = {
         type: 'danger',
-        html: `你当前正在访问的是旧版本文档，内容可能与最新版本的插件不相符，点击&nbsp;<a href="${versions[latestVersionIndex].path + window.location.hash}">这里</a>&nbsp;访问最新文档。`
+        html: `你当前正在访问的是旧版本文档，内容可能与最新版本的插件不相符，`
+            + `点击&nbsp;<span style="cursor: pointer;" onclick="window.location.assign('${versions[latestVersionIndex].path}' + window.location.hash)">这里</span>&nbsp;访问最新文档。`
     };
 }
 
