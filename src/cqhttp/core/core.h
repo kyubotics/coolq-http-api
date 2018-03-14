@@ -16,6 +16,7 @@ namespace cqhttp {
 
         void on_enable() {
             enabled_ = true;
+            config_ = utils::JsonEx();
             iterate_hooks(&Plugin::hook_enable, Context());
         }
 
