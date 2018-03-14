@@ -13,7 +13,7 @@ include_directories(${VCPKG_INCLUDE_DIR})
 include_directories(src)
 
 add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
-                -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+                -D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
                 -D_SCL_SECURE_NO_WARNINGS
                 -DWIN32_LEAN_AND_MEAN
                 -DCURL_STATICLIB)

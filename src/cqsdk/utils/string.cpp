@@ -24,7 +24,7 @@ namespace cq::utils {
 
     bool is_emoji(const uint32_t codepoint) {
         static unordered_set<uint32_t> emoji_set = {
-#include "../emoji_data.inc"
+#include "./emoji_data.inc"
         };
 
         return emoji_set.find(codepoint) != emoji_set.end();

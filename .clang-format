@@ -10,3 +10,4 @@ BreakBeforeBinaryOperators: NonAssignment
 SpacesBeforeTrailingComments: 1
 DerivePointerAlignment: true
 PointerAlignment: Right
+AlignTrailingComments: false
