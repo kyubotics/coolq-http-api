@@ -19,8 +19,8 @@ namespace cq::utils {
         BinPack() : bytes_(""), curr_(0) {}
         explicit BinPack(const std::string &b) : bytes_(b), curr_(0) {}
 
-        size_t size() noexcept const { return bytes_.size() - curr_; }
-        bool empty() noexcept const { return size() == 0; }
+        size_t size() const noexcept { return bytes_.size() - curr_; }
+        bool empty() const noexcept { return size() == 0; }
 
         template <typename IntType>
         IntType pop_int() noexcept(false) {
@@ -61,7 +61,7 @@ namespace cq::utils {
         std::string bytes_;
         size_t curr_;
 
-        void check_enough(const size_t needed) noexcept(false) const {
+        void check_enough(const size_t needed) const noexcept(false) {
             if (size() < needed) {
                 throw exception::BytesNotEnough(size(), needed);
             }
