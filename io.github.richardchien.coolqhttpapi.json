@@ -95,14 +95,14 @@
             "id": 8,
             "type": 301,
             "name": "Add Friend Request",
-            "function": "cq_event_friend_request",
+            "function": "cq_event_add_friend_request",
             "priority": 20000
         },
         {
             "id": 9,
             "type": 302,
             "name": "Add Group Request",
-            "function": "cq_event_group_request",
+            "function": "cq_event_add_group_request",
             "priority": 20000
         }
     ],
