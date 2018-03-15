@@ -19,11 +19,11 @@ namespace cq::utils {
         BinPack() : bytes_(""), curr_(0) {}
         explicit BinPack(const std::string &b) : bytes_(b), curr_(0) {}
 
-        size_t size() const { return bytes_.size() - curr_; }
-        bool empty() const { return size() == 0; }
+        size_t size() noexcept const { return bytes_.size() - curr_; }
+        bool empty() noexcept const { return size() == 0; }
 
         template <typename IntType>
-        IntType pop_int() {
+        IntType pop_int() noexcept(false) {
             constexpr auto size = sizeof(IntType);
             check_enough(size);
 
@@ -36,7 +36,7 @@ namespace cq::utils {
             return result;
         }
 
-        std::string pop_string() {
+        std::string pop_string() noexcept(false) {
             const auto len = pop_int<int16_t>();
             if (len == 0) {
                 return std::string();
@@ -47,21 +47,21 @@ namespace cq::utils {
             return result;
         }
 
-        std::string pop_bytes(const size_t len) {
+        std::string pop_bytes(const size_t len) noexcept(false) {
             auto result = bytes_.substr(curr_, len);
             curr_ += len;
             return result;
         }
 
-        std::string pop_token() { return pop_bytes(pop_int<int16_t>()); }
+        std::string pop_token() noexcept(false) { return pop_bytes(pop_int<int16_t>()); }
 
-        bool pop_bool() { return static_cast<bool>(pop_int<int32_t>()); }
+        bool pop_bool() noexcept(false) { return static_cast<bool>(pop_int<int32_t>()); }
 
     private:
         std::string bytes_;
         size_t curr_;
 
-        void check_enough(const size_t needed) const {
+        void check_enough(const size_t needed) noexcept(false) const {
             if (size() < needed) {
                 throw exception::BytesNotEnough(size(), needed);
             }
