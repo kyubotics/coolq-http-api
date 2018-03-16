@@ -5,7 +5,7 @@
 namespace cqhttp::plugins {
     struct Http : Plugin {
         void hook_enable(Context &ctx) override {
-            logging::debug("wow", "你好");
+            logging::debug("http", ctx.config->raw.dump(2));
             ctx.next();
         }
 

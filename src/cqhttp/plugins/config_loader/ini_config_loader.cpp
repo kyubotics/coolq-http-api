@@ -31,7 +31,7 @@ namespace cqhttp::plugins {
 
         for (const auto &ext : exts) {
             const auto filepath = filename + ext;
-            if (boost::filesystem::is_regular_file(ansi(filepath))) {
+            if (fs::is_regular_file(ansi(filepath))) {
                 try {
                     read_ini(ansi(filepath), pt);
                     override_config(config, pt, sections);
