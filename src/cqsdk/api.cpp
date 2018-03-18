@@ -13,7 +13,7 @@ namespace cq::api {
     }
 
     void __init() {
-        const auto dll = LoadLibraryW(L"CQP.dll");
+        const auto dll = GetModuleHandleW(L"CQP.dll");
         for (const auto &initializer : api_func_initializers) {
             initializer(dll);
         }
