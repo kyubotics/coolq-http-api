@@ -161,9 +161,9 @@ namespace cqhttp::utils::http {
     }
 
     optional<json> get_json(const string &url, const bool use_fake_ua, const string &cookies) {
-        if (env::is_in_wine()) {
-            return get_json_libcurl(url, use_fake_ua, cookies);
-        }
+        // if (env::is_in_wine()) {
+        //     return get_json_libcurl(url, use_fake_ua, cookies);
+        // }
         return get_json_libcurl(url, use_fake_ua, cookies);
     }
 
@@ -206,9 +206,9 @@ namespace cqhttp::utils::http {
     }
 
     bool download_file(const string &url, const string &local_path, const bool use_fake_ua) {
-        if (env::is_in_wine()) {
-            return download_file_libcurl(url, local_path, use_fake_ua);
-        }
+        // if (env::is_in_wine()) {
+        //     return download_file_libcurl(url, local_path, use_fake_ua);
+        // }
         return download_file_libcurl(url, local_path, use_fake_ua);
     }
 

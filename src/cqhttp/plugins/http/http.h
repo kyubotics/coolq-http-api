@@ -9,14 +9,9 @@ namespace cqhttp::plugins {
             ctx.next();
         }
 
-        void hook_message_event(EventContext<cq::MessageEvent> &ctx) override {
-            logging::debug("你好", "wow");
-            ctx.next();
-        }
+        void hook_message_event(EventContext<cq::MessageEvent> &ctx) override;
 
-        void hook_after_action(ActionContext &ctx) override {
-            ctx.next();
-        }
+        void hook_after_action(ActionContext &ctx) override { ctx.next(); }
     };
 
     static std::shared_ptr<Http> http = std::make_shared<Http>();
