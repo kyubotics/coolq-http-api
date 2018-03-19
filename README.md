@@ -65,14 +65,6 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 | `cqsdk` | `boost-algorithm`<br>`boost-filesystem`<br>`libiconv` |
 | `cqhttp` | `cqsdk` 的依赖项<br>`nlohmann-json`<br>`boost-process`<br>`curl`<br>`boost-property-tree` |
 
-注意，**在安装依赖之前**，首先要在 vcpkg 根目录运行下面命令：
-
-```bash
-git checkout 2e39b6195fbc14a655474b019234890df94a2ed0 -- ports/cpprestsdk
-```
-
-这会把 `cpprestsdk` 固定在 2.9.0 版本（更新版本在一些版本的 Windows Server 上不能正常工作）。
-
 ## 开源许可证、重新分发
 
 本程序使用 [GPLv3 许可证](https://github.com/richardchien/coolq-http-api/blob/master/LICENSE)，并按其第 7 节添加如下附加条款：
