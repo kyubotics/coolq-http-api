@@ -6,7 +6,7 @@ using namespace std;
 using namespace cq;
 
 namespace cqhttp::plugins {
-    static bool load_config(json &config, const std::string &filename, const initializer_list<string> &sections = {}) {
+    static bool load_config(json &config, const string &filename, const initializer_list<string> &sections = {}) {
         auto loaded = false;
 
         const auto filepath = filename + ".json";

@@ -22,7 +22,7 @@ namespace cqhttp::plugins {
         }
     }
 
-    static bool load_config(json &config, const std::string &filename,
+    static bool load_config(json &config, const string &filename,
                             const initializer_list<string> &sections = {"general"}) {
         const auto exts = {".cfg", ".ini"};
 
