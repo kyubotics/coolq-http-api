@@ -40,7 +40,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [Arsenolite/cabbageWeb](https://github.com/Arsenolite/cabbageWeb) | 基于 Java Web 的 osu! 游戏数据查询机器人 |
 | [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的 QQ 群机器人 |
 | [bdbai/Kobirt](https://github.com/bdbai/Kobirt) | Ingress 游戏辅助机器人 |
-| [JRT-FOREVER/hub2coolq](https://github.com/JRT-FOREVER/hub2coolq) | github webhook 消息转发至qq群 |
+| [JRT-FOREVER/hub2coolq](https://github.com/JRT-FOREVER/hub2coolq) | GitHub webhook 消息转发至 QQ 群 |
 
 ## 修改、编译
 
