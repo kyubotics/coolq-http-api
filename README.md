@@ -28,6 +28,7 @@
 | Node.js (HTTP) | https://github.com/richardchien/cqhttp-node-sdk | richardchien | 已兼容 v3.x |
 | Node.js (WebSocket) | https://github.com/momocow/node-cq-websocket | momocow | 已兼容 v3.x |
 | Java (HTTP, WebSocket) | https://github.com/yangjinhe/maintain-robot | yangjinhe | 已兼容 v3.x |
+| Go (HTTP) | https://github.com/juzi5201314/cqhttp-go-sdk | juzi5201314 | 已兼容 v3.x |
 
 ## 应用案例
 
