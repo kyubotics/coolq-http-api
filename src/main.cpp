@@ -16,8 +16,10 @@ CQ_INITIALIZE(CQHTTP_ID);
 
 CQ_MAIN {
     init();
+
     use(plugins::ini_config_loader);
     use(plugins::json_config_loader);
+
     use(plugins::filter);
 
     use(plugins::backward_compatibility);

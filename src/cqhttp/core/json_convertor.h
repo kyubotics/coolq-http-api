@@ -2,8 +2,6 @@
 
 #include "cqhttp/core/common.h"
 
-#include <ctime>
-
 namespace cq {
     inline void to_json(json &j, const Sex &sex) {
         switch (sex) {
@@ -175,7 +173,7 @@ namespace cq::event {
             j = "message";
             break;
         case NOTICE:
-            j = "event"; // for backward compatibility
+            j = "notice";
             break;
         case REQUEST:
             j = "request";
@@ -203,7 +201,6 @@ namespace cq::event {
         }();
 
         j = {
-            {"time", time(nullptr)}, // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"sub_type", sub_type_str},
@@ -227,7 +224,6 @@ namespace cq::event {
         }();
 
         j = {
-            {"time", time(nullptr)}, // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"sub_type", sub_type_str},
@@ -244,7 +240,6 @@ namespace cq::event {
 
     inline void to_json(json &j, const DiscussMessageEvent &e) {
         j = {
-            {"time", time(nullptr)}, // for backward compatibility
             {"post_type", e.type},
             {"message_type", e.message_type},
             {"message_id", e.message_id},
@@ -260,7 +255,7 @@ namespace cq::event {
         j = {
             {"time", e.time},
             {"post_type", e.type},
-            {"event", e.notice_type},
+            {"notice_type", e.notice_type},
             {"group_id", e.group_id},
             {"user_id", e.user_id},
             {"file", e.file},
@@ -282,7 +277,7 @@ namespace cq::event {
         j = {
             {"time", e.time},
             {"post_type", e.type},
-            {"event", e.notice_type},
+            {"notice_type", e.notice_type},
             {"sub_type", sub_type_str},
             {"group_id", e.group_id},
             {"user_id", e.user_id},
@@ -307,10 +302,10 @@ namespace cq::event {
         }();
 
         j = {
-            {"post_type", e.type},
-            {"event", e.notice_type},
-            {"sub_type", sub_type_str},
             {"time", e.time},
+            {"post_type", e.type},
+            {"notice_type", e.notice_type},
+            {"sub_type", sub_type_str},
             {"group_id", e.group_id},
             {"operator_id", e.operator_id},
             {"user_id", e.user_id},
@@ -330,10 +325,10 @@ namespace cq::event {
         }();
 
         j = {
-            {"post_type", e.type},
-            {"event", e.notice_type},
-            {"sub_type", sub_type_str},
             {"time", e.time},
+            {"post_type", e.type},
+            {"notice_type", e.notice_type},
+            {"sub_type", sub_type_str},
             {"group_id", e.group_id},
             {"operator_id", e.operator_id},
             {"user_id", e.user_id},
@@ -342,20 +337,20 @@ namespace cq::event {
 
     inline void to_json(json &j, const FriendAddEvent &e) {
         j = {
-            {"post_type", e.type},
-            {"event", e.notice_type},
             {"time", e.time},
+            {"post_type", e.type},
+            {"notice_type", e.notice_type},
             {"user_id", e.user_id},
         };
     }
 
     inline void to_json(json &j, const FriendRequestEvent &e) {
         j = {
+            {"time", e.time},
             {"post_type", e.type},
             {"request_type", "friend"},
-            {"time", e.time},
             {"user_id", e.user_id},
-            {"message", e.comment}, // for backward compatibility
+            {"comment", e.comment},
             {"flag", e.flag},
         };
     }
@@ -373,13 +368,13 @@ namespace cq::event {
         }();
 
         j = {
+            {"time", e.time},
             {"post_type", e.type},
             {"request_type", e.request_type},
             {"sub_type", sub_type_str},
-            {"time", e.time},
             {"group_id", e.group_id},
             {"user_id", e.user_id},
-            {"message", e.comment}, // for backward compatibility
+            {"comment", e.comment},
             {"flag", e.flag},
         };
     }

@@ -33,17 +33,14 @@ namespace cqhttp {
         }
 
         void on_message_event(const cq::MessageEvent &event, json &data) {
-            iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
             iterate_hooks(&Plugin::hook_message_event, EventContext<cq::MessageEvent>(event, data));
         }
 
         void on_notice_event(const cq::NoticeEvent &event, json &data) {
-            iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
             iterate_hooks(&Plugin::hook_notice_event, EventContext<cq::NoticeEvent>(event, data));
         }
 
         void on_request_event(const cq::RequestEvent &event, json &data) {
-            iterate_hooks(&Plugin::hook_event, EventContext<cq::Event>(event, data));
             iterate_hooks(&Plugin::hook_request_event, EventContext<cq::RequestEvent>(event, data));
         }
 

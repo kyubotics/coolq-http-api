@@ -14,7 +14,6 @@ namespace cqhttp {
         virtual void hook_coolq_start(Context &ctx) { ctx.next(); }
         virtual void hook_coolq_exit(Context &ctx) { ctx.next(); }
 
-        virtual void hook_event(EventContext<cq::Event> &ctx) { ctx.next(); }
         virtual void hook_message_event(EventContext<cq::MessageEvent> &ctx) { ctx.next(); }
         virtual void hook_notice_event(EventContext<cq::NoticeEvent> &ctx) { ctx.next(); }
         virtual void hook_request_event(EventContext<cq::RequestEvent> &ctx) { ctx.next(); }
