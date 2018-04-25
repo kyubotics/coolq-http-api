@@ -230,12 +230,15 @@ namespace cq::event {
             {"message_id", e.message_id},
             {"group_id", e.group_id},
             {"user_id", e.user_id},
-            {"anonymous", e.anonymous},
-            {"anonymous_flag", e.anonymous.flag}, // for backward compatibility
+            {"anonymous", nullptr},
             {"message", e.message},
             {"raw_message", e.raw_message},
             {"font", e.font},
         };
+
+        if (e.is_anonymous()) {
+            j["anonymous"] = e.anonymous;
+        }
     }
 
     inline void to_json(json &j, const DiscussMessageEvent &e) {

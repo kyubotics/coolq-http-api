@@ -109,15 +109,15 @@
     "menu": [
         {
             "name": "重启插件",
-            "function": "_menu_restart"
+            "function": "cq_menu_restart"
         },
         {
             "name": "检查更新",
-            "function": "_menu_check_update"
+            "function": "cq_menu_check_update"
         },
         {
             "name": "重启酷 Q",
-            "function": "_menu_restart_coolq"
+            "function": "cq_menu_restart_coolq"
         }
     ],
     "status": [],

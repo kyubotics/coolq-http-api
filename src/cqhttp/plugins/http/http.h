@@ -9,7 +9,7 @@ namespace cqhttp::plugins {
             ctx.next();
         }
 
-        void hook_message_event(EventContext<cq::MessageEvent> &ctx) override;
+        void hook_after_event(EventContext<cq::Event> &ctx) override;
 
         void hook_after_action(ActionContext &ctx) override { ctx.next(); }
     };

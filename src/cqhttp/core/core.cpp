@@ -41,51 +41,71 @@ namespace cqhttp {
 
     EVENT(on_private_msg, const cq::PrivateMessageEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_message_event(e, data);
+        __app.on_after_event(e, data);
     }
 
     EVENT(on_group_msg, const cq::GroupMessageEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_message_event(e, data);
+        __app.on_after_event(e, data);
     }
 
     EVENT(on_discuss_msg, const cq::DiscussMessageEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_message_event(e, data);
+        __app.on_after_event(e, data);
     }
 
     EVENT(on_group_upload, const cq::GroupUploadEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_notice_event(e, data);
+        __app.on_after_event(e, data);
     }
 
     EVENT(on_group_admin, const cq::GroupAdminEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_notice_event(e, data);
+        __app.on_after_event(e, data);
     }
 
     EVENT(on_group_member_decrease, const cq::GroupMemberDecreaseEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_notice_event(e, data);
+        __app.on_after_event(e, data);
     }
 
     EVENT(on_group_member_increase, const cq::GroupMemberIncreaseEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_notice_event(e, data);
+        __app.on_after_event(e, data);
     }
 
     EVENT(on_friend_add, const cq::FriendAddEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_notice_event(e, data);
+        __app.on_after_event(e, data);
     }
 
     EVENT(on_friend_request, const cq::FriendRequestEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_request_event(e, data);
+        __app.on_after_event(e, data);
     }
 
     EVENT(on_group_request, const cq::GroupRequestEvent &e) {
         json data = e;
+        __app.on_before_event(e, data);
         __app.on_request_event(e, data);
+        __app.on_after_event(e, data);
     }
 } // namespace cqhttp

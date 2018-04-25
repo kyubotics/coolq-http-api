@@ -28,24 +28,26 @@ namespace cqhttp::utils::http {
         bool ok() const { return status_code >= 200 && status_code < 300; }
 
         json get_json() const {
-            if (content_length == 0) {
-                return nullptr;
+            if (!json_opt_) {
+                if (content_length == 0) {
+                    json_opt_ = nullptr;
+                }
+                try {
+                    json_opt_ = json::parse(body.begin(), body.end());
+                } catch (json::parse_error &) {
+                    json_opt_ = nullptr;
+                }
             }
-            if (!json_.is_null()) {
-                return json_;
-            }
-            try {
-                return json::parse(body.begin(), body.end());
-            } catch (json::parse_error &) {
-                return nullptr;
-            }
+
+            return json_opt_.value();
         }
 
     private:
-        mutable json json_;
+        mutable std::optional<json> json_opt_;
     };
 
     Response get(const std::string &url, Headers headers = {});
-    Response post(const std::string &url, const std::string &content_type = "text/plain", const std::string &body = "");
-    Response post(const std::string &url, Headers headers, const std::string &body = "");
+    Response post(const std::string &url, const std::string &body = "", const std::string &content_type = "text/plain");
+    Response post(const std::string &url, const std::string &body, Headers headers);
+    Response post_json(const std::string &url, const json &payload);
 } // namespace cqhttp::utils::http

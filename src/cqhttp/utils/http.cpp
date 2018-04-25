@@ -224,14 +224,17 @@ namespace cqhttp::utils::http {
         return static_cast<Response>(res);
     }
 
-    Response post(const string &url, const string &content_type, const string &body) {
-        return post(url, {{"Content-Type", content_type}}, body);
+    Response post(const string &url, const string &body, const string &content_type) {
+        return post(url, body, {{"Content-Type", content_type}});
     }
 
-    Response post(const string &url, Headers headers, const string &body) {
+    Response post(const string &url, const std::string &body, Headers headers) {
         fix_headers(headers);
         const auto res = curl::Request(url, headers, body).post();
         return static_cast<Response>(res);
     }
 
+    Response post_json(const std::string &url, const json &payload) {
+        return post(url, payload.dump(), "application/json");
+    }
 } // namespace cqhttp::utils::http
