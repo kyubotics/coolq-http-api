@@ -135,7 +135,6 @@ namespace cq::message {
         list<MessageSegment> &segments() { return *this; }
         const list<MessageSegment> &segments() const { return *this; }
 
-    private:
         /**
          * Merge adjacent "text" segments.
          */

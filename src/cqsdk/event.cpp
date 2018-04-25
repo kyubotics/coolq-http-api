@@ -2,7 +2,6 @@
 
 #include "./def.h"
 #include "./exception.h"
-#include "./utils/base64.h"
 #include "./utils/function.h"
 #include "./utils/string.h"
 

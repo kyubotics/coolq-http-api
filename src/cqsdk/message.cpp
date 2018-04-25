@@ -176,5 +176,9 @@ namespace cq::message {
                 last_seg_it = it;
             }
         }
+
+        if (this->size() == 1 && this->front().type == "text" && this->extract_plain_text() == "") {
+            this->clear();
+        }
     }
 } // namespace cq::message

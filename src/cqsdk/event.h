@@ -15,7 +15,7 @@ namespace cq::event {
         void block() const { operation = BLOCK; }
     };
 
-    struct MessageEvent : virtual Event {
+    struct MessageEvent : Event {
         message::Type message_type;
         message::SubType sub_type;
         int32_t message_id;
@@ -24,13 +24,13 @@ namespace cq::event {
         int32_t font;
     };
 
-    struct NoticeEvent : virtual Event {
+    struct NoticeEvent : Event {
         int32_t time;
         notice::Type notice_type;
         notice::SubType sub_type;
     };
 
-    struct RequestEvent : virtual Event {
+    struct RequestEvent : Event {
         int32_t time;
         request::Type request_type;
         request::SubType sub_type;

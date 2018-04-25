@@ -1,18 +1,15 @@
 #include "./backward_compatibility.h"
 
-#include <ctime>
-
 using namespace std;
 
 namespace cqhttp::plugins {
     void BackwardCompatibility::hook_enable(Context &ctx) {
         enabled_ = ctx.config->get_bool("enable_backward_compatibility", true);
+        ctx.next();
     }
 
     void BackwardCompatibility::hook_message_event(EventContext<cq::MessageEvent> &ctx) {
         if (enabled_) {
-            ctx.data["time"] = time(nullptr);
-
             if (ctx.event.message_type == cq::message::GROUP) {
                 auto &e = static_cast<const cq::GroupMessageEvent &>(ctx.event);
                 if (e.is_anonymous()) {

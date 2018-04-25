@@ -6,6 +6,7 @@
 
 namespace cqhttp {
     struct Plugin {
+        Plugin() = default;
         virtual ~Plugin() = default;
 
         virtual void hook_initialize(Context &ctx) { ctx.next(); }

@@ -104,6 +104,7 @@ namespace cq::message {
             message = j.get<std::string>();
         } else {
             message.segments() = j.get<std::remove_reference<decltype(message.segments())>::type>();
+            message.reduce();
         }
     }
 

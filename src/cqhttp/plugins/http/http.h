@@ -4,14 +4,15 @@
 
 namespace cqhttp::plugins {
     struct Http : Plugin {
-        void hook_enable(Context &ctx) override {
-            logging::debug("http", ctx.config->raw.dump(2));
-            ctx.next();
-        }
+        Http() = default;
+
+        void hook_enable(Context &ctx) override;
 
         void hook_after_event(EventContext<cq::Event> &ctx) override;
 
-        void hook_after_action(ActionContext &ctx) override { ctx.next(); }
+    private:
+        bool use_http_;
+        std::string post_url_;
     };
 
     static std::shared_ptr<Http> http = std::make_shared<Http>();
