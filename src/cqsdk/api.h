@@ -221,13 +221,13 @@ namespace cq::api {
 
 #pragma region CoolQ Self - operation
 
-        // int32_t set_fatal(const char *error_info) {
-        //    return raw::CQ_setFatal(app::auth_code, error_info);
-        //}
-        //
-        // int32_t set_restart() {
-        //    return raw::CQ_setRestart(app::auth_code);
-        //}
+    // int32_t set_fatal(const char *error_info) {
+    //    return raw::CQ_setFatal(app::auth_code, error_info);
+    //}
+    //
+    // int32_t set_restart() {
+    //    return raw::CQ_setRestart(app::auth_code);
+    //}
 
 #pragma endregion
 

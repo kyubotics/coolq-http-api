@@ -5,10 +5,9 @@
 #include <map>
 
 namespace cqhttp::utils::http {
-    std::optional<json> get_json(const std::string &url, const bool use_fake_ua = false,
-                                 const std::string &cookies = "");
+    std::optional<json> get_json(const std::string &url, bool use_fake_ua = false, const std::string &cookies = "");
 
-    bool download_file(const std::string &url, const std::string &local_path, const bool use_fake_ua = false);
+    bool download_file(const std::string &url, const std::string &local_path, bool use_fake_ua = false);
 
     struct CaseInsensitiveCompare {
         bool operator()(const std::string &a, const std::string &b) const noexcept {

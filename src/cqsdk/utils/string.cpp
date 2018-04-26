@@ -100,10 +100,10 @@ namespace cq::utils {
             wstring_convert<codecvt_utf8<uint32_t>, uint32_t> uint32_conv;
             auto uint32_str = uint32_conv.from_bytes(str);
 
-            auto append_text = [&](const decltype(uint32_str.cbegin()) &begin,
-                                   const decltype(uint32_str.cbegin()) &end) {
-                decltype(uint32_str) uint32_part_str(begin, end);
-                auto utf8_part_str = uint32_conv.to_bytes(uint32_part_str);
+            const auto append_text = [&](const decltype(uint32_str.cbegin()) &begin,
+                                         const decltype(uint32_str.cbegin()) &end) {
+                const decltype(uint32_str) uint32_part_str(begin, end);
+                const auto utf8_part_str = uint32_conv.to_bytes(uint32_part_str);
                 processed_str += utf8_part_str;
             };
 
@@ -130,8 +130,6 @@ namespace cq::utils {
         auto result = string_decode(str, "gb18030");
 
         if (config.convert_unicode_emoji) {
-            smatch m;
-
             result = sregex_replace(result, regex(R"(\[CQ:emoji,\s*id=(\d+)\])"), [](const smatch &m) {
                 const auto codepoint_str = m.str(1);
                 u32string u32_str;

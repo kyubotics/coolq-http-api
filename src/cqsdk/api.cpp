@@ -7,7 +7,7 @@ using namespace std;
 namespace cq::api {
     static vector<function<void(HMODULE)>> api_func_initializers;
 
-    static bool add_func_initializer(const function<void(HMODULE)> initializer) {
+    static bool add_func_initializer(const function<void(HMODULE)> &initializer) {
         api_func_initializers.push_back(initializer);
         return true;
     }

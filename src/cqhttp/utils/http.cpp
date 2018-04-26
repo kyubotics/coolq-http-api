@@ -18,7 +18,7 @@ namespace cqhttp::utils::http::curl {
     typedef size_t (*WriteFunction)(char *, size_t, size_t, void *);
 
     struct Response : http::Response {
-        int curl_code;
+        int curl_code = -1;
     };
 
     enum class Method { GET, POST };
@@ -35,7 +35,7 @@ namespace cqhttp::utils::http::curl {
         long connect_timeout = 0;
         long timeout = 0;
 
-        Request() {}
+        Request() = default;
 
         Request(const string &url, const string &content_type = "", const string &body = "")
             : url(url), content_type(content_type), body(body) {}
@@ -54,13 +54,12 @@ namespace cqhttp::utils::http::curl {
                 curl_easy_setopt(curl, CURLOPT_POST, 1L);
             }
 
-            auto header_cb = [](char *buf, size_t size, size_t count, void *headers) {
+            const auto header_cb = [](char *buf, size_t size, size_t count, void *headers) {
                 auto line = string(buf, count);
-                string k, v;
                 const auto sep_pos = line.find(":");
                 if (sep_pos != string::npos) {
-                    k = line.substr(0, sep_pos);
-                    v = line.substr(sep_pos + 1);
+                    const auto k = line.substr(0, sep_pos);
+                    auto v = line.substr(sep_pos + 1);
                     boost::algorithm::trim_left(v);
                     (*static_cast<Headers *>(headers))[k] = v;
                 }
@@ -92,7 +91,7 @@ namespace cqhttp::utils::http::curl {
             }
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
 
-            if (body.size()) {
+            if (!body.empty()) {
                 curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
             }
 

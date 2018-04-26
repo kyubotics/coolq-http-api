@@ -198,9 +198,8 @@ namespace cq::event {
                 return "discuss";
             case message::PRIVATE_OTHER:
                 return "other";
-            default:
-                return "unknown";
             }
+            return "unknown";
         }();
 
         j = {
@@ -275,9 +274,8 @@ namespace cq::event {
                 return "unset";
             case notice::GROUP_ADMIN_SET:
                 return "set";
-            default:
-                return "unknown";
             }
+            return "unknown";
         }();
 
         j = {
@@ -300,11 +298,11 @@ namespace cq::event {
                     // the one been kicked out is not me
                     return "kick";
                 }
+                // else fallthrough
             case -1:
                 return "kick_me";
-            default:
-                return "unknown";
             }
+            return "unknown";
         }();
 
         j = {
@@ -325,9 +323,8 @@ namespace cq::event {
                 return "approve";
             case notice::GROUP_MEMBER_INCREASE_INVITE:
                 return "invite";
-            default:
-                return "unknown";
             }
+            return "unknown";
         }();
 
         j = {
@@ -368,9 +365,8 @@ namespace cq::event {
                 return "add";
             case request::GROUP_INVITE:
                 return "invite";
-            default:
-                return "unknown";
             }
+            return "unknown";
         }();
 
         j = {

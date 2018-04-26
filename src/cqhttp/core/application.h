@@ -90,6 +90,6 @@ namespace cqhttp {
             next();
         }
 
-        friend void use(const std::shared_ptr<Plugin> plugin);
+        friend void use(std::shared_ptr<Plugin> plugin);
     };
 } // namespace cqhttp

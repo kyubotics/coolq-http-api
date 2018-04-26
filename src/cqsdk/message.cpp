@@ -50,7 +50,7 @@ namespace cq::message {
                 break;
             }
             case FUNCTION_NAME: {
-                if (curr >= 'A' && curr <= 'Z' || curr >= 'a' && curr <= 'z' || curr >= '0' && curr <= '9') {
+                if ((curr >= 'A' && curr <= 'Z') || (curr >= 'a' && curr <= 'z') || (curr >= '0' && curr <= '9')) {
                     function_name_s << curr;
                 } else if (curr == ',') {
                     // function name out, params in
@@ -134,7 +134,7 @@ namespace cq::message {
                 }
             } else {
                 ss << "[CQ:" << seg.type;
-                for (const auto item : seg.data) {
+                for (const auto &item : seg.data) {
                     ss << "," << item.first << "=" << escape(item.second);
                 }
                 ss << "]";
@@ -152,8 +152,8 @@ namespace cq::message {
                 result += seg.data.at("text") + " ";
             }
         }
-        if (result.size() > 0) {
-            result.erase(result.end() - 1);
+        if (!result.empty()) {
+            result.erase(result.end() - 1); // remove the trailing space
         }
         return result;
     }
@@ -177,8 +177,8 @@ namespace cq::message {
             }
         }
 
-        if (this->size() == 1 && this->front().type == "text" && this->extract_plain_text() == "") {
-            this->clear();
+        if (this->size() == 1 && this->front().type == "text" && this->extract_plain_text().empty()) {
+            this->clear(); // the only item is an empty text segment, we should remove it
         }
     }
 } // namespace cq::message
