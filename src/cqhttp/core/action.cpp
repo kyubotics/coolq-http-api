@@ -8,6 +8,7 @@
 #include "cqhttp/core/core.h"
 #include "cqhttp/utils/filesystem.h"
 #include "cqhttp/utils/http.h"
+#include "cqhttp/utils/jsonex.h"
 
 using namespace std;
 namespace api = cq::api;
@@ -59,15 +60,6 @@ namespace cqhttp {
         case ApiError::INVALID_TARGET:
         default:
             return Codes::DEFAULT_ERROR;
-        }
-    }
-
-    static void call_func_and_set_retcode(const function<void()> func, ActionResult &result) {
-        try {
-            func();
-            result.code = Codes::OK;
-        } catch (const ApiError &e) {
-            result.code = to_retcode(e);
         }
     }
 
@@ -399,9 +391,11 @@ namespace cqhttp {
 
     HANDLER(get_version_info) {
         const auto coolq_directory = cq::dir::root();
-        string coolq_edition = "air";
+        string coolq_edition;
         if (fs::is_regular_file(ansi(coolq_directory + "CQP.exe"))) {
             coolq_edition = "pro";
+        } else {
+            coolq_edition = "air";
         }
         result.code = Codes::OK;
         result.data = {{"coolq_directory", coolq_directory},
