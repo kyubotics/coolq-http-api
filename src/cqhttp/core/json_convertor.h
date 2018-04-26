@@ -100,11 +100,13 @@ namespace cq::message {
     inline void to_json(json &j, const Message &message) { j = message.segments(); }
 
     inline void from_json(const json &j, Message &message) {
-        if (j.is_string()) {
-            message = j.get<std::string>();
-        } else {
+        if (j.is_array()) {
             message.segments() = j.get<std::remove_reference<decltype(message.segments())>::type>();
             message.reduce();
+        } else if (j.is_object()) {
+            message.push_back(j.get<MessageSegment>());
+        } else {
+            message = j.get<std::string>();
         }
     }
 
