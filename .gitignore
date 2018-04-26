@@ -2,3 +2,6 @@
 .vscode/c_cpp_properties.json
 build
 !lib/*.lib
+
+scripts
+CMakeSettings.json
