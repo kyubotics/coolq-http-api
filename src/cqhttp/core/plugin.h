@@ -9,6 +9,26 @@ namespace cqhttp {
         Plugin() = default;
         virtual ~Plugin() = default;
 
+        /**
+         * Lifecycle:
+         *
+         * +-------------------------------------------------+
+         * | hook_initialize                                 |
+         * |        +                                        |
+         * |        | enabled by user                        |
+         * |        v                                        |
+         * | hook_coolq_start                                |
+         * |   hook_enable+-----------+                      |
+         * |        +                 | disabled by user     |
+         * |        |                 v                      |
+         * |        v            hook_disable                |
+         * |   hook_disable           +                      |
+         * |  hook_coolq_exit         | coolq closed by user |
+         * |                          v                      |
+         * |                    hook_coolq_exit              |
+         * +-------------------------------------------------+
+         */
+
         virtual void hook_initialize(Context &ctx) { ctx.next(); }
         virtual void hook_enable(Context &ctx) { ctx.next(); }
         virtual void hook_disable(Context &ctx) { ctx.next(); }

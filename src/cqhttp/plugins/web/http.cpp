@@ -17,6 +17,11 @@ namespace cqhttp::plugins {
         ctx.next();
     }
 
+    void Http::hook_disable(Context &ctx) {
+        ;
+        ctx.next();
+    }
+
     static void handle_quick_operation(const EventContext<cq::Event> &ctx, const utils::JsonEx &params) {
         if (ctx.event.type == cq::event::MESSAGE) {
             const auto msg_ev = static_cast<const cq::MessageEvent &>(ctx.event);

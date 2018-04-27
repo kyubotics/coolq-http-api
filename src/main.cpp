@@ -9,7 +9,7 @@
 
 #include "cqhttp/plugins/backward_compatibility/backward_compatibility.h"
 #include "cqhttp/plugins/filter/filter.h"
-#include "cqhttp/plugins/http/http.h"
+#include "cqhttp/plugins/web/http.h"
 
 using namespace cqhttp;
 
