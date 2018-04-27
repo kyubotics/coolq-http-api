@@ -25,7 +25,7 @@ namespace cqhttp::plugins {
         server_->resource[action_path_regex]["GET"] = server_->resource[action_path_regex]["POST"] =
             [=](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
                 logging::debug(TAG,
-                               u8"收到 API 请求：" + request->method + u8" " + request->path
+                               u8"收到 API 请求：" + request->method + " " + request->path
                                    + (request->query_string.empty() ? "" : "?" + request->query_string));
 
                 auto json_params = json::object();
@@ -79,7 +79,7 @@ namespace cqhttp::plugins {
                 }
 
                 const auto action = request->path_match.str(1);
-                logging::debug(TAG, u8"开始尝试执行动作 " + action);
+                logging::debug(TAG, u8"开始执行动作 " + action);
 
                 response->write(action);
             };
@@ -133,6 +133,11 @@ namespace cqhttp::plugins {
         logging::debug("http", "enable");
 
         post_url_ = ctx.config->get_string("post_url", "");
+        if (!post_url_.empty() && !regex_search(post_url_, regex("^https?://"))) {
+            // bad post url, we warn the user, and ignore the post url
+            logging::warning(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 不是合法地址，将被忽略");
+            post_url_ = "";
+        }
 
         use_http_ = ctx.config->get_bool("use_http", true);
         access_token_ = ctx.config->get_string("access_token", "");
@@ -270,5 +275,12 @@ namespace cqhttp::plugins {
         }
 
         ctx.next();
+    }
+
+    bool Http::good() const {
+        if (use_http_) {
+            return started_;
+        }
+        return true;
     }
 } // namespace cqhttp::plugins

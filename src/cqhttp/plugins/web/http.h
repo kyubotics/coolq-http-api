@@ -15,6 +15,8 @@ namespace cqhttp::plugins {
 
         void hook_after_event(EventContext<cq::Event> &ctx) override;
 
+        bool good() const override;
+
     private:
         std::string post_url_;
 

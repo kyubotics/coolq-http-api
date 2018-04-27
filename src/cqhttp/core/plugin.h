@@ -50,5 +50,7 @@ namespace cqhttp {
         virtual void hook_before_action(ActionContext &ctx) { ctx.next(); }
         virtual void hook_missed_action(ActionContext &ctx) { ctx.next(); }
         virtual void hook_after_action(ActionContext &ctx) { ctx.next(); }
+
+        virtual bool good() const { return true; }
     };
 } // namespace cqhttp
