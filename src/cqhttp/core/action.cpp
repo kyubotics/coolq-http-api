@@ -33,6 +33,7 @@ namespace cqhttp {
         if (const auto it = action_handlers.find(action); it != action_handlers.end()) {
             it->second(params_ex, result);
         } else {
+            result.code = Codes::HTTP_NOT_FOUND; // if missed, set default code to Codes::HTTP_NOT_FOUND
             __app.on_missed_action(action, params_ex, result);
         }
 

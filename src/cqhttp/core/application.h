@@ -28,7 +28,11 @@ namespace cqhttp {
         void on_coolq_start() { iterate_hooks(&Plugin::hook_coolq_start, Context()); }
 
         void on_coolq_exit() {
-            on_disable(); // this leads to a lifecycle change, check plugin.h for the lifecycle graph
+            if (is_enabled()) {
+                // generate a fake "disable" event at exit
+                // this leads to a lifecycle change, check plugin.h for the lifecycle graph
+                on_disable();
+            }
             iterate_hooks(&Plugin::hook_coolq_exit, Context());
         }
 

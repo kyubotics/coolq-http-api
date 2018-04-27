@@ -5,29 +5,35 @@
 #include "cqhttp/core/context.h"
 
 namespace cqhttp {
+    /**
+     * Lifecycle:
+     *
+     * +-------------------------------------------------+
+     * | hook_initialize                                 |
+     * |        +                                        |
+     * |        | enabled by user                        |
+     * |        v                                        |
+     * | hook_coolq_start                                |
+     * |   hook_enable+-----------+                      |
+     * |        +                 | disabled by user     |
+     * |        |                 v                      |
+     * |        v            hook_disable                |
+     * |   hook_disable           +                      |
+     * |  hook_coolq_exit         | coolq closed by user |
+     * |                          v                      |
+     * |                    hook_coolq_exit              |
+     * +-------------------------------------------------+
+     *
+     * The lifecycle here is NOT quite the same as one in "cqsdk" module,
+     * because "cqhttp::Application" class will generate a fake "disable" event
+     * if necessary at exit, which means "hook_enable" and "hook_disable" methods
+     * are guaranteed to be called as a pair, so plugins can safely start
+     * their services in "hook_enable" and stop in "hook_disable" and have no need
+     * to care about the "coolq_*" events.
+     */
     struct Plugin {
         Plugin() = default;
         virtual ~Plugin() = default;
-
-        /**
-         * Lifecycle:
-         *
-         * +-------------------------------------------------+
-         * | hook_initialize                                 |
-         * |        +                                        |
-         * |        | enabled by user                        |
-         * |        v                                        |
-         * | hook_coolq_start                                |
-         * |   hook_enable+-----------+                      |
-         * |        +                 | disabled by user     |
-         * |        |                 v                      |
-         * |        v            hook_disable                |
-         * |   hook_disable           +                      |
-         * |  hook_coolq_exit         | coolq closed by user |
-         * |                          v                      |
-         * |                    hook_coolq_exit              |
-         * +-------------------------------------------------+
-         */
 
         virtual void hook_initialize(Context &ctx) { ctx.next(); }
         virtual void hook_enable(Context &ctx) { ctx.next(); }

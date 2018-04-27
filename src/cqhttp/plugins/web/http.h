@@ -4,7 +4,7 @@
 
 #include <thread>
 
-#include "./vendor/simple_web/server_http.hpp"
+#include "cqhttp/plugins/web/vendor/simple_web/server_http.hpp"
 
 namespace cqhttp::plugins {
     struct Http : Plugin {
@@ -16,11 +16,18 @@ namespace cqhttp::plugins {
         void hook_after_event(EventContext<cq::Event> &ctx) override;
 
     private:
-        bool use_http_;
         std::string post_url_;
+
+        bool use_http_;
+        std::string access_token_;
+        bool serve_data_files_;
 
         std::shared_ptr<SimpleWeb::Server<SimpleWeb::HTTP>> server_;
         std::thread thread_;
+
+        bool started_ = false;
+
+        void init_server();
     };
 
     static std::shared_ptr<Http> http = std::make_shared<Http>();
