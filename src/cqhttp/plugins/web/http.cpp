@@ -29,7 +29,8 @@ namespace cqhttp::plugins {
                                    + (request->query_string.empty() ? "" : "?" + request->query_string));
 
                 auto json_params = json::object();
-                json args = request->parse_query_string(), form;
+                const json args = request->parse_query_string();
+                json form;
 
                 const auto authorized = authorize(access_token_, request->header, args, [&response](auto status_code) {
                     response->write(status_code);
@@ -81,7 +82,19 @@ namespace cqhttp::plugins {
                 const auto action = request->path_match.str(1);
                 logging::debug(TAG, u8"开始执行动作 " + action);
 
-                response->write(action);
+                const auto result = call_action(action, json_params);
+                if (result.code == ActionResult::Codes::HTTP_NOT_FOUND) {
+                    // no "Plugin::hook_missed_action" handled this action, we return 404
+                    logging::debug(TAG, u8"没有找到相应的处理函数，动作执行失败");
+                    response->write(SimpleWeb::StatusCode::client_error_not_found);
+                } else {
+                    const decltype(request->header) headers{{"Content-Type", "application/json; charset=UTF-8"}};
+                    const auto resp_body = json(result.data).dump();
+                    logging::debug(TAG, u8"响应数据已准备完毕：" + resp_body);
+                    response->write(resp_body, headers);
+                    logging::debug(TAG, u8"响应内容已发送");
+                    logging::info_success(TAG, u8"已成功处理一个 API 请求：" + request->path);
+                }
             };
 
         // data files handler
