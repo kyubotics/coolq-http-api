@@ -9,6 +9,7 @@
 
 #include "cqhttp/plugins/backward_compatibility/backward_compatibility.h"
 #include "cqhttp/plugins/filter/filter.h"
+#include "cqhttp/plugins/post_message_formatter/post_message_formatter.h"
 #include "cqhttp/plugins/web/http.h"
 
 using namespace cqhttp;
@@ -24,6 +25,7 @@ CQ_MAIN {
     use(plugins::event_data_patcher);
 
     use(plugins::filter);
+    use(plugins::post_message_formatter);
     use(plugins::backward_compatibility);
     use(plugins::http);
 }
