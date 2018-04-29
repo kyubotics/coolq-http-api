@@ -21,13 +21,13 @@
 
 对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK：
 
-| 语言 | 基于的 Web 框架 | 通信方式 | 地址 | 作者 | v3.x 兼容性 |
+| 语言 | Web 框架 | 通信方式 | 地址 | 作者 | v3.x 兼容性 |
 | --- | ------------- | ------- | --- | ---- | --- |
 | PHP | - | HTTP | https://github.com/kilingzhang/coolq-php-sdk | kilingzhang | ✅ |
 | Python | Bottle | HTTP | https://github.com/richardchien/cqhttp-python-sdk | richardchien | ✅ |
 | Node.js | Koa | HTTP | https://github.com/richardchien/cqhttp-node-sdk | richardchien | ✅ |
 | Node.js | WebSocket-Node | WebSocket | https://github.com/momocow/node-cq-websocket | momocow | ✅ |
-| Java | - | HTTP、WebSocket | https://github.com/yangjinhe/maintain-robot | yangjinhe | ✅ |
+| Java | - | HTTP<br>WebSocket | https://github.com/yangjinhe/maintain-robot | yangjinhe | ✅ |
 | Go | - | HTTP | https://github.com/juzi5201314/cqhttp-go-sdk | juzi5201314 | ✅ |
 | PHP | Swoole | WebSocket | https://github.com/BlueWhaleNetwork/CQBot-swoole | BlueWhaleNetwork | ✅ |
 
