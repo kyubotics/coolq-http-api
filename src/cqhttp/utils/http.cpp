@@ -4,6 +4,7 @@
 #include <boost/filesystem.hpp>
 #include <regex>
 
+#include "cqhttp/utils/crypt.h"
 #include "cqhttp/utils/env.h"
 
 using namespace std;
@@ -233,7 +234,12 @@ namespace cqhttp::utils::http {
         return static_cast<Response>(res);
     }
 
-    Response post_json(const std::string &url, const json &payload) {
-        return post(url, payload.dump(), "application/json");
+    Response post_json(const std::string &url, const json &payload, const string &secret) {
+        const auto body = payload.dump();
+        Headers headers{{"Content-Type", "application/json; charset=UTF-8"}};
+        if (!secret.empty()) {
+            headers["X-Signature"] = "sha1=" + crypt::hmac_sha1_hex(secret, body);
+        }
+        return post(url, payload.dump(), headers);
     }
 } // namespace cqhttp::utils::http

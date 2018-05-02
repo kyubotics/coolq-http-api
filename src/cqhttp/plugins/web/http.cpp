@@ -151,6 +151,7 @@ namespace cqhttp::plugins {
             logging::warning(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 不是合法地址，将被忽略");
             post_url_ = "";
         }
+        secret_ = ctx.config->get_string("secret", "");
 
         use_http_ = ctx.config->get_bool("use_http", true);
         access_token_ = ctx.config->get_string("access_token", "");
@@ -259,7 +260,7 @@ namespace cqhttp::plugins {
     void Http::hook_after_event(EventContext<cq::Event> &ctx) {
         if (!post_url_.empty()) {
             logging::debug(TAG, u8"开始通过 HTTP 上报事件");
-            const auto resp = utils::http::post_json(post_url_, ctx.data);
+            const auto resp = utils::http::post_json(post_url_, ctx.data, secret_);
 
             if (resp.status_code == 0) {
                 logging::info(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 无法访问");
