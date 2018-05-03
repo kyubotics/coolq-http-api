@@ -22,6 +22,9 @@ namespace cqhttp {
 
         int code = Codes::DEFAULT_ERROR;
         json data;
+
+        ActionResult() = default;
+        ActionResult(const int code, const json &data = nullptr) : code(code), data(data) {}
     };
 
     inline void to_json(json &j, const ActionResult &r) {

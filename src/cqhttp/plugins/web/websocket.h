@@ -2,11 +2,11 @@
 
 #include "cqhttp/core/plugin.h"
 
-#include "cqhttp/plugins/web/vendor/simple_web/server_http.hpp"
+#include "cqhttp/plugins/web/vendor/simple_web/server_ws.hpp"
 
 namespace cqhttp::plugins {
-    struct Http : Plugin {
-        Http() = default;
+    struct WebSocket : Plugin {
+        WebSocket() = default;
 
         void hook_enable(Context &ctx) override;
         void hook_disable(Context &ctx) override;
@@ -16,14 +16,10 @@ namespace cqhttp::plugins {
         bool good() const override;
 
     private:
-        std::string post_url_;
-        std::string secret_;
-
-        bool use_http_;
+        bool use_ws_;
         std::string access_token_;
-        bool serve_data_files_;
 
-        std::shared_ptr<SimpleWeb::Server<SimpleWeb::HTTP>> server_;
+        std::shared_ptr<SimpleWeb::SocketServer<SimpleWeb::WS>> server_;
         std::thread thread_;
 
         bool started_ = false;
@@ -31,5 +27,5 @@ namespace cqhttp::plugins {
         void init_server();
     };
 
-    static std::shared_ptr<Http> http = std::make_shared<Http>();
+    static std::shared_ptr<WebSocket> websocket = std::make_shared<WebSocket>();
 } // namespace cqhttp::plugins

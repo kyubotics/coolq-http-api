@@ -1,9 +1,12 @@
 #include "./http.h"
 
+#include <boost/filesystem.hpp>
+
 #include "cqhttp/plugins/web/common.h"
 #include "cqhttp/utils/http.h"
 
 using namespace std;
+namespace fs = boost::filesystem;
 namespace api = cq::api;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 
@@ -28,7 +31,7 @@ namespace cqhttp::plugins {
                                u8"收到 API 请求：" + request->method + " " + request->path
                                    + (request->query_string.empty() ? "" : "?" + request->query_string));
 
-                auto json_params = json::object();
+                auto params = json::object();
                 const json args = request->parse_query_string();
                 json form;
 
@@ -54,8 +57,8 @@ namespace cqhttp::plugins {
                         form = SimpleWeb::QueryString::parse(body_string);
                     } else if (boost::starts_with(content_type, "application/json")) {
                         try {
-                            json_params = json::parse(body_string); // may throw json::parse_error
-                            if (!json_params.is_object()) {
+                            params = json::parse(body_string); // may throw json::parse_error
+                            if (!params.is_object()) {
                                 throw invalid_argument("must be a JSON object");
                             }
                         } catch (...) {
@@ -74,7 +77,7 @@ namespace cqhttp::plugins {
                 for (auto data : {form, args}) {
                     if (data.is_object()) {
                         for (auto it = data.begin(); it != data.end(); ++it) {
-                            json_params[it.key()] = it.value();
+                            params[it.key()] = it.value();
                         }
                     }
                 }
@@ -82,12 +85,13 @@ namespace cqhttp::plugins {
                 const auto action = request->path_match.str(1);
                 logging::debug(TAG, u8"开始执行动作 " + action);
 
-                const auto result = call_action(action, json_params);
+                const auto result = call_action(action, params);
                 if (result.code == ActionResult::Codes::HTTP_NOT_FOUND) {
                     // no "Plugin::hook_missed_action" handled this action, we return 404
-                    logging::debug(TAG, u8"没有找到相应的处理函数，动作执行失败");
+                    logging::debug(TAG, u8"没有找到相应的处理函数，动作 " + action + u8" 执行失败");
                     response->write(SimpleWeb::StatusCode::client_error_not_found);
                 } else {
+                    logging::debug(TAG, u8"动作 " + action + u8" 执行成功");
                     const decltype(request->header) headers{{"Content-Type", "application/json; charset=UTF-8"}};
                     const auto resp_body = json(result.data).dump();
                     logging::debug(TAG, u8"响应数据已准备完毕：" + resp_body);
@@ -143,8 +147,6 @@ namespace cqhttp::plugins {
     }
 
     void Http::hook_enable(Context &ctx) {
-        logging::debug("http", "enable");
-
         post_url_ = ctx.config->get_string("post_url", "");
         if (!post_url_.empty() && !regex_search(post_url_, regex("^https?://"))) {
             // bad post url, we warn the user, and ignore the post url
@@ -173,7 +175,7 @@ namespace cqhttp::plugins {
                 started_ = false; // since it reaches here, the server is absolutely stopped
             });
             logging::debug(TAG,
-                           u8"开启 API HTTP 服务器成功，开始监听 http://" + server_->config.address + ":"
+                           u8"开启 HTTP 服务器成功，开始监听 http://" + server_->config.address + ":"
                                + to_string(server_->config.port));
         }
 
@@ -181,8 +183,6 @@ namespace cqhttp::plugins {
     }
 
     void Http::hook_disable(Context &ctx) {
-        logging::debug("http", "disable");
-
         if (started_) {
             server_->stop();
             started_ = false;
