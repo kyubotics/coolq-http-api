@@ -436,7 +436,7 @@ namespace cqhttp {
         const auto data_dir = params.get_string("data_dir");
         set<string> allowed_data_dirs = {"image", "record", "show", "bface"};
         if (allowed_data_dirs.find(data_dir) != allowed_data_dirs.cend()) {
-            const auto ws_dir_fullpath = s2ws(utils::data_file_full_path(data_dir, ""));
+            const auto ws_dir_fullpath = s2ws(utils::fs::data_file_full_path(data_dir, ""));
             try {
                 fs::remove_all(ws_dir_fullpath);
                 fs::create_directory(ws_dir_fullpath);
