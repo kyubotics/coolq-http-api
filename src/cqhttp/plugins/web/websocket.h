@@ -2,6 +2,8 @@
 
 #include "cqhttp/core/plugin.h"
 
+#include <thread>
+
 #include "cqhttp/plugins/web/vendor/simple_web/server_ws.hpp"
 
 namespace cqhttp::plugins {
