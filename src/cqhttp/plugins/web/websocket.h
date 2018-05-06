@@ -15,11 +15,11 @@ namespace cqhttp::plugins {
 
         void hook_after_event(EventContext<cq::Event> &ctx) override;
 
-        bool good() const override;
+        bool good() const override { return !use_ws_ || started_; }
 
     private:
-        bool use_ws_;
-        std::string access_token_;
+        bool use_ws_{};
+        std::string access_token_{};
 
         std::shared_ptr<SimpleWeb::SocketServer<SimpleWeb::WS>> server_;
         std::thread thread_;

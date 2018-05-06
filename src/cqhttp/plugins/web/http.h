@@ -15,15 +15,14 @@ namespace cqhttp::plugins {
 
         void hook_after_event(EventContext<cq::Event> &ctx) override;
 
-        bool good() const override;
+        bool good() const override { return !use_http_ || started_; }
 
     private:
-        std::string post_url_;
-        std::string secret_;
-
-        bool use_http_;
-        std::string access_token_;
-        bool serve_data_files_;
+        std::string post_url_{};
+        std::string secret_{};
+        bool use_http_{};
+        std::string access_token_{};
+        bool serve_data_files_{};
 
         std::shared_ptr<SimpleWeb::Server<SimpleWeb::HTTP>> server_;
         std::thread thread_;

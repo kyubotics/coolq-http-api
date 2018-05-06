@@ -2,7 +2,7 @@
 
 #include <boost/filesystem.hpp>
 
-#include "cqhttp/plugins/web/common.h"
+#include "cqhttp/plugins/web/server_common.h"
 #include "cqhttp/utils/http.h"
 
 using namespace std;
@@ -289,12 +289,5 @@ namespace cqhttp::plugins {
         }
 
         ctx.next();
-    }
-
-    bool Http::good() const {
-        if (use_http_) {
-            return started_;
-        }
-        return true;
     }
 } // namespace cqhttp::plugins

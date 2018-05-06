@@ -12,6 +12,7 @@
 #include "cqhttp/plugins/post_message_formatter/post_message_formatter.h"
 #include "cqhttp/plugins/web/http.h"
 #include "cqhttp/plugins/web/websocket.h"
+#include "cqhttp/plugins/web/websocket_reverse.h"
 
 using namespace cqhttp;
 
@@ -30,4 +31,5 @@ CQ_MAIN {
     use(plugins::backward_compatibility);
     use(plugins::http);
     use(plugins::websocket);
+    use(plugins::websocket_reverse);
 }

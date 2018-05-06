@@ -1,6 +1,6 @@
 #include "./websocket.h"
 
-#include "cqhttp/plugins/web/common.h"
+#include "cqhttp/plugins/web/server_common.h"
 #include "cqhttp/plugins/web/ws_common.h"
 
 using namespace std;
@@ -36,7 +36,7 @@ namespace cqhttp::plugins {
     }
 
     void WebSocket::hook_enable(Context &ctx) {
-        use_ws_ = ctx.config->get_bool("use_ws");
+        use_ws_ = ctx.config->get_bool("use_ws", false);
         access_token_ = ctx.config->get_string("access_token", "");
 
         if (use_ws_) {
@@ -99,12 +99,5 @@ namespace cqhttp::plugins {
         }
 
         ctx.next();
-    }
-
-    bool WebSocket::good() const {
-        if (use_ws_) {
-            return started_;
-        }
-        return true;
     }
 } // namespace cqhttp::plugins
