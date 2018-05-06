@@ -13,6 +13,9 @@ namespace cqhttp::plugins {
     }
 
     void PostMessageFormatter::hook_after_event(EventContext<cq::Event> &ctx) {
+        // we use hook_after_event because we want this plugin to work just before the web ones,
+        // which will post data to backends in their hook_after_event,
+        // and after other irrelevant plugins
         if (ctx.event.type == cq::event::MESSAGE && post_message_format_ == "string") {
             ctx.data["message"] = std::to_string(ctx.data["message"].get<cq::Message>());
         }

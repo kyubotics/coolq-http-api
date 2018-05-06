@@ -65,7 +65,7 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 | 模块 | 依赖项 |
 | --- | ----- |
 | `cqsdk` | `boost-algorithm`<br>`boost-filesystem`<br>`libiconv` |
-| `cqhttp` | `cqsdk` 的依赖项<br>`nlohmann-json`<br>`boost-process`<br>`curl`<br>`boost-property-tree`<br>`boost-asio` |
+| `cqhttp` | `cqsdk` 的依赖项<br>`nlohmann-json`<br>`boost-process`<br>`curl`<br>`boost-property-tree`<br>`boost-asio`<br>`openssl` |
 
 ## 开源许可证、重新分发
 

@@ -6,8 +6,9 @@
 #include "cqhttp/plugins/config_loader/json_config_loader.h"
 
 #include "cqhttp/plugins/event_data_patcher/event_data_patcher.h"
-#include "cqhttp/plugins/restarter/restarter.h"
 #include "cqhttp/plugins/experimental_actions/experimental_actions.h"
+#include "cqhttp/plugins/message_enhancer/message_enhancer.h"
+#include "cqhttp/plugins/restarter/restarter.h"
 
 #include "cqhttp/plugins/backward_compatibility/backward_compatibility.h"
 #include "cqhttp/plugins/filter/filter.h"
@@ -23,13 +24,17 @@ CQ_INITIALIZE(CQHTTP_ID);
 CQ_MAIN {
     init();
 
+    // load configurations
     use(plugins::ini_config_loader);
     use(plugins::json_config_loader);
 
+    // extend the Context object
     use(plugins::event_data_patcher);
-    use(plugins::restarter);
+    use(plugins::message_enhancer);
     use(plugins::experimental_actions);
+    use(plugins::restarter);
 
+    // handle api and event, must in order and at the end
     use(plugins::filter);
     use(plugins::post_message_formatter);
     use(plugins::backward_compatibility);
