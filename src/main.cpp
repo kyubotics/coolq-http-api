@@ -7,6 +7,7 @@
 
 #include "cqhttp/plugins/event_data_patcher/event_data_patcher.h"
 #include "cqhttp/plugins/restarter/restarter.h"
+#include "cqhttp/plugins/experimental_actions/experimental_actions.h"
 
 #include "cqhttp/plugins/backward_compatibility/backward_compatibility.h"
 #include "cqhttp/plugins/filter/filter.h"
@@ -27,6 +28,7 @@ CQ_MAIN {
 
     use(plugins::event_data_patcher);
     use(plugins::restarter);
+    use(plugins::experimental_actions);
 
     use(plugins::filter);
     use(plugins::post_message_formatter);

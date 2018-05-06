@@ -7,7 +7,6 @@
 
 #include "cqhttp/core/core.h"
 #include "cqhttp/utils/filesystem.h"
-#include "cqhttp/utils/http.h"
 #include "cqhttp/utils/jsonex.h"
 
 using namespace std;
@@ -20,7 +19,7 @@ namespace cqhttp {
     using ActionHandler = function<void(const utils::JsonEx &, ActionResult &)>;
     using ActionHandlerMap = unordered_map<string, ActionHandler>;
 
-    using ApiError = cq::exception::ApiError;
+    using cq::exception::ApiError;
 
     static ActionHandlerMap action_handlers;
 
@@ -427,11 +426,6 @@ namespace cqhttp {
         }
     }
 
-    // HANDLER(set_restart_plugin) {
-    //     // app.restart_async(2000);
-    //     // result.code = Codes::ASYNC;
-    // }
-
     HANDLER(clean_data_dir) {
         const auto data_dir = params.get_string("data_dir");
         set<string> allowed_data_dirs = {"image", "record", "show", "bface"};
@@ -444,98 +438,6 @@ namespace cqhttp {
             } catch (fs::filesystem_error &) {
                 result.code = Codes::OPERATION_FAILED;
             }
-        }
-    }
-
-#pragma endregion
-
-#pragma region Experimental
-
-    HANDLER(_get_friend_list) {
-        try {
-            const auto cookies = api::get_cookies();
-            const auto g_tk = to_string(api::get_csrf_token());
-            const auto login_qq = to_string(api::get_login_user_id());
-
-            {
-                // try mobile QZone API
-                const auto url = "http://m.qzone.com/friend/mfriend_list?g_tk=" + g_tk + "&res_uin=" + login_qq
-                                 + "&res_type=normal&format=json";
-                const auto res = utils::http::get_json(url, true, cookies).value_or(nullptr);
-                try {
-                    if (res.at("code").get<int>() == 0) {
-                        // succeeded
-                        auto resp_data = res.at("data");
-                        result.data = json::array();
-
-                        map<int64_t, int> gpid_idx_map;
-                        for (auto gp : resp_data.at("gpnames")) {
-                            auto res_gp = json::object();
-                            auto gpid = gp.at("gpid").get<int64_t>();
-                            res_gp["friend_group_id"] = gpid;
-                            res_gp["friend_group_name"] = gp.at("gpname").get<string>();
-                            res_gp["friends"] = json::array();
-                            gpid_idx_map[gpid] = result.data.size();
-                            result.data.push_back(res_gp);
-                        }
-
-                        for (auto frnd : resp_data.at("list")) {
-                            auto gpid = frnd.at("groupid").get<int64_t>();
-                            auto res_frnd = json::object();
-                            res_frnd["user_id"] = frnd.at("uin").get<int64_t>();
-                            res_frnd["nickname"] = frnd.at("nick").get<string>();
-                            res_frnd["remark"] = frnd.at("remark").get<string>();
-                            result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
-                        }
-
-                        result.code = Codes::OK;
-                        return;
-                    }
-                } catch (exception &) {
-                }
-            }
-
-            {
-                // try desktop web QZone API
-                const auto url =
-                    "https://h5.qzone.qq.com/proxy/domain/r.qzone.qq.com/cgi-bin/tfriend/"
-                    "friend_show_qqfriends.cgi?g_tk="
-                    + g_tk + "&uin=" + login_qq;
-                const auto res = utils::http::get_json(url, true, cookies).value_or(nullptr);
-                try {
-                    auto resp_data = res;
-                    result.data = json::array();
-
-                    map<int64_t, int> gpid_idx_map;
-                    for (auto gp : resp_data.at("gpnames")) {
-                        auto res_gp = json::object();
-                        auto gpid = gp.at("gpid").get<int64_t>();
-                        res_gp["friend_group_id"] = gpid;
-                        res_gp["friend_group_name"] = gp.at("gpname").get<string>();
-                        res_gp["friends"] = json::array();
-                        gpid_idx_map[gpid] = result.data.size();
-                        result.data.push_back(res_gp);
-                    }
-
-                    for (auto frnd : resp_data.at("items")) {
-                        auto gpid = frnd.at("groupid").get<int64_t>();
-                        auto res_frnd = json::object();
-                        res_frnd["user_id"] = frnd.at("uin").get<int64_t>();
-                        res_frnd["nickname"] = frnd.at("name").get<string>();
-                        res_frnd["remark"] = frnd.at("remark").get<string>();
-                        result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
-                    }
-
-                    result.code = Codes::OK;
-                    return;
-                } catch (exception &) {
-                }
-            }
-
-            // failed
-            result.data = nullptr;
-        } catch (const ApiError &e) {
-            result.code = to_retcode(e);
         }
     }
 

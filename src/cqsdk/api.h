@@ -202,7 +202,7 @@ namespace cq::api {
         return utils::string_from_coolq(ret);
     }
 
-    inline int32_t get_csrf_token() noexcept(false) { return raw::CQ_getCsrfToken(app::auth_code); }
+    inline int32_t get_csrf_token() noexcept { return raw::CQ_getCsrfToken(app::auth_code); }
 
     inline std::string get_app_directory() noexcept(false) {
         const auto ret = raw::CQ_getAppDirectory(app::auth_code);
