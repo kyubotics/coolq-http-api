@@ -3,6 +3,17 @@
 using namespace std;
 
 namespace cqhttp::plugins {
+    static const auto TAG = "反向WS";
+
+    static string check_ws_url(const string &url) {
+        if (!url.empty() && !regex_search(url, regex("^wss?://"))) {
+            // bad websocket url, we warn the user, and ignore the url
+            logging::warning(TAG, u8"反向 WebSocket 服务端地址 " + url + u8" 不是合法地址，将被忽略");
+            return "";
+        }
+        return url;
+    }
+
     void WebSocketReverse::hook_enable(Context &ctx) {
         use_ws_reverse_ = ctx.config->get_bool("use_ws_reverse", false);
 
@@ -11,7 +22,7 @@ namespace cqhttp::plugins {
             const auto reconnect_interval = ctx.config->get_integer("ws_reverse_reconnect_interval", 3000);
             const auto reconnect_on_code_1000 = ctx.config->get_bool("ws_reverse_reconnect_on_code_1000", false);
 
-            auto url = ctx.config->get_string("ws_reverse_api_url", "");
+            auto url = check_ws_url(ctx.config->get_string("ws_reverse_api_url", ""));
             if (!url.empty()) {
                 api_ = make_shared<ApiEndpoint>(url, access_token, reconnect_interval, reconnect_on_code_1000);
                 api_->start();
@@ -19,7 +30,7 @@ namespace cqhttp::plugins {
                 api_ = nullptr;
             }
 
-            url = ctx.config->get_string("ws_reverse_event_url", "");
+            url = check_ws_url(ctx.config->get_string("ws_reverse_event_url", ""));
             if (!url.empty()) {
                 event_ = make_shared<EventEndpoint>(url, access_token, reconnect_interval, reconnect_on_code_1000);
                 event_->start();
