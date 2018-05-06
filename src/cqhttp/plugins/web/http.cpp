@@ -93,7 +93,7 @@ namespace cqhttp::plugins {
                 } else {
                     logging::debug(TAG, u8"动作 " + action + u8" 执行成功");
                     const decltype(request->header) headers{{"Content-Type", "application/json; charset=UTF-8"}};
-                    const auto resp_body = json(result.data).dump();
+                    const auto resp_body = json(result).dump();
                     logging::debug(TAG, u8"响应数据已准备完毕：" + resp_body);
                     response->write(resp_body, headers);
                     logging::debug(TAG, u8"响应内容已发送");

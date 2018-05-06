@@ -16,10 +16,10 @@ namespace cqhttp {
      * | hook_coolq_start                                |
      * |   hook_enable+-----------+                      |
      * |        +                 | disabled by user     |
-     * |        |                 v                      |
+     * |        | coolq closed    v                      |
      * |        v            hook_disable                |
      * |   hook_disable           +                      |
-     * |  hook_coolq_exit         | coolq closed by user |
+     * |  hook_coolq_exit         | coolq closed         |
      * |                          v                      |
      * |                    hook_coolq_exit              |
      * +-------------------------------------------------+

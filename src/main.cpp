@@ -6,6 +6,7 @@
 #include "cqhttp/plugins/config_loader/json_config_loader.h"
 
 #include "cqhttp/plugins/event_data_patcher/event_data_patcher.h"
+#include "cqhttp/plugins/restarter/restarter.h"
 
 #include "cqhttp/plugins/backward_compatibility/backward_compatibility.h"
 #include "cqhttp/plugins/filter/filter.h"
@@ -25,6 +26,7 @@ CQ_MAIN {
     use(plugins::json_config_loader);
 
     use(plugins::event_data_patcher);
+    use(plugins::restarter);
 
     use(plugins::filter);
     use(plugins::post_message_formatter);

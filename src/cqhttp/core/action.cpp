@@ -427,10 +427,10 @@ namespace cqhttp {
         }
     }
 
-    HANDLER(set_restart_plugin) {
-        // app.restart_async(2000);
-        // result.code = Codes::ASYNC;
-    }
+    // HANDLER(set_restart_plugin) {
+    //     // app.restart_async(2000);
+    //     // result.code = Codes::ASYNC;
+    // }
 
     HANDLER(clean_data_dir) {
         const auto data_dir = params.get_string("data_dir");
@@ -540,5 +540,4 @@ namespace cqhttp {
     }
 
 #pragma endregion
-
 } // namespace cqhttp
