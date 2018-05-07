@@ -5,9 +5,9 @@
 using namespace std;
 
 namespace cqhttp::plugins {
-    static shared_ptr<IFilter> construct_op(const string &op_name, const json &op_argument);
+    static shared_ptr<Filter> construct_op(const string &op_name, const json &op_argument);
 
-    class NotOperator : public IFilter {
+    class NotOperator : public Filter {
     public:
         static shared_ptr<NotOperator> construct(const json &argument) {
             if (!argument.is_object()) {
@@ -21,10 +21,10 @@ namespace cqhttp::plugins {
         bool eval(const json &payload) override { return !operand_->eval(payload); }
 
     private:
-        shared_ptr<IFilter> operand_;
+        shared_ptr<Filter> operand_;
     };
 
-    class AndOperator : public IFilter {
+    class AndOperator : public Filter {
     public:
         static shared_ptr<AndOperator> construct(const json &argument) {
             if (!argument.is_object()) {
@@ -89,10 +89,10 @@ namespace cqhttp::plugins {
         }
 
     private:
-        vector<pair<string, shared_ptr<IFilter>>> operands_;
+        vector<pair<string, shared_ptr<Filter>>> operands_;
     };
 
-    class OrOperator : public IFilter {
+    class OrOperator : public Filter {
     public:
         static shared_ptr<OrOperator> construct(const json &argument) {
             if (!argument.is_array()) {
@@ -123,10 +123,10 @@ namespace cqhttp::plugins {
         }
 
     private:
-        vector<shared_ptr<IFilter>> operands_;
+        vector<shared_ptr<Filter>> operands_;
     };
 
-    class EqualOperator : public IFilter {
+    class EqualOperator : public Filter {
     public:
         static shared_ptr<EqualOperator> construct(const json &argument) {
             auto op = make_shared<EqualOperator>();
@@ -140,7 +140,7 @@ namespace cqhttp::plugins {
         json value_;
     };
 
-    class NotEqualOperator : public IFilter {
+    class NotEqualOperator : public Filter {
     public:
         static shared_ptr<NotEqualOperator> construct(const json &argument) {
             auto op = make_shared<NotEqualOperator>();
@@ -154,7 +154,7 @@ namespace cqhttp::plugins {
         json value_;
     };
 
-    class InOperator : public IFilter {
+    class InOperator : public Filter {
     public:
         static shared_ptr<InOperator> construct(const json &argument) {
             if (!(argument.is_string() || argument.is_array())) {
@@ -178,7 +178,7 @@ namespace cqhttp::plugins {
         json range_;
     };
 
-    class ContainsOperator : public IFilter {
+    class ContainsOperator : public Filter {
     public:
         static shared_ptr<ContainsOperator> construct(const json &argument) {
             if (!argument.is_string()) {
@@ -201,7 +201,7 @@ namespace cqhttp::plugins {
         json test_;
     };
 
-    class RegexOperator : public IFilter {
+    class RegexOperator : public Filter {
     public:
         static shared_ptr<RegexOperator> construct(const json &argument) {
             if (!argument.is_string()) {
@@ -227,8 +227,8 @@ namespace cqhttp::plugins {
         regex regex_;
     };
 
-    static shared_ptr<IFilter> construct_op(const string &op_name, const json &op_argument) {
-        static const map<string, function<shared_ptr<IFilter>(const json &)>> op_constructor_map = {
+    static shared_ptr<Filter> construct_op(const string &op_name, const json &op_argument) {
+        static const map<string, function<shared_ptr<Filter>(const json &)>> op_constructor_map = {
             {"not", NotOperator::construct},
             {"and", AndOperator::construct},
             {"or", OrOperator::construct},
@@ -246,5 +246,5 @@ namespace cqhttp::plugins {
         return op_constructor_map.at(op_name)(op_argument);
     }
 
-    shared_ptr<IFilter> construct_filter(const json &root_filter) { return construct_op("and", root_filter); }
+    shared_ptr<Filter> construct_filter(const json &root_filter) { return construct_op("and", root_filter); }
 } // namespace cqhttp::plugins

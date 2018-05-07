@@ -35,7 +35,7 @@ namespace cqhttp::plugins {
                 // we was expecting to load a filter, but failed
                 // so we should block all event by default
 
-                class BlockAllFilter : public IFilter {
+                class BlockAllFilter : public Filter {
                 public:
                     bool eval(const json &) override { return false; }
                 };

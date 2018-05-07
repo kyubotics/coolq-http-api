@@ -3,9 +3,9 @@
 #include "cqhttp/core/plugin.h"
 
 namespace cqhttp::plugins {
-    class IFilter {
+    class Filter {
     public:
-        virtual ~IFilter() = default;
+        virtual ~Filter() = default;
         virtual bool eval(const json &payload) = 0;
     };
 
@@ -13,5 +13,5 @@ namespace cqhttp::plugins {
         using invalid_argument::invalid_argument;
     };
 
-    std::shared_ptr<IFilter> construct_filter(const json &root_filter);
+    std::shared_ptr<Filter> construct_filter(const json &root_filter);
 } // namespace cqhttp::plugins

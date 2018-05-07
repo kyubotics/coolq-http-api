@@ -11,7 +11,7 @@ namespace cqhttp::plugins {
         void hook_after_event(EventContext<cq::Event> &ctx) override;
 
     private:
-        std::shared_ptr<IFilter> filter_;
+        std::shared_ptr<Filter> filter_;
     };
 
     static std::shared_ptr<EventFilter> event_filter = std::make_shared<EventFilter>();
