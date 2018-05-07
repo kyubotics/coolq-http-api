@@ -5,6 +5,7 @@
 #include "cqhttp/plugins/config_loader/ini_config_loader.h"
 #include "cqhttp/plugins/config_loader/json_config_loader.h"
 
+#include "cqhttp/plugins/async_actions/async_actions.h"
 #include "cqhttp/plugins/event_data_patcher/event_data_patcher.h"
 #include "cqhttp/plugins/experimental_actions/experimental_actions.h"
 #include "cqhttp/plugins/message_enhancer/message_enhancer.h"
@@ -31,8 +32,9 @@ CQ_MAIN {
     // extend the Context object
     use(plugins::event_data_patcher);
     use(plugins::message_enhancer);
-    use(plugins::experimental_actions);
     use(plugins::restarter);
+    use(plugins::async_actions);
+    use(plugins::experimental_actions);
 
     // handle api and event, must in order and at the end
     use(plugins::filter);
