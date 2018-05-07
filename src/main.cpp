@@ -12,7 +12,7 @@
 #include "cqhttp/plugins/restarter/restarter.h"
 
 #include "cqhttp/plugins/backward_compatibility/backward_compatibility.h"
-#include "cqhttp/plugins/filter/filter.h"
+#include "cqhttp/plugins/event_filter/event_filter.h"
 #include "cqhttp/plugins/post_message_formatter/post_message_formatter.h"
 #include "cqhttp/plugins/web/http.h"
 #include "cqhttp/plugins/web/websocket.h"
@@ -37,9 +37,9 @@ CQ_MAIN {
     use(plugins::experimental_actions);
 
     // handle api and event, must in order and at the end
-    use(plugins::filter);
+    use(plugins::event_filter);
     use(plugins::post_message_formatter);
-    use(plugins::backward_compatibility);
+    use(plugins::backward_compatibility); // this will affect the data passed to plugins::event_filter
     use(plugins::http);
     use(plugins::websocket);
     use(plugins::websocket_reverse);
