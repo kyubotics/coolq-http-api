@@ -1,4 +1,5 @@
 BasedOnStyle: Google
+Standard: Cpp11
 IndentWidth: 4
 ColumnLimit: 120
 AccessModifierOffset: -4
@@ -11,3 +12,4 @@ SpacesBeforeTrailingComments: 1
 DerivePointerAlignment: true
 PointerAlignment: Right
 AlignTrailingComments: false
+SpacesInContainerLiterals: false
