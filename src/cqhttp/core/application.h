@@ -28,7 +28,7 @@ namespace cqhttp {
         void on_coolq_start() { iterate_hooks(&Plugin::hook_coolq_start, Context()); }
 
         void on_coolq_exit() {
-            if (is_enabled()) {
+            if (enabled_) {
                 // generate a fake "disable" event at exit
                 // this leads to a lifecycle change, check plugin.h for the lifecycle graph
                 on_disable();
@@ -68,8 +68,12 @@ namespace cqhttp {
             iterate_hooks(&Plugin::hook_after_action, ActionContext(action, params, result));
         }
 
-        bool is_initialized() const { return initialized_; }
-        bool is_enabled() const { return enabled_; }
+        bool initialized() const { return initialized_; }
+        bool enabled() const { return enabled_; }
+        bool plugins_good() const {
+            return std::all_of(plugins_.cbegin(), plugins_.cend(), [](const auto &p) { return p->good(); });
+        }
+        bool good() const { return initialized() && enabled() && plugins_good(); }
 
     private:
         std::vector<std::shared_ptr<Plugin>> plugins_;

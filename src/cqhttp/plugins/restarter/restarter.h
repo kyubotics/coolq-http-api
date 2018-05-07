@@ -9,6 +9,7 @@ namespace cqhttp::plugins {
         void hook_initialize(Context &ctx) override;
         void hook_coolq_exit(Context &ctx) override;
         void hook_missed_action(ActionContext &ctx) override;
+        bool good() const override { return restart_worker_running_; }
 
     private:
         bool should_restart_ = false;

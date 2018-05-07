@@ -9,6 +9,7 @@ namespace cqhttp::plugins {
         void hook_enable(Context &ctx) override;
         void hook_disable(Context &ctx) override;
         void hook_missed_action(ActionContext &ctx) override;
+        bool good() const override { return pool_ != nullptr; }
 
     private:
         std::shared_ptr<ctpl::thread_pool> pool_;

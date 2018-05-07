@@ -369,18 +369,22 @@ namespace cqhttp {
     HANDLER(get_status) {
         result.code = Codes::OK;
 
-        const auto app_initialized = __app.is_initialized();
-        const auto app_enabled = __app.is_enabled();
+        const auto app_good = __app.good();
 
-        result.data = {{"app_initialized", app_initialized}, {"app_enabled", app_enabled}};
+        result.data = {
+            {"app_initialized", __app.initialized()},
+            {"app_enabled", __app.enabled()},
+            {"plugins_good", __app.plugins_good()},
+            {"app_good", app_good},
+        };
 
         ActionResult tmp_result;
         __get_stranger_info(json{{"user_id", 10000}, {"no_cache", true}}, tmp_result);
 
-        auto online = tmp_result.code == Codes::OK;
+        const auto online = tmp_result.code == Codes::OK;
         result.data["online"] = online;
 
-        result.data["good"] = app_initialized && app_enabled && online;
+        result.data["good"] = app_good && online;
     }
 
 #ifdef _DEBUG
