@@ -54,9 +54,9 @@ namespace cqhttp::plugins {
                 }
                 started_ = false; // since it reaches here, the server is absolutely stopped
             });
-            logging::debug(TAG,
-                           u8"开启 API WebSocket 服务器成功，开始监听 ws://" + server_->config.address + ":"
-                               + to_string(server_->config.port));
+            logging::info_success(TAG,
+                                  u8"开启 API WebSocket 服务器成功，开始监听 ws://" + server_->config.address + ":"
+                                      + to_string(server_->config.port));
         }
 
         ctx.next();
@@ -93,9 +93,9 @@ namespace cqhttp::plugins {
                     }
                 }
             }
-            logging::debug(TAG,
-                           u8"已成功向 " + to_string(succeeded_count) + "/" + to_string(total_count)
-                               + u8" 个 WebSocket 客户端推送事件");
+            logging::info_success(TAG,
+                                  u8"已成功向 " + to_string(succeeded_count) + "/" + to_string(total_count)
+                                      + u8" 个 WebSocket 客户端推送事件");
         }
 
         ctx.next();

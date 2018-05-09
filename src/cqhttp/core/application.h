@@ -25,7 +25,10 @@ namespace cqhttp {
             iterate_hooks(&Plugin::hook_disable, Context());
         }
 
-        void on_coolq_start() { iterate_hooks(&Plugin::hook_coolq_start, Context()); }
+        void on_coolq_start() {
+            logging::init();
+            iterate_hooks(&Plugin::hook_coolq_start, Context());
+        }
 
         void on_coolq_exit() {
             if (enabled_) {
@@ -34,6 +37,7 @@ namespace cqhttp {
                 on_disable();
             }
             iterate_hooks(&Plugin::hook_coolq_exit, Context());
+            logging::destroy();
         }
 
         void on_before_event(const cq::Event &event, json &data) {

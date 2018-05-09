@@ -62,5 +62,6 @@ namespace cqhttp::plugins {
         }
 
         send_result(result, echo);
+        logging::info_success(TAG, u8"已成功处理一个 API 请求：" + action);
     }
 } // namespace cqhttp::plugins

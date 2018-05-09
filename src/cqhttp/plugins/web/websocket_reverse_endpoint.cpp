@@ -59,9 +59,9 @@ namespace cqhttp::plugins {
                         should_reconnect_ = false;
                     });
                     if (should_reconn) {
-                        logging::debug(TAG,
-                                       u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
-                                           + to_string(reconnect_interval_) + u8" 毫秒后尝试重连");
+                        logging::info(TAG,
+                                      u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
+                                          + to_string(reconnect_interval_) + u8" 毫秒后尝试重连");
                         Sleep(reconnect_interval_);
                         stop();
                         start();
@@ -91,7 +91,7 @@ namespace cqhttp::plugins {
                 }
                 started_ = false;
             });
-            logging::debug(TAG, u8"开启 WebSocket 反向客户端（" + name() + u8"）成功，开始连接 " + url_);
+            logging::info_success(TAG, u8"开启 WebSocket 反向客户端（" + name() + u8"）成功，开始连接 " + url_);
         }
     }
 
@@ -155,7 +155,11 @@ namespace cqhttp::plugins {
                 succeeded = false;
             }
 
-            logging::debug(TAG, u8"通过 WebSocket 反向客户端上报数据到 " + url_ + (succeeded ? u8" 成功" : u8" 失败"));
+            if (succeeded) {
+                logging::info_success(TAG, u8"通过 WebSocket 反向客户端上报数据到 " + url_ + u8" 成功");
+            } else {
+                logging::info(TAG, u8"通过 WebSocket 反向客户端上报数据到 " + url_ + u8" 失败");
+            }
         }
     }
 } // namespace cqhttp::plugins

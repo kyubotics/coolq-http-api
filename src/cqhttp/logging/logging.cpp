@@ -1,7 +1,5 @@
 #include "./logging.h"
 
-#include <map>
-
 #include "cqhttp/logging/handler.h"
 #include "cqhttp/logging/handlers/default.h"
 #include "cqhttp/logging/handlers/file.h"
@@ -9,14 +7,35 @@
 using namespace std;
 
 namespace cqhttp::logging {
-    void log(const Level level, const std::string &tag, const std::string &msg) {
-        static map<string, shared_ptr<IHandler>> handlers = {
-            {"default", make_shared<DefaultHandler>()},
-            {"file", make_shared<FileHandler>()},
-        };
+    using cq::logging::Level;
 
-        for (const auto &[name, handler] : handlers) {
-            handler->log(level, tag, msg);
+    static int level = Level::DEBUG;
+
+    static vector<shared_ptr<Handler>> handlers = {
+        // make_shared<DefaultHandler>(),
+        make_shared<FileHandler>(),
+    };
+
+    void init(const Level level) {
+        for (auto &handler : handlers) {
+            handler->init();
+        }
+        set_level(level);
+    }
+
+    void destroy() {
+        for (auto &handler : handlers) {
+            handler->destroy();
+        }
+    }
+
+    void set_level(const Level level) { logging::level = static_cast<int>(level) / 10 * 10; }
+
+    void log(const Level level, const std::string &tag, const std::string &msg) {
+        if (level / 10 * 10 >= logging::level) {
+            for (const auto &handler : handlers) {
+                handler->log(level, tag, msg);
+            }
         }
     }
 } // namespace cqhttp::logging
