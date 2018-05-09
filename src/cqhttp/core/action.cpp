@@ -410,7 +410,7 @@ namespace cqhttp {
     }
 
     HANDLER(set_restart) {
-        constexpr size_t size = 1024;
+        constexpr size_t size = MAX_PATH + 1;
         wchar_t w_exec_path[size]{};
         GetModuleFileNameW(nullptr, w_exec_path, size);
 
