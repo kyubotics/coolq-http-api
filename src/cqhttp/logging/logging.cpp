@@ -2,7 +2,7 @@
 
 #include "cqhttp/logging/handler.h"
 #include "cqhttp/logging/handlers/default.h"
-#include "cqhttp/logging/handlers/file.h"
+#include "cqhttp/logging/handlers/standard.h"
 
 using namespace std;
 
@@ -17,8 +17,8 @@ namespace cqhttp::logging {
 
     void init(const Level level) {
         handlers = {
-            make_shared<DefaultHandler>(),
-            make_shared<FileHandler>(),
+            // make_shared<DefaultHandler>(),
+            make_shared<StandardHandler>(),
         };
 
         for (auto &handler : handlers) {

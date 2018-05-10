@@ -5,7 +5,7 @@
 #include <spdlog/logger.h>
 
 namespace cqhttp::logging {
-    struct ConsoleHandler : Handler {
+    struct StandardHandler : Handler {
         void init() override;
         void destroy() override;
         void log(cq::logging::Level level, const std::string &tag, const std::string &msg) const override;
