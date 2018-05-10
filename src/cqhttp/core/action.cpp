@@ -414,7 +414,7 @@ namespace cqhttp {
         wchar_t w_exec_path[size]{};
         GetModuleFileNameW(nullptr, w_exec_path, size);
 
-        const auto restart_batch_path = cq::dir::app_tmp() + "restart.bat";
+        const auto restart_batch_path = cq::dir::app("tmp") + "restart.bat";
         const auto ansi_restart_batch_path = ansi(restart_batch_path);
         if (ofstream f(ansi_restart_batch_path); f.is_open()) {
             f << "taskkill /F /PID " << _getpid() << "\r\n"

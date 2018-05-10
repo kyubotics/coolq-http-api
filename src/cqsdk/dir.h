@@ -4,6 +4,5 @@
 
 namespace cq::dir {
     std::string root();
-    std::string app();
-    std::string app_tmp();
+    std::string app(const std::string &sub = "");
 } // namespace cq::dir
