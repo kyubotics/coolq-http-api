@@ -12,14 +12,19 @@ namespace cqhttp::logging {
     static int level = Level::DEBUG;
 
     static vector<shared_ptr<Handler>> handlers = {
-        // make_shared<DefaultHandler>(),
-        make_shared<FileHandler>(),
+        make_shared<DefaultHandler>(),
     };
 
     void init(const Level level) {
+        handlers = {
+            make_shared<DefaultHandler>(),
+            make_shared<FileHandler>(),
+        };
+
         for (auto &handler : handlers) {
             handler->init();
         }
+
         set_level(level);
     }
 

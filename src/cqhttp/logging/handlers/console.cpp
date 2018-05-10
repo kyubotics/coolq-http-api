@@ -1,4 +1,4 @@
-#include "./file.h"
+#include "./console.h"
 
 #include <spdlog/spdlog.h>
 
@@ -12,18 +12,18 @@ using namespace std;
 namespace cqhttp::logging {
     using cq::logging::Level;
 
-    static const auto LOGGER_NAME = "file";
+    static const auto LOGGER_NAME = "console";
 
-    void FileHandler::init() {
+    void ConsoleHandler::init() {
         logger_ = spdlog::daily_logger_mt(LOGGER_NAME, cq::utils::ansi(cq::dir::app("log") + "cqhttp.log"));
         logger_->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%L] %v");
         logger_->flush_on(spdlog::level::trace);
         logger_->set_level(spdlog::level::debug);
     }
 
-    void FileHandler::destroy() { spdlog::drop(LOGGER_NAME); }
+    void ConsoleHandler::destroy() { spdlog::drop(LOGGER_NAME); }
 
-    void FileHandler::log(const Level level, const string &tag, const string &msg) const {
+    void ConsoleHandler::log(const Level level, const string &tag, const string &msg) const {
         if (logger_) {
             spdlog::level::level_enum spd_level;
 
