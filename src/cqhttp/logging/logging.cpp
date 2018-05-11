@@ -1,8 +1,9 @@
 #include "./logging.h"
 
+#include <map>
+
 #include "cqhttp/logging/handler.h"
 #include "cqhttp/logging/handlers/default.h"
-#include "cqhttp/logging/handlers/standard.h"
 
 using namespace std;
 
@@ -11,34 +12,30 @@ namespace cqhttp::logging {
 
     static int level = Level::DEBUG;
 
-    static vector<shared_ptr<Handler>> handlers = {
-        make_shared<DefaultHandler>(),
+    static map<string, shared_ptr<Handler>> handlers = {
+        {"default", make_shared<DefaultHandler>()},
     };
 
-    void init(const Level level) {
-        handlers = {
-            // make_shared<DefaultHandler>(),
-            make_shared<StandardHandler>(),
-        };
-
-        for (auto &handler : handlers) {
-            handler->init();
+    void register_handler(const string &name, const std::shared_ptr<Handler> handler) {
+        if (handler) {
+            handlers[name] = handler;
         }
-
-        set_level(level);
     }
 
-    void destroy() {
-        for (auto &handler : handlers) {
-            handler->destroy();
+    shared_ptr<Handler> unregister_handler(const std::string &name) {
+        if (const auto it = handlers.find(name); it != handlers.end()) {
+            auto handler = it->second;
+            handlers.erase(name);
+            return handler;
         }
+        return nullptr;
     }
 
     void set_level(const Level level) { logging::level = static_cast<int>(level) / 10 * 10; }
 
     void log(const Level level, const std::string &tag, const std::string &msg) {
         if (level / 10 * 10 >= logging::level) {
-            for (const auto &handler : handlers) {
+            for (const auto &[_, handler] : handlers) {
                 handler->log(level, tag, msg);
             }
         }

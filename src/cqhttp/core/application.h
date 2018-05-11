@@ -17,8 +17,6 @@ namespace cqhttp {
         void on_enable() {
             enabled_ = true;
             config_ = utils::JsonEx();
-            cq::logging::info(u8"日志",
-                              u8"请在酷 Q 主目录的 app\\io.github.richardchien.coolqhttpapi\\log 中查看日志文件");
             iterate_hooks(&Plugin::hook_enable, Context());
         }
 
@@ -27,10 +25,7 @@ namespace cqhttp {
             iterate_hooks(&Plugin::hook_disable, Context());
         }
 
-        void on_coolq_start() {
-            logging::init();
-            iterate_hooks(&Plugin::hook_coolq_start, Context());
-        }
+        void on_coolq_start() { iterate_hooks(&Plugin::hook_coolq_start, Context()); }
 
         void on_coolq_exit() {
             if (enabled_) {
@@ -39,7 +34,6 @@ namespace cqhttp {
                 on_disable();
             }
             iterate_hooks(&Plugin::hook_coolq_exit, Context());
-            logging::destroy();
         }
 
         void on_before_event(const cq::Event &event, json &data) {

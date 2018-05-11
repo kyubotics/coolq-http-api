@@ -1,4 +1,4 @@
-#include "./standard.h"
+#include "./console.h"
 
 #include <Windows.h>
 #include <fcntl.h>
@@ -7,17 +7,10 @@
 #include <cstdio>
 #include <iostream>
 
-#include "cqsdk/dir.h"
-#include "cqsdk/utils/string.h"
-
-#undef ERROR
-
 using namespace std;
 
 namespace cqhttp::logging {
-    using cq::logging::Level;
-
-    static const auto LOGGER_NAME = "standard";
+    static const auto LOGGER_NAME = "console";
 
     static void redirect_stdio_to_console() {
         // see https://stackoverflow.com/a/46050762
@@ -58,7 +51,7 @@ namespace cqhttp::logging {
         std::cin.clear();
     }
 
-    void StandardHandler::init() {
+    void ConsoleHandler::init() {
         // create a console for logging
         AllocConsole();
         redirect_stdio_to_console();
@@ -67,52 +60,14 @@ namespace cqhttp::logging {
         SetConsoleTitleW(L"CoolQ HTTP API 插件 - 日志");
         SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), ENABLE_EXTENDED_FLAGS); // disable input
 
-        vector<spdlog::sink_ptr> sinks;
-        sinks.push_back(make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
-        sinks.push_back(make_shared<spdlog::sinks::daily_file_sink_mt>(
-            cq::utils::ansi(cq::dir::app("log") + "cqhttp.log"), 00, 00));
-
-        logger_ = make_shared<spdlog::logger>(LOGGER_NAME, begin(sinks), end(sinks));
+        logger_ = spdlog::stdout_color_mt(LOGGER_NAME);
         logger_->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%L] %v");
         logger_->flush_on(spdlog::level::trace);
         logger_->set_level(spdlog::level::debug);
-        register_logger(logger_);
     }
 
-    void StandardHandler::destroy() {
+    void ConsoleHandler::destroy() {
         spdlog::drop(LOGGER_NAME);
         FreeConsole();
-    }
-
-    void StandardHandler::log(const Level level, const string &tag, const string &msg) const {
-        if (logger_) {
-            spdlog::level::level_enum spd_level;
-
-            switch (level) {
-            case Level::DEBUG:
-                spd_level = spdlog::level::debug;
-                break;
-            case Level::INFO:
-            case Level::INFOSUCCESS:
-            case Level::INFORECV:
-            case Level::INFOSEND:
-                spd_level = spdlog::level::info;
-                break;
-            case Level::WARNING:
-                spd_level = spdlog::level::warn;
-                break;
-            case Level::ERROR:
-                spd_level = spdlog::level::err;
-                break;
-            case Level::FATAL:
-                spd_level = spdlog::level::critical;
-                break;
-            default:
-                spd_level = spdlog::level::debug;
-                break;
-            }
-
-            logger_->log(spd_level, "[{}] {}", tag, msg);
-        }
     }
 } // namespace cqhttp::logging

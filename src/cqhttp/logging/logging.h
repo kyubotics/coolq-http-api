@@ -3,8 +3,10 @@
 #include "cqsdk/logging.h"
 
 namespace cqhttp::logging {
-    void init(cq::logging::Level level = cq::logging::Level::DEBUG);
-    void destroy();
+    struct Handler;
+    void register_handler(const std::string &name, std::shared_ptr<Handler> handler);
+    std::shared_ptr<Handler> unregister_handler(const std::string &name);
+
     void set_level(cq::logging::Level level);
 
     void log(cq::logging::Level level, const std::string &tag, const std::string &msg);

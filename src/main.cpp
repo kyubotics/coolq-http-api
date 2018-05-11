@@ -3,6 +3,8 @@
 #include "cqhttp/plugins/config_loader/ini_config_loader.h"
 #include "cqhttp/plugins/config_loader/json_config_loader.h"
 
+#include "cqhttp/plugins/loggers/loggers.h"
+
 #include "cqhttp/plugins/async_actions/async_actions.h"
 #include "cqhttp/plugins/event_data_patcher/event_data_patcher.h"
 #include "cqhttp/plugins/experimental_actions/experimental_actions.h"
@@ -26,6 +28,9 @@ CQ_MAIN {
     // load configurations
     use(plugins::ini_config_loader);
     use(plugins::json_config_loader);
+
+    // config loggers
+    use(plugins::loggers);
 
     // extend the Context object
     use(plugins::event_data_patcher);
