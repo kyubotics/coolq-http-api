@@ -5,7 +5,7 @@
 #include "cqhttp/core/action.h"
 #include "cqhttp/core/context.h"
 #include "cqhttp/core/plugin.h"
-#include "cqhttp/vendor/ctpl/ctpl_stl.h"
+#include "cqhttp/core/vendor/ctpl/ctpl_stl.h"
 
 namespace cqhttp {
     class Application {
