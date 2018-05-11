@@ -4,6 +4,7 @@
 #include "cqhttp/plugins/config_loader/json_config_loader.h"
 
 #include "cqhttp/plugins/loggers/loggers.h"
+#include "cqhttp/plugins/worker_pool_resizer/worker_pool_resizer.h"
 
 #include "cqhttp/plugins/async_actions/async_actions.h"
 #include "cqhttp/plugins/event_data_patcher/event_data_patcher.h"
@@ -29,7 +30,8 @@ CQ_MAIN {
     use(plugins::ini_config_loader);
     use(plugins::json_config_loader);
 
-    // config loggers
+    // config global things
+    use(plugins::worker_pool_resizer);
     use(plugins::loggers);
 
     // extend the Context object

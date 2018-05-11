@@ -5,36 +5,16 @@
 #include "cqhttp/core/action.h"
 #include "cqhttp/core/context.h"
 #include "cqhttp/core/plugin.h"
+#include "cqhttp/vendor/ctpl/ctpl_stl.h"
 
 namespace cqhttp {
     class Application {
     public:
-        void on_initialize() {
-            initialized_ = true;
-            iterate_hooks(&Plugin::hook_initialize, Context());
-        }
-
-        void on_enable() {
-            enabled_ = true;
-            config_ = utils::JsonEx();
-            iterate_hooks(&Plugin::hook_enable, Context());
-        }
-
-        void on_disable() {
-            enabled_ = false;
-            iterate_hooks(&Plugin::hook_disable, Context());
-        }
-
-        void on_coolq_start() { iterate_hooks(&Plugin::hook_coolq_start, Context()); }
-
-        void on_coolq_exit() {
-            if (enabled_) {
-                // generate a fake "disable" event at exit
-                // this leads to a lifecycle change, check plugin.h for the lifecycle graph
-                on_disable();
-            }
-            iterate_hooks(&Plugin::hook_coolq_exit, Context());
-        }
+        void on_initialize();
+        void on_enable();
+        void on_disable();
+        void on_coolq_start();
+        void on_coolq_exit();
 
         void on_before_event(const cq::Event &event, json &data) {
             iterate_hooks(&Plugin::hook_before_event, EventContext<cq::Event>(event, data));
@@ -69,15 +49,22 @@ namespace cqhttp {
         }
 
         bool initialized() const { return initialized_; }
+
         bool enabled() const { return enabled_; }
+
         bool plugins_good() const {
             return std::all_of(plugins_.cbegin(), plugins_.cend(), [](const auto &p) { return p->good(); });
         }
+
         bool good() const { return initialized() && enabled() && plugins_good(); }
+
+        bool resize_worker_thread_pool(int n_threads) const;
+        bool push_async_task(const std::function<void()> &task) const;
 
     private:
         std::vector<std::shared_ptr<Plugin>> plugins_;
         utils::JsonEx config_;
+        std::shared_ptr<ctpl::thread_pool> worker_thread_pool_;
 
         bool initialized_ = false;
         bool enabled_ = false;
