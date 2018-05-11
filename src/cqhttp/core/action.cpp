@@ -27,16 +27,16 @@ namespace cqhttp {
         utils::JsonEx params_ex = params;
 
         ActionResult result;
-        __app.on_before_action(action, params_ex, result);
+        app.on_before_action(action, params_ex, result);
 
         if (const auto it = action_handlers.find(action); it != action_handlers.end()) {
             it->second(params_ex, result);
         } else {
             result.code = Codes::HTTP_NOT_FOUND; // if missed, set default code to Codes::HTTP_NOT_FOUND
-            __app.on_missed_action(action, params_ex, result);
+            app.on_missed_action(action, params_ex, result);
         }
 
-        __app.on_after_action(action, params_ex, result);
+        app.on_after_action(action, params_ex, result);
         return result;
     }
 
@@ -369,12 +369,12 @@ namespace cqhttp {
     HANDLER(get_status) {
         result.code = Codes::OK;
 
-        const auto app_good = __app.good();
+        const auto app_good = app.good();
 
         result.data = {
-            {"app_initialized", __app.initialized()},
-            {"app_enabled", __app.enabled()},
-            {"plugins_good", __app.plugins_good()},
+            {"app_initialized", app.initialized()},
+            {"app_enabled", app.enabled()},
+            {"plugins_good", app.plugins_good()},
             {"app_good", app_good},
         };
 

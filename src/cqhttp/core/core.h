@@ -6,7 +6,7 @@
 #include "cqhttp/core/plugin.h"
 
 namespace cqhttp {
-    extern Application __app;
+    extern Application app;
 
     /**
      * Initialize the module.
@@ -14,5 +14,5 @@ namespace cqhttp {
      */
     void init();
 
-    inline void use(const std::shared_ptr<Plugin> plugin) { __app.plugins_.push_back(plugin); }
+    inline void use(const std::shared_ptr<Plugin> plugin) { app.plugins_.push_back(plugin); }
 } // namespace cqhttp

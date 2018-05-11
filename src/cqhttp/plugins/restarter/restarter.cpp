@@ -20,8 +20,8 @@ namespace cqhttp::plugins {
                         logging::info(TAG, u8"HTTP API 插件将在 " + to_string(restart_delay_) + u8" 毫秒后重启");
                     }
                     Sleep(restart_delay_);
-                    __app.on_disable();
-                    __app.on_enable();
+                    app.on_disable();
+                    app.on_enable();
                     logging::info(TAG, u8"HTTP API 插件重启成功");
                 }
                 Sleep(300); // wait 300 ms for the next check
