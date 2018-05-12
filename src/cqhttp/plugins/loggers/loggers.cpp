@@ -9,6 +9,9 @@ namespace cqhttp::plugins {
     static const auto TAG = u8"日志";
 
     void Loggers::hook_enable(Context &ctx) {
+        cq::logging::info(TAG, u8"插件版本：" CQHTTP_VERSION);
+        cq::logging::info(TAG, u8"已加载的配置：\n" + ctx.config->raw.dump(2));
+
         cq::logging::info_success(TAG, u8"日志系统初始化成功");
         cq::logging::info(TAG, u8"请在酷 Q 主目录的 app\\io.github.richardchien.coolqhttpapi\\log 中查看日志文件");
 
