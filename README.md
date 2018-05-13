@@ -30,6 +30,7 @@
 | Java | - | HTTP<br>WebSocket | https://github.com/yangjinhe/maintain-robot | yangjinhe |
 | Go | - | HTTP | https://github.com/juzi5201314/cqhttp-go-sdk | juzi5201314 |
 | PHP | Swoole | WebSocket | https://github.com/BlueWhaleNetwork/CQBot-swoole | BlueWhaleNetwork |
+| Go | Gorilla WebSocket | WebSocket | https://github.com/ma6254/go-cqhttp | ma6254 |
 
 ## 应用案例
 
