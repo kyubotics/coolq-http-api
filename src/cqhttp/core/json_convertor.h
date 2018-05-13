@@ -74,6 +74,7 @@ namespace cq {
         j = {
             {"id", a.id},
             {"name", a.name},
+            {"flag", a.flag},
         };
     }
 
