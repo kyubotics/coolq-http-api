@@ -16,7 +16,7 @@ namespace cqhttp::logging {
         {"default", make_shared<DefaultHandler>()},
     };
 
-    void register_handler(const string &name, const std::shared_ptr<Handler> handler) {
+    void register_handler(const string &name, const std::shared_ptr<Handler> &handler) {
         if (handler) {
             handlers[name] = handler;
         }
@@ -38,6 +38,11 @@ namespace cqhttp::logging {
             for (const auto &[_, handler] : handlers) {
                 handler->log(level, tag, msg);
             }
+        }
+
+        if (level >= Level::INFO && handlers.count("default") == 0) {
+            // log info level and above to CoolQ
+            cq::logging::log(level, tag, msg);
         }
     }
 } // namespace cqhttp::logging

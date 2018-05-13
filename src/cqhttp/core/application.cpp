@@ -11,6 +11,8 @@ namespace cqhttp {
     }
 
     void Application::on_enable() {
+        logging::info(TAG, u8"插件版本：" CQHTTP_VERSION);
+
         enabled_ = true;
         config_ = utils::JsonEx();
         worker_thread_pool_ = make_shared<ctpl::thread_pool>(1);

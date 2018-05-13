@@ -59,7 +59,7 @@ namespace cqhttp::plugins {
 
         if (!loaded) {
             // try <appid>\config\general.(cfg|ini)
-            const auto config_dir = dir::app() + "config\\";
+            const auto config_dir = dir::app("config");
             loaded = load_config(ctx.config->raw, config_dir + "general");
 
             // try <appid>\config\<user_id>.(cfg|ini)

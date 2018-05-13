@@ -1,5 +1,6 @@
 #include "cqhttp/cqhttp.h"
 
+#include "cqhttp/plugins/config_loader/default_config_generator.h"
 #include "cqhttp/plugins/config_loader/ini_config_loader.h"
 #include "cqhttp/plugins/config_loader/json_config_loader.h"
 
@@ -29,6 +30,7 @@ CQ_MAIN {
     // load configurations
     use(plugins::ini_config_loader);
     use(plugins::json_config_loader);
+    use(plugins::default_config_generator);
 
     // config global things
     use(plugins::worker_pool_resizer);

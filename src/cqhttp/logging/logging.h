@@ -4,7 +4,7 @@
 
 namespace cqhttp::logging {
     struct Handler;
-    void register_handler(const std::string &name, std::shared_ptr<Handler> handler);
+    void register_handler(const std::string &name, const std::shared_ptr<Handler> &handler);
     std::shared_ptr<Handler> unregister_handler(const std::string &name);
 
     void set_level(cq::logging::Level level);
