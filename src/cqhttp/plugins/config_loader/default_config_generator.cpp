@@ -4,7 +4,7 @@
 
 using namespace std;
 
-static constexpr auto kDefaultConfig = R"({
+static constexpr auto DEFAULT_CONFIG = R"({
     "host": "0.0.0.0",
     "port": 5700,
     "use_http": true,
@@ -36,13 +36,13 @@ namespace cqhttp::plugins {
 
             const auto login_id_str = to_string(cq::api::get_login_user_id());
             if (ofstream file(ansi(cq::dir::app("config") + login_id_str + ".json")); file.is_open()) {
-                file << kDefaultConfig;
+                file << DEFAULT_CONFIG;
             } else {
                 logging::error(TAG, u8"默认配置写入失败，请检查文件系统权限");
             }
 
             try {
-                ctx.config->raw = json::parse(kDefaultConfig);
+                ctx.config->raw = json::parse(DEFAULT_CONFIG);
             } catch (...) {
             }
         }
