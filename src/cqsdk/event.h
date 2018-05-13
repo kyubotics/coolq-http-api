@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./common.h"
+
 #include "./enums.h"
 #include "./message.h"
 #include "./target.h"
