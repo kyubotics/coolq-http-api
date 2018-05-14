@@ -18,8 +18,7 @@ add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
                 -D_SCL_SECURE_NO_WARNINGS
                 -D_WIN32_WINNT=0x0501
                 -DWIN32_LEAN_AND_MEAN
-                -DCURL_STATICLIB
-                -DSPDLOG_FMT_EXTERNAL)
+                -DCURL_STATICLIB)
 
 find_package(Boost REQUIRED COMPONENTS filesystem)
 find_package(Iconv REQUIRED)
