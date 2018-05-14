@@ -14,7 +14,7 @@
             "configurationType": "Debug",
             "inheritEnvironments": [ "msvc_x86" ],
             "buildRoot": "${projectDir}\\build\\${name}",
-            "cmakeCommandArgs": "-T ${env.MSVC_TOOLSET}",
+            "cmakeCommandArgs": "-T ${env.MSVC_TOOLSET} -DCMAKE_BUILD_TYPE=${name}",
             "buildCommandArgs": "",
             "ctestCommandArgs": "",
             "variables": [
@@ -34,7 +34,7 @@
             "configurationType": "Release",
             "inheritEnvironments": [ "msvc_x86" ],
             "buildRoot": "${projectDir}\\build\\${name}",
-            "cmakeCommandArgs": "-T ${env.MSVC_TOOLSET}",
+            "cmakeCommandArgs": "-T ${env.MSVC_TOOLSET} -DCMAKE_BUILD_TYPE=${name}",
             "buildCommandArgs": "",
             "ctestCommandArgs": "",
             "variables": [
