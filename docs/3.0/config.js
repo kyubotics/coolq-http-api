@@ -1,4 +1,4 @@
-docute.init({
+let config = {
     title: 'CoolQ HTTP API 插件文档',
     home: 'Home.md',
     repo: 'richardchien/coolq-http-api',
@@ -19,21 +19,29 @@ docute.init({
             title: '事件上报', path: '/Post'
         },
         {
-            title: '消息格式', path: '/Message'
-        },
-        {
-            title: 'CQ 码', path: '/CQCode'
+            title: '消息内容', type: 'dropdown', items: [
+                {
+                    title: '消息格式', path: '/Message'
+                },
+                {
+                    title: 'CQ 码', path: '/CQCode'
+                }
+            ]
         },
         {
             title: 'WebSocket', path: '/WebSocket'
         },
         {
-            title: 'HTTPS', path: 'https://github.com/richardchien/coolq-http-api/wiki/HTTPS'
-        },
-        {
-            title: 'FAQ', path: 'https://github.com/richardchien/coolq-http-api/wiki/FAQ'
+            title: '其它', type: 'dropdown', items: [
+                {
+                    title: 'HTTPS', path: 'https://github.com/richardchien/coolq-http-api/wiki/HTTPS'
+                },
+                {
+                    title: 'FAQ', path: 'https://github.com/richardchien/coolq-http-api/wiki/FAQ'
+                }
+            ]
         }
     ],
     tocVisibleDepth: 2,
     plugins: []
-});
+};

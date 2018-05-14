@@ -1,4 +1,4 @@
-docute.init({
+let config = {
     title: 'CoolQ HTTP API 插件文档',
     home: 'Home.md',
     repo: 'richardchien/coolq-http-api',
@@ -46,12 +46,16 @@ docute.init({
             ]
         },
         {
-            title: 'HTTPS', path: 'https://github.com/richardchien/coolq-http-api/wiki/HTTPS'
-        },
-        {
-            title: 'FAQ', path: 'https://github.com/richardchien/coolq-http-api/wiki/FAQ'
+            title: '其它', type: 'dropdown', items: [
+                {
+                    title: 'HTTPS', path: 'https://github.com/richardchien/coolq-http-api/wiki/HTTPS'
+                },
+                {
+                    title: 'FAQ', path: 'https://github.com/richardchien/coolq-http-api/wiki/FAQ'
+                }
+            ]
         }
     ],
     tocVisibleDepth: 2,
     plugins: []
-});
+};
