@@ -3,7 +3,7 @@
 #define CQHTTP_ID "io.github.richardchien.coolqhttpapi"
 #define CQHTTP_NAME "CoolQ HTTP API"
 
-#define CQHTTP_BUILD_NUMBER 400
+#define CQHTTP_BUILD_NUMBER 401
 
 #define _CQHTTP_TO_STR(x) #x
 #define CQHTTP_TO_STR(x) _CQHTTP_TO_STR(x)
