@@ -12,7 +12,7 @@ namespace cqhttp::plugins {
     void WebSocket::init_server() {
         logging::debug(TAG, u8"初始化 WebSocket");
 
-        auto on_open_callback = [=](shared_ptr<WsServer::Connection> connection) {
+        auto on_open_callback = [=](const shared_ptr<WsServer::Connection> connection) {
             logging::debug(TAG, u8"收到 WebSocket 连接：" + connection->path);
             const json args = SimpleWeb::QueryString::parse(connection->query_string);
             const auto authorized = authorize(access_token_, connection->header, args);

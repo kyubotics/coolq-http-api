@@ -505,7 +505,10 @@ namespace SimpleWeb {
                 return;
               if(!ec) {
                 connection_open(connection, regex_endpoint.second);
-                read_message(connection, regex_endpoint.second);
+                // change: check if the connection is closed before reading message
+                if (!connection->closed) {
+                  read_message(connection, regex_endpoint.second);
+                }
               }
               else
                 connection_error(connection, regex_endpoint.second, ec);

@@ -8,8 +8,8 @@ namespace cqhttp::plugins {
      * \tparam WsT WsServer (websocket server /api/ endpoint) or WsClient (reverse websocket api client)
      */
     template <typename WsT>
-    static void ws_api_on_message(std::shared_ptr<typename WsT::Connection> connection,
-                                  std::shared_ptr<typename WsT::Message> message) {
+    static void ws_api_on_message(const std::shared_ptr<typename WsT::Connection> connection,
+                                  const std::shared_ptr<typename WsT::Message> message) {
         static const auto TAG = u8"WS通用";
 
         const auto ws_message_str = message->string();
