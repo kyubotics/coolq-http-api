@@ -12,4 +12,5 @@ cmake -G "Visual Studio 15 2017" -T "$msvc_toolset" `
     -DCMAKE_TOOLCHAIN_FILE="$vcpkg_root\scripts\buildsystems\vcpkg.cmake" `
     -DVCPKG_TARGET_TRIPLET="$vcpkg_triplet" `
     -DCMAKE_CONFIGURATION_TYPES="$config_type" `
+    -DCMAKE_BUILD_TYPE="$config_type" `
     ..\..
