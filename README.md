@@ -31,6 +31,7 @@
 | Go | - | HTTP | https://github.com/juzi5201314/cqhttp-go-sdk | juzi5201314 |
 | PHP | Swoole | WebSocket | https://github.com/BlueWhaleNetwork/CQBot-swoole | BlueWhaleNetwork |
 | Go | Gorilla WebSocket | WebSocket | https://github.com/ma6254/go-cqhttp | ma6254 |
+| Java | JFinal | HTTP | https://github.com/thevsk/cqhttp-java-jfinal-sdk | thevsk |
 
 ## 应用案例
 
