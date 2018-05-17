@@ -17,12 +17,17 @@ namespace cqhttp::plugins {
             const auto path = cq::dir::app() + filter_filename;
             if (const auto ws_path = s2ws(path); fs::is_regular_file(ws_path)) {
                 if (ifstream f(ws_path); f.is_open()) {
-                    json filter_json;
-                    f >> filter_json;
-
                     try {
-                        filter_ = construct_filter(filter_json);
-                        logging::debug(TAG, u8"过滤规则加载成功");
+                        json filter_json;
+                        f >> filter_json;
+                        if (filter_json.is_object()) {
+                            filter_ = construct_filter(filter_json);
+                            logging::debug(TAG, u8"过滤规则加载成功");
+                        } else {
+                            logging::error(TAG, u8"过滤规则必须是 JSON 对象");
+                        }
+                    } catch (json::parse_error &) {
+                        logging::error(TAG, u8"过滤规则不是合法的 JSON");
                     } catch (FilterSyntexError &e) {
                         logging::error(TAG, string(u8"过滤规则语法错误，错误信息：") + e.what());
                     }
