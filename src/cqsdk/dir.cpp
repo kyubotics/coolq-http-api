@@ -23,11 +23,11 @@ namespace cq::dir {
         return app_dir.substr(0, app_dir.length() - suffix.length());
     }
 
-    string app(const std::string &sub) {
-        if (sub.empty()) {
+    string app(const std::string &sub_dir_name) {
+        if (sub_dir_name.empty()) {
             return api::get_app_directory();
         }
-        const auto dir = api::get_app_directory() + (sub.empty() ? "" : sub + "\\");
+        const auto dir = api::get_app_directory() + (sub_dir_name.empty() ? "" : sub_dir_name + "\\");
         create_dir_if_not_exists(dir);
         return dir;
     }
