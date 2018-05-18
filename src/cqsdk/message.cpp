@@ -8,18 +8,18 @@ using namespace std;
 using boost::algorithm::replace_all;
 
 namespace cq::message {
-    string escape(string str) {
+    string escape(string str, const bool escape_comma) {
         replace_all(str, "&", "&amp;");
         replace_all(str, "[", "&#91;");
         replace_all(str, "]", "&#93;");
-        replace_all(str, ",", "&#44;");
+        if (escape_comma) replace_all(str, ",", "&#44;");
         return str;
     }
 
     string unescape(string str) {
+        replace_all(str, "&#44;", ",");
         replace_all(str, "&#91;", "[");
         replace_all(str, "&#93;", "]");
-        replace_all(str, "&#44;", ",");
         replace_all(str, "&amp;", "&");
         return str;
     }
@@ -39,8 +39,8 @@ namespace cq::message {
             switch (state) {
             case TEXT: {
             text:
-                if (curr == '[' && end - it >= 5 /* [CQ:a] at least 5 chars behind */
-                    && *(it + 1) == 'C' && *(it + 2) == 'Q' && *(it + 3) == ':') {
+                if (curr == '[' && end - 1 - it >= 5 /* [CQ:a] at least 5 chars behind */
+                    && *(it + 1) == 'C' && *(it + 2) == 'Q' && *(it + 3) == ':' && *(it + 4) != ']') {
                     state = FUNCTION_NAME;
                     curr_cq_start = it;
                     it += 3;
@@ -130,12 +130,12 @@ namespace cq::message {
             }
             if (seg.type == "text") {
                 if (const auto it = seg.data.find("text"); it != seg.data.end()) {
-                    ss << escape((*it).second);
+                    ss << escape((*it).second, false);
                 }
             } else {
                 ss << "[CQ:" << seg.type;
                 for (const auto &item : seg.data) {
-                    ss << "," << item.first << "=" << escape(item.second);
+                    ss << "," << item.first << "=" << escape(item.second, true);
                 }
                 ss << "]";
             }

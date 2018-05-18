@@ -11,7 +11,7 @@ namespace cq::message {
     /**
      * Escape special characters in the given string.
      */
-    std::string escape(std::string str);
+    std::string escape(std::string str, bool escape_comma = true);
 
     /**
      * Unescape special characters in the given string.
@@ -48,22 +48,26 @@ namespace cq::message {
         enum class ContactType { USER, GROUP };
 
         static MessageSegment contact(const ContactType &type, const int64_t id) {
-            return {"contact",
-                    {
-                        {"type", type == ContactType::USER ? "qq" : "group"},
-                        {"id", std::to_string(id)},
-                    }};
+            return {
+                "contact",
+                {
+                    {"type", type == ContactType::USER ? "qq" : "group"},
+                    {"id", std::to_string(id)},
+                },
+            };
         }
 
         static MessageSegment location(const double latitude, const double longitude, const std::string &title = "",
                                        const std::string &content = "") {
-            return {"location",
-                    {
-                        {"lat", std::to_string(latitude)},
-                        {"lon", std::to_string(longitude)},
-                        {"title", title},
-                        {"content", content},
-                    }};
+            return {
+                "location",
+                {
+                    {"lat", std::to_string(latitude)},
+                    {"lon", std::to_string(longitude)},
+                    {"title", title},
+                    {"content", content},
+                },
+            };
         }
 
         static MessageSegment music(const std::string &type, const int64_t &id) {
@@ -72,15 +76,17 @@ namespace cq::message {
 
         static MessageSegment music(const std::string &url, const std::string &audio_url, const std::string &title,
                                     const std::string &content = "", const std::string &image_url = "") {
-            return {"music",
-                    {
-                        {"type", "custom"},
-                        {"url", url},
-                        {"audio", audio_url},
-                        {"title", title},
-                        {"content", content},
-                        {"image", image_url},
-                    }};
+            return {
+                "music",
+                {
+                    {"type", "custom"},
+                    {"url", url},
+                    {"audio", audio_url},
+                    {"title", title},
+                    {"content", content},
+                    {"image", image_url},
+                },
+            };
         }
     };
 
@@ -91,6 +97,7 @@ namespace cq::message {
          * Split a string to a Message object.
          */
         Message(const std::string &msg_str);
+
         Message(const char *msg_str) : Message(std::string(msg_str)) {}
 
         Message(const MessageSegment &seg) { this->push_back(seg); }
