@@ -7,7 +7,7 @@
 [![Docker Repository](https://img.shields.io/badge/docker-richardchien/cqhttp-blue.svg)](https://hub.docker.com/r/richardchien/cqhttp/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/richardchien/cqhttp.svg)](https://hub.docker.com/r/richardchien/cqhttp/)
 [![QQ群](https://img.shields.io/badge/qq%E7%BE%A4-201865589-orange.svg)](https://jq.qq.com/?_wv=1027&k=5Euplde)
-[![Telegram](https://img.shields.io/badge/telegram-chat-blue.svg)](https://t.me/joinchat/BBQ7Fg8eTMfhzrLHYwy9xg)
+[![Telegram](https://img.shields.io/badge/telegram-chat-blue.svg)](https://t.me/cqhttp)
 
 通过 HTTP 对酷 Q 的事件进行上报以及接收 HTTP 请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。现已支持 WebSocket。
 
