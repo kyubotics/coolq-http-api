@@ -70,6 +70,14 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 | `cqsdk` | `boost-algorithm`<br>`boost-filesystem`<br>`libiconv` |
 | `cqhttp` | `cqsdk` 的依赖项<br>`nlohmann-json`<br>`boost-process`<br>`curl`<br>`libssh2`<br>`boost-property-tree`<br>`boost-asio`<br>`openssl`<br>`spdlog` |
 
+安装命令如下：
+
+```powershell
+vcpkg --triplet x86-windows-static install boost-algorithm boost-filesystem libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
+```
+
+其中 `x86-windows-static` 需要改成你的 triplet 名字。
+
 ## 开源许可证、重新分发
 
 本程序使用 [GPLv3 许可证](https://github.com/richardchien/coolq-http-api/blob/master/LICENSE)，并按其第 7 节添加如下附加条款：
