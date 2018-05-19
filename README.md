@@ -72,7 +72,7 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 
 安装命令如下：
 
-```powershell
+```batch
 vcpkg --triplet x86-windows-static install boost-algorithm boost-filesystem libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
 ```
 
