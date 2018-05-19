@@ -18,7 +18,7 @@ namespace cqhttp::plugins {
                     logging::debug(TAG, u8"成功执行一个异步动作");
                 });
                 if (ok) {
-                    logging::debug(TAG, u8"异步动作已进入全局线程池等待执行");
+                    logging::debug(TAG, u8"异步动作 " + ctx.action + " 已进入全局线程池等待执行");
                     ctx.result.code = ActionResult::Codes::ASYNC;
                 } else {
                     logging::debug(TAG, u8"全局线程池无法执行异步动作，请尝试重启插件");
