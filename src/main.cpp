@@ -7,11 +7,13 @@
 #include "cqhttp/plugins/loggers/loggers.h"
 #include "cqhttp/plugins/worker_pool_resizer/worker_pool_resizer.h"
 
-#include "cqhttp/plugins/async_actions/async_actions.h"
 #include "cqhttp/plugins/event_data_patcher/event_data_patcher.h"
-#include "cqhttp/plugins/experimental_actions/experimental_actions.h"
 #include "cqhttp/plugins/message_enhancer/message_enhancer.h"
+
+#include "cqhttp/plugins/async_actions/async_actions.h"
+#include "cqhttp/plugins/experimental_actions/experimental_actions.h"
 #include "cqhttp/plugins/restarter/restarter.h"
+#include "cqhttp/plugins/updater/updater.h"
 
 #include "cqhttp/plugins/backward_compatibility/backward_compatibility.h"
 #include "cqhttp/plugins/event_filter/event_filter.h"
@@ -39,7 +41,10 @@ CQ_MAIN {
     // extend the Context object
     use(plugins::event_data_patcher);
     use(plugins::message_enhancer);
+
+    // extend actions
     use(plugins::restarter);
+    use(plugins::updater);
     use(plugins::async_actions);
     use(plugins::experimental_actions);
 
@@ -54,6 +59,6 @@ CQ_MAIN {
 
 CQ_MENU(cq_menu_restart) { call_action("set_restart_plugin"); }
 
-CQ_MENU(cq_menu_check_update) {}
+CQ_MENU(cq_menu_check_update) { call_action(".check_update"); }
 
 CQ_MENU(cq_menu_restart_coolq) { call_action("set_restart"); }
