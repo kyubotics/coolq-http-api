@@ -94,7 +94,7 @@ namespace cqhttp::plugins {
             // failed
             result.data = nullptr;
             result.code = Codes::DEFAULT_ERROR;
-        } catch (const cq::exception::ApiError &e) {
+        } catch (cq::exception::ApiError &) {
             result.code = Codes::DEFAULT_ERROR;
         }
     }
