@@ -8,7 +8,12 @@
 </head>
 <body>
   <script>
-      window.location.replace('3.4/' + window.location.hash);
+    var latest_version = '3.4';
+    var hash = window.location.hash;
+    if (!hash || hash.length == 0) {
+      hash = '#/';
+    }
+    window.location.replace(latest_version + '/' + hash);
   </script>
 </body>
 </html>
