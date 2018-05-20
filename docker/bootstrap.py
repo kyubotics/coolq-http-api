@@ -78,7 +78,7 @@ def bootstrap():
                 continue
 
             key = key[len('CQHTTP_'):]
-            app_config['general'][key.lower()] = value
+            app_config[config_name][key.lower()] = value
         with open(os.path.join(APP_CONFIG_DIR, config_name + '.ini'), 'w') as config_file:
             app_config.write(config_file)
 
