@@ -108,15 +108,15 @@
     ],
     "menu": [
         {
-            "name": "ÖØÆô²å¼ş",
+            "name": "é‡å¯æ’ä»¶",
             "function": "cq_menu_restart"
         },
         {
-            "name": "¼ì²é¸üĞÂ",
+            "name": "æ£€æŸ¥æ›´æ–°",
             "function": "cq_menu_check_update"
         },
         {
-            "name": "ÖØÆô¿á Q",
+            "name": "é‡å¯é…· Q",
             "function": "cq_menu_restart_coolq"
         }
     ],
