@@ -7,13 +7,10 @@ namespace cqhttp::plugins {
         BackwardCompatibility() = default;
 
         void hook_enable(Context &ctx) override;
-
-        void hook_message_event(EventContext<cq::MessageEvent> &ctx) override;
-        void hook_notice_event(EventContext<cq::NoticeEvent> &ctx) override;
-        void hook_request_event(EventContext<cq::RequestEvent> &ctx) override;
+        void hook_after_event(EventContext<cq::Event> &ctx) override;
 
     private:
-        bool enabled_;
+        bool enabled_{};
     };
 
     static std::shared_ptr<BackwardCompatibility> backward_compatibility = std::make_shared<BackwardCompatibility>();

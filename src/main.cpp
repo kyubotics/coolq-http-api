@@ -49,8 +49,8 @@ CQ_MAIN {
     use(plugins::experimental_actions);
 
     // handle api and event, must in order and at the end
-    use(plugins::backward_compatibility); // this will affect the data passed to plugins::event_filter
     use(plugins::event_filter);
+    use(plugins::backward_compatibility);
     use(plugins::post_message_formatter);
     use(plugins::http);
     use(plugins::websocket);

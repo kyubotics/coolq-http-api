@@ -8,38 +8,38 @@ namespace cqhttp::plugins {
         ctx.next();
     }
 
-    void BackwardCompatibility::hook_message_event(EventContext<cq::MessageEvent> &ctx) {
+    void BackwardCompatibility::hook_after_event(EventContext<cq::Event> &ctx) {
         if (enabled_) {
-            if (ctx.event.message_type == cq::message::GROUP) {
-                auto &e = static_cast<const cq::GroupMessageEvent &>(ctx.event);
-                if (e.is_anonymous()) {
-                    ctx.data["anonymous"] = e.anonymous.name;
-                    ctx.data["anonymous_flag"] = e.anonymous.flag;
-                } else {
-                    ctx.data["anonymous"] = "";
-                    ctx.data["anonymous_flag"] = "";
+            switch (ctx.event.type) {
+            case cq::event::MESSAGE: {
+                auto &e = static_cast<const cq::MessageEvent &>(ctx.event);
+                if (e.message_type == cq::message::GROUP) {
+                    auto &gme = static_cast<const cq::GroupMessageEvent &>(ctx.event);
+                    if (gme.is_anonymous()) {
+                        ctx.data["anonymous"] = gme.anonymous.name;
+                        ctx.data["anonymous_flag"] = gme.anonymous.flag;
+                    } else {
+                        ctx.data["anonymous"] = "";
+                        ctx.data["anonymous_flag"] = "";
+                    }
                 }
+                break;
             }
-        }
-
-        ctx.next();
-    }
-
-    void BackwardCompatibility::hook_notice_event(EventContext<cq::NoticeEvent> &ctx) {
-        if (enabled_) {
-            ctx.data["post_type"] = "event";
-            ctx.data["event"] = ctx.event.notice_type;
-            ctx.data.erase("notice_type");
-        }
-
-        ctx.next();
-    }
-
-    void BackwardCompatibility::hook_request_event(EventContext<cq::RequestEvent> &ctx) {
-        if (enabled_) {
-            if (ctx.event.request_type == cq::request::FRIEND || ctx.event.request_type == cq::request::GROUP) {
-                ctx.data["message"] = ctx.event.comment;
+            case cq::event::NOTICE: {
+                auto &e = static_cast<const cq::NoticeEvent &>(ctx.event);
+                ctx.data["post_type"] = "event";
+                ctx.data["event"] = e.notice_type;
+                ctx.data.erase("notice_type");
+                break;
+            }
+            case cq::event::REQUEST: {
+                auto &e = static_cast<const cq::RequestEvent &>(ctx.event);
+                ctx.data["message"] = e.comment;
                 ctx.data.erase("comment");
+                break;
+            }
+            default:
+                break;
             }
         }
 
