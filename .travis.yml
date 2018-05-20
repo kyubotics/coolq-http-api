@@ -2,7 +2,7 @@ sudo: required
 
 branches:
   only:
-    - /^v\d+\.\d+(\.\d+)?(-\S+)?$/  # only build release tags
+    - /^v\d+\.\d+\.\d+(-\S+)?$/  # only build release tags
 
 services:
   - docker
@@ -19,6 +19,6 @@ script:
   - docker build -t $DOCKER_REPO:$DOCKER_TAG --build-arg GIT_TAG=$TRAVIS_TAG ./docker
 
 after_success:
-  - docker tag $DOCKER_REPO:$DOCKER_TAG $DOCKER_REPO:latest
+  - if [[ $DOCKER_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then docker tag $DOCKER_REPO:$DOCKER_TAG $DOCKER_REPO:latest; fi
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - docker push $DOCKER_REPO
