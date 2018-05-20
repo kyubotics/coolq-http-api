@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <meta name="google-site-verification" content="oxhhDvpA1MPfVPqOJeWn4tCZ8lZoaRgUuYHcYWkLtSg">
+  <title>CoolQ HTTP API 插件</title>
+  <link href="https://unpkg.com/docute/dist/docute.css" rel="stylesheet">
+  <link href="./docs/main.css" rel="stylesheet">
+</head>
+<body>
+  <div id="app"></div>
+  <script src="https://unpkg.com/docute/dist/docute.js"></script>
+  <script src="https://unpkg.com/prismjs/components/prism-bash.min.js"></script>
+  <script>
+    docute.init({
+      title: 'CoolQ HTTP API 插件',
+      repo: 'richardchien/coolq-http-api',
+      nav: [
+        { title: '首页', path: '/' },
+        { title: '文档', path: window.location.origin + window.location.pathname + 'docs/' },
+        { title: '版本发布', path: 'https://github.com/richardchien/coolq-http-api/releases' }
+      ],
+      tocVisibleDepth: 2,
+      sidebar: false,
+      routerMode: 'history',
+      url: /(github|gitee)\.io$/.test(window.location.origin) ? window.location.origin + '/coolq-http-api' : window.location.origin
+    });
+  </script>
+
+  <!-- Google Analytics -->
+  <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-115509121-1', 'auto');
+    ga('send', 'pageview');
+    docute.router.afterEach(function (to) {
+      ga('set', 'page', to.fullPath);
+      ga('send', 'pageview');
+    });
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js" async></script>
+  <!-- End Google Analytics -->
+</body>
+</html>
