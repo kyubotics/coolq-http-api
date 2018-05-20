@@ -86,6 +86,8 @@ namespace cqhttp::plugins {
 
     static void restart_coolq() { call_action("set_restart"); }
 
+    static bool version_locked() { return fs::exists(ansi(cq::dir::app() + "version.lock")); }
+
     void Updater::check_update(const bool automatic) const {
         if (automatic) logging::info(TAG, u8"正在检查更新...");
 
@@ -98,11 +100,11 @@ namespace cqhttp::plugins {
             if (is_newer) {
                 // should update
                 if (automatic) logging::info(TAG, u8"发现新版本：" + version + u8", build " + to_string(build_number));
-                if (false /*TODO*/) {
+                if (version_locked()) {
                     message_box(MB_OK | MB_ICONWARNING, u8"发现新版本：" + version
                             + u8"\r\n\r\n更新信息：\r\n"
                             + (description.empty() ? u8"无" : description)
-                            + u8"\r\n\r\n当前环境下不允许自动更新，如果你正在使用 Docker，请拉取最新版本的 Docker 镜像或解除环境锁（删除 app/io.github.richardchien.coolqhttpapi/app.lock）。");
+                            + u8"\r\n\r\n当前环境下不允许自动更新，如果你正在使用 Docker，请拉取最新版本的 Docker 镜像或解除版本锁（删除 app/io.github.richardchien.coolqhttpapi/version.lock）。");
                 } else {
                     if (automatic && auto_perform_update_) {
                         // auto update
