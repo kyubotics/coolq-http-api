@@ -41,4 +41,4 @@ target_link_libraries(${LIB_NAME} crypt32 bcrypt Wldap32 Ws2_32)
 add_custom_command(TARGET ${LIB_NAME}
                    POST_BUILD
                    COMMAND
-                   powershell -ExecutionPolicy Bypass -NoProfile -File "${PROJECT_SOURCE_DIR}/scripts/post_build.ps1" "$<TARGET_FILE:${LIB_NAME}>")
+                   powershell -ExecutionPolicy Bypass -NoProfile -File "${PROJECT_SOURCE_DIR}/scripts/post_build.ps1" "$<TARGET_FILE_DIR:${LIB_NAME}>")
