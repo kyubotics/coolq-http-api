@@ -4,6 +4,7 @@
 #include <boost/filesystem.hpp>
 
 #include "cqhttp/core/core.h"
+#include "cqhttp/plugins/updater/default_source.h"
 #include "cqhttp/utils/gui.h"
 #include "cqhttp/utils/http.h"
 
@@ -17,9 +18,6 @@ namespace cqhttp::plugins {
     using utils::http::download_file;
     using utils::gui::message_box;
     namespace fs = boost::filesystem;
-
-    static const auto DEFAULT_UPDATE_SOURCE =
-        "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/";
 
     void Updater::hook_enable(Context &ctx) {
         update_source_ = ctx.config->get_string("update_source", DEFAULT_UPDATE_SOURCE);

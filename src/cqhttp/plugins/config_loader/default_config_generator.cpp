@@ -2,9 +2,11 @@
 
 #include <fstream>
 
+#include "cqhttp/plugins/updater/default_source.h"
+
 using namespace std;
 
-static constexpr auto DEFAULT_CONFIG = R"({
+static const auto DEFAULT_CONFIG = string() + R"({
     "host": "0.0.0.0",
     "port": 5700,
     "use_http": true,
@@ -16,7 +18,7 @@ static constexpr auto DEFAULT_CONFIG = R"({
     "secret": "",
     "post_message_format": "string",
     "serve_data_files": false,
-    "update_source": "",
+    "update_source": ")" + DEFAULT_UPDATE_SOURCE + R"(",
     "update_channel": "stable",
     "auto_check_update": false,
     "auto_perform_update": false,
