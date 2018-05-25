@@ -72,6 +72,12 @@ API 的调用方式和插件作为 WebSocket 服务端的 `/api/` 接口使用�
 
 与 HTTP 上报不同的是，这里上报不会对数据进行签名（即 HTTP 上报中的 `X-Signature` 请求头在这里没有等价的东西），并且也不会处理响应数据。
 
+### 断线重连
+
+可通过配置项 `ws_reverse_reconnect_interval` 和 `ws_reverse_reconnect_on_code_1000` 来配置反向 WebSocket 的断线重连机制，分别设置尝试重连的时间间隔，和是否在关闭码 1000 的情况下进行重连。
+
+如果你的服务器重启时插件没有自动重连，建议尝试设置 `ws_reverse_reconnect_on_code_1000 = yes`。
+
 ## WebSocket 的 API 调用响应顺序问题
 
 由于 WebSocket 的通信不像 HTTP 那样是固定的一来一回，而是一直保持连接，大多 WebSocket 框架都采用事件驱动的方式来提供接口。这就导致，在通过 WebSocket 进行**连续** API 调用时，很多情况下无法确切地知道插件返回的响应是对应哪次调用。因此插件现加入了 echo 机制，允许用户在调用 API 时在调用数据（JSON 对象）中加入一个 `echo` 字段（数据类型任意），以标记此次调用，插件会在该调用的响应数据中将其原样返回。
