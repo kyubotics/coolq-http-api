@@ -25,7 +25,7 @@ static const auto DEFAULT_CONFIG = string() + R"({
     "thread_pool_size": 4,
     "server_thread_pool_size": 1,
     "show_log_console": false,
-    "enable_backward_compatibility": true
+    "enable_backward_compatibility": false
 })";
 
 namespace cqhttp::plugins {
