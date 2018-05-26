@@ -7,7 +7,7 @@ using namespace std;
 namespace cqhttp::logging {
     using cq::logging::Level;
 
-    void SpdlogHandler::log(Level level, const string &tag, const string &msg) const {
+    void SpdlogHandler::log(const Level level, const string &tag, const string &msg) const {
         if (logger_) {
             spdlog::level::level_enum spd_level;
 
