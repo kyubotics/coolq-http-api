@@ -36,9 +36,16 @@ config.nav.push({
 if (currentVersionIndex > latestVersionIndex) {
     config.announcement = {
         type: 'danger',
-        html: '你当前正在访问的是旧版本文档，内容可能与最新版本的插件不相符，点击&nbsp;<span style="cursor: pointer;" '
+        html: '你当前正在访问的是旧版本插件的文档，内容可能与最新版本不相符，点击&nbsp;<span style="cursor: pointer;" '
             + 'onclick="window.location.assign(\'' + versions[latestVersionIndex].path + '\' + window.location.hash)"'
             + '>这里</span>&nbsp;访问最新文档。'
+    };
+} else if (currentVersionIndex < latestVersionIndex) {
+    config.announcement = {
+        type: 'primary',
+        html: '你当前正在访问的是测试版插件的文档，测试版本提供了更丰富的功能但可能不稳定，点击&nbsp;<span style="cursor: pointer;" '
+            + 'onclick="window.location.assign(\'' + versions[latestVersionIndex].path + '\' + window.location.hash)"'
+            + '>这里</span>&nbsp;访问最新稳定版的文档。'
     };
 }
 
