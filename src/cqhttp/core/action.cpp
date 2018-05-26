@@ -432,7 +432,7 @@ namespace cqhttp {
 
     HANDLER(clean_data_dir) {
         const auto data_dir = params.get_string("data_dir");
-        set<string> allowed_data_dirs = {"image", "record", "show", "bface"};
+        static const set<string> allowed_data_dirs = {"image", "record", "show", "bface"};
         if (allowed_data_dirs.find(data_dir) != allowed_data_dirs.cend()) {
             const auto ws_dir_fullpath = s2ws(utils::fs::data_file_full_path(data_dir, ""));
             try {
