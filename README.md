@@ -21,17 +21,18 @@
 
 对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK：
 
-| 语言 | Web 框架 | 通信方式 | 地址 | 作者 |
-| --- | ------- | ------- | --- | ---- |
-| PHP | - | HTTP | https://github.com/kilingzhang/coolq-php-sdk | kilingzhang |
-| Python | Bottle | HTTP | https://github.com/richardchien/cqhttp-python-sdk | richardchien |
-| Node.js | Koa | HTTP | https://github.com/richardchien/cqhttp-node-sdk | richardchien |
-| Node.js | WebSocket-Node | WebSocket | https://github.com/momocow/node-cq-websocket | momocow |
-| Java | - | HTTP<br>WebSocket | https://github.com/yangjinhe/maintain-robot | yangjinhe |
-| Go | - | HTTP | https://github.com/juzi5201314/cqhttp-go-sdk | juzi5201314 |
-| PHP | Swoole | WebSocket | https://github.com/BlueWhaleNetwork/CQBot-swoole | BlueWhaleNetwork |
-| Go | Gorilla WebSocket | WebSocket | https://github.com/ma6254/go-cqhttp | ma6254 |
-| Java | JFinal | HTTP | https://github.com/thevsk/cqhttp-java-jfinal-sdk | thevsk |
+| 语言 | Web 框架 | 通信方式 | 插件版本 | 地址 | 作者 |
+| --- | ------- | ------- | ------- | --- | ---- |
+| PHP | 内置 | HTTP | 3 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
+| Python | Bottle | HTTP | 3 | [richardchien/cqhttp-python-sdk](https://github.com/richardchien/cqhttp-python-sdk) | richardchien |
+| Node.js | Koa | HTTP | 3 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
+| Node.js | WebSocket-Node | WebSocket | 3 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
+| Java | 内置 | HTTP<br>WebSocket | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
+| Go | 内置 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
+| PHP | Swoole | WebSocket | 3 | [BlueWhaleNetwork/CQBot-swoole](https://github.com/BlueWhaleNetwork/CQBot-swoole) | BlueWhaleNetwork |
+| Go | Gorilla WebSocket | WebSocket | 3 | [ma6254/go-cqhttp](https://github.com/ma6254/go-cqhttp) | ma6254 |
+| Java | JFinal | HTTP | 3 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
+| Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | HyDevelop |
 
 ## 应用案例
 
