@@ -32,7 +32,7 @@
 | PHP | Swoole | WebSocket | 3 | [BlueWhaleNetwork/CQBot-swoole](https://github.com/BlueWhaleNetwork/CQBot-swoole) | BlueWhaleNetwork |
 | Go | Gorilla WebSocket | WebSocket | 3 | [ma6254/go-cqhttp](https://github.com/ma6254/go-cqhttp) | ma6254 |
 | Java | JFinal | HTTP | 3 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
-| Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | HyDevelop |
+| Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
 
 ## 应用案例
 
