@@ -33,7 +33,7 @@
 | Go | Gorilla WebSocket | WebSocket | 3 | [ma6254/go-cqhttp](https://github.com/ma6254/go-cqhttp) | ma6254 |
 | Java | JFinal | HTTP | 3 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
 | Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
-| Go | 内置 | HTTP | 3 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld && rikakomoe |
+| Go | 内置 | HTTP | 3 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 
 ## 应用案例
 
