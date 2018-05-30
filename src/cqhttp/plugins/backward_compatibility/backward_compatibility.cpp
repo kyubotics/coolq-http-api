@@ -4,7 +4,7 @@ using namespace std;
 
 namespace cqhttp::plugins {
     void BackwardCompatibility::hook_enable(Context &ctx) {
-        enabled_ = ctx.config->get_bool("enable_backward_compatibility", true);
+        enabled_ = ctx.config->get_bool("enable_backward_compatibility", false);
         ctx.next();
     }
 
