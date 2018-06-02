@@ -28,10 +28,10 @@
 | Node.js | Koa | HTTP | 3 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
 | Node.js | WebSocket-Node | WebSocket | 3 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
 | PHP | 内置 | HTTP | 3 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
-| PHP | Swoole | WebSocket（API 调用）<br>反向 WebSocket（事件上报） | 3 | [BlueWhaleNetwork/CQBot-swoole](https://github.com/BlueWhaleNetwork/CQBot-swoole) | BlueWhaleNetwork |
+| PHP | Swoole | API: WebSocket<br>Event: 反向 WebSocket | 3 | [BlueWhaleNetwork/CQBot-swoole](https://github.com/BlueWhaleNetwork/CQBot-swoole) | BlueWhaleNetwork |
 | Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
-| Java | 内置 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
 | Java | JFinal | HTTP | 3 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
+| Java | 内置 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
 | Go | 内置 | HTTP | 3、4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 | Go | 内置 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
 | Go | Gorilla WebSocket | WebSocket | 3 | [ma6254/go-cqhttp](https://github.com/ma6254/go-cqhttp) | ma6254 |
