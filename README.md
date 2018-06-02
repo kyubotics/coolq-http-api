@@ -24,13 +24,13 @@
 | 语言 | Web 框架 | 通信方式 | 插件版本 | 地址 | 作者 |
 | --- | ------- | ------- | ------- | --- | ---- |
 | Python | Flask | HTTP | 3、4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
-| Python | Quart | HTTP | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
+| Python | Quart | HTTP<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
 | Node.js | Koa | HTTP | 3 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
 | Node.js | WebSocket-Node | WebSocket | 3 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
 | PHP | 内置 | HTTP | 3 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
-| PHP | Swoole | WebSocket | 3 | [BlueWhaleNetwork/CQBot-swoole](https://github.com/BlueWhaleNetwork/CQBot-swoole) | BlueWhaleNetwork |
+| PHP | Swoole | WebSocket（API 调用）<br>反向 WebSocket（事件上报） | 3 | [BlueWhaleNetwork/CQBot-swoole](https://github.com/BlueWhaleNetwork/CQBot-swoole) | BlueWhaleNetwork |
 | Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
-| Java | 内置 | HTTP<br>WebSocket | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
+| Java | 内置 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
 | Java | JFinal | HTTP | 3 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
 | Go | 内置 | HTTP | 3、4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 | Go | 内置 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
@@ -48,6 +48,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的 QQ 群机器人 |
 | [bdbai/Kobirt](https://github.com/bdbai/Kobirt) | Ingress 游戏辅助机器人 |
 | [JRT-FOREVER/hub2coolq](https://github.com/JRT-FOREVER/hub2coolq) | GitHub webhook 消息转发至 QQ 群 |
+| [LovelyA72/YeziiBot](https://github.com/LovelyA72/YeziiBot) |  |
 
 ## 修改、编译
 
