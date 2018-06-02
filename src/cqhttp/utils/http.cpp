@@ -4,9 +4,6 @@
 #include <boost/filesystem.hpp>
 #include <regex>
 
-#include "cqhttp/utils/crypt.h"
-#include "cqhttp/utils/env.h"
-
 using namespace std;
 namespace fs = boost::filesystem;
 
@@ -161,9 +158,6 @@ namespace cqhttp::utils::http {
     }
 
     optional<json> get_json(const string &url, const bool use_fake_ua, const string &cookies) {
-        // if (env::is_in_wine()) {
-        //     return get_json_libcurl(url, use_fake_ua, cookies);
-        // }
         return get_json_libcurl(url, use_fake_ua, cookies);
     }
 
@@ -206,9 +200,6 @@ namespace cqhttp::utils::http {
     }
 
     bool download_file(const string &url, const string &local_path, const bool use_fake_ua) {
-        // if (env::is_in_wine()) {
-        //     return download_file_libcurl(url, local_path, use_fake_ua);
-        // }
         return download_file_libcurl(url, local_path, use_fake_ua);
     }
 
@@ -232,14 +223,5 @@ namespace cqhttp::utils::http {
         fix_headers(headers);
         const auto res = curl::Request(url, headers, body).post();
         return static_cast<Response>(res);
-    }
-
-    Response post_json(const std::string &url, const json &payload, const string &secret) {
-        const auto body = payload.dump();
-        Headers headers{{"Content-Type", "application/json; charset=UTF-8"}};
-        if (!secret.empty()) {
-            headers["X-Signature"] = "sha1=" + crypt::hmac_sha1_hex(secret, body);
-        }
-        return post(url, payload.dump(), headers);
     }
 } // namespace cqhttp::utils::http

@@ -16,6 +16,7 @@ namespace cqhttp::plugins {
     shared_ptr<WsClientT> WebSocketReverse::EndpointBase::init_ws_reverse_client(const string &server_port_path) {
         auto client = make_shared<WsClientT>(server_port_path);
         client->config.header.emplace("User-Agent", CQHTTP_USER_AGENT);
+        client->config.header.emplace("X-Self-ID", to_string(cq::api::get_login_user_id()));
         if (!access_token_.empty()) {
             client->config.header.emplace("Authorization", "Token " + access_token_);
         }
