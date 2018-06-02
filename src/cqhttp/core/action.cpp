@@ -410,16 +410,22 @@ namespace cqhttp {
     }
 
     HANDLER(set_restart) {
+        const auto clean_cache = params.get_bool("clean_cache", false);
+
         constexpr size_t size = MAX_PATH + 1;
         wchar_t w_exec_path[size]{};
         GetModuleFileNameW(nullptr, w_exec_path, size);
 
         const auto restart_batch_path = cq::dir::app("tmp") + "restart.bat";
         const auto ansi_restart_batch_path = ansi(restart_batch_path);
+        const auto self_id = api::get_login_user_id();
         if (ofstream f(ansi_restart_batch_path); f.is_open()) {
-            f << "taskkill /F /PID " << _getpid() << "\r\n"
-              << "timeout 1 > NUL\r\n"
-              << "start \"\" \"" << ansi(ws2s(w_exec_path)) << "\" /account " << api::get_login_user_id();
+            f << "taskkill /F /PID " << _getpid() << endl;
+            f << "timeout 1 > NUL" << endl;
+            if (clean_cache) {
+                f << "rmdir /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "")) << "\"" << endl;
+            }
+            f << "start \"\" \"" << ansi(ws2s(w_exec_path)) << "\" /account " << self_id << endl;
         }
 
         try {
