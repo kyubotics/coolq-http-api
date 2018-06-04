@@ -48,7 +48,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的 QQ 群机器人 |
 | [bdbai/Kobirt](https://github.com/bdbai/Kobirt) | Ingress 游戏辅助机器人 |
 | [JRT-FOREVER/hub2coolq](https://github.com/JRT-FOREVER/hub2coolq) | GitHub webhook 消息转发至 QQ 群 |
-| [LovelyA72/YeziiBot](https://github.com/LovelyA72/YeziiBot) |  |
+| [LovelyA72/YeziiBot](https://github.com/LovelyA72/YeziiBot) | 内置一定实例的 PHP QQ 机器人快速开发框架 |
 
 ## 修改、编译
 
