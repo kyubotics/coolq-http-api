@@ -77,7 +77,7 @@ namespace cqhttp::utils {
         bool get_bool(const std::string &key, const bool default_val = false) const {
             auto result = default_val;
             if (auto v_opt = get(key); v_opt && v_opt->is_string()) {
-                result = utils::to_bool(v_opt->get<std::string>(), default_val);
+                result = to_bool(v_opt->get<std::string>(), default_val);
             } else if (v_opt->is_boolean()) {
                 result = v_opt->get<bool>();
             }

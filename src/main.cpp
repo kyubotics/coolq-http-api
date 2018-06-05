@@ -1,4 +1,4 @@
-#include "cqhttp/cqhttp.h"
+#include "cqhttp/core/core.h"
 
 #include "cqhttp/plugins/config_loader/default_config_generator.h"
 #include "cqhttp/plugins/config_loader/ini_config_loader.h"
