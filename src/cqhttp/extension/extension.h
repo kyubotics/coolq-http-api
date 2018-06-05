@@ -67,6 +67,14 @@ namespace cqhttp::extension {
         Extension() = default;
         virtual ~Extension() = default;
 
+        struct Info {
+            std::string name{};
+            std::string version{};
+            int build_number{};
+            std::string description{};
+        };
+
+        virtual Info info() const = 0;
         virtual void hook_enable(Context &ctx) {}
         virtual void hook_disable(Context &ctx) {}
         virtual void hook_after_event(EventContext &ctx) {}

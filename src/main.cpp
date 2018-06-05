@@ -17,6 +17,7 @@
 
 #include "cqhttp/plugins/backward_compatibility/backward_compatibility.h"
 #include "cqhttp/plugins/event_filter/event_filter.h"
+#include "cqhttp/plugins/extension_loader/extension_loader.h"
 #include "cqhttp/plugins/post_message_formatter/post_message_formatter.h"
 #include "cqhttp/plugins/web/http.h"
 #include "cqhttp/plugins/web/websocket.h"
@@ -50,6 +51,7 @@ CQ_MAIN {
 
     // handle api and event, must in order and at the end
     use(plugins::event_filter);
+    // use(plugins::extension_loader);
     use(plugins::backward_compatibility);
     use(plugins::post_message_formatter);
     use(plugins::http);
