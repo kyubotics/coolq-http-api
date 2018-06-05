@@ -5,7 +5,7 @@ mkdir build\$config_type -ErrorAction SilentlyContinue  # create build folder if
 Set-Location .\build\$config_type  # enter the build folder
 
 $vcpkg_root = "C:\CLI\vcpkg"
-$vcpkg_triplet = "x86-windows-static"
+$vcpkg_triplet = "my-triplet"
 $msvc_toolset = "v141"
 
 cmake -G "Visual Studio 15 2017" -T "$msvc_toolset" `

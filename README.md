@@ -60,14 +60,14 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 ```cmake
 set(VCPKG_TARGET_ARCHITECTURE x86)
-set(VCPKG_CRT_LINKAGE static)
+set(VCPKG_CRT_LINKAGE dynamic)
 set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_PLATFORM_TOOLSET v141)
 ```
 
-创建了这个 triplet 之后，你需要将 [`scripts/generate.ps1`](scripts/generate.ps1) 中的 `$vcpkg_root` 和 `$vcpkg_triplet` 设置成你系统中的相应值。
+你需要在 vcpkg 的 `triplets` 文件夹中创建一个名为 `***.cmake` 的文件（文件名随意，这里假设为 `my-triplet.cmake`），内容如上。创建了这个 triplet 之后，你需要将 [`scripts/generate.ps1`](scripts/generate.ps1) 中的 `$vcpkg_root`（vcpkg 根目录）和 `$vcpkg_triplet`（triplet 名称，例如 `my-triplet`）设置成你系统中的相应值。
 
-除此之外，还需要安装如下依赖（使用上面的 triplet）：
+除此之外，还需要安装如下依赖：
 
 | 模块 | 依赖项 |
 | --- | ----- |
@@ -76,11 +76,11 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 
 安装命令如下：
 
-```batch
-vcpkg --triplet x86-windows-static install boost-algorithm boost-filesystem libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
+```ps1
+cd vcpkg
+git checkout 44631c9f6ff7eaf8fbe0ebc010918c5bf6407ac2 -- ports  # 固定包版本
+.\vcpkg --vcpkg-root . --triplet my-triplet install boost-algorithm boost-filesystem libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
 ```
-
-其中 `x86-windows-static` 需要改成你的 triplet 名字。
 
 ## 开源许可证、重新分发
 

@@ -7,7 +7,6 @@ set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")  # build with object level paralle
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-include(UseStaticCRT)
 include(FindVcpkgIncludeDir)
 
 include_directories(${VCPKG_INCLUDE_DIR})
@@ -25,8 +24,7 @@ find_package(Iconv REQUIRED)
 find_package(CURL REQUIRED)
 find_package(Spdlog REQUIRED)
 
-set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:LIBCMT")
-set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /NODEFAULTLIB:LIBCMTD")
+include(FixLinkConflict)
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 set(LIB_NAME "io.github.richardchien.coolqhttpapi")

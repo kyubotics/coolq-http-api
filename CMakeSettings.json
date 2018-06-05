@@ -3,7 +3,7 @@
         {
             "VCPKG_ROOT": "C:\\CLI\\vcpkg",
             "VCPKG_CMAKE": "${env.VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake",
-            "VCPKG_TRIPLET": "x86-windows-static",
+            "VCPKG_TRIPLET": "my-triplet",
             "MSVC_TOOLSET": "v141"
         }
     ],

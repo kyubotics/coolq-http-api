@@ -10,7 +10,7 @@
 
 直接到 [Releases](https://github.com/richardchien/coolq-http-api/releases) 下载最新的 cpk 文件放到酷 Q 的 app 文件夹，然后启用即可。由于要上报事件、接受调用请求，因此需要所有权限。如果 Releases 里面下载不了，也可以去 [百度网盘](https://pan.baidu.com/s/1qY55zp6) 下载。
 
-注意如果系统中没有装 VC++ 2017 运行库，酷 Q 启动时会报错说插件加载失败，需要去下载 [Microsoft Visual C++ Redistributable for Visual Studio 2017 x86](https://www.visualstudio.com/zh-hans/downloads/?q=redist) 安装，**注意一定要安装 x86 版本**！
+注意如果酷 Q 启动时报错说插件加载失败，或者系统弹窗提示缺少 DLL 文件，则需要安装 [VC++ 2017 运行库](https://aka.ms/vs/15/release/VC_redist.x86.exe)，如果你的系统是 Windows 7 或 Windows Server 2008、或者安装 VC++ 2017 运行库之后仍然加载失败，则还需要安装 [通用 C 运行库](https://support.microsoft.com/zh-cn/help/3118401/update-for-universal-c-runtime-in-windows)，在这个链接里选择你系统对应的版本下载安装即可。如果此时还加载失败，请尝试重启系统。
 
 启用后插件将开启一个 HTTP 服务器来接收请求，默认监听 `0.0.0.0:5700`，首次启用会生成一个默认配置文件，在酷 Q 的 `app\io.github.richardchien.coolqhttpapi\config` 文件夹中，文件名为 `<user_id>.json`（`<user_id>` 为登录的 QQ 号），使用 JSON 格式填写。关于配置项的说明，见 [配置](/Configuration)。
 
