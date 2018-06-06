@@ -29,7 +29,7 @@ namespace cqhttp::extension {
         nlohmann::json data;
 
         ActionResult() = default;
-        ActionResult(const int code, const nlohmann::json &data = nullptr) : code(code), data(data) {}
+        ActionResult(const int code, const nlohmann::json data = nullptr) : code(code), data(std::move(data)) {}
     };
 
     struct Context {
@@ -78,6 +78,26 @@ namespace cqhttp::extension {
         const std::string &action;
         const nlohmann::json &params;
         ActionResult &result;
+
+        std::string get_param_string(const std::string &key, const std::string &default_val = "") const {
+            return __param_bridge.get_param_string ? __param_bridge.get_param_string(key, default_val) : default_val;
+        }
+
+        int64_t get_param_integer(const std::string &key, const int64_t default_val = 0) const {
+            return __param_bridge.get_param_integer ? __param_bridge.get_param_integer(key, default_val) : default_val;
+        }
+
+        bool get_param_bool(const std::string &key, const bool default_val = false) const {
+            return __param_bridge.get_param_bool ? __param_bridge.get_param_bool(key, default_val) : default_val;
+        }
+
+        struct ParamBridge {
+            std::function<std::string(const std::string &key, const std::string &default_val)> get_param_string;
+            std::function<int64_t(const std::string &key, int64_t default_val)> get_param_integer;
+            std::function<bool(const std::string &key, bool default_val)> get_param_bool;
+        };
+
+        ParamBridge __param_bridge;
     };
 
     struct Extension {

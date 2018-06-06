@@ -11,7 +11,8 @@ namespace ext = cqhttp::extension;
 namespace cqhttp::plugins {
     static const auto TAG = u8"扩展";
 
-    static void make_bridge(Context &ctx, ext::Context &ext_ctx) {
+    template <typename Ctx, typename ExtCtx>
+    static void make_bridge(Ctx &ctx, ExtCtx &ext_ctx) {
         ext_ctx.__bridge.call_action = [](const std::string &action, const nlohmann::json &params) {
             const auto result = call_action(action, params);
             return ext::ActionResult(result.code, result.data);
@@ -24,6 +25,20 @@ namespace cqhttp::plugins {
         };
         ext_ctx.__bridge.get_config_bool = [&](const std::string &key, const bool default_val) {
             return ctx.config->get_bool(key, default_val);
+        };
+    }
+
+    template <>
+    static void make_bridge(ActionContext &ctx, ext::ActionContext &ext_ctx) {
+        make_bridge(static_cast<Context &>(ctx), static_cast<ext::Context &>(ext_ctx));
+        ext_ctx.__param_bridge.get_param_string = [&](const std::string &key, const std::string &default_val) {
+            return ctx.params.get_string(key, default_val);
+        };
+        ext_ctx.__param_bridge.get_param_integer = [&](const std::string &key, const int64_t default_val) {
+            return ctx.params.get_integer(key, default_val);
+        };
+        ext_ctx.__param_bridge.get_param_bool = [&](const std::string &key, const bool default_val) {
+            return ctx.params.get_bool(key, default_val);
         };
     }
 
@@ -123,14 +138,14 @@ namespace cqhttp::plugins {
     }
 
     void ExtensionLoader::hook_missed_action(ActionContext &ctx) {
-        ext::ActionResult ext_result(ctx.result.code, ctx.result.data);
+        ext::ActionResult ext_result(ctx.result.code, std::move(ctx.result.data));
         auto ext_ctx = convert_context(ctx, ext_result);
         for (auto &extension : extensions_) {
             extension->on_missed_action(ext_ctx);
         }
 
         ctx.result.code = ext_ctx.result.code;
-        ctx.result.data = ext_ctx.result.data;
+        ctx.result.data = std::move(ext_ctx.result.data);
 
         ctx.next();
     }
