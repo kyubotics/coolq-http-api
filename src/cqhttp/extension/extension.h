@@ -39,13 +39,30 @@ namespace cqhttp::extension {
 
         ActionResult call_action(const std::string &action,
                                  const nlohmann::json &params = nlohmann::json::object()) const {
-            if (__call_action) {
-                return __call_action(action, params);
-            }
+            if (__bridge.call_action) return __bridge.call_action(action, params);
             return ActionResult(ActionResult::Codes::DEFAULT_ERROR);
         }
 
-        std::function<ActionResult(const std::string &, const nlohmann::json &)> __call_action;
+        std::string get_config_string(const std::string &key, const std::string &default_val = "") const {
+            return __bridge.get_config_string ? __bridge.get_config_string(key, default_val) : default_val;
+        }
+
+        int64_t get_config_integer(const std::string &key, const int64_t default_val = 0) const {
+            return __bridge.get_config_integer ? __bridge.get_config_integer(key, default_val) : default_val;
+        }
+
+        bool get_config_bool(const std::string &key, const bool default_val = false) const {
+            return __bridge.get_config_bool ? __bridge.get_config_bool(key, default_val) : default_val;
+        }
+
+        struct Bridge {
+            std::function<ActionResult(const std::string &action, const nlohmann::json &params)> call_action;
+            std::function<std::string(const std::string &key, const std::string &default_val)> get_config_string;
+            std::function<int64_t(const std::string &key, int64_t default_val)> get_config_integer;
+            std::function<bool(const std::string &key, bool default_val)> get_config_bool;
+        };
+
+        Bridge __bridge;
     };
 
     struct EventContext : Context {

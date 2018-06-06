@@ -11,27 +11,38 @@ namespace ext = cqhttp::extension;
 namespace cqhttp::plugins {
     static const auto TAG = u8"扩展";
 
-    static ext::ActionResult call_action_wrapper(const std::string &action, const nlohmann::json &params) {
-        const auto result = call_action(action, params);
-        return ext::ActionResult(result.code, result.data);
+    static void make_bridge(Context &ctx, ext::Context &ext_ctx) {
+        ext_ctx.__bridge.call_action = [](const std::string &action, const nlohmann::json &params) {
+            const auto result = call_action(action, params);
+            return ext::ActionResult(result.code, result.data);
+        };
+        ext_ctx.__bridge.get_config_string = [&](const std::string &key, const std::string &default_val) {
+            return ctx.config->get_string(key, default_val);
+        };
+        ext_ctx.__bridge.get_config_integer = [&](const std::string &key, const int64_t default_val) {
+            return ctx.config->get_integer(key, default_val);
+        };
+        ext_ctx.__bridge.get_config_bool = [&](const std::string &key, const bool default_val) {
+            return ctx.config->get_bool(key, default_val);
+        };
     }
 
-    static ext::Context convert_context(Context &context) {
-        ext::Context ext_ctx(context.config->raw);
-        ext_ctx.__call_action = call_action_wrapper;
+    static ext::Context convert_context(Context &ctx) {
+        ext::Context ext_ctx(ctx.config->raw);
+        make_bridge(ctx, ext_ctx);
         return ext_ctx;
     }
 
     template <typename E>
-    static ext::EventContext convert_context(EventContext<E> &context) {
-        ext::EventContext ext_ctx(context.config->raw, context.data);
-        ext_ctx.__call_action = call_action_wrapper;
+    static ext::EventContext convert_context(EventContext<E> &ctx) {
+        ext::EventContext ext_ctx(ctx.config->raw, ctx.data);
+        make_bridge(ctx, ext_ctx);
         return ext_ctx;
     }
 
-    static ext::ActionContext convert_context(ActionContext &context, ext::ActionResult &result) {
-        ext::ActionContext ext_ctx(context.config->raw, context.action, context.params, result);
-        ext_ctx.__call_action = call_action_wrapper;
+    static ext::ActionContext convert_context(ActionContext &ctx, ext::ActionResult &result) {
+        ext::ActionContext ext_ctx(ctx.config->raw, ctx.action, ctx.params, result);
+        make_bridge(ctx, ext_ctx);
         return ext_ctx;
     }
 
