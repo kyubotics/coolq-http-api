@@ -92,10 +92,10 @@ namespace cqhttp::extension {
         };
 
         virtual Info info() const = 0;
-        virtual void hook_enable(Context &ctx) {}
-        virtual void hook_disable(Context &ctx) {}
-        virtual void hook_after_event(EventContext &ctx) {}
-        virtual void hook_missed_action(ActionContext &ctx) {}
+        virtual void on_create(Context &ctx) {}
+        virtual void on_destroy(Context &ctx) {}
+        virtual void on_event(EventContext &ctx) {}
+        virtual void on_missed_action(ActionContext &ctx) {}
     };
 
     typedef std::shared_ptr<Extension> (*ExtensionCreator)();

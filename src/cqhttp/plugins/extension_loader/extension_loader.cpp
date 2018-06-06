@@ -90,7 +90,7 @@ namespace cqhttp::plugins {
 
         auto ext_ctx = convert_context(ctx);
         for (auto &extension : extensions_) {
-            extension->hook_enable(ext_ctx);
+            extension->on_create(ext_ctx);
         }
 
         ctx.next();
@@ -99,7 +99,7 @@ namespace cqhttp::plugins {
     void ExtensionLoader::hook_disable(Context &ctx) {
         auto ext_ctx = convert_context(ctx);
         for (auto &extension : extensions_) {
-            extension->hook_disable(ext_ctx);
+            extension->on_destroy(ext_ctx);
         }
         extensions_.clear();
 
@@ -116,7 +116,7 @@ namespace cqhttp::plugins {
     void ExtensionLoader::hook_after_event(EventContext<cq::Event> &ctx) {
         auto ext_ctx = convert_context(ctx);
         for (auto &extension : extensions_) {
-            extension->hook_after_event(ext_ctx);
+            extension->on_event(ext_ctx);
         }
 
         ctx.next();
@@ -126,7 +126,7 @@ namespace cqhttp::plugins {
         ext::ActionResult ext_result(ctx.result.code, ctx.result.data);
         auto ext_ctx = convert_context(ctx, ext_result);
         for (auto &extension : extensions_) {
-            extension->hook_missed_action(ext_ctx);
+            extension->on_missed_action(ext_ctx);
         }
 
         ctx.result.code = ext_ctx.result.code;
