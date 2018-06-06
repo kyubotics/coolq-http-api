@@ -14,6 +14,7 @@ namespace cqhttp {
             static const int BAD_THREAD_POOL = 201; // thread pool not correctly created
 
             // retcodes that represent HTTP status codes
+            // these should not be set mannually in action handlers
             static const int HTTP_BAD_REQUEST = 1400;
             static const int HTTP_UNAUTHORIZED = 1401;
             static const int HTTP_FORBIDDEN = 1403;
