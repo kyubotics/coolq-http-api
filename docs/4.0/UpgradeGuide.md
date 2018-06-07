@@ -36,3 +36,7 @@
 版本锁的文件名由原来的 `app.lock` 改为 `version.lock`，如果你需要解除容器中插件版本的锁定（即每次启动容器时都使用镜像对应版本的插件 cpk 文件覆盖已有的 cpk），现在需要删除 `version.lock`。
 
 此外，这个文件不再影响配置文件，如果需要手动编辑配置文件，现在需要在容器启动的环境变量中加入 `CONFIG_MANUALLY=true`。
+
+## 运行时库的变更
+
+由于新版使用了动态链接的 C 运行时，Windows 7 和 Windows Server 2008 等较老系统可能需要额外安装 [通用 C 运行库更新](https://support.microsoft.com/zh-cn/help/3118401/update-for-universal-c-runtime-in-windows) 才能正常使用，否则酷 Q 启动时会报 DLL 缺失错误。
