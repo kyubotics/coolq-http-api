@@ -2,7 +2,7 @@ var rootUrl = 'https://cqhttp.cc/docs';
 
 var versions = [
     { title: 'v4.0', path: '/4.0/' },
-    { title: 'v3.4 (latest)', path: '/3.4/' },
+    { title: 'v3.4', path: '/3.4/' },
     { title: 'v3.3', path: '/3.3/' },
     { title: 'v3.2', path: '/3.2/' },
     { title: 'v3.1', path: '/3.1/' },
@@ -10,8 +10,10 @@ var versions = [
     { title: 'v1.x-v2.x', path: '/legacy/' }
 ]
 
-var latestVersionIndex = 1;
+var latestVersionIndex = 0;
 var currentVersionIndex = -1;
+
+versions[latestVersionIndex].title += ' (latest)';
 
 versions.forEach(function (v, idx) {
     if (v.path) {
