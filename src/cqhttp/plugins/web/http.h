@@ -27,7 +27,7 @@ namespace cqhttp::plugins {
         std::shared_ptr<SimpleWeb::Server<SimpleWeb::HTTP>> server_;
         std::thread thread_;
 
-        bool started_ = false;
+        std::atomic_bool started_ = false;
 
         void init_server();
     };

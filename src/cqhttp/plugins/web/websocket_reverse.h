@@ -2,7 +2,6 @@
 
 #include "cqhttp/core/plugin.h"
 
-#include <mutex>
 #include <thread>
 
 #include "cqhttp/plugins/web/vendor/simple_web/client_ws.hpp"
@@ -19,7 +18,7 @@ namespace cqhttp::plugins {
         bool good() const override { return (!api_ || api_->started()) && (!event_ || event_->started()); }
 
     private:
-        bool use_ws_reverse_{};
+        bool use_ws_reverse_;
 
         class EndpointBase {
         public:
@@ -50,7 +49,7 @@ namespace cqhttp::plugins {
             unsigned long reconnect_interval_;
             bool reconnect_on_code_1000_;
 
-            bool started_ = false;
+            std::atomic_bool started_ = false;
 
             union Client {
                 std::shared_ptr<SimpleWeb::SocketClient<SimpleWeb::WS>> ws;
@@ -64,21 +63,9 @@ namespace cqhttp::plugins {
             std::optional<bool> client_is_wss_;
             std::thread thread_;
 
-            bool should_reconnect_ = false;
-            std::mutex should_reconnect_mutex_;
+            std::atomic_bool should_reconnect_ = false;
             std::thread reconnect_worker_thread_;
-            bool reconnect_worker_running_ = false;
-            std::mutex reconnect_worker_running_mutex_;
-
-            bool is_reconnect_worker_running() {
-                std::unique_lock<std::mutex> lock(reconnect_worker_running_mutex_);
-                return reconnect_worker_running_;
-            }
-
-            void set_reconnect_worker_running(const bool yes_or_no) {
-                std::unique_lock<std::mutex> lock(reconnect_worker_running_mutex_);
-                reconnect_worker_running_ = yes_or_no;
-            }
+            std::atomic_bool reconnect_worker_running_ = false;
         };
 
         class ApiEndpoint final : public EndpointBase {

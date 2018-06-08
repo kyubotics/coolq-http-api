@@ -22,12 +22,11 @@ namespace cqhttp::plugins {
         }
         client->on_close = [&](shared_ptr<typename WsClientT::Connection> connection, const int code, string reason) {
             if (reconnect_on_code_1000_ || code != 1000) {
-                with_unique_lock(should_reconnect_mutex_, [&]() { should_reconnect_ = true; });
+                should_reconnect_ = true;
             }
         };
-        client->on_error = [&](shared_ptr<typename WsClientT::Connection> connection,
-                               const SimpleWeb::error_code &error_code) {
-            with_unique_lock(should_reconnect_mutex_, [&]() { should_reconnect_ = true; });
+        client->on_error = [&](shared_ptr<typename WsClientT::Connection>, const SimpleWeb::error_code &) {
+            should_reconnect_ = true;
         };
         return client;
     }
@@ -52,13 +51,9 @@ namespace cqhttp::plugins {
 
         reconnect_worker_thread_ = thread([&]() {
             try {
-                set_reconnect_worker_running(true);
-                while (is_reconnect_worker_running()) {
-                    auto should_reconn = false;
-                    with_unique_lock(should_reconnect_mutex_, [&]() {
-                        should_reconn = should_reconnect_;
-                        should_reconnect_ = false;
-                    });
+                reconnect_worker_running_ = true;
+                while (reconnect_worker_running_) {
+                    const auto should_reconn = should_reconnect_.exchange(false);
                     if (should_reconn) {
                         logging::info(TAG,
                                       u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
@@ -68,8 +63,8 @@ namespace cqhttp::plugins {
                         start();
                     }
 
-                    if (is_reconnect_worker_running()) {
-                        Sleep(500); // wait 500 ms for the next check
+                    if (reconnect_worker_running_) {
+                        Sleep(300); // wait 300 ms for the next check
                     } else {
                         break;
                     }
@@ -97,8 +92,9 @@ namespace cqhttp::plugins {
     }
 
     void WebSocketReverse::EndpointBase::stop() {
-        set_reconnect_worker_running(false); // this will notify the reconnect worker to stop
-        // detach but not join, because we want the thread continue to run until its next check
+        reconnect_worker_running_ = false; // this will notify the reconnect worker to stop
+        // because the reconnect worker thread will call stop() and start()
+        // here we must use detach() but not join(), otherwise it will get stuck
         reconnect_worker_thread_.detach();
 
         if (started_) {
