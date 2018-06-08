@@ -2,6 +2,7 @@
 
 #include "cqhttp/core/plugin.h"
 
+#include <atomic>
 #include <thread>
 
 namespace cqhttp::plugins {
@@ -12,10 +13,10 @@ namespace cqhttp::plugins {
         bool good() const override { return restart_worker_running_; }
 
     private:
-        bool should_restart_ = false;
+        std::atomic_bool should_restart_ = false;
         unsigned long restart_delay_ = 0;
         std::thread restart_worker_thread_;
-        bool restart_worker_running_ = false;
+        std::atomic_bool restart_worker_running_ = false;
     };
 
     static std::shared_ptr<Restarter> restarter = std::make_shared<Restarter>();

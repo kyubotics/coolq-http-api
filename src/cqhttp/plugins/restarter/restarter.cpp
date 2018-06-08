@@ -14,7 +14,6 @@ namespace cqhttp::plugins {
         restart_worker_thread_ = thread([&]() {
             while (restart_worker_running_) {
                 if (should_restart_) {
-                    // this may not be thread-safe, but currently it's ok
                     should_restart_ = false;
                     if (restart_delay_ > 0) {
                         logging::info(TAG, u8"HTTP API 插件将在 " + to_string(restart_delay_) + u8" 毫秒后重启");
