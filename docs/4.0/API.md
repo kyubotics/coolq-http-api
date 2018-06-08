@@ -572,6 +572,35 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 | `friends[i].remark` | string | 好友备注 |
 | `friends[i].user_id` | number | 好友 QQ 号 |
 
+
+### `/_get_group_info` 获取群信息
+
+#### 参数
+
+| 字段名 | 数据类型 | 默认值 | 说明 |
+| ----- | ------- | ----- | --- |
+| `group_id` | number | - | 要查询的群号 |
+
+#### 响应数据
+
+| 字段名 | 数据类型 | 说明 |
+| ----- | ------- | --- |
+| `group_id` | number | 群号 |
+| `group_name` | string | 群名称 |
+| `create_time` | number | 创建时间 |
+| `category` | number | 群分类，具体这个 ID 对应的名称暂时没有 |
+| `member_count` | number | 成员数 |
+| `introduction` | string | 群介绍 |
+| `admins` | array | 群主和管理员列表 |
+
+其中，`admins` 中每一项是一个 JSON 对象，如下：
+
+| 字段名 | 数据类型 | 说明 |
+| ----- | ------- | --- |
+| `user_id` | number | QQ 号 |
+| `nickname` | string | 昵称 |
+| `role` | string | 角色，`owner` 表示群主、`admin` 表示管理员 |
+
 ## 获取 `data` 目录中的文件的接口
 
 除了上面的 API，插件还提供一个简单的静态文件获取服务，请求方式只支持 GET，URL 路径为 `/data/` 加上要请求的文件相对于酷 Q `data` 目录的路径。例如，假设酷 Q 主目录在 `C:\Apps\CQA`，则要获取 `C:\Apps\CQA\data\image\ABCD.jpg.cqimg` 的话，只需请求 `/data/image/ABCD.jpg.cqimg`，响应内容即为要请求的文件。
