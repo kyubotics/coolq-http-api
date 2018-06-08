@@ -46,33 +46,7 @@ namespace cqhttp::plugins {
         }
     }
 
-    void WebSocketReverse::EndpointBase::start() {
-        init();
-
-        reconnect_worker_thread_ = thread([&]() {
-            try {
-                reconnect_worker_running_ = true;
-                while (reconnect_worker_running_) {
-                    const auto should_reconn = should_reconnect_.exchange(false);
-                    if (should_reconn) {
-                        logging::info(TAG,
-                                      u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
-                                          + to_string(reconnect_interval_) + u8" 毫秒后尝试重连");
-                        Sleep(reconnect_interval_);
-                        stop();
-                        start();
-                    }
-
-                    if (reconnect_worker_running_) {
-                        Sleep(300); // wait 300 ms for the next check
-                    } else {
-                        break;
-                    }
-                }
-            } catch (...) {
-            }
-        });
-
+    void WebSocketReverse::EndpointBase::connect() {
         if (client_is_wss_.has_value()) {
             // client successfully initialized
             thread_ = thread([&]() {
@@ -91,12 +65,7 @@ namespace cqhttp::plugins {
         }
     }
 
-    void WebSocketReverse::EndpointBase::stop() {
-        reconnect_worker_running_ = false; // this will notify the reconnect worker to stop
-        // because the reconnect worker thread will call stop() and start()
-        // here we must use detach() but not join(), otherwise it will get stuck
-        reconnect_worker_thread_.detach();
-
+    void WebSocketReverse::EndpointBase::disconnect() {
         if (started_) {
             if (client_is_wss_.value() == false) {
                 client_.ws->stop();
@@ -108,7 +77,45 @@ namespace cqhttp::plugins {
         if (thread_.joinable()) {
             thread_.join();
         }
+    }
 
+    void WebSocketReverse::EndpointBase::start() {
+        init();
+
+        reconnect_worker_thread_ = thread([&]() {
+            try {
+                reconnect_worker_running_ = true;
+                while (reconnect_worker_running_) {
+                    const auto should_reconn = should_reconnect_.exchange(false);
+                    if (should_reconn) {
+                        logging::info(TAG,
+                                      u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
+                                          + to_string(reconnect_interval_) + u8" 毫秒后尝试重连");
+                        Sleep(reconnect_interval_);
+                        disconnect();
+                        connect();
+                    }
+
+                    if (reconnect_worker_running_) {
+                        Sleep(300); // wait 300 ms for the next check
+                    } else {
+                        break;
+                    }
+                }
+            } catch (...) {
+            }
+        });
+
+        connect();
+    }
+
+    void WebSocketReverse::EndpointBase::stop() {
+        reconnect_worker_running_ = false; // this will notify the reconnect worker to stop
+        if (reconnect_worker_thread_.joinable()) {
+            reconnect_worker_thread_.join();
+        }
+
+        disconnect();
         client_.ws = nullptr;
         client_.wss = nullptr;
         client_is_wss_ = nullopt;
