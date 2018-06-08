@@ -30,20 +30,20 @@ namespace cqhttp::plugins {
                         map<int64_t, int> gpid_idx_map;
                         for (auto gp : resp_data.at("gpnames")) {
                             auto res_gp = json::object();
-                            auto gpid = gp.at("gpid").get<int64_t>();
+                            const auto gpid = gp.at("gpid");
                             res_gp["friend_group_id"] = gpid;
-                            res_gp["friend_group_name"] = gp.at("gpname").get<string>();
+                            res_gp["friend_group_name"] = gp.at("gpname");
                             res_gp["friends"] = json::array();
                             gpid_idx_map[gpid] = result.data.size();
                             result.data.push_back(res_gp);
                         }
 
                         for (auto frnd : resp_data.at("list")) {
-                            auto gpid = frnd.at("groupid").get<int64_t>();
+                            const auto gpid = frnd.at("groupid");
                             auto res_frnd = json::object();
-                            res_frnd["user_id"] = frnd.at("uin").get<int64_t>();
-                            res_frnd["nickname"] = frnd.at("nick").get<string>();
-                            res_frnd["remark"] = frnd.at("remark").get<string>();
+                            res_frnd["user_id"] = frnd.at("uin");
+                            res_frnd["nickname"] = frnd.at("nick");
+                            res_frnd["remark"] = frnd.at("remark");
                             result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
                         }
 
@@ -68,20 +68,20 @@ namespace cqhttp::plugins {
                     map<int64_t, int> gpid_idx_map;
                     for (auto gp : resp_data.at("gpnames")) {
                         auto res_gp = json::object();
-                        auto gpid = gp.at("gpid").get<int64_t>();
+                        const auto gpid = gp.at("gpid");
                         res_gp["friend_group_id"] = gpid;
-                        res_gp["friend_group_name"] = gp.at("gpname").get<string>();
+                        res_gp["friend_group_name"] = gp.at("gpname");
                         res_gp["friends"] = json::array();
                         gpid_idx_map[gpid] = result.data.size();
                         result.data.push_back(res_gp);
                     }
 
                     for (auto frnd : resp_data.at("items")) {
-                        auto gpid = frnd.at("groupid").get<int64_t>();
+                        const auto gpid = frnd.at("groupid");
                         auto res_frnd = json::object();
-                        res_frnd["user_id"] = frnd.at("uin").get<int64_t>();
-                        res_frnd["nickname"] = frnd.at("name").get<string>();
-                        res_frnd["remark"] = frnd.at("remark").get<string>();
+                        res_frnd["user_id"] = frnd.at("uin");
+                        res_frnd["nickname"] = frnd.at("name");
+                        res_frnd["remark"] = frnd.at("remark");
                         result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
                     }
 
@@ -90,18 +90,78 @@ namespace cqhttp::plugins {
                 } catch (exception &) {
                 }
             }
-
-            // failed
-            result.data = nullptr;
-            result.code = Codes::DEFAULT_ERROR;
         } catch (cq::exception::ApiError &) {
-            result.code = Codes::DEFAULT_ERROR;
         }
+
+        // failed
+        result.code = Codes::DEFAULT_ERROR;
+        result.data = nullptr;
+    }
+
+    static void action_get_group_info(ActionContext &ctx) {
+        auto &result = ctx.result;
+
+        const auto group_id = ctx.params.get_integer("group_id");
+        if (group_id <= 0) {
+            result.code = Codes::DEFAULT_ERROR;
+            return;
+        }
+
+        try {
+            const auto login_id_str = to_string(api::get_login_user_id());
+            const auto cookies =
+                "pt2gguin=o" + login_id_str + ";ptisp=os;p_uin=o" + login_id_str + ";" + api::get_cookies();
+            const auto g_tk = to_string(api::get_csrf_token());
+
+            const auto url = "http://qun.qzone.qq.com/cgi-bin/get_group_member?g_tk=" + g_tk + "&uin=" + login_id_str
+                             + "&neednum=1&groupid=" + to_string(group_id);
+            const auto res = utils::http::get_json(url, true, cookies).value_or(nullptr);
+
+            try {
+                const auto data = res.at("data");
+
+                result.data = json::object();
+                result.data["group_id"] = group_id;
+                result.data["group_name"] = data.at("group_name");
+                result.data["create_time"] = data.at("create_time");
+                result.data["category"] = data.at("class");
+                result.data["member_count"] = data.at("total");
+                result.data["introduction"] = data.at("finger_memo");
+                result.data["admins"] = json::array();
+                for (const auto &admin : data.at("item")) {
+                    if (admin.at("iscreator") == 0 && admin.at("ismanager") == 0) {
+                        // skip non-admin (may be bot itself)
+                        continue;
+                    }
+
+                    json j = {
+                        {"user_id", admin.at("uin")},
+                        {"nickname", admin.at("nick")},
+                    };
+                    if (admin.at("iscreator") == 1) {
+                        j["role"] = "owner";
+                    } else {
+                        j["role"] = "admin";
+                    }
+                    result.data["admins"].push_back(j);
+                }
+                result.code = Codes::OK;
+                return;
+            } catch (exception &) {
+            }
+        } catch (cq::exception::ApiError &) {
+        }
+
+        // failed
+        result.code = Codes::DEFAULT_ERROR;
+        result.data = nullptr;
     }
 
     void ExperimentalActions::hook_missed_action(ActionContext &ctx) {
         if (ctx.action == "_get_friend_list") {
             action_get_friend_list(ctx);
+        } else if (ctx.action == "_get_group_info") {
+            action_get_group_info(ctx);
         }
 
         ctx.next();
