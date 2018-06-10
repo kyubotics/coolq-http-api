@@ -33,9 +33,7 @@ namespace cqhttp::extension {
     };
 
     struct Context {
-        Context(const nlohmann::json &config) : config(config) {}
-
-        const nlohmann::json &config;
+        Context() = default;
 
         ActionResult call_action(const std::string &action,
                                  const nlohmann::json &params = nlohmann::json::object()) const {
@@ -66,14 +64,13 @@ namespace cqhttp::extension {
     };
 
     struct EventContext : Context {
-        EventContext(const nlohmann::json &config, const nlohmann::json &data) : Context(config), data(data) {}
+        EventContext(const nlohmann::json &data) : data(data) {}
         const nlohmann::json &data;
     };
 
     struct ActionContext : Context {
-        ActionContext(const nlohmann::json &config, const std::string &action, const nlohmann::json &params,
-                      ActionResult &result)
-            : Context(config), action(action), params(params), result(result) {}
+        ActionContext(const std::string &action, const nlohmann::json &params, ActionResult &result)
+            : action(action), params(params), result(result) {}
 
         const std::string &action;
         const nlohmann::json &params;
