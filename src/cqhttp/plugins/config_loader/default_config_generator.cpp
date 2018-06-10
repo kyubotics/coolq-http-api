@@ -47,6 +47,8 @@ namespace cqhttp::plugins {
                 ctx.config->raw = json::parse(DEFAULT_CONFIG);
             } catch (...) {
             }
+        } else {
+            cq::config.convert_unicode_emoji = ctx.config->get_bool("convert_unicode_emoji", true);
         }
 
         ctx.config->raw.erase("_LOADED");
