@@ -209,7 +209,10 @@ namespace cqhttp::plugins {
                 }
 
                 logging::info(TAG, u8"执行快速操作：回复");
-                reply.send(msg_ev.target);
+                try {
+                    reply.send(msg_ev.target);
+                } catch (cq::exception::ApiError &) {
+                }
             }
 
             if (msg_ev.message_type == cq::message::GROUP) {
@@ -217,21 +220,30 @@ namespace cqhttp::plugins {
 
                 if (params.get_bool("delete", false)) {
                     logging::info(TAG, u8"执行快速操作：群组撤回成员消息");
-                    api::delete_msg(grp_msg_ev.message_id);
+                    try {
+                        api::delete_msg(grp_msg_ev.message_id);
+                    } catch (cq::exception::ApiError &) {
+                    }
                 }
 
                 if (params.get_bool("kick", false) && !grp_msg_ev.is_anonymous()) {
                     logging::info(TAG, u8"执行快速操作：群组踢人");
-                    api::set_group_kick(grp_msg_ev.group_id, grp_msg_ev.user_id, false);
+                    try {
+                        api::set_group_kick(grp_msg_ev.group_id, grp_msg_ev.user_id, false);
+                    } catch (cq::exception::ApiError &) {
+                    }
                 }
 
                 if (params.get_bool("ban", false)) {
                     const auto duration = 30 * 60; // 30 minutes by default
                     logging::info(TAG, u8"执行快速操作：群组禁言");
-                    if (grp_msg_ev.is_anonymous()) {
-                        api::set_group_anonymous_ban(grp_msg_ev.group_id, grp_msg_ev.anonymous.flag, duration);
-                    } else {
-                        api::set_group_ban(grp_msg_ev.group_id, grp_msg_ev.user_id, duration);
+                    try {
+                        if (grp_msg_ev.is_anonymous()) {
+                            api::set_group_anonymous_ban(grp_msg_ev.group_id, grp_msg_ev.anonymous.flag, duration);
+                        } else {
+                            api::set_group_ban(grp_msg_ev.group_id, grp_msg_ev.user_id, duration);
+                        }
+                    } catch (cq::exception::ApiError &) {
                     }
                 }
             }
@@ -240,19 +252,22 @@ namespace cqhttp::plugins {
 
             if (auto approve_opt = params.get<bool>("approve"); approve_opt) {
                 const auto approve = approve_opt.value();
-                if (req_ev.request_type == cq::request::FRIEND) {
-                    const auto frnd_req_ev = static_cast<const cq::FriendRequestEvent &>(ctx.event);
-                    logging::info(TAG, u8"执行快速操作：处理好友请求");
-                    api::set_friend_add_request(frnd_req_ev.flag,
-                                                approve ? cq::request::APPROVE : cq::request::REJECT,
-                                                params.get_string("remark"));
-                } else if (req_ev.request_type == cq::request::GROUP) {
-                    const auto grp_req_ev = static_cast<const cq::GroupRequestEvent &>(ctx.event);
-                    logging::info(TAG, u8"执行快速操作：处理群组请求");
-                    api::set_group_add_request(grp_req_ev.flag,
-                                               grp_req_ev.sub_type,
-                                               approve ? cq::request::APPROVE : cq::request::REJECT,
-                                               params.get_string("reason"));
+                try {
+                    if (req_ev.request_type == cq::request::FRIEND) {
+                        const auto frnd_req_ev = static_cast<const cq::FriendRequestEvent &>(ctx.event);
+                        logging::info(TAG, u8"执行快速操作：处理好友请求");
+                        api::set_friend_add_request(frnd_req_ev.flag,
+                                                    approve ? cq::request::APPROVE : cq::request::REJECT,
+                                                    params.get_string("remark"));
+                    } else if (req_ev.request_type == cq::request::GROUP) {
+                        const auto grp_req_ev = static_cast<const cq::GroupRequestEvent &>(ctx.event);
+                        logging::info(TAG, u8"执行快速操作：处理群组请求");
+                        api::set_group_add_request(grp_req_ev.flag,
+                                                   grp_req_ev.sub_type,
+                                                   approve ? cq::request::APPROVE : cq::request::REJECT,
+                                                   params.get_string("reason"));
+                    }
+                } catch (cq::exception::ApiError &) {
                 }
             }
         }
