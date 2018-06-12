@@ -23,7 +23,7 @@ $ docker run -ti --rm --name cqhttp-test \
 
 然后访问 `http://<你的IP>:9000/` 进入 noVNC（默认密码 `MAX8char`），登录酷 Q，即可开始使用（插件已自动启用，配置文件也根据启动命令的环境变量自动生成了）。一般情况下，你不太需要关注插件是如何存在于容器中的。
 
-注意，默认情况下，容器启动时会将 `CQHTTP_` 开头的环境变量写入到配置文件中（整个覆盖已有的配置文件），**因此，尽管你可以在酷 Q 运行时修改配置文件并重启插件以使用修改后的配置，但容器重启后配置文件将再次被覆盖**。如果你打算手动编辑和管理配置文件，可以设置环境变量 `CONFIG_MANUALLY` 的值为 `true`（默认 `false`），插件将不会把 `CQHTTP_` 开头的环境变量写入（覆盖）到配置文件中。
+注意，默认情况下，容器启动时会检查是否已经存在 `config` 目录，如果不存在，则会将 `CQHTTP_` 开头的环境变量写入到配置文件中；如果 `config` 目录存在，即不是首次启动，则不会做任何修改。**因此，你可以在容器运行时手动修改配置文件，重启容器后仍然有效，这和旧版本的行为不一样！**如果你要让容器每次启动时都使用环境变量重新创建配置文件，以保持插件行为和容器启动命令的一致性，可以设置环境变量 `FORCE_ENV` 的值为 `true`。
 
 ## 通过环境变量配置容器的运行
 
@@ -32,8 +32,8 @@ $ docker run -ti --rm --name cqhttp-test \
 | `VNC_PASSWD` | 继承自官方镜像，noVNC 的密码（官方说不能超过 8 个字符，但实测可以超过） |
 | `COOLQ_ACCOUNT` | 继承自官方镜像，设置要登录酷 Q 的 QQ 号。在第一次手动登录后，你可以勾选「快速登录」功能以启用自动登录，此后，容器启动或酷 Q 异常退出时，会自动登录该帐号。 |
 | `COOLQ_URL` | 继承自官方镜像，设置下载酷 Q 的地址，默认为 `http://dlsec.cqp.me/cqa-tuling`，即酷 Q Air 图灵版。请确保下载后的文件能解压出 `酷Q Air/CQA.exe` 或 `酷Q Pro/CQP.exe` |
-| `CONFIG_MANUALLY` | 设置是否手动编辑配置文件，设置为 `true` 时（默认为 `false`）容器将不会自动把 `CQHTTP_` 开头的环境变量写入配置文件 |
-| `CQHTTP_POST_URL`<br>`CQHTTP_SERVE_DATA_FILES`<br>`CQHTTP_USE_WS`<br>等形如 `CQHTTP_*` 的 | 当 `CONFIG_MANUALLY` 未设置或设置为 `false` 时，可通过「`CQHTTP_` + 插件配置项的大写」来配置插件的运行，容器会将这些项的值自动写入配置文件 |
+| `FORCE_ENV` | 是否强制把 `CQHTTP_` 开头的环境变量写入配置文件，**这会删除现有的整个 `config` 目录** |
+| `CQHTTP_POST_URL`<br>`CQHTTP_SERVE_DATA_FILES`<br>`CQHTTP_USE_WS`<br>等形如 `CQHTTP_*` 的 | 当容器首次启动或 `FORCE_ENV` 为 `true` 的情况下，容器会将这些项的值自动写入配置文件 |
 
 ## 更换／升级插件版本
 
