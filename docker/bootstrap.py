@@ -5,8 +5,7 @@ from configparser import ConfigParser
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 
-# COOLQ_DIR = '/home/user/coolq'
-COOLQ_DIR = '/home/richard/Lab/coolq'
+COOLQ_DIR = '/home/user/coolq'
 COOLQ_CONFIG_FILE = os.path.join(COOLQ_DIR, 'conf', 'CQP.cfg')
 COOLQ_APP_DIR = os.path.join(COOLQ_DIR, 'app')
 APP_ID = 'io.github.richardchien.coolqhttpapi'
@@ -14,8 +13,7 @@ APP_DIR = os.path.join(COOLQ_APP_DIR, APP_ID)
 APP_CONFIG_DIR = os.path.join(APP_DIR, 'config')
 VERSION_LOCK_FILE = os.path.join(APP_DIR, 'version.lock')
 
-# CPK_FILE = '/home/user/io.github.richardchien.coolqhttpapi.cpk'
-CPK_FILE = '/home/richard/Lab/coolq/io.github.richardchien.coolqhttpapi.cpk'
+CPK_FILE = '/home/user/io.github.richardchien.coolqhttpapi.cpk'
 
 
 def touch(path):
