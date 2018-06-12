@@ -69,7 +69,7 @@ def bootstrap():
 
     config_name = os.getenv('COOLQ_ACCOUNT', 'general')
     app_config = ConfigParser()
-    app_config['general'] = {}
+    app_config[config_name] = {}
     for key, value in os.environ.items():
         if not key.startswith('CQHTTP_'):
             continue
