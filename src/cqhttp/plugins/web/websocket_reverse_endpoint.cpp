@@ -58,6 +58,7 @@ namespace cqhttp::plugins {
                         client_.wss->start();
                     }
                 } catch (...) {
+                    should_reconnect_ = true;
                 }
                 started_ = false;
             });
