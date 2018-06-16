@@ -36,8 +36,4 @@ namespace cqhttp::plugins {
             handler->destroy();
         }
     }
-
-    void Loggers::hook_coolq_start(Context &ctx) { ctx.next(); }
-
-    void Loggers::hook_coolq_exit(Context &ctx) { ctx.next(); }
 } // namespace cqhttp::plugins
