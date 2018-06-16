@@ -65,7 +65,7 @@ namespace cq::message {
                     function_name_s = stringstream();
                     params_s = stringstream();
                     state = TEXT;
-                    // because the current char may be '[', so we goto text part
+                    // because the current char may be '[', we goto text part
                     goto text;
                 }
                 break;
