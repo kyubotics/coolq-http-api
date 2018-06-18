@@ -7,9 +7,9 @@
 要使用 WebSocket，首先需要在配置文件中填写如下配置：
 
 ```ini
-ws_host=0.0.0.0  # 监听的 IP
-ws_host=6700  # 监听的端口
-use_ws=yes  # 启用 WebSocket 服务端
+ws_host = 0.0.0.0  # 监听的 IP
+ws_port = 6700  # 监听的端口
+use_ws = yes  # 启用 WebSocket 服务端
 ```
 
 重启插件后，便启动了 WebSocket 服务器。

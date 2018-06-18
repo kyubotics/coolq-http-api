@@ -19,15 +19,15 @@
 
 ```ini
 [general]
-host=0.0.0.0
-post_url=http://192.168.0.11:8888
+host = 0.0.0.0
+post_url = http://192.168.0.11:8888
 
 [12345678]
-access_token=Mgep4rV49rM8Jf
-port=5700
+access_token = Mgep4rV49rM8Jf
+port = 5700
 
 [87654321]
-port=5701
+port = 5701
 ```
 
 ### 使用 JSON 格式，在单个文件中存放多个账号的配置
