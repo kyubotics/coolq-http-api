@@ -108,6 +108,15 @@ namespace cqhttp::extension {
             std::string description{};
         };
 
+        struct Logger {
+            using LogFunc = std::function<void(const std::string &msg)>;
+            LogFunc debug;
+            LogFunc info;
+            LogFunc info_success;
+            LogFunc warning;
+            LogFunc error;
+        } logger;
+
         virtual Info info() const = 0;
         virtual void on_create(Context &ctx) {}
         virtual void on_destroy(Context &ctx) {}
