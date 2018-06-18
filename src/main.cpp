@@ -51,7 +51,7 @@ CQ_MAIN {
 
     // handle api and event, must in order and at the end
     use(plugins::event_filter);
-    // use(plugins::extension_loader);
+    use(plugins::extension_loader);
     use(plugins::backward_compatibility);
     use(plugins::post_message_formatter);
     use(plugins::http);
