@@ -127,7 +127,7 @@ namespace cqhttp::extension {
     typedef std::shared_ptr<Extension> (*ExtensionCreator)();
     typedef ExtensionCreator (*ExtensionCreatorGetter)();
 
-#define PLUGIN_CREATOR                                                                                     \
+#define EXTENSION_CREATOR                                                                                  \
     std::shared_ptr<Extension> __create_extension();                                                       \
     extern "C" __declspec(dllexport) ExtensionCreator GetExtensionCreator() { return __create_extension; } \
     std::shared_ptr<Extension> __create_extension()
