@@ -14,6 +14,7 @@ namespace cqhttp::plugins {
         void hook_missed_action(ActionContext &ctx) override;
 
     private:
+		bool enable_{};
         std::vector<HMODULE> dll_handles_;
         std::vector<std::shared_ptr<extension::Extension>> extensions_;
     };
