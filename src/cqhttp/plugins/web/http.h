@@ -19,6 +19,7 @@ namespace cqhttp::plugins {
 
     private:
         std::string post_url_{};
+        unsigned long post_timeout_{};
         std::string secret_{};
         bool use_http_{};
         std::string access_token_{};

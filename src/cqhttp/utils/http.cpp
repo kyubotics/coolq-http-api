@@ -131,7 +131,7 @@ namespace cqhttp::utils::http::curl {
 } // namespace cqhttp::utils::http::curl
 
 namespace cqhttp::utils::http {
-    static optional<json> get_json_libcurl(const string &url, const bool use_fake_ua, const string &cookies) {
+    optional<json> get_json(const string &url, const bool use_fake_ua, const string &cookies) {
         auto request =
             curl::Request(url, {{"User-Agent", use_fake_ua ? FAKE_USER_AGENT : CQHTTP_USER_AGENT}, {"Referer", url}});
         if (!cookies.empty()) {
@@ -157,11 +157,7 @@ namespace cqhttp::utils::http {
         return nullopt;
     }
 
-    optional<json> get_json(const string &url, const bool use_fake_ua, const string &cookies) {
-        return get_json_libcurl(url, use_fake_ua, cookies);
-    }
-
-    static bool download_file_libcurl(const string &url, const string &local_path, const bool use_fake_ua) {
+    bool download_file(const string &url, const string &local_path, const bool use_fake_ua) {
         auto succeeded = false;
         const auto ansi_local_path = ansi(local_path);
 
@@ -199,29 +195,29 @@ namespace cqhttp::utils::http {
         return succeeded;
     }
 
-    bool download_file(const string &url, const string &local_path, const bool use_fake_ua) {
-        return download_file_libcurl(url, local_path, use_fake_ua);
-    }
-
     static void fix_headers(Headers &headers) {
         if (headers.find("User-Agent") == headers.end()) {
             headers["User-Agent"] = CQHTTP_USER_AGENT;
         }
     }
 
-    Response get(const string &url, Headers headers) {
+    Response get(const string &url, Headers headers, const long timeout) {
         fix_headers(headers);
-        const auto res = curl::Request(url, headers).get();
+        auto request = curl::Request(url, headers);
+        request.timeout = timeout;
+        const auto res = request.get();
         return static_cast<Response>(res);
     }
 
-    Response post(const string &url, const string &body, const string &content_type) {
-        return post(url, body, {{"Content-Type", content_type}});
+    Response post(const string &url, const string &body, const string &content_type, const long timeout) {
+        return post(url, body, {{"Content-Type", content_type}}, timeout);
     }
 
-    Response post(const string &url, const std::string &body, Headers headers) {
+    Response post(const string &url, const std::string &body, Headers headers, const long timeout) {
         fix_headers(headers);
-        const auto res = curl::Request(url, headers, body).post();
+        auto request = curl::Request(url, headers, body);
+        request.timeout = timeout;
+        const auto res = request.post();
         return static_cast<Response>(res);
     }
 } // namespace cqhttp::utils::http

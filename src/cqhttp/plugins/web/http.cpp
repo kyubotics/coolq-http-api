@@ -154,6 +154,7 @@ namespace cqhttp::plugins {
             logging::warning(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 不是合法地址，将被忽略");
             post_url_ = "";
         }
+        post_timeout_ = ctx.config->get_integer("post_timeout", 0);
         secret_ = ctx.config->get_string("secret", "");
 
         use_http_ = ctx.config->get_bool("use_http", true);
@@ -273,7 +274,8 @@ namespace cqhttp::plugins {
         }
     }
 
-    static utils::http::Response post_json(const string &url, const json &payload, const string &secret = "") {
+    static utils::http::Response post_json(const string &url, const json &payload, const string &secret,
+                                           const long timeout) {
         const auto body = payload.dump();
         utils::http::Headers headers{
             {"Content-Type", "application/json; charset=UTF-8"},
@@ -282,13 +284,13 @@ namespace cqhttp::plugins {
         if (!secret.empty()) {
             headers["X-Signature"] = "sha1=" + utils::crypt::hmac_sha1_hex(secret, body);
         }
-        return post(url, payload.dump(), headers);
+        return post(url, payload.dump(), headers, timeout);
     }
 
     void Http::hook_after_event(EventContext<cq::Event> &ctx) {
         if (!post_url_.empty()) {
             logging::debug(TAG, u8"开始通过 HTTP 上报事件");
-            const auto resp = post_json(post_url_, ctx.data, secret_);
+            const auto resp = post_json(post_url_, ctx.data, secret_, post_timeout_);
 
             if (resp.status_code == 0) {
                 logging::info(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 无法访问");
