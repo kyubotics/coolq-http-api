@@ -1,0 +1,28 @@
+branches:
+  except:
+    - /dev.*/  # do not build dev branch
+
+image:
+  - Visual Studio 2017
+
+platform:
+  - x86
+
+environment:
+  VCPKG_ROOT: C:\tools\vcpkg
+  VCPKG_TRIPLET: my-triplet
+
+cache: c:\tools\vcpkg\installed\  # cache the installed vcpkg packages
+
+install:
+  - git -C %VCPKG_ROOT% checkout 44631c9f6ff7eaf8fbe0ebc010918c5bf6407ac2 -- ports
+
+  - echo set(VCPKG_TARGET_ARCHITECTURE x86) > %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
+  - echo set(VCPKG_CRT_LINKAGE %CRT_LINKAGE%) >> %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
+  - echo set(VCPKG_LIBRARY_LINKAGE %LIBRARY_LINKAGE%) >> %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
+
+  - vcpkg --triplet %VCPKG_TRIPLET% install boost-algorithm boost-filesystem libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
+
+build_script:
+  - powershell scripts/generate.ps1 Release
+  - powershell scripts/build.ps1 Release
