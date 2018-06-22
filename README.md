@@ -1,13 +1,12 @@
 # CoolQ HTTP API 插件
 
-[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/LICENSE)
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/richardchien/coolq-http-api?svg=true)](https://ci.appveyor.com/project/richardchien/coolq-http-api)
-[![Docker Build Status](https://travis-ci.org/richardchien/coolq-http-api.svg)](https://travis-ci.org/richardchien/coolq-http-api)
+[![License](https://img.shields.io/github/license/richardchien/coolq-http-api.svg)](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/LICENSE)
+[![Build Status](https://img.shields.io/appveyor/ci/richardchien/coolq-http-api.svg)](https://ci.appveyor.com/project/richardchien/coolq-http-api)
 [![Release](https://img.shields.io/github/release/richardchien/coolq-http-api.svg)](https://github.com/richardchien/coolq-http-api/releases)
 [![Download Count](https://img.shields.io/github/downloads/richardchien/coolq-http-api/total.svg)](https://github.com/richardchien/coolq-http-api/releases)
-[![Docker Repository](https://img.shields.io/badge/docker-richardchien/cqhttp-blue.svg)](https://hub.docker.com/r/richardchien/cqhttp/)
+[![Docker Build Status](https://img.shields.io/travis/richardchien/coolq-http-api.svg?label=docker%20build)](https://travis-ci.org/richardchien/coolq-http-api)
 [![Docker Pulls](https://img.shields.io/docker/pulls/richardchien/cqhttp.svg)](https://hub.docker.com/r/richardchien/cqhttp/)
-[![QQ群](https://img.shields.io/badge/qq%E7%BE%A4-201865589-orange.svg)](https://jq.qq.com/?_wv=1027&k=5Euplde)
+[![QQ 群](https://img.shields.io/badge/qq%E7%BE%A4-201865589-orange.svg)](https://jq.qq.com/?_wv=1027&k=5Euplde)
 [![Telegram](https://img.shields.io/badge/telegram-chat-blue.svg)](https://t.me/cqhttp)
 
 通过 HTTP 或 WebSocket 对酷 Q 的事件进行上报以及接收请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。支持 Windows 7 和 Windows Server 2008 及更新版本，也可以运行在 Wine、Docker。
