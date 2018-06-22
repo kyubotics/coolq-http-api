@@ -2,3 +2,4 @@
 .vscode/c_cpp_properties.json
 build
 !lib/*.lib
+scripts/install.ps1

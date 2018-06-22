@@ -52,7 +52,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 ## 修改、编译
 
-项目使用 CMake 构建，[`scripts/generate.ps1`](scripts/generate.ps1)、[`scripts/build.ps1`](scripts/build.ps1)、[`scripts/post_build.ps1`](scripts/post_build.ps1) 分别给出了生成、构建、安装的脚本，你可能需要对它们中的一些变量做适当修改以在你的系统中运行。
+项目使用 CMake 构建，[`scripts/generate.ps1`](scripts/generate.ps1)、[`scripts/build.ps1`](scripts/build.ps1)、[`scripts/post_build.ps1`](scripts/post_build.ps1) 分别给出了生成、构建、构建后的脚本，你可能需要对它们中的一些变量做适当修改以在你的系统中运行。
 
 所有代码文件均为 UTF-8 编码，其中，[`io.github.richardchien.coolqhttpapi.json`](io.github.richardchien.coolqhttpapi.json) 文件将在 [`scripts/post_build.ps1`](scripts/post_build.ps1) 脚本中被转换为酷 Q 要求的 GB18030 编码。
 
@@ -65,7 +65,7 @@ set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_PLATFORM_TOOLSET v141)
 ```
 
-你需要在 vcpkg 的 `triplets` 文件夹中创建一个名为 `***.cmake` 的文件（文件名随意，这里假设为 `my-triplet.cmake`），内容如上。创建了这个 triplet 之后，你需要将 [`scripts/generate.ps1`](scripts/generate.ps1) 中的 `$vcpkg_root`（vcpkg 根目录）和 `$vcpkg_triplet`（triplet 名称，例如 `my-triplet`）设置成你系统中的相应值。
+你需要在 vcpkg 的 `triplets` 文件夹中创建一个名为 `***.cmake` 的文件（文件名随意，这里假设为 `my-triplet.cmake`），内容如上。创建了这个 triplet 之后，你需要将 [`scripts/generate.ps1`](scripts/generate.ps1) 中的 `$vcpkg_root`（vcpkg 根目录）和 `$vcpkg_triplet`（triplet 名称，例如 `my-triplet`）设置成你系统中的相应值（或设置环境变量）。
 
 除此之外，还需要安装如下依赖：
 

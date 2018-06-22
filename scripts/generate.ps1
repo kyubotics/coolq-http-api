@@ -4,11 +4,10 @@ Set-Location $PSScriptRoot\..\  # enter the parent folder
 mkdir build\$config_type -ErrorAction SilentlyContinue  # create build folder if not exists
 Set-Location .\build\$config_type  # enter the build folder
 
-$vcpkg_root = "C:\CLI\vcpkg"
-$vcpkg_triplet = "my-triplet"
-$msvc_toolset = "v141"
+$vcpkg_root = $env:VCPKG_ROOT
+$vcpkg_triplet = $env:VCPKG_TRIPLET
 
-cmake -G "Visual Studio 15 2017" -T "$msvc_toolset" `
+cmake -G "Visual Studio 15 2017" -T "v141" `
     -DCMAKE_TOOLCHAIN_FILE="$vcpkg_root\scripts\buildsystems\vcpkg.cmake" `
     -DVCPKG_TARGET_TRIPLET="$vcpkg_triplet" `
     -DCMAKE_CONFIGURATION_TYPES="$config_type" `

@@ -1,7 +1,6 @@
 {
     "version": "2.0.0",
-    "tasks": [
-        {
+    "tasks": [{
             "label": "generate debug",
             "type": "shell",
             "command": "powershell",
@@ -11,6 +10,12 @@
                 "'${workspaceFolder}/scripts/generate.ps1'",
                 "Debug"
             ],
+            "options": {
+                "env": {
+                    "VCPKG_ROOT": "C:\\CLI\\vcpkg",
+                    "VCPKG_TRIPLET": "my-triplet"
+                }
+            },
             "group": "build"
         },
         {

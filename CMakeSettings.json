@@ -1,24 +1,19 @@
 {
-    "environments": [
-        {
-            "VCPKG_ROOT": "C:\\CLI\\vcpkg",
-            "VCPKG_CMAKE": "${env.VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake",
-            "VCPKG_TRIPLET": "my-triplet",
-            "MSVC_TOOLSET": "v141"
-        }
-    ],
-    "configurations": [
-        {
+    "environments": [{
+        "VCPKG_ROOT": "C:\\CLI\\vcpkg",
+        "VCPKG_CMAKE": "${env.VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake",
+        "VCPKG_TRIPLET": "my-triplet"
+    }],
+    "configurations": [{
             "name": "Debug",
             "generator": "Visual Studio 15 2017",
             "configurationType": "Debug",
-            "inheritEnvironments": [ "msvc_x86" ],
+            "inheritEnvironments": ["msvc_x86"],
             "buildRoot": "${projectDir}\\build\\${name}",
-            "cmakeCommandArgs": "-T ${env.MSVC_TOOLSET} -DCMAKE_BUILD_TYPE=${name}",
+            "cmakeCommandArgs": "-T v141 -DCMAKE_BUILD_TYPE=${name}",
             "buildCommandArgs": "",
             "ctestCommandArgs": "",
-            "variables": [
-                {
+            "variables": [{
                     "name": "CMAKE_TOOLCHAIN_FILE",
                     "value": "${env.VCPKG_CMAKE}"
                 },
@@ -32,13 +27,12 @@
             "name": "Release",
             "generator": "Visual Studio 15 2017",
             "configurationType": "Release",
-            "inheritEnvironments": [ "msvc_x86" ],
+            "inheritEnvironments": ["msvc_x86"],
             "buildRoot": "${projectDir}\\build\\${name}",
-            "cmakeCommandArgs": "-T ${env.MSVC_TOOLSET} -DCMAKE_BUILD_TYPE=${name}",
+            "cmakeCommandArgs": "-T v141 -DCMAKE_BUILD_TYPE=${name}",
             "buildCommandArgs": "",
             "ctestCommandArgs": "",
-            "variables": [
-                {
+            "variables": [{
                     "name": "CMAKE_TOOLCHAIN_FILE",
                     "value": "${env.VCPKG_CMAKE}"
                 },
