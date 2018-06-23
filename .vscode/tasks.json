@@ -1,6 +1,7 @@
 {
     "version": "2.0.0",
-    "tasks": [{
+    "tasks": [
+        {
             "label": "generate debug",
             "type": "shell",
             "command": "powershell",
