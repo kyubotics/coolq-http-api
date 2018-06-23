@@ -38,13 +38,14 @@ namespace cqhttp::plugins {
     }
 
     void Restarter::hook_missed_action(ActionContext &ctx) {
-        if (ctx.action == "set_restart_plugin") {
-            const auto delay = ctx.params.get_integer("delay", 0);
-            restart_delay_ = delay;
-            should_restart_ = true; // this will let the restart worker do it
-            ctx.result.code = ActionResult::Codes::ASYNC;
-        } else {
+        if (ctx.action != "set_restart_plugin") {
             ctx.next();
+            return;
         }
+
+        const auto delay = ctx.params.get_integer("delay", 0);
+        restart_delay_ = delay;
+        should_restart_ = true; // this will let the restart worker do it
+        ctx.result.code = ActionResult::Codes::ASYNC;
     }
 } // namespace cqhttp::plugins

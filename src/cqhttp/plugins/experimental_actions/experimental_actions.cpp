@@ -162,8 +162,8 @@ namespace cqhttp::plugins {
             action_get_friend_list(ctx);
         } else if (ctx.action == "_get_group_info") {
             action_get_group_info(ctx);
+        } else {
+            ctx.next();
         }
-
-        ctx.next();
     }
 } // namespace cqhttp::plugins

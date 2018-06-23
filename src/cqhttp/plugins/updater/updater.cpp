@@ -35,12 +35,14 @@ namespace cqhttp::plugins {
     }
 
     void Updater::hook_missed_action(ActionContext &ctx) {
-        if (ctx.action == ".check_update") {
-            const auto automatic = ctx.params.get_bool("automatic", false);
-            app.push_async_task([automatic, this] { check_update(automatic); });
-            ctx.result.code = ActionResult::Codes::ASYNC;
+        if (ctx.action != ".check_update") {
+            ctx.next();
+            return;
         }
-        ctx.next();
+
+        const auto automatic = ctx.params.get_bool("automatic", false);
+        app.push_async_task([automatic, this] { check_update(automatic); });
+        ctx.result.code = ActionResult::Codes::ASYNC;
     }
 
     std::string Updater::latest_url() const {

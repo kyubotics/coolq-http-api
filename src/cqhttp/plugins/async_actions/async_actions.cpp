@@ -24,6 +24,7 @@ namespace cqhttp::plugins {
                     logging::debug(TAG, u8"全局线程池无法执行异步动作，请尝试重启插件");
                     ctx.result.code = ActionResult::Codes::BAD_THREAD_POOL;
                 }
+                return;
             }
         }
 
