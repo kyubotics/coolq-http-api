@@ -42,13 +42,13 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 | 项目地址 | 简介 |
 | ------- | --- |
-| [CCZU-DEV/xiaokai-bot](https://github.com/CCZU-DEV/xiaokai-bot) | 用 Python 编写的即时聊天平台机器人，通过适配器模式支持使用多种 bot 框架／平台作为消息源（目前支持 Mojo-Webqq、Mojo-Weixin、CoolQ HTTP API），支持自定义插件 |
 | [jqqqqqqqqqq/coolq-telegram-bot](https://github.com/jqqqqqqqqqq/coolq-telegram-bot) | QQ <-> Telegram Bot Framework & Forwarder |
 | [Mother-Ship/cabbageWeb](https://github.com/Mother-Ship/cabbageWeb) | 基于 Java Web 的 osu! 游戏数据查询机器人 |
 | [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的 QQ 群机器人 |
 | [bdbai/Kobirt](https://github.com/bdbai/Kobirt) | Ingress 游戏辅助机器人 |
 | [JRT-FOREVER/hub2coolq](https://github.com/JRT-FOREVER/hub2coolq) | GitHub webhook 消息转发至 QQ 群 |
 | [LovelyA72/YeziiBot](https://github.com/LovelyA72/YeziiBot) | 内置一定实例的 PHP QQ 机器人快速开发框架 |
+| [Kurarion/Bangumi-for-QQ](https://github.com/Kurarion/Bangumi-for-QQ) | 用于在 QQ 平台便捷地使用 Bangumi 部分功能（查寻条目、更新条目进度等） |
 
 ## 修改、编译
 
