@@ -198,6 +198,9 @@ namespace cqhttp::plugins {
         ctx.next();
     }
 
+    /**
+     * Replaced with ".handle_quick_operation" action.
+     */
     static void handle_quick_operation(const EventContext<cq::Event> &ctx, const utils::JsonEx &params) {
         if (ctx.event.type == cq::event::MESSAGE) {
             const auto msg_ev = static_cast<const cq::MessageEvent &>(ctx.event);
@@ -307,7 +310,10 @@ namespace cqhttp::plugins {
                 if (resp_payload.is_object()) {
                     const utils::JsonEx params = resp_payload;
 
-                    handle_quick_operation(ctx, params);
+                    // note here that the ctx.data object was processed by backward_compatibility plugin,
+                    // but now that the ".handle_quick_operation" action can handle legacy data format,
+                    // it's ok here to use ctx.data directly
+                    call_action(".handle_quick_operation", {{"context", ctx.data}, {"operation", params.raw}});
 
                     if (params.get_bool("block", false)) {
                         ctx.event.block();
@@ -319,5 +325,91 @@ namespace cqhttp::plugins {
         }
 
         ctx.next();
+    }
+
+    void Http::hook_missed_action(ActionContext &ctx) {
+        if (ctx.action != ".handle_quick_operation") {
+            ctx.next();
+            return;
+        }
+
+        ctx.result.code = ActionResult::Codes::DEFAULT_ERROR;
+
+        // note that the following code must handle legacy event data format,
+        // because the user may enable backward compatibility, and if that happens,
+        // we will see legacy event data in this function
+
+        const auto context = utils::JsonEx(ctx.params.get("context").value_or(nullptr));
+        const auto operation = utils::JsonEx(ctx.params.get("operation").value_or(nullptr));
+
+        if (!context.raw.is_object() || !operation.raw.is_object()) {
+            return;
+        }
+
+        const auto post_type = context.get_string("post_type");
+        if (post_type == "message") {
+            const auto message_type = context.get_string("message_type");
+            auto reply = operation.get_message("reply");
+            if (!reply.empty()) {
+                if ((message_type == "group" || message_type == "discuss") && operation.get_bool("at_sender", true)) {
+                    reply = cq::MessageSegment::at(context.get_integer("user_id")) + " " + reply;
+                }
+
+                logging::info(TAG, u8"执行快速操作：回复");
+                auto params = context.raw;
+                params["message"] = reply;
+                call_action("send_msg", params);
+            }
+
+            if (message_type == "group") {
+                const auto anonymous = context.get("anonymous").value_or(nullptr);
+                const auto is_anonymous =
+                    anonymous.is_object() || anonymous.is_string() && !anonymous.get<string>().empty();
+                if (operation.get_bool("delete", false)) {
+                    logging::info(TAG, u8"执行快速操作：群组撤回成员消息");
+                    call_action("delete_msg", context.raw);
+                }
+
+                if (operation.get_bool("kick", false) && !is_anonymous) {
+                    logging::info(TAG, u8"执行快速操作：群组踢人");
+                    call_action("set_group_kick", context.raw);
+                }
+
+                if (operation.get_bool("ban", false)) {
+                    const auto duration = operation.get_integer("ban_duration", 30 * 60 /* 30 minutes by default */);
+                    logging::info(TAG, u8"执行快速操作：群组禁言");
+                    try {
+                        auto params = context.raw;
+                        params["duration"] = duration;
+                        if (is_anonymous) {
+                            call_action("set_group_anonymous_ban", params);
+                        } else {
+                            call_action("set_group_ban", params);
+                        }
+                    } catch (cq::exception::ApiError &) {
+                    }
+                }
+            }
+        } else if (post_type == "request") {
+            const auto request_type = context.get_string("request_type");
+            if (auto approve_opt = operation.get<bool>("approve"); approve_opt) {
+                try {
+                    auto params = context.raw;
+                    params["approve"] = approve_opt.value();
+                    params["remark"] = operation.get_string("remark");
+                    params["reason"] = operation.get_string("reason");
+                    if (request_type == "friend") {
+                        logging::info(TAG, u8"执行快速操作：处理好友请求");
+                        call_action("set_friend_add_request", params);
+                    } else if (request_type == "group") {
+                        logging::info(TAG, u8"执行快速操作：处理群组请求");
+                        call_action("set_group_add_request", params);
+                    }
+                } catch (cq::exception::ApiError &) {
+                }
+            }
+        }
+
+        ctx.result.code = ActionResult::Codes::OK;
     }
 } // namespace cqhttp::plugins

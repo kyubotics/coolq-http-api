@@ -172,10 +172,10 @@ namespace cqhttp {
         const auto group_id = params.get_integer("group_id", 0);
         const auto anonymous_opt = params.get<cq::Anonymous>("anonymous");
         string anonymous_flag;
-        if (anonymous_opt.has_value()) {
+        if (anonymous_opt) {
             anonymous_flag = anonymous_opt->flag;
         } else {
-            anonymous_flag = params.get_string("flag", "");
+            anonymous_flag = params.get_string("flag", params.get_string("anonymous_flag", ""));
         }
         const auto duration = params.get_integer("duration", 30 * 60 /* 30 minutes */);
         if (group_id && !anonymous_flag.empty() && duration >= 0) {

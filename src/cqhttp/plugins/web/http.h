@@ -14,6 +14,7 @@ namespace cqhttp::plugins {
         void hook_disable(Context &ctx) override;
 
         void hook_after_event(EventContext<cq::Event> &ctx) override;
+        void hook_missed_action(ActionContext &ctx) override;
 
         bool good() const override { return !use_http_ || started_; }
 
