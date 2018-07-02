@@ -270,19 +270,19 @@ namespace cqhttp {
 
     HANDLER(set_group_add_request) {
         const auto flag = params.get_string("flag", "");
-        const auto type = params.get_string("type", "");
+        const auto sub_type_str = params.get_string("sub_type", params.get_string("type", ""));
         const auto approve = params.get_bool("approve", true);
         const auto reason = params.get_string("reason", "");
-        auto request_type = -1;
-        if (type == "add") {
-            request_type = cq::request::GROUP_ADD;
-        } else if (type == "invite") {
-            request_type = cq::request::GROUP_INVITE;
+        auto sub_type = -1;
+        if (sub_type_str == "add") {
+            sub_type = cq::request::GROUP_ADD;
+        } else if (sub_type_str == "invite") {
+            sub_type = cq::request::GROUP_INVITE;
         }
-        if (!flag.empty() && request_type != -1) {
+        if (!flag.empty() && sub_type != -1) {
             CALL_API_BEGIN
             api::set_group_add_request(flag,
-                                       static_cast<cq::request::SubType>(request_type),
+                                       static_cast<cq::request::SubType>(sub_type),
                                        approve ? cq::request::APPROVE : cq::request::REJECT,
                                        reason);
             CALL_API_END
