@@ -78,6 +78,12 @@ namespace cq {
         };
     }
 
+    inline void from_json(const json &j, Anonymous &a) {
+        a.id = j.at("id").get<int64_t>();
+        a.name = j.at("name").get<std::string>();
+        a.flag = j.at("flag").get<std::string>();
+    }
+
     inline void to_json(json &j, const File &f) {
         j = {
             {"id", f.id},
