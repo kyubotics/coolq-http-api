@@ -378,34 +378,28 @@ namespace cqhttp::plugins {
                 if (operation.get_bool("ban", false)) {
                     const auto duration = operation.get_integer("ban_duration", 30 * 60 /* 30 minutes by default */);
                     logging::info(TAG, u8"执行快速操作：群组禁言");
-                    try {
-                        auto params = context.raw;
-                        params["duration"] = duration;
-                        if (is_anonymous) {
-                            call_action("set_group_anonymous_ban", params);
-                        } else {
-                            call_action("set_group_ban", params);
-                        }
-                    } catch (cq::exception::ApiError &) {
+                    auto params = context.raw;
+                    params["duration"] = duration;
+                    if (is_anonymous) {
+                        call_action("set_group_anonymous_ban", params);
+                    } else {
+                        call_action("set_group_ban", params);
                     }
                 }
             }
         } else if (post_type == "request") {
             const auto request_type = context.get_string("request_type");
             if (auto approve_opt = operation.get<bool>("approve"); approve_opt) {
-                try {
-                    auto params = context.raw;
-                    params["approve"] = approve_opt.value();
-                    params["remark"] = operation.get_string("remark");
-                    params["reason"] = operation.get_string("reason");
-                    if (request_type == "friend") {
-                        logging::info(TAG, u8"执行快速操作：处理好友请求");
-                        call_action("set_friend_add_request", params);
-                    } else if (request_type == "group") {
-                        logging::info(TAG, u8"执行快速操作：处理群组请求");
-                        call_action("set_group_add_request", params);
-                    }
-                } catch (cq::exception::ApiError &) {
+                auto params = context.raw;
+                params["approve"] = approve_opt.value();
+                params["remark"] = operation.get_string("remark");
+                params["reason"] = operation.get_string("reason");
+                if (request_type == "friend") {
+                    logging::info(TAG, u8"执行快速操作：处理好友请求");
+                    call_action("set_friend_add_request", params);
+                } else if (request_type == "group") {
+                    logging::info(TAG, u8"执行快速操作：处理群组请求");
+                    call_action("set_group_add_request", params);
                 }
             }
         }
