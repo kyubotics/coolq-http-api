@@ -10,7 +10,7 @@ using namespace std;
 namespace cqhttp::logging {
     using cq::logging::Level;
 
-    static int level = Level::DEBUG;
+    static int level = Level::INFO;
 
     static map<string, shared_ptr<Handler>> handlers = {
         {"default", make_shared<DefaultHandler>()},
@@ -35,7 +35,7 @@ namespace cqhttp::logging {
 
     void log(const Level level, const std::string &tag, const std::string &msg) {
         if (level / 10 * 10 >= logging::level) {
-            for (const auto &[_, handler] : handlers) {
+            for (const auto & [_, handler] : handlers) {
                 handler->log(level, tag, msg);
             }
         }
