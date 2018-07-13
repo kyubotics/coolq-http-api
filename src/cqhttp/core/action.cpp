@@ -358,6 +358,15 @@ namespace cqhttp {
         CALL_API_END
     }
 
+    HANDLER(get_credentials) {
+        CALL_API_BEGIN
+        result.data = {
+            {"cookies", api::get_cookies()},
+            {"csrf_token", api::get_csrf_token()},
+        };
+        CALL_API_END
+    }
+
     HANDLER(get_record) {
         const auto file = params.get_string("file");
         const auto out_format = params.get_string("out_format");
