@@ -31,9 +31,9 @@ namespace cqhttp::plugins {
                         for (auto gp : resp_data.at("gpnames")) {
                             auto res_gp = json::object();
                             const auto gpid = gp.at("gpid");
-                            res_gp["friend_group_id"] = gpid;
-                            res_gp["friend_group_name"] = gp.at("gpname");
-                            res_gp["friends"] = json::array();
+                            res_gp.emplace("friend_group_id", gpid);
+                            res_gp.emplace("friend_group_name", gp.at("gpname"));
+                            res_gp.emplace("friends", json::array());
                             gpid_idx_map[gpid] = result.data.size();
                             result.data.push_back(res_gp);
                         }
@@ -41,9 +41,9 @@ namespace cqhttp::plugins {
                         for (auto frnd : resp_data.at("list")) {
                             const auto gpid = frnd.at("groupid");
                             auto res_frnd = json::object();
-                            res_frnd["user_id"] = frnd.at("uin");
-                            res_frnd["nickname"] = frnd.at("nick");
-                            res_frnd["remark"] = frnd.at("remark");
+                            res_frnd.emplace("user_id", frnd.at("uin"));
+                            res_frnd.emplace("nickname", frnd.at("nick"));
+                            res_frnd.emplace("remark", frnd.at("remark"));
                             result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
                         }
 
@@ -69,8 +69,8 @@ namespace cqhttp::plugins {
                     for (auto gp : resp_data.at("gpnames")) {
                         auto res_gp = json::object();
                         const auto gpid = gp.at("gpid");
-                        res_gp["friend_group_id"] = gpid;
-                        res_gp["friend_group_name"] = gp.at("gpname");
+                        res_gp.emplace("friend_group_id", gpid);
+                        res_gp.emplace("friend_group_name", gp.at("gpname"));
                         res_gp["friends"] = json::array();
                         gpid_idx_map[gpid] = result.data.size();
                         result.data.push_back(res_gp);
@@ -79,9 +79,9 @@ namespace cqhttp::plugins {
                     for (auto frnd : resp_data.at("items")) {
                         const auto gpid = frnd.at("groupid");
                         auto res_frnd = json::object();
-                        res_frnd["user_id"] = frnd.at("uin");
-                        res_frnd["nickname"] = frnd.at("name");
-                        res_frnd["remark"] = frnd.at("remark");
+                        res_frnd.emplace("user_id", frnd.at("uin"));
+                        res_frnd.emplace("nickname", frnd.at("name"));
+                        res_frnd.emplace("remark", frnd.at("remark"));
                         result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
                     }
 
@@ -104,29 +104,37 @@ namespace cqhttp::plugins {
         const auto group_id = ctx.params.get_integer("group_id");
         if (group_id <= 0) {
             result.code = Codes::DEFAULT_ERROR;
+            result.data = nullptr;
             return;
         }
 
+        string login_id_str;
+        string cookies;
+        string csrf_token;
         try {
-            const auto login_id_str = to_string(api::get_login_user_id());
-            const auto cookies =
-                "pt2gguin=o" + login_id_str + ";ptisp=os;p_uin=o" + login_id_str + ";" + api::get_cookies();
-            const auto g_tk = to_string(api::get_csrf_token());
+            login_id_str = to_string(api::get_login_user_id());
+            cookies = "pt2gguin=o" + login_id_str + ";ptisp=os;p_uin=o" + login_id_str + ";" + api::get_cookies();
+            csrf_token = to_string(api::get_csrf_token());
+        } catch (cq::exception::ApiError &) {
+            goto FAILED;
+        }
 
-            const auto url = "http://qun.qzone.qq.com/cgi-bin/get_group_member?g_tk=" + g_tk + "&uin=" + login_id_str
-                             + "&neednum=1&groupid=" + to_string(group_id);
+        result.data = json::object();
+
+        {
+            // get basic info
+            const auto url = "http://qun.qzone.qq.com/cgi-bin/get_group_member?g_tk=" + csrf_token
+                             + "&uin=" + login_id_str + "&neednum=1&groupid=" + to_string(group_id);
             const auto res = utils::http::get_json(url, true, cookies).value_or(nullptr);
 
             try {
                 const auto data = res.at("data");
-
-                result.data = json::object();
-                result.data["group_id"] = group_id;
-                result.data["group_name"] = data.at("group_name");
-                result.data["create_time"] = data.at("create_time");
-                result.data["category"] = data.at("class");
-                result.data["member_count"] = data.at("total");
-                result.data["introduction"] = data.at("finger_memo");
+                result.data.emplace("group_id", group_id);
+                result.data.emplace("group_name", data.at("group_name"));
+                result.data.emplace("create_time", data.at("create_time"));
+                result.data.emplace("category", data.at("class"));
+                result.data.emplace("member_count", data.at("total"));
+                result.data.emplace("introduction", data.at("finger_memo"));
                 result.data["admins"] = json::array();
                 for (const auto &admin : data.at("item")) {
                     if (admin.at("iscreator") == 0 && admin.at("ismanager") == 0) {
@@ -145,14 +153,36 @@ namespace cqhttp::plugins {
                     }
                     result.data["admins"].push_back(j);
                 }
-                result.code = Codes::OK;
-                return;
+                result.data.emplace("admin_count", result.data["admins"].size());
             } catch (exception &) {
             }
-        } catch (cq::exception::ApiError &) {
         }
 
-        // failed
+        {
+            // get some extra info, like group size (max member count)
+            const auto url = "http://qinfo.clt.qq.com/cgi-bin/qun_info/get_members_info_v1?friends=1&name=1&gc="
+                             + to_string(group_id) + "&bkn=" + csrf_token + "&src=qinfo_v3";
+            const auto data = utils::http::get_json(url, true, cookies).value_or(nullptr);
+
+            try {
+                result.data.emplace("owner_id", data.at("owner"));
+                result.data.emplace("max_admin_count", data.at("max_admin"));
+                result.data.emplace("max_member_count", data.at("max_num"));
+                if (result.data.count("member_count") == 0) {
+                    // it's actually impossible to reach here, but we check it in case
+                    result.data.emplace("member_count", data.at("mem_num"));
+                }
+            } catch (exception &) {
+            }
+        }
+
+        if (!result.data.empty()) {
+            // we got some information at least
+            result.code = Codes::OK;
+            return;
+        }
+
+    FAILED:
         result.code = Codes::DEFAULT_ERROR;
         result.data = nullptr;
     }

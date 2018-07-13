@@ -11,6 +11,7 @@ namespace cqhttp {
             static const int DEFAULT_ERROR = 100; // arguments missed or definitely invalid
             static const int INVALID_DATA = 102; // the data that CoolQ returns is invalid
             static const int OPERATION_FAILED = 103; // insufficient user privilege or filesystem error
+            static const int CREDENTIAL_INVALID = 104; // the cookies and/or csrf token are expired or invalid
             static const int BAD_THREAD_POOL = 201; // thread pool not correctly created
 
             // retcodes that represent HTTP status codes
