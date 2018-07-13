@@ -120,7 +120,7 @@ namespace cqhttp::plugins {
         }
 
         // failed
-        result.code = Codes::DEFAULT_ERROR;
+        result.code = Codes::CREDENTIAL_INVALID;
         result.data = nullptr;
     }
 
@@ -209,7 +209,7 @@ namespace cqhttp::plugins {
         }
 
     FAILED:
-        result.code = Codes::DEFAULT_ERROR;
+        result.code = Codes::CREDENTIAL_INVALID;
         result.data = nullptr;
     }
 
