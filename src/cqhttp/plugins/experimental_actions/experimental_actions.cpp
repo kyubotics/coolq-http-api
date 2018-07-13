@@ -11,6 +11,8 @@ namespace cqhttp::plugins {
     static void action_get_friend_list(ActionContext &ctx) {
         auto &result = ctx.result;
 
+        const auto flat = ctx.params.get_bool("flat", false);
+
         try {
             const auto cookies = api::get_cookies();
             const auto g_tk = to_string(api::get_csrf_token());
@@ -25,26 +27,50 @@ namespace cqhttp::plugins {
                     if (res.at("code").get<int>() == 0) {
                         // succeeded
                         auto resp_data = res.at("data");
-                        result.data = json::array();
 
-                        map<int64_t, int> gpid_idx_map;
-                        for (auto gp : resp_data.at("gpnames")) {
-                            auto res_gp = json::object();
-                            const auto gpid = gp.at("gpid");
-                            res_gp.emplace("friend_group_id", gpid);
-                            res_gp.emplace("friend_group_name", gp.at("gpname"));
-                            res_gp.emplace("friends", json::array());
-                            gpid_idx_map[gpid] = result.data.size();
-                            result.data.push_back(res_gp);
-                        }
+                        if (flat) {
+                            result.data = {
+                                {"friend_groups", json::array()},
+                                {"friends", json::array()},
+                            };
 
-                        for (auto frnd : resp_data.at("list")) {
-                            const auto gpid = frnd.at("groupid");
-                            auto res_frnd = json::object();
-                            res_frnd.emplace("user_id", frnd.at("uin"));
-                            res_frnd.emplace("nickname", frnd.at("nick"));
-                            res_frnd.emplace("remark", frnd.at("remark"));
-                            result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
+                            for (auto gp : resp_data.at("gpnames")) {
+                                result.data["friend_groups"].push_back({
+                                    {"friend_group_id", gp.at("gpid")},
+                                    {"friend_group_name", gp.at("gpname")},
+                                });
+                            }
+
+                            for (auto frnd : resp_data.at("list")) {
+                                result.data["friends"].push_back({
+                                    {"user_id", frnd.at("uin")},
+                                    {"nickname", frnd.at("nick")},
+                                    {"remark", frnd.at("remark")},
+                                    {"friend_group_id", frnd.at("groupid")},
+                                });
+                            }
+                        } else {
+                            result.data = json::array();
+
+                            map<int64_t, int> gpid_idx_map;
+                            for (auto gp : resp_data.at("gpnames")) {
+                                auto res_gp = json::object();
+                                const auto gpid = gp.at("gpid");
+                                res_gp.emplace("friend_group_id", gpid);
+                                res_gp.emplace("friend_group_name", gp.at("gpname"));
+                                res_gp.emplace("friends", json::array());
+                                gpid_idx_map[gpid] = result.data.size();
+                                result.data.push_back(res_gp);
+                            }
+
+                            for (auto frnd : resp_data.at("list")) {
+                                const auto gpid = frnd.at("groupid");
+                                auto res_frnd = json::object();
+                                res_frnd.emplace("user_id", frnd.at("uin"));
+                                res_frnd.emplace("nickname", frnd.at("nick"));
+                                res_frnd.emplace("remark", frnd.at("remark"));
+                                result.data[gpid_idx_map[gpid]]["friends"].push_back(res_frnd);
+                            }
                         }
 
                         result.code = Codes::OK;
