@@ -9,7 +9,7 @@ namespace cqhttp::plugins {
      */
     template <typename WsT>
     static void ws_api_on_message(const std::shared_ptr<typename WsT::Connection> connection,
-                                  const std::shared_ptr<typename WsT::Message> message) {
+                                  const std::shared_ptr<typename WsT::InMessage> message) {
         static const auto TAG = u8"WS通用";
 
         const auto ws_message_str = message->string();
@@ -22,9 +22,9 @@ namespace cqhttp::plugins {
             }
             const auto resp_body = resp_json.dump();
             logging::debug(TAG, u8"响应数据已准备完毕：" + resp_body);
-            const auto send_stream = std::make_shared<typename WsT::SendStream>();
-            *send_stream << resp_body;
-            connection->send(send_stream);
+            const auto out_message = std::make_shared<typename WsT::OutMessage>();
+            *out_message << resp_body;
+            connection->send(out_message);
             logging::debug(TAG, u8"响应内容已发送");
         };
 

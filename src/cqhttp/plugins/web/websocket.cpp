@@ -18,9 +18,9 @@ namespace cqhttp::plugins {
             const auto authorized = authorize(access_token_, connection->header, args);
             if (!authorized) {
                 logging::debug(TAG, u8"没有提供 Token 或 Token 不符，已关闭连接");
-                const auto send_stream = make_shared<WsServer::SendStream>();
-                *send_stream << "authorization failed";
-                connection->send(send_stream);
+                const auto out_message = make_shared<WsServer::OutMessage>();
+                *out_message << "authorization failed";
+                connection->send(out_message);
                 connection->send_close(1000); // we don't want this client any more
             }
         };
@@ -85,9 +85,9 @@ namespace cqhttp::plugins {
                 if (boost::algorithm::starts_with(connection->path, "/event")) {
                     total_count++;
                     try {
-                        const auto send_stream = make_shared<WsServer::SendStream>();
-                        *send_stream << ctx.data.dump();
-                        connection->send(send_stream);
+                        const auto out_message = make_shared<WsServer::OutMessage>();
+                        *out_message << ctx.data.dump();
+                        connection->send(out_message);
                         succeeded_count++;
                     } catch (...) {
                     }

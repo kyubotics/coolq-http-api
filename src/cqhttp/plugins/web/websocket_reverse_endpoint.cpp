@@ -141,18 +141,18 @@ namespace cqhttp::plugins {
             bool succeeded;
             try {
                 if (client_is_wss_.value() == false) {
-                    const auto send_stream = make_shared<WsClient::SendStream>();
-                    *send_stream << payload.dump();
+                    const auto out_message = make_shared<WsClient::OutMessage>();
+                    *out_message << payload.dump();
                     // the WsClient class is modified by us ("connection" property made public),
                     // so we must maintain the lock manually
                     unique_lock<mutex> lock(client_.ws->connection_mutex);
-                    client_.ws->connection->send(send_stream);
+                    client_.ws->connection->send(out_message);
                     lock.unlock();
                 } else {
-                    const auto send_stream = make_shared<WssClient::SendStream>();
-                    *send_stream << payload.dump();
+                    const auto out_message = make_shared<WssClient::OutMessage>();
+                    *out_message << payload.dump();
                     unique_lock<mutex> lock(client_.wss->connection_mutex);
-                    client_.wss->connection->send(send_stream);
+                    client_.wss->connection->send(out_message);
                     lock.unlock();
                 }
                 succeeded = true;

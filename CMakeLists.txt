@@ -13,10 +13,9 @@ include_directories(${VCPKG_INCLUDE_DIR})
 include_directories(src)
 
 add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
-                -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
-                -D_SCL_SECURE_NO_WARNINGS
                 -D_WIN32_WINNT=0x0501
                 -DWIN32_LEAN_AND_MEAN
+				-DNOMINMAX
                 -DCURL_STATICLIB)
 
 find_package(Boost REQUIRED COMPONENTS filesystem)
