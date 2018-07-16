@@ -1,5 +1,6 @@
 #include "./experimental_actions.h"
 
+#include "cqhttp/plugins/experimental_actions/vendor/pugixml/pugixml.hpp"
 #include "cqhttp/utils/http.h"
 
 using namespace std;
@@ -166,7 +167,7 @@ namespace cqhttp::plugins {
             cookies = "pt2gguin=o" + login_id_str + ";ptisp=os;p_uin=o" + login_id_str + ";" + api::get_cookies();
             csrf_token = to_string(api::get_csrf_token());
         } catch (cq::exception::ApiError &) {
-            goto FAILED;
+            goto GET_GROUP_INFO_FAILED;
         }
 
         result.data = json::object();
@@ -232,7 +233,81 @@ namespace cqhttp::plugins {
             return;
         }
 
-    FAILED:
+    GET_GROUP_INFO_FAILED:
+        result.code = Codes::CREDENTIAL_INVALID;
+        result.data = nullptr;
+    }
+
+    static void action_get_vip_info(ActionContext &ctx) {
+        auto &result = ctx.result;
+        result.data = {
+            {"user_id", nullptr},
+            {"nickname", nullptr},
+            {"level", nullptr},
+            {"level_speed", nullptr},
+            {"vip_level", nullptr},
+            {"vip_growth_speed", nullptr},
+            {"vip_growth_total", nullptr},
+        };
+
+        const auto user_id = ctx.params.get_integer("user_id");
+        if (user_id <= 0) {
+            result.code = Codes::DEFAULT_ERROR;
+            result.data = nullptr;
+            return;
+        }
+        result.data["user_id"] = user_id;
+
+        const auto user_id_str = to_string(user_id);
+        const string fake_ua =
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) "
+            "Mobile/16A5288q QQ/6.5.5.0 TIM/2.2.5.401 V1_IPH_SQ_6.5.5_1_TIM_D Pixel/750 Core/UIWebView "
+            "Device/Apple(iPhone 6s) NetType/WIFI";
+        string cookies;
+        try {
+            cookies = api::get_cookies();
+            const auto info = api::get_stranger_info(user_id);
+            result.data["nickname"] = info.nickname;
+        } catch (cq::exception::ApiError &) {
+            goto GET_VIP_INFO_FAILED;
+        }
+
+        {
+            const auto url = "https://h5.vip.qq.com/p/mc/cardv2/other?platform=1&qq=" + user_id_str
+                             + "&adtag=geren&aid=mvip.pingtai.mobileqq.androidziliaoka.fromqita";
+            const auto resp = utils::http::get(url, {{"Cookie", cookies}, {"User-Agent", fake_ua}});
+
+            if (smatch m; regex_search(
+                    resp.body,
+                    m,
+                    regex(
+                        R"(<div class="mod-radar-pk">[\s\S]*class="ui-btn-wrap"[\s\S]*?<\/button>\s*<\/div>\s*<\/div>)"))) {
+                const auto content = m.str();
+                pugi::xml_document doc;
+                if (doc.load_string(content.c_str())) {
+                    try {
+                        const auto nodes = doc.select_nodes("//div[contains(@class, 'pk-line-guest')]//p");
+                        auto it = nodes.begin();
+                        result.data["level"] = (*it++).node().text().as_int();
+                        result.data["level_speed"] = roundf((*it++).node().text().as_float() * 10.0) / 10.0;
+                        auto vip_level = boost::trim_copy(string((*it).node().text().as_string()));
+                        if (vip_level.empty()) {
+                            vip_level = boost::trim_copy(string((*it).node().first_child().text().as_string()));
+                        }
+                        result.data["vip_level"] = vip_level;
+                        it++;
+                        result.data["vip_growth_speed"] = (*it++).node().text().as_int();
+                        result.data["vip_growth_total"] = (*it++).node().text().as_int();
+                    } catch (...) {
+                    }
+                }
+            }
+        }
+
+        result.code = Codes::OK;
+        return;
+
+    GET_VIP_INFO_FAILED:
         result.code = Codes::CREDENTIAL_INVALID;
         result.data = nullptr;
     }
@@ -242,6 +317,8 @@ namespace cqhttp::plugins {
             action_get_friend_list(ctx);
         } else if (ctx.action == "_get_group_info") {
             action_get_group_info(ctx);
+        } else if (ctx.action == "_get_vip_info") {
+            action_get_vip_info(ctx);
         } else {
             ctx.next();
         }
