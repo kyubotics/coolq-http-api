@@ -42,6 +42,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 | 项目地址 | 简介 |
 | ------- | --- |
+| [richardchien/none-bot](https://github.com/richardchien/none-bot) | 基于酷 Q 的 Python 异步 QQ 机器人框架 |
 | [jqqqqqqqqqq/coolq-telegram-bot](https://github.com/jqqqqqqqqqq/coolq-telegram-bot) | QQ <-> Telegram Bot Framework & Forwarder |
 | [Mother-Ship/cabbageWeb](https://github.com/Mother-Ship/cabbageWeb) | 基于 Java Web 的 osu! 游戏数据查询机器人 |
 | [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的 QQ 群机器人 |
