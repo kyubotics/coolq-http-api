@@ -532,7 +532,8 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 | 字段名 | 数据类型 | 默认值 | 说明 |
 | ----- | ------- | ----- | --- |
-| `clean_cache` | boolean | `false` | 是否在重启时清空酷 Q 当前登录号的缓存 |
+| ~~`clean_cache`~~ | boolean | `false` | 是否在重启时清空酷 Q 当前登录号的缓存，v4.3.1 弃用 |
+| `clean_log` | boolean | `false` | 是否在重启时清空酷 Q 的日志数据库，v4.3.1 新增 |
 
 #### 响应数据
 
@@ -580,7 +581,7 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 ## 试验性 API 列表
 
-试验性 API 可以一定程度上增强实用性，但它们并非酷 Q 原生提供的接口，不保证随时可用，且接口可能会在后面的版本中发生变动。
+试验性 API 可以一定程度上增强实用性，但它们并非酷 Q 原生提供的接口，不保证随时可用（如果不可用可以尝试重新登录酷 Q），且接口可能会在后面的版本中发生变动。
 
 所有试验性接口都以下划线（`_`）开头。
 
@@ -651,6 +652,28 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 | `role` | string | 角色，`owner` 表示群主、`admin` 表示管理员 |
 
 注意，和其它接口有所不同，这里的所有字段都有可能在返回数据中不存在，例如可能缺少 `max_member_count` 等，在使用时请注意异常处理。
+
+### `/_get_vip_info` 获取会员信息
+
+> v4.3.1 新增
+
+#### 参数
+
+| 字段名 | 数据类型 | 默认值 | 说明 |
+| ----- | ------- | ----- | --- |
+| `user_id` | number | - | 要查询的 QQ 号 |
+
+#### 响应数据
+
+| 字段名 | 数据类型 | 说明 |
+| ----- | ------- | --- |
+| `user_id` | number | QQ 号 |
+| `nickname` | string | 昵称 |
+| `level` | number | QQ 等级 |
+| `level_speed` | number | 等级加速度 |
+| `vip_level` | number | 会员等级 |
+| `vip_growth_speed` | number | 会员成长速度 |
+| `vip_growth_total` | string | 会员成长总值 |
 
 ## 隐藏 API 列表
 
