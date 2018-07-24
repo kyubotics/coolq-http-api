@@ -425,6 +425,7 @@ namespace cqhttp {
     }
 
     HANDLER(set_restart) {
+        const auto clean_log = params.get_bool("clean_log", false);
         const auto clean_cache = params.get_bool("clean_cache", false);
 
         constexpr size_t size = MAX_PATH + 1;
@@ -437,9 +438,15 @@ namespace cqhttp {
         if (ofstream f(ansi_restart_batch_path); f.is_open()) {
             f << "taskkill /F /PID " << _getpid() << endl;
             f << "timeout 1 > NUL" << endl;
-            if (clean_cache) {
-                f << "rmdir /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "")) << "\"" << endl;
+            if (clean_log) {
+                f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "logv1.db")) << "\""
+                  << endl;
             }
+            // due to issue #95, we temporarily disable "clean_cache" option
+            // if (clean_cache) {
+            //     f << "rmdir /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "")) << "\"" <<
+            //     endl;
+            // }
             f << "start \"\" \"" << ansi(ws2s(w_exec_path)) << "\" /account " << self_id << endl;
         }
 
