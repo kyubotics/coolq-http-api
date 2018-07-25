@@ -4,9 +4,7 @@ HTTP API 插件的扩展机制允许用户下载额外的 DLL 来扩展插件的
 
 ## 扩展列表
 
-| 扩展 | 简介 |
-| --- | ---- |
-| [LongPolling](https://github.com/richardchien/cqhttp-ext-long-polling) | 给插件提供类似 Telegram 的长轮询接口 |
+目前可用的扩展列表，见 [扩展列表](https://github.com/richardchien/coolq-http-api/wiki/%E6%89%A9%E5%B1%95%E5%88%97%E8%A1%A8)。
 
 ## 使用方法
 
