@@ -27,6 +27,8 @@ namespace cqhttp::plugins {
     }
 
     void Loggers::hook_enable(Context &ctx) {
+        logging::set_disable_coolq_log(ctx.config->get_bool("disable_coolq_log", true));
+
         max_file_size_ = ctx.config->get_integer("max_log_file_size", 6 * 1024 * 1024);
         max_files_ = ctx.config->get_integer("max_log_files", 1);
 

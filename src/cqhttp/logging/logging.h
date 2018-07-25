@@ -8,6 +8,7 @@ namespace cqhttp::logging {
     std::shared_ptr<Handler> unregister_handler(const std::string &name);
 
     void set_level(cq::logging::Level level);
+    void set_disable_coolq_log(bool disable);
 
     void log(cq::logging::Level level, const std::string &tag, const std::string &msg);
 

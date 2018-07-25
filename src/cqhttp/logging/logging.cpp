@@ -11,6 +11,7 @@ namespace cqhttp::logging {
     using cq::logging::Level;
 
     static int level = Level::INFO;
+    static bool disable_coolq_log = true;
 
     static map<string, shared_ptr<Handler>> handlers = {
         {"default", make_shared<DefaultHandler>()},
@@ -33,6 +34,8 @@ namespace cqhttp::logging {
 
     void set_level(const Level level) { logging::level = static_cast<int>(level) / 10 * 10; }
 
+    void set_disable_coolq_log(const bool disable) { disable_coolq_log = disable; }
+
     void log(const Level level, const std::string &tag, const std::string &msg) {
         if (level / 10 * 10 >= logging::level) {
             for (const auto & [_, handler] : handlers) {
@@ -40,7 +43,7 @@ namespace cqhttp::logging {
             }
         }
 
-        if (level >= Level::INFO && handlers.count("default") == 0) {
+        if (!disable_coolq_log && level >= Level::INFO && handlers.count("default") == 0) {
             // log info level and above to CoolQ
             cq::logging::log(level, tag, msg);
         }
