@@ -8,6 +8,7 @@ namespace cqhttp::logging {
             : filename_(filename), max_file_size_(max_file_size), max_files_(max_files) {}
         void init() override;
         void destroy() override;
+        void log(cq::logging::Level level, const std::string &tag, const std::string &msg) const override;
 
     private:
         std::string filename_;

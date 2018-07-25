@@ -6,9 +6,8 @@
 
 namespace cqhttp::logging {
     struct SpdlogHandler : Handler {
-        void log(cq::logging::Level level, const std::string &tag, const std::string &msg) const override;
-
     protected:
         std::shared_ptr<spdlog::logger> logger_ = nullptr;
+        static spdlog::level::level_enum convert_level(cq::logging::Level level);
     };
 } // namespace cqhttp::logging

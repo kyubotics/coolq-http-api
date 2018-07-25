@@ -15,4 +15,8 @@ namespace cqhttp::logging {
     }
 
     void FileHandler::destroy() { spdlog::drop(LOGGER_NAME); }
+
+    void FileHandler::log(const cq::logging::Level level, const std::string &tag, const std::string &msg) const {
+        logger_->log(convert_level(level), "[{}] {}", tag, msg);
+    }
 } // namespace cqhttp::logging

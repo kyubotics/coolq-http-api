@@ -56,7 +56,6 @@ namespace cqhttp::logging {
         AllocConsole();
         redirect_stdio_to_console();
 
-        SetConsoleOutputCP(CP_UTF8);
         SetConsoleTitleW(L"CoolQ HTTP API 插件 - 日志 (请不要关闭此控制台窗口)");
         SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), ENABLE_EXTENDED_FLAGS); // disable input
 
@@ -70,5 +69,9 @@ namespace cqhttp::logging {
         spdlog::drop(LOGGER_NAME);
         SetConsoleTitleW(L"CoolQ HTTP API 插件 - 日志 (如果此控制台没有自动关闭，你可以手动关闭)");
         FreeConsole();
+    }
+
+    void ConsoleHandler::log(const cq::logging::Level level, const std::string &tag, const std::string &msg) const {
+        logger_->log(convert_level(level), "[{}] {}", cq::utils::ansi(tag), cq::utils::ansi(msg));
     }
 } // namespace cqhttp::logging
