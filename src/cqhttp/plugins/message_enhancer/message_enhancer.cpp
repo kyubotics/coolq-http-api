@@ -95,8 +95,8 @@ namespace cqhttp::plugins {
                 }
                 return false;
             };
-        } else if (starts_with(file, "file://")) {
-            const auto src_filepath = file.substr(strlen("file://"));
+        } else if (smatch m; regex_search(file, m, regex(R"(^file:\/{0,3})"))) {
+            const auto src_filepath = file.substr(m.str().length());
             filename = md5_hash_hex(src_filepath) + ".tmp";
             make_file = [=] {
                 const auto filepath = data_file_full_path(data_dir, filename);
