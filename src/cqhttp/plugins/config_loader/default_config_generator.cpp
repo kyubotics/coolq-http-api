@@ -2,8 +2,6 @@
 
 #include <fstream>
 
-#include "cqhttp/plugins/updater/default_source.h"
-
 using namespace std;
 
 static const auto DEFAULT_CONFIG = string() + R"({
@@ -18,7 +16,7 @@ static const auto DEFAULT_CONFIG = string() + R"({
     "secret": "",
     "post_message_format": "string",
     "serve_data_files": false,
-    "update_source": ")" + DEFAULT_UPDATE_SOURCE + R"(",
+    "update_source": "github",
     "update_channel": "stable",
     "auto_check_update": false,
     "auto_perform_update": false,
