@@ -20,16 +20,16 @@ namespace cqhttp::plugins {
     private:
         bool use_ws_reverse_;
 
-        class EndpointBase {
+        class ClientBase {
         public:
-            explicit EndpointBase(const std::string &url, const std::string &access_token,
-                                  const unsigned long reconnect_interval, const bool reconnect_on_code_1000)
+            explicit ClientBase(const std::string &url, const std::string &access_token,
+                                const unsigned long reconnect_interval, const bool reconnect_on_code_1000)
                 : url_(url),
                   access_token_(access_token),
                   reconnect_interval_(reconnect_interval),
                   reconnect_on_code_1000_(reconnect_on_code_1000) {}
 
-            virtual ~EndpointBase() = default;
+            virtual ~ClientBase() = default;
 
             virtual std::string name() = 0;
 
@@ -70,26 +70,26 @@ namespace cqhttp::plugins {
             std::atomic_bool reconnect_worker_running_ = false;
         };
 
-        class ApiEndpoint final : public EndpointBase {
+        class ApiClient final : public ClientBase {
         public:
-            using EndpointBase::EndpointBase;
+            using ClientBase::ClientBase;
             std::string name() override { return "API"; }
 
         protected:
             void init() override;
         };
 
-        std::shared_ptr<ApiEndpoint> api_;
+        std::shared_ptr<ApiClient> api_;
 
-        class EventEndpoint final : public EndpointBase {
+        class EventClient final : public ClientBase {
         public:
-            using EndpointBase::EndpointBase;
+            using ClientBase::ClientBase;
             std::string name() override { return "Event"; }
 
             void push_event(const json &payload) const;
         };
 
-        std::shared_ptr<EventEndpoint> event_;
+        std::shared_ptr<EventClient> event_;
     };
 
     static std::shared_ptr<WebSocketReverse> websocket_reverse = std::make_shared<WebSocketReverse>();

@@ -13,10 +13,11 @@ namespace cqhttp::plugins {
     using utils::mutex::with_unique_lock;
 
     template <typename WsClientT>
-    shared_ptr<WsClientT> WebSocketReverse::EndpointBase::init_ws_reverse_client(const string &server_port_path) {
+    shared_ptr<WsClientT> WebSocketReverse::ClientBase::init_ws_reverse_client(const string &server_port_path) {
         auto client = make_shared<WsClientT>(server_port_path);
         client->config.header.emplace("User-Agent", CQHTTP_USER_AGENT);
         client->config.header.emplace("X-Self-ID", to_string(cq::api::get_login_user_id()));
+        client->config.header.emplace("X-Client-Role", this->name());
         if (!access_token_.empty()) {
             client->config.header.emplace("Authorization", "Token " + access_token_);
         }
@@ -31,7 +32,7 @@ namespace cqhttp::plugins {
         return client;
     }
 
-    void WebSocketReverse::EndpointBase::init() {
+    void WebSocketReverse::ClientBase::init() {
         try {
             if (boost::algorithm::starts_with(url_, "ws://")) {
                 client_.ws = init_ws_reverse_client<WsClient>(url_.substr(strlen("ws://")));
@@ -46,7 +47,7 @@ namespace cqhttp::plugins {
         }
     }
 
-    void WebSocketReverse::EndpointBase::connect() {
+    void WebSocketReverse::ClientBase::connect() {
         if (client_is_wss_.has_value()) {
             // client successfully initialized
             thread_ = thread([&]() {
@@ -66,7 +67,7 @@ namespace cqhttp::plugins {
         }
     }
 
-    void WebSocketReverse::EndpointBase::disconnect() {
+    void WebSocketReverse::ClientBase::disconnect() {
         if (started_) {
             if (client_is_wss_.value() == false) {
                 client_.ws->stop();
@@ -80,7 +81,7 @@ namespace cqhttp::plugins {
         }
     }
 
-    void WebSocketReverse::EndpointBase::start() {
+    void WebSocketReverse::ClientBase::start() {
         init();
 
         reconnect_worker_thread_ = thread([&]() {
@@ -110,7 +111,7 @@ namespace cqhttp::plugins {
         connect();
     }
 
-    void WebSocketReverse::EndpointBase::stop() {
+    void WebSocketReverse::ClientBase::stop() {
         reconnect_worker_running_ = false; // this will notify the reconnect worker to stop
         if (reconnect_worker_thread_.joinable()) {
             reconnect_worker_thread_.join();
@@ -122,8 +123,8 @@ namespace cqhttp::plugins {
         client_is_wss_ = nullopt;
     }
 
-    void WebSocketReverse::ApiEndpoint::init() {
-        EndpointBase::init();
+    void WebSocketReverse::ApiClient::init() {
+        ClientBase::init();
 
         if (client_is_wss_.has_value()) {
             if (client_is_wss_.value() == false) {
@@ -134,7 +135,7 @@ namespace cqhttp::plugins {
         }
     }
 
-    void WebSocketReverse::EventEndpoint::push_event(const json &payload) const {
+    void WebSocketReverse::EventClient::push_event(const json &payload) const {
         if (started_) {
             logging::debug(TAG, u8"开始通过 WebSocket 反向客户端上报事件");
 

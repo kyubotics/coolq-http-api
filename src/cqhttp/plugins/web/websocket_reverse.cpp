@@ -22,17 +22,19 @@ namespace cqhttp::plugins {
             const auto reconnect_interval = ctx.config->get_integer("ws_reverse_reconnect_interval", 3000);
             const auto reconnect_on_code_1000 = ctx.config->get_bool("ws_reverse_reconnect_on_code_1000", false);
 
-            auto url = check_ws_url(ctx.config->get_string("ws_reverse_api_url", ""));
+            auto url = check_ws_url(
+                ctx.config->get_string("ws_reverse_api_url", ctx.config->get_string("ws_reverse_url", "")));
             if (!url.empty()) {
-                api_ = make_shared<ApiEndpoint>(url, access_token, reconnect_interval, reconnect_on_code_1000);
+                api_ = make_shared<ApiClient>(url, access_token, reconnect_interval, reconnect_on_code_1000);
                 api_->start();
             } else {
                 api_ = nullptr;
             }
 
-            url = check_ws_url(ctx.config->get_string("ws_reverse_event_url", ""));
+            url = check_ws_url(
+                ctx.config->get_string("ws_reverse_event_url", ctx.config->get_string("ws_reverse_url", "")));
             if (!url.empty()) {
-                event_ = make_shared<EventEndpoint>(url, access_token, reconnect_interval, reconnect_on_code_1000);
+                event_ = make_shared<EventClient>(url, access_token, reconnect_interval, reconnect_on_code_1000);
                 event_->start();
             } else {
                 event_ = nullptr;
