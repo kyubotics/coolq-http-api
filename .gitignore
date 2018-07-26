@@ -1,5 +1,6 @@
 .vs
 .vscode/c_cpp_properties.json
+.vscode/.ropeproject
 build
 !lib/*.lib
 scripts/install.ps1
