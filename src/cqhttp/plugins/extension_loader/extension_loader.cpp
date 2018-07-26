@@ -112,7 +112,7 @@ namespace cqhttp::plugins {
                                               "扩展 " + extension_info.name + " (" + filename + ") v"
                                                   + extension_info.version + " 加载成功");
                     } else {
-                        logging::info(TAG, "扩展 " + filename + " 加载失败");
+                        logging::warning(TAG, "扩展 " + filename + " 加载失败");
                     }
                 }
             }

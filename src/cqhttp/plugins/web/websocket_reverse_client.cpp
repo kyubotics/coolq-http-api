@@ -90,9 +90,9 @@ namespace cqhttp::plugins {
                 while (reconnect_worker_running_) {
                     const auto should_reconn = should_reconnect_.exchange(false);
                     if (should_reconn) {
-                        logging::info(TAG,
-                                      u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
-                                          + to_string(reconnect_interval_) + u8" 毫秒后尝试重连");
+                        logging::warning(TAG,
+                                         u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
+                                             + to_string(reconnect_interval_) + u8" 毫秒后尝试重连");
                         Sleep(reconnect_interval_);
                         disconnect();
                         connect();
@@ -164,7 +164,7 @@ namespace cqhttp::plugins {
             if (succeeded) {
                 logging::info_success(TAG, u8"通过 WebSocket 反向客户端上报数据到 " + url_ + u8" 成功");
             } else {
-                logging::info(TAG, u8"通过 WebSocket 反向客户端上报数据到 " + url_ + u8" 失败");
+                logging::warning(TAG, u8"通过 WebSocket 反向客户端上报数据到 " + url_ + u8" 失败");
             }
         }
     }

@@ -46,7 +46,7 @@ namespace cqhttp::plugins {
                 };
 
                 filter_ = make_shared<BlockAllFilter>();
-                logging::info(TAG, u8"过滤规则加载失败，将暂停所有事件上报");
+                logging::warning(TAG, u8"过滤规则加载失败，将暂停所有事件上报");
             }
         }
 

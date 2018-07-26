@@ -296,11 +296,15 @@ namespace cqhttp::plugins {
             const auto resp = post_json(post_url_, ctx.data, secret_, post_timeout_);
 
             if (resp.status_code == 0) {
-                logging::info(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 无法访问");
+                logging::warning(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 无法访问");
             } else {
-                logging::info_success(TAG,
-                                      u8"通过 HTTP 上报数据到 " + post_url_ + (resp.ok() ? u8" 成功" : u8" 失败")
-                                          + u8"，状态码：" + to_string(resp.status_code));
+                const auto log_msg = u8"通过 HTTP 上报数据到 " + post_url_ + (resp.ok() ? u8" 成功" : u8" 失败")
+                                     + u8"，状态码：" + to_string(resp.status_code);
+                if (resp.ok()) {
+                    logging::info_success(TAG, log_msg);
+                } else {
+                    logging::warning(TAG, log_msg);
+                }
             }
 
             if (resp.ok() && !resp.body.empty()) {
