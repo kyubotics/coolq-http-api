@@ -23,11 +23,11 @@ namespace cqhttp::plugins {
         }
         client->on_close = [&](shared_ptr<typename WsClientT::Connection> connection, const int code, string reason) {
             if (reconnect_on_code_1000_ || code != 1000) {
-                should_reconnect_ = true;
+                notify_should_reconnect();
             }
         };
         client->on_error = [&](shared_ptr<typename WsClientT::Connection>, const SimpleWeb::error_code &) {
-            should_reconnect_ = true;
+            notify_should_reconnect();
         };
         return client;
     }
@@ -59,7 +59,7 @@ namespace cqhttp::plugins {
                         client_.wss->start();
                     }
                 } catch (...) {
-                    should_reconnect_ = true;
+                    notify_should_reconnect();
                 }
                 started_ = false;
             });
@@ -85,26 +85,48 @@ namespace cqhttp::plugins {
         init();
 
         reconnect_worker_thread_ = thread([&]() {
-            try {
+            {
+                unique_lock<mutex> lock(mutex_);
                 reconnect_worker_running_ = true;
-                while (reconnect_worker_running_) {
-                    const auto should_reconn = should_reconnect_.exchange(false);
+            }
+            for (;;) {
+                try {
+                    auto should_reconn = false;
+                    auto should_stop = false;
+
+                    {
+                        unique_lock<mutex> lock(mutex_);
+                        cv_.wait(lock, [&] {
+                            should_reconn = should_reconnect_;
+                            should_stop = !reconnect_worker_running_;
+                            return should_reconn || should_stop; // stop waiting only if we should reconnect or stop
+                        });
+                    }
+
+                    if (should_stop) {
+                        break;
+                    }
+
                     if (should_reconn) {
+                        with_unique_lock(mutex_, [&] { should_reconnect_ = false; });
+
                         logging::warning(TAG,
                                          u8"反向 WebSocket（" + name() + u8"）客户端连接失败或异常断开，将在 "
-                                             + to_string(reconnect_interval_) + u8" 毫秒后尝试重连");
-                        Sleep(reconnect_interval_);
+                                             + to_string(reconnect_interval_.count()) + u8" 毫秒后尝试重连");
+
+                        // wait for reconnect_interval_, if during the interval we are notified to stop, we stop
+                        if (unique_lock<mutex> lock(mutex_);
+                            cv_.wait_for(lock, reconnect_interval_, [&] { return !reconnect_worker_running_; })) {
+                            // we are notified to stop, so break the for loop
+                            break;
+                        }
+
+                        // reconnect_interval_ passed, retry to connect
                         disconnect();
                         connect();
                     }
-
-                    if (reconnect_worker_running_) {
-                        Sleep(300); // wait 300 ms for the next check
-                    } else {
-                        break;
-                    }
+                } catch (...) {
                 }
-            } catch (...) {
             }
         });
 
@@ -112,7 +134,7 @@ namespace cqhttp::plugins {
     }
 
     void WebSocketReverse::ClientBase::stop() {
-        reconnect_worker_running_ = false; // this will notify the reconnect worker to stop
+        notify_reconnect_worker_stop_running();
         if (reconnect_worker_thread_.joinable()) {
             reconnect_worker_thread_.join();
         }

@@ -2,6 +2,10 @@
 
 #include "cqhttp/core/plugin.h"
 
+#include <atomic>
+#include <chrono>
+#include <condition_variable>
+#include <mutex>
 #include <thread>
 
 #include "cqhttp/plugins/web/vendor/simple_web/client_ws.hpp"
@@ -48,7 +52,7 @@ namespace cqhttp::plugins {
 
             std::string url_;
             std::string access_token_;
-            unsigned long reconnect_interval_;
+            std::chrono::milliseconds reconnect_interval_;
             bool reconnect_on_code_1000_;
 
             std::atomic_bool started_ = false;
@@ -65,9 +69,27 @@ namespace cqhttp::plugins {
             std::optional<bool> client_is_wss_;
             std::thread thread_;
 
-            std::atomic_bool should_reconnect_ = false;
+            bool should_reconnect_ = false;
             std::thread reconnect_worker_thread_;
-            std::atomic_bool reconnect_worker_running_ = false;
+            bool reconnect_worker_running_ = false;
+            std::mutex mutex_;
+            std::condition_variable cv_;
+
+            void notify_should_reconnect() {
+                {
+                    std::unique_lock<std::mutex> lock(mutex_);
+                    should_reconnect_ = true;
+                }
+                cv_.notify_all();
+            }
+
+            void notify_reconnect_worker_stop_running() {
+                {
+                    std::unique_lock<std::mutex> lock(mutex_);
+                    reconnect_worker_running_ = false;
+                }
+                cv_.notify_all(); // this will notify the reconnect worker to stop
+            }
         };
 
         class ApiClient final : public ClientBase {
