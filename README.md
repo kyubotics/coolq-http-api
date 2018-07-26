@@ -53,6 +53,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | 使用 PHP 编写的轻量级多功能酷 Q 机器人框架 |
 | [rikakomoe/cqhttp-twitter-bot](https://github.com/rikakomoe/cqhttp-twitter-bot) | 自动订阅 Twitter 发送到 QQ |
 | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | 模块化、轻量化的，基于命令的 Node.js QQ 机器人框架 |
+| [XiaoLin0815/QQ2TG](https://github.com/XiaoLin0815/QQ2TG) | 帮助 QQ 与 Telegram 互联的小程序 |
 
 ## 修改、编译
 
