@@ -3,6 +3,9 @@
 #include "cqhttp/core/plugin.h"
 
 #include <atomic>
+#include <chrono>
+#include <condition_variable>
+#include <mutex>
 #include <thread>
 
 namespace cqhttp::plugins {
@@ -14,9 +17,12 @@ namespace cqhttp::plugins {
 
     private:
         std::atomic_bool should_restart_ = false;
-        unsigned long restart_delay_ = 0;
+        std::chrono::milliseconds restart_delay_;
         std::thread restart_worker_thread_;
         std::atomic_bool restart_worker_running_ = false;
+
+        std::mutex mutex_;
+        std::condition_variable cv_;
     };
 
     static std::shared_ptr<Restarter> restarter = std::make_shared<Restarter>();
