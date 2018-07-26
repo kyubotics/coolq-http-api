@@ -1,7 +1,9 @@
 import os
+import json
 import shutil
 import logging
 from configparser import ConfigParser
+from distutils.util import strtobool
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 
@@ -50,8 +52,61 @@ def version_locked():
 
 
 def force_env():
-    f = os.getenv('FORCE_ENV', 'false')
-    return f.strip().lower() in ['1', 'yes', 'true']
+    try:
+        return strtobool(os.getenv('FORCE_ENV', 'false'))
+    except ValueError:
+        return False
+
+
+def app_config_paths(config_name, include_general=False):
+    paths = [
+        os.path.join(APP_CONFIG_DIR, config_name + '.ini'),
+        os.path.join(APP_CONFIG_DIR, config_name + '.cfg'),
+        os.path.join(APP_CONFIG_DIR, config_name + '.json'),
+    ]
+    if include_general:
+        paths.extend([
+            os.path.join(APP_CONFIG_DIR, 'general.ini'),
+            os.path.join(APP_CONFIG_DIR, 'general.cfg'),
+            os.path.join(APP_CONFIG_DIR, 'general.json'),
+        ])
+    return paths
+
+
+def app_config_exists(config_name, include_general=False):
+    for p in app_config_paths(config_name, include_general):
+        if os.path.exists(p):
+            return True
+    return False
+
+
+def remove_app_config(config_name, include_general=False):
+    for p in app_config_paths(config_name, include_general):
+        if os.path.exists(p):
+            os.remove(p)
+
+
+def app_config_format():
+    if os.path.exists(os.path.join(APP_CONFIG_DIR, 'general.json')) and \
+            not os.path.exists(
+                os.path.join(APP_CONFIG_DIR, 'general.ini')) and \
+            not os.path.exists(
+                os.path.join(APP_CONFIG_DIR, 'general.cfg')):
+        return 'json'
+    return 'ini'
+
+
+def write_app_config(config_name, app_config):
+    os.makedirs(APP_CONFIG_DIR, mode=0o755, exist_ok=True)
+    file_format = app_config_format()
+    with open(os.path.join(APP_CONFIG_DIR,
+                           config_name + '.' + file_format),
+              'w') as config_file:
+        if file_format == 'json':
+            json.dump(dict(app_config[config_name].items()),
+                      config_file, ensure_ascii=False, indent=4)
+        else:
+            app_config.write(config_file)
 
 
 def bootstrap():
@@ -77,18 +132,13 @@ def bootstrap():
         key = key[len('CQHTTP_'):]
         app_config[config_name][key.lower()] = value
 
-    def write_config():
-        os.makedirs(APP_CONFIG_DIR, mode=0o755, exist_ok=True)
-        with open(os.path.join(APP_CONFIG_DIR, config_name + '.ini'), 'w') as config_file:
-            app_config.write(config_file)
-
-    if not os.path.exists(APP_CONFIG_DIR):
+    if not app_config_exists(config_name, include_general=False):
         logging.debug('配置文件不存在，正在根据配置文件生成初始配置文件……')
-        write_config()
+        write_app_config(config_name, app_config)
     elif force_env():
         logging.debug('已强制使用环境变量，正在覆盖配置文件……')
-        shutil.rmtree(APP_CONFIG_DIR, ignore_errors=True)
-        write_config()
+        remove_app_config(config_name, include_general=False)
+        write_app_config(config_name, app_config)
 
     logging.info('CoolQ HTTP API 插件 bootstrap 完成。')
 
