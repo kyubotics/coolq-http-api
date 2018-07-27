@@ -2,8 +2,8 @@
     "ret": 1,
     "apiver": 9,
     "name": "HTTP API",
-    "version": "4.3.1",
-    "version_id": 415,
+    "version": "4.4.0-beta.1",
+    "version_id": 416,
     "author": "Richard Chien",
     "description": "通过 HTTP 或 WebSocket 对酷 Q 的事件进行上报以及接收请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。具体见 https://github.com/richardchien/coolq-http-api",
     "event": [
