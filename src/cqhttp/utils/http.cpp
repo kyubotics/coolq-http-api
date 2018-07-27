@@ -149,7 +149,7 @@ namespace cqhttp::utils::http {
             if (!body.empty()) {
                 try {
                     return json::parse(body);
-                } catch (invalid_argument &) {
+                } catch (json::parse_error &) {
                 }
             }
         }
