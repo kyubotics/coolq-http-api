@@ -1,6 +1,6 @@
 #include "./loggers.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "cqhttp/logging/handlers/console.h"
 #include "cqhttp/logging/handlers/file.h"
@@ -8,7 +8,7 @@
 #undef ERROR
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace cqhttp::plugins {
     static const auto TAG = u8"日志";

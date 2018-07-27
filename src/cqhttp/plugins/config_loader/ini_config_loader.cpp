@@ -1,11 +1,11 @@
 #include "./ini_config_loader.h"
 
-#include <boost/filesystem.hpp>
 #include <boost/property_tree/ini_parser.hpp>
+#include <filesystem>
 
 using namespace std;
 using namespace cq;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace cqhttp::plugins {
     static void override_config(json &config, const boost::property_tree::ptree &pt,

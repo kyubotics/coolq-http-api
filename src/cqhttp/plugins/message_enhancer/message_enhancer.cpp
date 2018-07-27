@@ -1,8 +1,8 @@
 #include "./message_enhancer.h"
 
-#include <boost/filesystem.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <filesystem>
 #include <mutex>
 #include <unordered_set>
 
@@ -21,7 +21,7 @@ namespace cqhttp::plugins {
     using utils::fs::data_file_full_path;
     using utils::crypt::md5_hash_hex;
     using utils::random::random_int;
-    namespace fs = boost::filesystem;
+    namespace fs = std::filesystem;
     namespace base64 = cq::utils::base64;
 
     static MessageSegment enhance_send_file(const MessageSegment &raw, const string &data_dir);
@@ -102,7 +102,7 @@ namespace cqhttp::plugins {
                 const auto filepath = data_file_full_path(data_dir, filename);
 
                 try {
-                    copy_file(s2ws(src_filepath), s2ws(filepath), fs::copy_option::overwrite_if_exists);
+                    copy_file(s2ws(src_filepath), s2ws(filepath), fs::copy_options::overwrite_existing);
                     return true;
                 } catch (fs::filesystem_error &) {
                     // copy failed

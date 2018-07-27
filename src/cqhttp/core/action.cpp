@@ -1,7 +1,7 @@
 #include "./action.h"
 
-#include <boost/filesystem.hpp>
 #include <boost/process.hpp>
+#include <filesystem>
 #include <set>
 
 #include "cqhttp/core/core.h"
@@ -10,7 +10,7 @@
 
 using namespace std;
 namespace api = cq::api;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace cqhttp {
     using Codes = ActionResult::Codes;

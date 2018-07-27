@@ -1,7 +1,7 @@
 #include "./updater.h"
 
 #include <Windows.h>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "cqhttp/core/core.h"
 #include "cqhttp/utils/gui.h"
@@ -16,7 +16,7 @@ namespace cqhttp::plugins {
     using utils::http::get_json;
     using utils::http::download_file;
     using utils::gui::message_box;
-    namespace fs = boost::filesystem;
+    namespace fs = std::filesystem;
 
     void Updater::hook_enable(Context &ctx) {
         update_source_ = ctx.config->get_string("update_source", "github");
@@ -164,7 +164,7 @@ namespace cqhttp::plugins {
 
         const auto local_cpk_path = cq::dir::root() + "app\\" CQHTTP_ID ".cpk";
         try {
-            copy_file(ansi(tmp_path), ansi(local_cpk_path), fs::copy_option::overwrite_if_exists);
+            copy_file(ansi(tmp_path), ansi(local_cpk_path), fs::copy_options::overwrite_existing);
             fs::remove(ansi(tmp_path));
             return true;
         } catch (fs::filesystem_error &) {

@@ -1,11 +1,11 @@
 #include "./extension_loader.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "cqsdk/utils/string.h"
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 namespace ext = cqhttp::extension;
 
 namespace cqhttp::plugins {
@@ -97,7 +97,7 @@ namespace cqhttp::plugins {
                     try {
                         const auto tmp_dll_path = tmp_ext_dir + filename;
                         const auto ansi_tmp_dll_path = ansi(tmp_dll_path);
-                        copy_file(*it, ansi_tmp_dll_path, boost::filesystem::copy_option::overwrite_if_exists);
+                        copy_file(*it, ansi_tmp_dll_path, fs::copy_options::overwrite_existing);
 
                         const auto hdl = LoadLibraryA(ansi_tmp_dll_path.c_str());
                         if (hdl) {

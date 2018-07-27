@@ -1,13 +1,14 @@
 #include "./http.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
+#include <fstream>
 
 #include "cqhttp/plugins/web/server_common.h"
 #include "cqhttp/utils/crypt.h"
 #include "cqhttp/utils/http.h"
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 namespace api = cq::api;
 using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 

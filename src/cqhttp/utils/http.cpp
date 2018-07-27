@@ -1,11 +1,12 @@
 #include "./http.h"
 
 #include <curl/curl.h>
-#include <boost/filesystem.hpp>
+#include <filesystem>
+#include <fstream>
 #include <regex>
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 #define FAKE_USER_AGENT                          \
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \

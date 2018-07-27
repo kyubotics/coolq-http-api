@@ -1,13 +1,13 @@
 #include "./dir.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "./api.h"
 #include "./app.h"
 #include "./utils/string.h"
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace cq::dir {
     static void create_dir_if_not_exists(const string &dir) {

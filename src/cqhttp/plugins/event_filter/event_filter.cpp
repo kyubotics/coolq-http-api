@@ -1,9 +1,10 @@
 #include "./event_filter.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
+#include <fstream>
 
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace cqhttp::plugins {
     static const auto TAG = u8"事件过滤器";
