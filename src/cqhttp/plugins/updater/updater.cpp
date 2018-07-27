@@ -156,7 +156,7 @@ namespace cqhttp::plugins {
 
     bool Updater::perform_update(const std::string &version, const int build_number) const {
         const auto cpk_url = version_cpk_url(version, build_number);
-        const auto tmp_path = cq::dir::app("tmp") + version + "_build_" + to_string(build_number) + ".cpk";
+        const auto tmp_path = cq::dir::app_per_account("tmp") + version + "_build_" + to_string(build_number) + ".cpk";
         if (!download_file(cpk_url, tmp_path, true)) {
             // download failed
             return false;

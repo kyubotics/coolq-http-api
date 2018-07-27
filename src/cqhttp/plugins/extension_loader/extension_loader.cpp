@@ -73,19 +73,28 @@ namespace cqhttp::plugins {
 
     void ExtensionLoader::hook_enable(Context &ctx) {
         enable_ = ctx.config->get_bool("use_extension", false);
+
         if (enable_) {
-            const auto ansi_extensions_dir = ansi(cq::dir::app("extensions"));
-            for (auto it = fs::directory_iterator(ansi_extensions_dir); it != fs::directory_iterator(); ++it) {
+            string extensions_dir;
+            string tmp_ext_dir;
+            try {
+                extensions_dir = cq::dir::app("extensions");
+                tmp_ext_dir = cq::dir::app_per_account("tmp") + "extensions\\";
+                fs::create_directories(ansi(tmp_ext_dir));
+            } catch (fs::filesystem_error &) {
+                logging::error(TAG, u8"创建目录失败，无法加载扩展");
+                goto HOOK_ENABLE_END;
+            }
+
+            for (auto it = fs::directory_iterator(ansi(extensions_dir)); it != fs::directory_iterator(); ++it) {
                 const auto filename = string_decode(it->path().filename().string(), cq::utils::Encoding::ANSI);
                 if (boost::ends_with(filename, ".dll") && !boost::starts_with(filename, "_")) {
                     // we should load this dll
                     auto succeeded = false;
+                    string failure_reason;
                     ext::Extension::Info extension_info;
 
                     try {
-                        const auto tmp_ext_dir = cq::dir::app("tmp") + "extensions\\";
-                        fs::create_directory(ansi(tmp_ext_dir));
-
                         const auto tmp_dll_path = tmp_ext_dir + filename;
                         const auto ansi_tmp_dll_path = ansi(tmp_dll_path);
                         copy_file(*it, ansi_tmp_dll_path, boost::filesystem::copy_option::overwrite_if_exists);
@@ -102,17 +111,22 @@ namespace cqhttp::plugins {
                                 extension_info = extension->info();
                                 extensions_.push_back(extension);
                                 succeeded = true;
+                            } else {
+                                failure_reason = u8"DLL 文件没有正确导出 GetExtensionCreator";
                             }
+                        } else {
+                            failure_reason = u8"LoadLibrary 失败，GetLastError = " + to_string(GetLastError());
                         }
                     } catch (fs::filesystem_error &) {
+                        failure_reason = u8"拷贝 DLL 文件到临时目录失败";
                     }
 
                     if (succeeded) {
                         logging::info_success(TAG,
-                                              "扩展 " + extension_info.name + " (" + filename + ") v"
-                                                  + extension_info.version + " 加载成功");
+                                              u8"扩展 " + extension_info.name + " (" + filename + ") v"
+                                                  + extension_info.version + u8" 加载成功");
                     } else {
-                        logging::warning(TAG, "扩展 " + filename + " 加载失败");
+                        logging::warning(TAG, u8"扩展 " + filename + u8" 加载失败，原因：" + failure_reason);
                     }
                 }
             }
@@ -123,6 +137,7 @@ namespace cqhttp::plugins {
             }
         }
 
+    HOOK_ENABLE_END:
         ctx.next();
     }
 
@@ -139,7 +154,10 @@ namespace cqhttp::plugins {
             }
             dll_handles_.clear();
 
-            fs::remove_all(ansi(cq::dir::app("tmp") + "extensions\\"));
+            try {
+                fs::remove_all(ansi(cq::dir::app_per_account("tmp") + "extensions\\"));
+            } catch (fs::filesystem_error &) {
+            }
         }
 
         ctx.next();

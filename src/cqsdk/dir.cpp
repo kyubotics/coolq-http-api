@@ -31,4 +31,10 @@ namespace cq::dir {
         create_dir_if_not_exists(dir);
         return dir;
     }
+
+    std::string app_per_account(const std::string &sub_dir_name) {
+        const auto dir = app(sub_dir_name) + to_string(api::get_login_user_id()) + "\\";
+        create_dir_if_not_exists(dir);
+        return dir;
+    }
 } // namespace cq::dir
