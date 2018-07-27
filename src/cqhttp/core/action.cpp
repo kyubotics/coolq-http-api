@@ -1,6 +1,5 @@
 #include "./action.h"
 
-#include <Windows.h>
 #include <boost/filesystem.hpp>
 #include <boost/process.hpp>
 #include <set>
@@ -408,17 +407,21 @@ namespace cqhttp {
 #define BUILD_CONFIGURATION "release"
 #endif
 
-    HANDLER(get_version_info) {
+    static string get_coolq_edition() {
         const auto coolq_directory = cq::dir::root();
-        string coolq_edition;
         if (fs::is_regular_file(ansi(coolq_directory + "CQP.exe"))) {
-            coolq_edition = "pro";
-        } else {
-            coolq_edition = "air";
+            return "pro";
         }
+        if (fs::is_regular_file(ansi(coolq_directory + "CQA.exe"))) {
+            return "air";
+        }
+        return "";
+    }
+
+    HANDLER(get_version_info) {
         result.code = Codes::OK;
-        result.data = {{"coolq_directory", coolq_directory},
-                       {"coolq_edition", coolq_edition},
+        result.data = {{"coolq_directory", cq::dir::root()},
+                       {"coolq_edition", get_coolq_edition()},
                        {"plugin_version", CQHTTP_VERSION},
                        {"plugin_build_number", CQHTTP_BUILD_NUMBER},
                        {"plugin_build_configuration", BUILD_CONFIGURATION}};
@@ -428,9 +431,15 @@ namespace cqhttp {
         const auto clean_log = params.get_bool("clean_log", false);
         const auto clean_cache = params.get_bool("clean_cache", false);
 
-        constexpr size_t size = MAX_PATH + 1;
-        wchar_t w_exec_path[size]{};
-        GetModuleFileNameW(nullptr, w_exec_path, size);
+        auto coolq_exe_path = cq::dir::root();
+        if (const auto edition = get_coolq_edition(); edition == "air") {
+            coolq_exe_path += "CQA.exe";
+        } else if (edition == "pro") {
+            coolq_exe_path += "CQP.exe";
+        } else {
+            result.code = Codes::OPERATION_FAILED;
+            return;
+        }
 
         const auto restart_batch_path = cq::dir::app_per_account("tmp") + "restart.bat";
         const auto ansi_restart_batch_path = ansi(restart_batch_path);
@@ -447,7 +456,7 @@ namespace cqhttp {
             //     f << "rmdir /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "")) << "\"" <<
             //     endl;
             // }
-            f << "start \"\" \"" << ansi(ws2s(w_exec_path)) << "\" /account " << self_id << endl;
+            f << "start \"\" \"" << ansi(coolq_exe_path) << "\" /account " << self_id << endl;
         }
 
         try {
