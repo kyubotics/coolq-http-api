@@ -35,11 +35,11 @@ CQ 码的使用方式和酷 Q 原生的 CQ 码兼容（关于原生 CQ 码的使
 
 #### 发送文件系统中另一个地方的图片或语音
 
-除了发送网络上的图片、语音，还可以发送本地文件系统中其它地方的图片、语音，使用 `file://` 加文件的绝对路径，例如：
+除了发送网络上的图片、语音，还可以发送本地文件系统中其它地方的图片、语音，使用 [`file` URI](https://tools.ietf.org/html/rfc8089) 格式，例如：
 
 ```
-[CQ:image,file=file://C:\Users\richard\Pictures\1.png]
-[CQ:record,file=file://C:\Users\richard\Music\1.mp3]
+[CQ:image,file=file:///C:\Users\richard\Pictures\1.png]
+[CQ:record,file=file:///C:\Users\richard\Music\1.mp3]
 ```
 
 #### 发送 base64 编码的图片或语音
