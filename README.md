@@ -76,7 +76,7 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 
 | 模块 | 依赖项 |
 | --- | ----- |
-| `cqsdk` | `boost-algorithm`<br>`boost-filesystem`<br>`libiconv` |
+| `cqsdk` | `boost-algorithm`<br>`libiconv` |
 | `cqhttp` | `cqsdk` 的依赖项<br>`nlohmann-json`<br>`boost-process`<br>`curl`<br>`libssh2`<br>`boost-property-tree`<br>`boost-asio`<br>`openssl`<br>`spdlog` |
 
 安装命令如下：
@@ -84,7 +84,7 @@ set(VCPKG_PLATFORM_TOOLSET v141)
 ```ps1
 cd vcpkg
 git checkout 44631c9f6ff7eaf8fbe0ebc010918c5bf6407ac2 -- ports  # 固定包版本
-.\vcpkg --vcpkg-root . --triplet my-triplet install boost-algorithm boost-filesystem libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
+.\vcpkg --vcpkg-root . --triplet my-triplet install boost-algorithm libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
 ```
 
 ## 开源许可证、重新分发

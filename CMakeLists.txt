@@ -18,7 +18,7 @@ add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
 				-DNOMINMAX
                 -DCURL_STATICLIB)
 
-find_package(Boost REQUIRED COMPONENTS filesystem)
+find_package(Boost REQUIRED COMPONENTS filesystem)  # boost-process stil depends on boost-filesystem
 find_package(Iconv REQUIRED)
 find_package(CURL REQUIRED)
 find_package(Spdlog REQUIRED)
