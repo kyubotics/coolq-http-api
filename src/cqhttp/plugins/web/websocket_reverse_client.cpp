@@ -21,12 +21,16 @@ namespace cqhttp::plugins {
         if (!access_token_.empty()) {
             client->config.header.emplace("Authorization", "Token " + access_token_);
         }
-        client->on_close = [&](shared_ptr<typename WsClientT::Connection> connection, const int code, string reason) {
-            if (reconnect_on_code_1000_ || code != 1000) {
-                notify_should_reconnect();
-            }
-        };
-        client->on_error = [&](shared_ptr<typename WsClientT::Connection>, const SimpleWeb::error_code &) {
+        client->on_close =
+            [&](shared_ptr<typename WsClientT::Connection> connection, const int code, const string &reason) {
+                if (reconnect_on_code_1000_ || code != 1000) {
+                    logging::debug(TAG,
+                                   u8"反向 WebSocket 连接断开，close code: " + to_string(code) + "，reason：" + reason);
+                    notify_should_reconnect();
+                }
+            };
+        client->on_error = [&](shared_ptr<typename WsClientT::Connection>, const SimpleWeb::error_code &e) {
+            logging::debug(TAG, u8"反向 WebSocket 连接发生错误，error code: " + to_string(e.value()));
             notify_should_reconnect();
         };
         return client;
@@ -59,6 +63,7 @@ namespace cqhttp::plugins {
                         client_.wss->start();
                     }
                 } catch (...) {
+                    logging::debug(TAG, u8"反向 WebSocket 建立连接失败");
                     notify_should_reconnect();
                 }
                 started_ = false;
