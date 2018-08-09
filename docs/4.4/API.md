@@ -656,8 +656,6 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 ### `/_get_vip_info` 获取会员信息
 
-> v4.3.1 新增
-
 #### 参数
 
 | 字段名 | 数据类型 | 默认值 | 说明 |
@@ -711,7 +709,7 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 ## 获取 `data` 目录中的文件的接口
 
-除了上面的 API，插件还提供一个简单的静态文件获取服务，请求方式只支持 GET，URL 路径为 `/data/` 加上要请求的文件相对于酷 Q `data` 目录的路径。例如，假设酷 Q 主目录在 `C:\Apps\CQA`，则要获取 `C:\Apps\CQA\data\image\ABCD.jpg.cqimg` 的话，只需请求 `/data/image/ABCD.jpg.cqimg`，响应内容即为要请求的文件。
+除了上面的 API，插件还提供一个简单的静态文件获取服务，请求方式只支持 HTTP 的 GET，URL 路径为 `/data/` 加上要请求的文件相对于酷 Q `data` 目录的路径。例如，假设酷 Q 主目录在 `C:\Apps\CQA`，则要获取 `C:\Apps\CQA\data\image\ABCD.jpg.cqimg` 的话，只需请求 `/data/image/ABCD.jpg.cqimg`，响应内容即为要请求的文件。
 
 和上面的其它请求一样，如果配置文件中指定了 access token，则每次请求需要在请求头中加入验证头 `Authorization: Token your-token`。
 
