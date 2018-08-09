@@ -430,6 +430,7 @@ namespace cqhttp {
     HANDLER(set_restart) {
         const auto clean_log = params.get_bool("clean_log", false);
         const auto clean_cache = params.get_bool("clean_cache", false);
+        const auto clean_event = params.get_bool("clean_event", false);
 
         auto coolq_exe_path = cq::dir::root();
         if (const auto edition = get_coolq_edition(); edition == "air") {
@@ -451,11 +452,14 @@ namespace cqhttp {
                 f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "logv1.db")) << "\""
                   << endl;
             }
-            // due to issue #95, we temporarily disable "clean_cache" option
-            // if (clean_cache) {
-            //     f << "rmdir /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "")) << "\"" <<
-            //     endl;
-            // }
+            if (clean_cache) {
+                f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "cache.db")) << "\""
+                  << endl;
+            }
+            if (clean_event) {
+                f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "eventv2.db")) << "\""
+                  << endl;
+            }
             f << "start \"\" \"" << ansi(coolq_exe_path) << "\" /account " << self_id << endl;
         }
 
