@@ -14,7 +14,7 @@ var versions = [
     { title: 'v1.x-v2.x', path: '/legacy/' }
 ]
 
-var latestVersionIndex = 1;
+var latestVersionIndex = 0;
 var currentVersionIndex = -1;
 
 versions[latestVersionIndex].title += ' (latest)';

@@ -532,8 +532,9 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 
 | 字段名 | 数据类型 | 默认值 | 说明 |
 | ----- | ------- | ----- | --- |
-| ~~`clean_cache`~~ | boolean | `false` | 是否在重启时清空酷 Q 当前登录号的缓存，v4.3.1 弃用 |
-| `clean_log` | boolean | `false` | 是否在重启时清空酷 Q 的日志数据库，v4.3.1 新增 |
+| `clean_log` | boolean | `false` | 是否在重启时清空酷 Q 的日志数据库（`logv1.db`） |
+| `clean_cache` | boolean | `false` | 是否在重启时清空酷 Q 的缓存数据库（`cache.db`） |
+| `clean_event` | boolean | `false` | 是否在重启时清空酷 Q 的事件数据库（`eventv2.db`） |
 
 #### 响应数据
 
