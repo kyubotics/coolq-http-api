@@ -112,6 +112,14 @@ namespace cqhttp::plugins {
                     return;
                 }
 
+                const auto authorized = authorize(access_token_, request->header, {}, [&response](auto status_code) {
+                    response->write(status_code);
+                });
+                if (!authorized) {
+                    logging::debug(TAG, u8"没有提供 Token 或 Token 不符，已拒绝请求");
+                    return;
+                }
+
                 auto relpath = request->path_match.str(1);
                 boost::algorithm::replace_all(relpath, "/", "\\");
                 logging::debug(TAG, u8"收到 GET 数据文件请求，相对路径：" + relpath);
