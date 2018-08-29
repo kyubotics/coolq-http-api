@@ -1,5 +1,6 @@
 #include "./action.h"
 
+#include <sqlite3.h>
 #include <boost/process.hpp>
 #include <filesystem>
 #include <set>
@@ -7,6 +8,7 @@
 #include "cqhttp/core/core.h"
 #include "cqhttp/utils/filesystem.h"
 #include "cqhttp/utils/jsonex.h"
+#include "cqhttp/utils/string.h"
 
 using namespace std;
 namespace api = cq::api;
@@ -382,23 +384,57 @@ namespace cqhttp {
 
     HANDLER(get_status) {
         result.code = Codes::OK;
-
-        const auto app_good = app.good();
-
         result.data = {
             {"app_initialized", app.initialized()},
             {"app_enabled", app.enabled()},
             {"plugins_good", app.plugins_good()},
-            {"app_good", app_good},
+            {"app_good", app.good()},
+            {"online", nullptr},
         };
 
-        ActionResult tmp_result;
-        __get_stranger_info(json{{"user_id", 10000}, {"no_cache", true}}, tmp_result);
+        if (app.config().get_bool("more_accurate_online_status", false)) {
+            const auto db_uri = cq::dir::root() + "data\\" + to_string(api::get_login_user_id()) + "\\logv1.db";
+            const auto sql =
+                u8R"(select count(*) = 0 as online
+                     from (select name, detail
+                           from log
+                           where ID > (select ID from log where source = '酷Q'
+                                                            and name = '初始化' order by ID desc limit 1)
+                             and source = '酷Q'
+                             and name in ('在线状态', '网络连接', '关闭')
+                           order by ID desc
+                           limit 1)
+                     where detail like '%断开%'
+                        or detail like '%下线%'
+                        or detail like '%关闭%'
+                        or detail like '%停止%'
+                        or detail like '%退出%';)";
+            sqlite3 *db = nullptr;
+            auto err = sqlite3_open(db_uri.c_str(), &db);
+            if (!err) {
+                const auto callback = [](void *data, const int count, char **column_texts, char **column_names) -> int {
+                    auto *res = reinterpret_cast<ActionResult *>(data);
+                    if (count > 0) {
+                        if (auto online_opt = utils::to_bool(column_texts[0]); online_opt.has_value()) {
+                            res->data["online"] = online_opt.value();
+                        }
+                    }
+                    return 0;
+                };
+                sqlite3_exec(db, sql, callback, &result, nullptr);
+            }
+            if (db) {
+                sqlite3_close(db);
+            }
+        }
 
-        const auto online = tmp_result.code == Codes::OK;
-        result.data["online"] = online;
+        if (result.data["online"] == nullptr) {
+            ActionResult tmp_result;
+            __get_stranger_info(json{{"user_id", 10000}, {"no_cache", true}}, tmp_result);
+            result.data["online"] = tmp_result.code == Codes::OK;
+        }
 
-        result.data["good"] = app_good && online;
+        result.data["good"] = result.data["app_good"] && result.data["online"];
     }
 
 #ifdef _DEBUG

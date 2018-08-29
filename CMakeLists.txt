@@ -22,6 +22,7 @@ find_package(Boost REQUIRED COMPONENTS filesystem)  # boost-process stil depends
 find_package(Iconv REQUIRED)
 find_package(CURL REQUIRED)
 find_package(Spdlog REQUIRED)
+find_package(Sqlite3 REQUIRED)
 
 include(FixLinkConflict)
 
@@ -33,6 +34,7 @@ target_link_libraries(${LIB_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${LIB_NAME} ${ICONV_AND_DEPS_LIBRARIES})
 target_link_libraries(${LIB_NAME} ${CURL_AND_DEPS_LIBRARIES})
 target_link_libraries(${LIB_NAME} ${SPDLOG_AND_DEPS_LIBRARIES})
+target_link_libraries(${LIB_NAME} sqlite3)
 target_link_libraries(${LIB_NAME} crypt32 bcrypt Wldap32 Ws2_32)
 
 add_custom_command(TARGET ${LIB_NAME}

@@ -1,3 +1,5 @@
+#include <filesystem>
+
 #include "cqhttp/core/core.h"
 
 #include "cqhttp/plugins/config_loader/default_config_generator.h"

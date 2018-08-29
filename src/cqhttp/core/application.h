@@ -61,6 +61,8 @@ namespace cqhttp {
         bool resize_worker_thread_pool(int n_threads) const;
         bool push_async_task(const std::function<void()> &task) const;
 
+        utils::JsonEx &config() { return config_; }
+
     private:
         std::vector<std::shared_ptr<Plugin>> plugins_;
         utils::JsonEx config_;
