@@ -22,7 +22,7 @@ install:
   - echo set(VCPKG_LIBRARY_LINKAGE static) >> %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
   - echo set(VCPKG_PLATFORM_TOOLSET v141) >> %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
 
-  - vcpkg --triplet %VCPKG_TRIPLET% install boost-algorithm boost-filesystem libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
+  - vcpkg --triplet %VCPKG_TRIPLET% install boost-algorithm libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
 
 build_script:
   - powershell scripts/generate.ps1 Release
