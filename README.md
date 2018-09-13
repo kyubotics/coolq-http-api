@@ -59,11 +59,11 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 ## 修改、编译
 
-项目使用 CMake 构建，[`scripts/generate.ps1`](scripts/generate.ps1)、[`scripts/build.ps1`](scripts/build.ps1)、[`scripts/post_build.ps1`](scripts/post_build.ps1) 分别给出了生成、构建、构建后的脚本，你可能需要对它们中的一些变量做适当修改以在你的系统中运行。
+本项目使用 [CMake](https://cmake.org/) 构建，依赖项通过 [Vcpkg](https://github.com/Microsoft/vcpkg) 管理。如果你没有使用过这两个工具，请先前往它们的官方网站了解基本用法。
 
-所有代码文件均为 UTF-8 编码，其中，[`io.github.richardchien.coolqhttpapi.json`](io.github.richardchien.coolqhttpapi.json) 文件将在 [`scripts/post_build.ps1`](scripts/post_build.ps1) 脚本中被转换为酷 Q 要求的 GB18030 编码。
+可以直接用 VS Code 或 VS 打开项目，项目中的所有代码文件全部使用 UTF-8 编码，你后续添加的所有代码文件都需要使用 UTF-8 编码。**注意，如果你使用 VS，则它默认使用 ANSI 编码保存文件，需要手动修改为 UTF-8**。[`io.github.richardchien.coolqhttpapi.json`](io.github.richardchien.coolqhttpapi.json) 文件将在 [`scripts/post_build.ps1`](scripts/post_build.ps1) 脚本中被转换为酷 Q 要求的 GB18030 编码。
 
-项目的依赖项通过 [vcpkg](https://github.com/Microsoft/vcpkg) 管理，使用 triplet 如下：
+Vcpkg 使用如下 triplet：
 
 ```cmake
 set(VCPKG_TARGET_ARCHITECTURE x86)
@@ -72,9 +72,9 @@ set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_PLATFORM_TOOLSET v141)
 ```
 
-你需要在 vcpkg 的 `triplets` 文件夹中创建一个名为 `***.cmake` 的文件（文件名随意，这里假设为 `my-triplet.cmake`），内容如上。创建了这个 triplet 之后，你需要将 [`scripts/generate.ps1`](scripts/generate.ps1) 中的 `$vcpkg_root`（vcpkg 根目录）和 `$vcpkg_triplet`（triplet 名称，例如 `my-triplet`）设置成你系统中的相应值（或设置环境变量）。
+你需要在 Vcpkg 的 `triplets` 文件夹中创建一个名为 `***.cmake` 的文件（文件名随意，这里假设为 `my-triplet.cmake`），内容如上。创建了这个 triplet 之后，你需要将 [`scripts/generate.ps1`](scripts/generate.ps1) 中的 `$vcpkg_root`（vcpkg 根目录）和 `$vcpkg_triplet`（triplet 名称，例如 `my-triplet`）设置成你系统中的相应值（或设置环境变量），如果你使用 VS Code 或 VS 编辑项目，可以直接修改 `.vscode/tasks.json`（VS Code）或 `CMakeSettings.json`（VS）中的 `VCPKG_ROOT` 和 `VCPKG_TRIPLET` 环境变量。
 
-除此之外，还需要安装如下依赖：
+除此之外，还需要安装如下依赖（使用上面的 triplet）：
 
 | 模块 | 依赖项 |
 | --- | ----- |
@@ -88,6 +88,25 @@ cd vcpkg
 git checkout 44631c9f6ff7eaf8fbe0ebc010918c5bf6407ac2 -- ports  # 固定包版本
 .\vcpkg --vcpkg-root . --triplet my-triplet install boost-algorithm libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog
 ```
+
+构建成功后，可以在 `build/Debug/Debug` 或 `build/Release/Release` 中找到生成的 DLL 和 JSON 文件，直接拷贝到酷 Q 的 `app` 目录即可测试使用（酷 Q 需要开启开发模式）。
+
+如果不想每次构建都手动拷贝这两个文件，可以在 `scripts` 目录添加文件 `install.ps1`（会被 `post_build.ps1` 在构建成功之后自动执行）如下：
+
+```ps1
+$lib_name = $args[0]
+$out_dir = $args[1]
+
+$dll_name = "${lib_name}.dll"
+$dll_path = "${out_dir}\${dll_name}"
+$json_name = "${lib_name}.json"
+$json_path = "${out_dir}\${json_name}"
+
+Copy-Item -Force $dll_path "C:\Applications\CQA\app\${dll_name}"
+Copy-Item -Force $json_path "C:\Applications\CQA\app\${json_name}"
+```
+
+注意上面脚本中需要适当修改酷 Q 的路径。
 
 ## 开源许可证、重新分发
 
