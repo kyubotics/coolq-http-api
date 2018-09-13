@@ -1,5 +1,6 @@
-$out_dir = $args[0]
-$json_name = "io.github.richardchien.coolqhttpapi.json"
+$lib_name = $args[0]
+$out_dir = $args[1]
+$json_name = "${lib_name}.json"
 $json_path = "${out_dir}\${json_name}"
 
 $content = Get-Content "$PSScriptRoot\..\${json_name}" -Encoding UTF8 -Raw

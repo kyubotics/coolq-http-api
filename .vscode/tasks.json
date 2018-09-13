@@ -20,6 +20,24 @@
             "group": "build"
         },
         {
+            "label": "generate release",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "'${workspaceFolder}/scripts/generate.ps1'",
+                "Release"
+            ],
+            "options": {
+                "env": {
+                    "VCPKG_ROOT": "C:\\CLI\\vcpkg",
+                    "VCPKG_TRIPLET": "my-triplet"
+                }
+            },
+            "group": "build"
+        },
+        {
             "label": "build debug",
             "type": "shell",
             "command": "powershell",
@@ -34,18 +52,6 @@
             "dependsOn": [
                 "generate debug"
             ]
-        },
-        {
-            "label": "generate release",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-NoProfile",
-                "-File",
-                "'${workspaceFolder}/scripts/generate.ps1'",
-                "Release"
-            ],
-            "group": "build"
         },
         {
             "label": "build release",
