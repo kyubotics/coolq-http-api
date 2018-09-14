@@ -54,6 +54,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [rikakomoe/cqhttp-twitter-bot](https://github.com/rikakomoe/cqhttp-twitter-bot) | 自动订阅 Twitter 发送到 QQ |
 | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | 模块化、轻量化的，基于命令的 Node.js QQ 机器人框架 |
 | [XiaoLin0815/QQ2TG](https://github.com/XiaoLin0815/QQ2TG) | 帮助 QQ 与 Telegram 互联的小程序 |
+| [milkice233/efb-qq-slave](https://github.com/milkice233/efb-qq-slave) | 基于 ehForwarderBot 框架的 QQ 从端 |
 
 以上列出的只是实际应用中的一小部分，如果你使用本插件编写了任何好的应用案例或开发框架，也可以通过 issue 或 pull request 添加到这里的列表，共同充实社区。
 
