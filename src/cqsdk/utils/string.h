@@ -7,7 +7,6 @@
 namespace cq::utils {
     std::string sregex_replace(const std::string &str, const std::regex &re,
                                std::function<std::string(const std::smatch &)> fmt_func);
-    bool is_emoji(uint32_t codepoint);
 
     enum class Encoding : unsigned {
         // https://msdn.microsoft.com/en-us/library/windows/desktop/dd317756.aspx

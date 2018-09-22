@@ -5,22 +5,21 @@
 #include "./api.h"
 
 using namespace std;
-using boost::algorithm::replace_all;
 
 namespace cq::message {
     string escape(string str, const bool escape_comma) {
-        replace_all(str, "&", "&amp;");
-        replace_all(str, "[", "&#91;");
-        replace_all(str, "]", "&#93;");
-        if (escape_comma) replace_all(str, ",", "&#44;");
+        boost::replace_all(str, "&", "&amp;");
+        boost::replace_all(str, "[", "&#91;");
+        boost::replace_all(str, "]", "&#93;");
+        if (escape_comma) boost::replace_all(str, ",", "&#44;");
         return str;
     }
 
     string unescape(string str) {
-        replace_all(str, "&#44;", ",");
-        replace_all(str, "&#91;", "[");
-        replace_all(str, "&#93;", "]");
-        replace_all(str, "&amp;", "&");
+        boost::replace_all(str, "&#44;", ",");
+        boost::replace_all(str, "&#91;", "[");
+        boost::replace_all(str, "&#93;", "]");
+        boost::replace_all(str, "&amp;", "&");
         return str;
     }
 
@@ -77,15 +76,17 @@ namespace cq::message {
                     MessageSegment seg;
 
                     seg.type = function_name_s.str();
-                    while (params_s.rdbuf()->in_avail()) {
-                        // split key and value
-                        string key, value;
-                        getline(params_s, key, '=');
-                        getline(params_s, value, ',');
-                        seg.data[key] = unescape(value);
+
+                    vector<string> params;
+                    boost::split(params, params_s.str(), boost::is_any_of(","));
+                    for (const auto &param : params) {
+                        const auto idx = param.find_first_of('=');
+                        if (idx != string::npos) {
+                            seg.data[boost::trim_copy(param.substr(0, idx))] = unescape(param.substr(idx + 1));
+                        }
                     }
 
-                    if (text_s.rdbuf()->in_avail()) {
+                    if (!text_s.str().empty()) {
                         // there is a text segment before this CQ code
                         this->push_back(MessageSegment{"text", {{"text", unescape(text_s.str())}}});
                         text_s = stringstream();
@@ -114,7 +115,7 @@ namespace cq::message {
             text_s << string(curr_cq_start, end);
             // should fall through
         case TEXT:
-            if (text_s.rdbuf()->in_avail()) {
+            if (!text_s.str().empty()) {
                 this->push_back(MessageSegment{"text", {{"text", unescape(text_s.str())}}});
             }
         default:

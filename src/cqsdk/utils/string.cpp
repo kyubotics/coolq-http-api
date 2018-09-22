@@ -22,14 +22,6 @@ namespace cq::utils {
         return result;
     }
 
-    bool is_emoji(const uint32_t codepoint) {
-        static unordered_set<uint32_t> emoji_set = {
-#include "./emoji_data.inc"
-        };
-
-        return emoji_set.find(codepoint) != emoji_set.end();
-    }
-
     static shared_ptr<wchar_t> multibyte_to_widechar(const unsigned code_page, const char *multibyte_str) {
         const auto len = MultiByteToWideChar(code_page, 0, multibyte_str, -1, nullptr, 0);
         auto c_wstr_sptr = make_shared_array<wchar_t>(len + 1);
@@ -92,36 +84,7 @@ namespace cq::utils {
     }
 
     string string_to_coolq(const string &str) {
-        // call_if_valid CoolQ API
-
-        if (config.convert_unicode_emoji) {
-            string processed_str;
-
-            wstring_convert<codecvt_utf8<uint32_t>, uint32_t> uint32_conv;
-            auto uint32_str = uint32_conv.from_bytes(str);
-
-            const auto append_text = [&](const decltype(uint32_str.cbegin()) &begin,
-                                         const decltype(uint32_str.cbegin()) &end) {
-                const decltype(uint32_str) uint32_part_str(begin, end);
-                const auto utf8_part_str = uint32_conv.to_bytes(uint32_part_str);
-                processed_str += utf8_part_str;
-            };
-
-            auto last_it = uint32_str.cbegin();
-            for (auto it = uint32_str.cbegin(); it != uint32_str.cend(); ++it) {
-                const auto codepoint = *it;
-                if (is_emoji(codepoint)) {
-                    // is emoji
-                    append_text(last_it, it);
-                    processed_str += "[CQ:emoji,id=" + to_string(codepoint) + "]";
-                    last_it = it + 1;
-                }
-            }
-            append_text(last_it, uint32_str.cend());
-
-            return string_encode(processed_str, "gb18030");
-        }
-
+        // call CoolQ API
         return string_encode(str, "gb18030");
     }
 
