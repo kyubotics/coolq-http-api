@@ -392,7 +392,13 @@ namespace cqhttp {
             {"online", nullptr},
         };
 
-        if (app.config().get_bool("more_accurate_online_status", false)) {
+        auto online_status_detection_method = app.config().get_string("online_status_detection_method", "log_db");
+        if (online_status_detection_method == "get_stranger_info") {
+            ActionResult tmp_result;
+            __get_stranger_info(json{{"user_id", 10000}, {"no_cache", true}}, tmp_result);
+            result.data["online"] = tmp_result.code == Codes::OK;
+        } else {
+            // online_status_detection_method == "log_db" or other invalid method
             const auto db_uri = cq::dir::root() + "data\\" + to_string(api::get_login_user_id()) + "\\logv1.db";
             const auto sql =
                 u8R"(select count(*) = 0 as online
@@ -426,12 +432,6 @@ namespace cqhttp {
             if (db) {
                 sqlite3_close(db);
             }
-        }
-
-        if (result.data["online"] == nullptr) {
-            ActionResult tmp_result;
-            __get_stranger_info(json{{"user_id", 10000}, {"no_cache", true}}, tmp_result);
-            result.data["online"] = tmp_result.code == Codes::OK;
         }
 
         result.data["good"] = result.data["app_good"] && result.data["online"];
