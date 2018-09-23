@@ -101,7 +101,13 @@ namespace cq::message {
 
     inline void from_json(const json &j, MessageSegment &segment) {
         segment.type = j.at("type").get<std::string>();
-        segment.data = j.at("data").get<std::map<std::string, std::string>>();
+        auto data = j.at("data");
+        for (auto it = data.begin(); it != data.end(); ++it) {
+            if (!it.value().is_string()) {
+                it.value() = it.value().dump();
+            }
+        }
+        segment.data = data.get<std::map<std::string, std::string>>();
     }
 
     inline void to_json(json &j, const Message &message) { j = message.segments(); }

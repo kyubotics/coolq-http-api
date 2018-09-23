@@ -10,6 +10,7 @@
 #include "cqhttp/utils/filesystem.h"
 #include "cqhttp/utils/http.h"
 #include "cqhttp/utils/random.h"
+#include "cqhttp/utils/string.h"
 #include "cqsdk/utils/base64.h"
 
 using namespace std;
@@ -21,6 +22,7 @@ namespace cqhttp::plugins {
     using utils::fs::data_file_full_path;
     using utils::crypt::md5_hash_hex;
     using utils::random::random_int;
+    using utils::to_bool;
     namespace fs = std::filesystem;
     namespace base64 = cq::utils::base64;
 
@@ -76,8 +78,8 @@ namespace cqhttp::plugins {
 
             // check if to use cache
             auto use_cache = true; // use cache by default
-            if (segment.data.find("cache") != segment.data.end() && segment.data["cache"] == "0") {
-                use_cache = false;
+            if (segment.data.find("cache") != segment.data.end()) {
+                use_cache = to_bool(segment.data["cache"], true);
             }
 
             if (use_cache) {
