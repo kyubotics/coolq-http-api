@@ -1,6 +1,6 @@
 find_path(SPDLOG_INCLUDE_DIR spdlog/spdlog.h)
 
-find_library(FMT_LIBRARY NAMES fmt libfmt)
+find_library(FMT_LIBRARY NAMES fmt fmtd libfmt libfmtd)
 
 if(SPDLOG_INCLUDE_DIR)
    set(SPDLOG_FOUND TRUE)

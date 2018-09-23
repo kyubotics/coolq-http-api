@@ -14,7 +14,7 @@
             "options": {
                 "env": {
                     "VCPKG_ROOT": "C:\\CLI\\vcpkg",
-                    "VCPKG_TRIPLET": "my-triplet"
+                    "VCPKG_TRIPLET": "my-x86-windows-static"
                 }
             },
             "group": "build"
@@ -32,7 +32,7 @@
             "options": {
                 "env": {
                     "VCPKG_ROOT": "C:\\CLI\\vcpkg",
-                    "VCPKG_TRIPLET": "my-triplet"
+                    "VCPKG_TRIPLET": "my-x86-windows-static"
                 }
             },
             "group": "build"

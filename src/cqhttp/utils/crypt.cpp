@@ -2,6 +2,8 @@
 
 #include <openssl/hmac.h>
 #include <openssl/md5.h>
+#include <iomanip>
+#include <sstream>
 
 using namespace std;
 

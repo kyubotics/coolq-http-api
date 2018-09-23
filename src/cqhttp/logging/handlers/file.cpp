@@ -1,5 +1,7 @@
 #include "./file.h"
 
+#include <spdlog/sinks/rotating_file_sink.h>
+
 #include "cqsdk/utils/string.h"
 
 using namespace std;

@@ -2,7 +2,7 @@ find_path(CURL_INCLUDE_DIR curl/curl.h)
 
 find_library(CURL_LIBRARY NAMES libcurl curllib curl curllib_static)
 find_library(LIBSSH_LIBRARY NAMES libssh2 libssh ssh)
-find_library(ZLIB_LIBRARY NAMES zlib)
+find_library(ZLIB_LIBRARY NAMES zlib zlibd)
 find_library(SSLEAY_LIBRARY NAMES ssleay ssleay32)
 find_library(EAY_LIBRARY NAMES eay eay32 libeay32)
 

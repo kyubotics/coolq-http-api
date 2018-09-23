@@ -3,9 +3,11 @@
 #include <Windows.h>
 #include <fcntl.h>
 #include <io.h>
-#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <cstdio>
 #include <iostream>
+
+#include "cqsdk/utils/string.h"
 
 using namespace std;
 
