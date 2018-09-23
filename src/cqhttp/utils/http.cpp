@@ -47,8 +47,6 @@ namespace cqhttp::utils::http::curl {
 
             const auto curl = curl_easy_init();
             curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); // this is unsafe
-
             if (method == Method::POST) {
                 curl_easy_setopt(curl, CURLOPT_POST, 1L);
             }

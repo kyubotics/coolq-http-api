@@ -71,6 +71,8 @@ set(VCPKG_TARGET_ARCHITECTURE x86)
 set(VCPKG_CRT_LINKAGE dynamic)
 set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_PLATFORM_TOOLSET v141)
+
+set(CURL_USE_WINSSL ON)
 ```
 
 你需要在 Vcpkg 的 `triplets` 文件夹中创建一个名为 `my-x86-windows-static.cmake` 的文件（文件名可以换为其它，但建议保留 `x86-windows-static` 这部分，似乎 Vcpkg 使用了文件名来判断要安装的包的版本），内容如上。创建了这个 triplet 之后，你需要将 [`scripts/generate.ps1`](scripts/generate.ps1) 中的 `$vcpkg_root`（vcpkg 根目录）和 `$vcpkg_triplet`（triplet 名称，例如 `my-x86-windows-static`）设置成你系统中的相应值（或设置环境变量），如果你使用 VS Code 或 VS 编辑项目，可以直接修改 `.vscode/tasks.json`（VS Code）或 `CMakeSettings.json`（VS）中的 `VCPKG_ROOT` 和 `VCPKG_TRIPLET` 环境变量，**注意，`.vscode/tasks.json` 中有两个 task 需要改**。
