@@ -14,7 +14,7 @@ namespace cqhttp {
         logging::info(TAG, u8"插件版本：" CQHTTP_VERSION);
 
         enabled_ = true;
-        config_ = utils::JsonEx();
+        config = utils::JsonEx();
         worker_thread_pool_ = make_shared<ctpl::thread_pool>(1);
         logging::debug(TAG, u8"全局线程池创建成功");
 

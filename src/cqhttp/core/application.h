@@ -66,11 +66,10 @@ namespace cqhttp {
         bool resize_worker_thread_pool(int n_threads) const;
         bool push_async_task(const std::function<void()> &task) const;
 
-        utils::JsonEx &config() { return config_; }
+        utils::JsonEx config;
 
     private:
         std::vector<std::shared_ptr<Plugin>> plugins_;
-        utils::JsonEx config_;
         std::shared_ptr<ctpl::thread_pool> worker_thread_pool_;
 
         bool initialized_ = false;
@@ -78,7 +77,7 @@ namespace cqhttp {
 
         template <typename HookFunc, typename Ctx>
         void iterate_hooks(const HookFunc hook_func, Ctx ctx) {
-            ctx.config = &config_;
+            ctx.config = &config;
 
             auto it = plugins_.begin();
             Context::Next next = [&] {

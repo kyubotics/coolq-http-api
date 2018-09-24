@@ -392,7 +392,7 @@ namespace cqhttp {
             {"online", nullptr},
         };
 
-        auto online_status_detection_method = app.config().get_string("online_status_detection_method", "log_db");
+        auto online_status_detection_method = app.config.get_string("online_status_detection_method", "log_db");
         if (online_status_detection_method == "get_stranger_info") {
             ActionResult tmp_result;
             __get_stranger_info(json{{"user_id", 10000}, {"no_cache", true}}, tmp_result);
