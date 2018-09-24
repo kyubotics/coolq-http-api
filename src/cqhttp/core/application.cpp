@@ -15,8 +15,12 @@ namespace cqhttp {
 
         enabled_ = true;
         config_ = utils::JsonEx();
+
         worker_thread_pool_ = make_shared<ctpl::thread_pool>(1);
         logging::debug(TAG, u8"全局线程池创建成功");
+
+        scheduler_ = make_shared<Bosma::Scheduler>(4);
+        logging::debug(TAG, u8"计划任务调度器创建成功");
 
         iterate_hooks(&Plugin::hook_enable, Context());
         emit_lifecycle_meta_event(MetaEvent::LIFECYCLE_ENABLE);
@@ -26,10 +30,17 @@ namespace cqhttp {
         emit_lifecycle_meta_event(MetaEvent::LIFECYCLE_DISABLE);
 
         enabled_ = false;
+
         if (worker_thread_pool_) {
             worker_thread_pool_->stop();
             worker_thread_pool_ = nullptr;
             logging::debug(TAG, u8"全局线程池关闭成功");
+        }
+
+        if (scheduler_) {
+            // this will trigger the destructor, which will stop all pending tasks and close the internal thread pool
+            scheduler_ = nullptr;
+            logging::debug(TAG, u8"计划任务调度器关闭成功");
         }
 
         iterate_hooks(&Plugin::hook_disable, Context());

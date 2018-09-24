@@ -7,6 +7,7 @@
 #include "cqhttp/core/event.h"
 #include "cqhttp/core/plugin.h"
 #include "cqhttp/core/vendor/ctpl/ctpl_stl.h"
+#include "cqhttp/core/vendor/scheduler/Scheduler.h"
 
 namespace cqhttp {
     class Application {
@@ -67,11 +68,18 @@ namespace cqhttp {
         bool push_async_task(const std::function<void()> &task) const;
 
         utils::JsonEx &config() { return config_; }
+        Bosma::Scheduler &scheduler() {
+            if (scheduler_) {
+                return *scheduler_;
+            }
+            throw std::runtime_error("scheduler has not been created");
+        }
 
     private:
         std::vector<std::shared_ptr<Plugin>> plugins_;
         utils::JsonEx config_;
         std::shared_ptr<ctpl::thread_pool> worker_thread_pool_;
+        std::shared_ptr<Bosma::Scheduler> scheduler_;
 
         bool initialized_ = false;
         bool enabled_ = false;
