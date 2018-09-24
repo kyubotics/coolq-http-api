@@ -11,6 +11,12 @@ static const auto DEFAULT_CONFIG = string() + R"({
     "ws_host": "0.0.0.0",
     "ws_port": 6700,
     "use_ws": false,
+    "ws_reverse_url": "",
+    "ws_reverse_api_url": "",
+    "ws_reverse_event_url": "",
+    "ws_reverse_reconnect_interval": 3000,
+    "ws_reverse_reconnect_on_code_1000": true,
+    "use_ws_reverse": false,
     "post_url": "",
     "access_token": "",
     "secret": "",
@@ -20,10 +26,8 @@ static const auto DEFAULT_CONFIG = string() + R"({
     "update_channel": "stable",
     "auto_check_update": false,
     "auto_perform_update": false,
-    "thread_pool_size": 4,
-    "server_thread_pool_size": 1,
     "show_log_console": false,
-    "enable_backward_compatibility": false
+    "log_level": "info"
 })";
 
 namespace cqhttp::plugins {
