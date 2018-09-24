@@ -20,7 +20,7 @@ namespace cqhttp::plugins {
         if (use_ws_reverse_) {
             const auto access_token = ctx.config->get_string("access_token", "");
             const auto reconnect_interval = ctx.config->get_integer("ws_reverse_reconnect_interval", 3000);
-            const auto reconnect_on_code_1000 = ctx.config->get_bool("ws_reverse_reconnect_on_code_1000", false);
+            const auto reconnect_on_code_1000 = ctx.config->get_bool("ws_reverse_reconnect_on_code_1000", true);
 
             auto url = check_ws_url(
                 ctx.config->get_string("ws_reverse_api_url", ctx.config->get_string("ws_reverse_url", "")));
