@@ -4,6 +4,7 @@
 
 #include "cqhttp/core/action.h"
 #include "cqhttp/core/context.h"
+#include "cqhttp/core/event.h"
 #include "cqhttp/core/plugin.h"
 #include "cqhttp/core/vendor/ctpl/ctpl_stl.h"
 
@@ -30,6 +31,10 @@ namespace cqhttp {
 
         void on_request_event(const cq::RequestEvent &event, json &data) {
             iterate_hooks(&Plugin::hook_request_event, EventContext<cq::RequestEvent>(event, data));
+        }
+
+        void on_meta_event(const cqhttp::MetaEvent &event, json &data) {
+            iterate_hooks(&Plugin::hook_meta_event, EventContext<cqhttp::MetaEvent>(event, data));
         }
 
         void on_after_event(const cq::Event &event, json &data) {

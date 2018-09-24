@@ -17,16 +17,21 @@ namespace cqhttp {
         config_ = utils::JsonEx();
         worker_thread_pool_ = make_shared<ctpl::thread_pool>(1);
         logging::debug(TAG, u8"全局线程池创建成功");
+
         iterate_hooks(&Plugin::hook_enable, Context());
+        emit_lifecycle_meta_event(MetaEvent::LIFECYCLE_ENABLE);
     }
 
     void Application::on_disable() {
+        emit_lifecycle_meta_event(MetaEvent::LIFECYCLE_DISABLE);
+
         enabled_ = false;
         if (worker_thread_pool_) {
             worker_thread_pool_->stop();
             worker_thread_pool_ = nullptr;
             logging::debug(TAG, u8"全局线程池关闭成功");
         }
+
         iterate_hooks(&Plugin::hook_disable, Context());
     }
 

@@ -8,6 +8,7 @@ namespace cq {
         };
 
         enum Type {
+            UNKNOWN,
             MESSAGE,
             NOTICE,
             REQUEST,
@@ -16,6 +17,7 @@ namespace cq {
 
     namespace message {
         enum Type {
+            UNKNOWN,
             PRIVATE,
             GROUP,
             DISCUSS,
@@ -33,6 +35,7 @@ namespace cq {
 
     namespace notice {
         enum Type {
+            UNKNOWN,
             GROUP_UPLOAD,
             GROUP_ADMIN,
             GROUP_MEMBER_DECREASE,
@@ -59,6 +62,7 @@ namespace cq {
         };
 
         enum Type {
+            UNKNOWN,
             FRIEND,
             GROUP,
         };

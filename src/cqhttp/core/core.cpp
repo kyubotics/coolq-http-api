@@ -21,7 +21,7 @@ namespace cqhttp {
 /**
  * Generate lifecycle callbacks.
  */
-#define LIFECYCLE(Name)                              \
+#define LIFECYCLE(Name)                            \
     static void __on_##Name() { app.on_##Name(); } \
     static bool __dummy_on_##Name = add_callback_initializer([]() { cq::app::on_##Name = __on_##Name; })
 

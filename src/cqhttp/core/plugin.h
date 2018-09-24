@@ -3,6 +3,7 @@
 #include "cqhttp/core/common.h"
 
 #include "cqhttp/core/context.h"
+#include "cqhttp/core/event.h"
 
 namespace cqhttp {
     /**
@@ -45,6 +46,7 @@ namespace cqhttp {
         virtual void hook_message_event(EventContext<cq::MessageEvent> &ctx) { ctx.next(); }
         virtual void hook_notice_event(EventContext<cq::NoticeEvent> &ctx) { ctx.next(); }
         virtual void hook_request_event(EventContext<cq::RequestEvent> &ctx) { ctx.next(); }
+        virtual void hook_meta_event(EventContext<cqhttp::MetaEvent> &ctx) { ctx.next(); }
         virtual void hook_after_event(EventContext<cq::Event> &ctx) { ctx.next(); }
 
         virtual void hook_before_action(ActionContext &ctx) { ctx.next(); }
