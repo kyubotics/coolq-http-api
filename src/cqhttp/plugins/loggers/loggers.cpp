@@ -17,7 +17,7 @@ namespace cqhttp::plugins {
         const auto file_handler = make_shared<logging::FileHandler>(
             cq::dir::app("log") + to_string(cq::api::get_login_user_id()) + ".log", max_file_size_, max_files_);
         file_handler->init();
-        register_handler("file", file_handler);
+        logging::register_handler("file", file_handler);
     }
 
     static void remove_file_logger() {
@@ -38,7 +38,7 @@ namespace cqhttp::plugins {
         if (ctx.config->get_bool("show_log_console", false)) {
             const auto console_handler = make_shared<logging::ConsoleHandler>();
             console_handler->init();
-            register_handler("console", console_handler);
+            logging::register_handler("console", console_handler);
             logging::info_success(TAG, u8"日志控制台开启成功");
         }
 
