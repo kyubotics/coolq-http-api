@@ -15,6 +15,7 @@ environment:
 cache: c:\tools\vcpkg\installed\ -> .appveyor.yml  # cache the installed vcpkg packages
 
 install:
+  - git -C %VCPKG_ROOT% pull
   - git -C %VCPKG_ROOT% checkout 90e627c7e6312d5ab04060c186e55ac58edaa634 -- ports
 
   - echo set(VCPKG_TARGET_ARCHITECTURE x86) > %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
