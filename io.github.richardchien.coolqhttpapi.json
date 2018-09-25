@@ -1,149 +1,149 @@
 {
-    "ret": 1,
-    "apiver": 9,
-    "name": "HTTP API",
-    "version": "4.4.1",
-    "version_id": 419,
-    "author": "Richard Chien",
-    "description": "通过 HTTP 或 WebSocket 对酷 Q 的事件进行上报以及接收请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。具体见 https://github.com/richardchien/coolq-http-api",
-    "event": [
-        {
-            "id": 1003,
-            "type": 1003,
-            "name": "插件启用",
-            "priority": 20000,
-            "function": "cq_app_enable"
-        },
-        {
-            "id": 1004,
-            "type": 1004,
-            "name": "插件停用",
-            "priority": 20000,
-            "function": "cq_app_disable"
-        },
-        {
-            "id": 1001,
-            "type": 1001,
-            "name": "酷Q启动",
-            "priority": 20000,
-            "function": "cq_coolq_start"
-        },
-        {
-            "id": 1002,
-            "type": 1002,
-            "name": "酷Q退出",
-            "priority": 20000,
-            "function": "cq_coolq_exit"
-        },
-        {
-            "id": 1,
-            "type": 21,
-            "name": "私聊消息",
-            "function": "cq_event_private_msg",
-            "priority": 20000
-        },
-        {
-            "id": 2,
-            "type": 2,
-            "name": "群消息",
-            "function": "cq_event_group_msg",
-            "priority": 20000
-        },
-        {
-            "id": 3,
-            "type": 4,
-            "name": "讨论组消息",
-            "function": "cq_event_discuss_msg",
-            "priority": 20000
-        },
-        {
-            "id": 4,
-            "type": 11,
-            "name": "群文件上传",
-            "function": "cq_event_group_upload",
-            "priority": 20000
-        },
-        {
-            "id": 5,
-            "type": 101,
-            "name": "群管理员变动",
-            "function": "cq_event_group_admin",
-            "priority": 20000
-        },
-        {
-            "id": 6,
-            "type": 102,
-            "name": "群成员减少",
-            "function": "cq_event_group_member_decrease",
-            "priority": 20000
-        },
-        {
-            "id": 7,
-            "type": 103,
-            "name": "群成员增加",
-            "function": "cq_event_group_member_increase",
-            "priority": 20000
-        },
-        {
-            "id": 10,
-            "type": 201,
-            "name": "好友添加",
-            "function": "cq_event_friend_add",
-            "priority": 20000
-        },
-        {
-            "id": 8,
-            "type": 301,
-            "name": "加好友请求",
-            "function": "cq_event_add_friend_request",
-            "priority": 20000
-        },
-        {
-            "id": 9,
-            "type": 302,
-            "name": "加群请求／邀请",
-            "function": "cq_event_add_group_request",
-            "priority": 20000
-        }
-    ],
-    "menu": [
-        {
-            "name": "重启插件",
-            "function": "cq_menu_restart"
-        },
-        {
-            "name": "检查更新",
-            "function": "cq_menu_check_update"
-        },
-        {
-            "name": "重启酷 Q",
-            "function": "cq_menu_restart_coolq"
-        }
-    ],
-    "status": [],
-    "auth": [
-        20, // getCookies / getCsrfToken
-        30, // getRecord
-        101, // sendGroupMsg
-        103, // sendDiscussMsg
-        106, // sendPrivateMsg
-        110, // sendLikeV2 / sendLike
-        120, // setGroupKick
-        121, // setGroupBan
-        122, // setGroupAdmin
-        123, // setGroupWholeBan
-        124, // setGroupAnonymousBan
-        125, // setGroupAnonymous
-        126, // setGroupCard
-        127, // setGroupLeave
-        128, // setGroupSpecialTitle
-        130, // getGroupMemberInfoV2 / getGroupMemberInfo
-        131, // getStrangerInfo
-        140, // setDiscussLeave
-        150, // setFriendAddRequest
-        151, // setGroupAddRequest
-        160, // getGroupMemberList
-        161, // getGroupList
-        180 // deleteMsg
-    ]
+  "ret": 1,
+  "apiver": 9,
+  "name": "HTTP API",
+  "version": "v4.5.0-beta.1",
+  "version_id": 420,
+  "author": "Richard Chien",
+  "description": "通过 HTTP 或 WebSocket 对酷 Q 的事件进行上报以及接收请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。具体见 https://github.com/richardchien/coolq-http-api",
+  "event": [
+    {
+      "id": 1003,
+      "type": 1003,
+      "name": "插件启用",
+      "priority": 20000,
+      "function": "cq_app_enable"
+    },
+    {
+      "id": 1004,
+      "type": 1004,
+      "name": "插件停用",
+      "priority": 20000,
+      "function": "cq_app_disable"
+    },
+    {
+      "id": 1001,
+      "type": 1001,
+      "name": "酷Q启动",
+      "priority": 20000,
+      "function": "cq_coolq_start"
+    },
+    {
+      "id": 1002,
+      "type": 1002,
+      "name": "酷Q退出",
+      "priority": 20000,
+      "function": "cq_coolq_exit"
+    },
+    {
+      "id": 1,
+      "type": 21,
+      "name": "私聊消息",
+      "function": "cq_event_private_msg",
+      "priority": 20000
+    },
+    {
+      "id": 2,
+      "type": 2,
+      "name": "群消息",
+      "function": "cq_event_group_msg",
+      "priority": 20000
+    },
+    {
+      "id": 3,
+      "type": 4,
+      "name": "讨论组消息",
+      "function": "cq_event_discuss_msg",
+      "priority": 20000
+    },
+    {
+      "id": 4,
+      "type": 11,
+      "name": "群文件上传",
+      "function": "cq_event_group_upload",
+      "priority": 20000
+    },
+    {
+      "id": 5,
+      "type": 101,
+      "name": "群管理员变动",
+      "function": "cq_event_group_admin",
+      "priority": 20000
+    },
+    {
+      "id": 6,
+      "type": 102,
+      "name": "群成员减少",
+      "function": "cq_event_group_member_decrease",
+      "priority": 20000
+    },
+    {
+      "id": 7,
+      "type": 103,
+      "name": "群成员增加",
+      "function": "cq_event_group_member_increase",
+      "priority": 20000
+    },
+    {
+      "id": 10,
+      "type": 201,
+      "name": "好友添加",
+      "function": "cq_event_friend_add",
+      "priority": 20000
+    },
+    {
+      "id": 8,
+      "type": 301,
+      "name": "加好友请求",
+      "function": "cq_event_add_friend_request",
+      "priority": 20000
+    },
+    {
+      "id": 9,
+      "type": 302,
+      "name": "加群请求／邀请",
+      "function": "cq_event_add_group_request",
+      "priority": 20000
+    }
+  ],
+  "menu": [
+    {
+      "name": "重启插件",
+      "function": "cq_menu_restart"
+    },
+    {
+      "name": "检查更新",
+      "function": "cq_menu_check_update"
+    },
+    {
+      "name": "重启酷 Q",
+      "function": "cq_menu_restart_coolq"
+    }
+  ],
+  "status": [],
+  "auth": [
+    20, // getCookies / getCsrfToken
+    30, // getRecord
+    101, // sendGroupMsg
+    103, // sendDiscussMsg
+    106, // sendPrivateMsg
+    110, // sendLikeV2 / sendLike
+    120, // setGroupKick
+    121, // setGroupBan
+    122, // setGroupAdmin
+    123, // setGroupWholeBan
+    124, // setGroupAnonymousBan
+    125, // setGroupAnonymous
+    126, // setGroupCard
+    127, // setGroupLeave
+    128, // setGroupSpecialTitle
+    130, // getGroupMemberInfoV2 / getGroupMemberInfo
+    131, // getStrangerInfo
+    140, // setDiscussLeave
+    150, // setFriendAddRequest
+    151, // setGroupAddRequest
+    160, // getGroupMemberList
+    161, // getGroupList
+    180 // deleteMsg
+  ]
 }
