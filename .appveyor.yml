@@ -12,7 +12,7 @@ environment:
   VCPKG_ROOT: C:\tools\vcpkg
   VCPKG_TRIPLET: my-x86-windows-static
 
-cache: c:\tools\vcpkg\installed\  # cache the installed vcpkg packages
+cache: c:\tools\vcpkg\installed\ -> .appveyor.yml  # cache the installed vcpkg packages
 
 install:
   - git -C %VCPKG_ROOT% checkout 90e627c7e6312d5ab04060c186e55ac58edaa634 -- ports
