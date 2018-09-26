@@ -4,6 +4,7 @@
 #include <filesystem>
 
 #include "cqhttp/core/core.h"
+#include "cqhttp/core/helpers.h"
 #include "cqhttp/utils/gui.h"
 #include "cqhttp/utils/http.h"
 
@@ -12,24 +13,13 @@ using namespace std;
 namespace cqhttp::plugins {
     static const auto TAG = u8"更新";
 
-    using boost::algorithm::ends_with;
     using utils::http::get_json;
     using utils::http::download_file;
     using utils::gui::message_box;
     namespace fs = std::filesystem;
 
     void Updater::hook_enable(Context &ctx) {
-        update_source_ = ctx.config->get_string("update_source", "github");
-
-        if (update_source_ == "github") {
-            update_source_ = "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/";
-        } else if (update_source_ == "gitee") {
-            update_source_ = "https://gitee.com/richardchien/coolq-http-api-release/raw/master/";
-        }
-
-        if (!ends_with(update_source_, "/")) {
-            update_source_ = update_source_ + "/";
-        }
+        update_source_ = helpers::get_update_source_url();
         update_channel_ = ctx.config->get_string("update_channel", "stable");
         auto_perform_update_ = ctx.config->get_bool("auto_perform_update", false);
 
