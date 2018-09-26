@@ -9,4 +9,6 @@ namespace cqhttp::utils::mutex {
         std::unique_lock<std::mutex> lock(m);
         func();
     }
+
+    void with_file_lock(std::string file_path, const std::function<void()> func);
 } // namespace cqhttp::utils::mutex
