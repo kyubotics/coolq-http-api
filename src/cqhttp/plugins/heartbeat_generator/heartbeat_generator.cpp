@@ -5,7 +5,7 @@
 using namespace std;
 
 namespace cqhttp::plugins {
-    static const auto TAG = u8"心跳发生器";
+    static const auto TAG = u8"心跳";
 
     void HeartbeatGenerator::hook_enable(Context &ctx) {
         if (ctx.config->get_bool("enable_heartbeat", false)) {
