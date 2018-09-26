@@ -6,7 +6,6 @@
 #include "cqhttp/plugins/config_loader/ini_config_loader.h"
 #include "cqhttp/plugins/config_loader/json_config_loader.h"
 
-#include "cqhttp/plugins/ca_cert_downloader/ca_cert_downloader.h"
 #include "cqhttp/plugins/heartbeat_generator/heartbeat_generator.h"
 #include "cqhttp/plugins/loggers/loggers.h"
 #include "cqhttp/plugins/worker_pool_resizer/worker_pool_resizer.h"
@@ -42,7 +41,6 @@ CQ_MAIN {
     // config global things
     use(plugins::loggers);
     use(plugins::worker_pool_resizer);
-    use(plugins::ca_cert_downloader);
     use(plugins::heartbeat_generator);
 
     // extend the Context object

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <ciso646>
-
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 

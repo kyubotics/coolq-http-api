@@ -1,15 +1,45 @@
 #include "./websocket_reverse.h"
 
+#include <filesystem>
+#include <regex>
+
+#include "cqhttp/core/core.h"
+#include "cqhttp/core/helpers.h"
+#include "cqhttp/utils/http.h"
+
 using namespace std;
+namespace fs = std::filesystem;
 
 namespace cqhttp::plugins {
     static const auto TAG = "反向WS";
 
+    using utils::http::download_file;
+    using helpers::get_asset_url;
+
     static string check_ws_url(const string &url) {
-        if (!url.empty() && !regex_search(url, regex("^wss?://"))) {
+        if (!url.empty() && !regex_search(url, regex("^wss?://", regex::icase))) {
             // bad websocket url, we warn the user, and ignore the url
             logging::warning(TAG, u8"反向 WebSocket 服务端地址 " + url + u8" 不是合法地址，将被忽略");
             return "";
+        }
+        if (boost::istarts_with(url, "wss://")) {
+            const auto cacert_file = cq::dir::app("tmp") + "cacert.pem";
+            auto ok = true;
+
+            if (!fs::exists(ansi(cacert_file))) {
+                logging::info(
+                    TAG, u8"正在下载 CA 证书文件，这只会在第一次启动时进行，如果耗时较长，请在配置文件中更换更新源");
+                if (download_file(get_asset_url("cacert.pem"), cacert_file, true)) {
+                    logging::info_success(TAG, u8"下载 CA 证书文件成功");
+                } else {
+                    logging::warning(TAG, u8"下载 CA 证书文件失败，可能导致无法 WSS");
+                    ok = false;
+                }
+            }
+
+            if (ok) {
+                app.store().put("cacert_file", cacert_file);
+            }
         }
         return url;
     }
