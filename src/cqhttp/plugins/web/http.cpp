@@ -158,7 +158,7 @@ namespace cqhttp::plugins {
 
     void Http::hook_enable(Context &ctx) {
         post_url_ = ctx.config->get_string("post_url", "");
-        if (!post_url_.empty() && !regex_search(post_url_, regex("^https?://"))) {
+        if (!post_url_.empty() && !regex_search(post_url_, regex("^https?://", regex::icase))) {
             // bad post url, we warn the user, and ignore the post url
             logging::warning(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 不是合法地址，将被忽略");
             post_url_ = "";
