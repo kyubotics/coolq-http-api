@@ -48,7 +48,7 @@ namespace cqhttp::plugins {
             virtual void disconnect();
 
             template <typename WsClientT>
-            std::shared_ptr<WsClientT> init_ws_reverse_client(const std::string &server_port_path);
+            void init_ws_reverse_client(std::shared_ptr<WsClientT> client);
 
             std::string url_;
             std::string access_token_;

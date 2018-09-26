@@ -1,5 +1,6 @@
 #include "./websocket_reverse.h"
 
+#include "cqhttp/core/core.h"
 #include "cqhttp/plugins/web/ws_common.h"
 #include "cqhttp/utils/mutex.h"
 
@@ -13,8 +14,7 @@ namespace cqhttp::plugins {
     using utils::mutex::with_unique_lock;
 
     template <typename WsClientT>
-    shared_ptr<WsClientT> WebSocketReverse::ClientBase::init_ws_reverse_client(const string &server_port_path) {
-        auto client = make_shared<WsClientT>(server_port_path);
+    void WebSocketReverse::ClientBase::init_ws_reverse_client(shared_ptr<WsClientT> client) {
         client->config.header.emplace("User-Agent", CQHTTP_USER_AGENT);
         client->config.header.emplace("X-Self-ID", to_string(cq::api::get_login_user_id()));
         client->config.header.emplace("X-Client-Role", this->name());
@@ -33,17 +33,19 @@ namespace cqhttp::plugins {
             logging::debug(TAG, u8"反向 WebSocket 连接发生错误，error code: " + to_string(e.value()));
             notify_should_reconnect();
         };
-        return client;
     }
 
     void WebSocketReverse::ClientBase::init() {
         try {
-            if (boost::algorithm::starts_with(url_, "ws://")) {
-                client_.ws = init_ws_reverse_client<WsClient>(url_.substr(strlen("ws://")));
+            if (boost::istarts_with(url_, "ws://")) {
                 client_is_wss_ = false;
-            } else if (boost::algorithm::starts_with(url_, "wss://")) {
-                client_.wss = init_ws_reverse_client<WssClient>(url_.substr(strlen("wss://")));
+                client_.ws = make_shared<WsClient>(url_.substr(strlen("ws://")));
+                init_ws_reverse_client(client_.ws);
+            } else if (boost::istarts_with(url_, "wss://")) {
                 client_is_wss_ = true;
+                client_.wss = make_shared<WssClient>(
+                    url_.substr(strlen("wss://")), true, "", "", app.store().get_string("cacert_file"));
+                init_ws_reverse_client<WssClient>(client_.wss);
             }
         } catch (...) {
             // in case "init_ws_reverse_client()" failed due to invalid "server_port_path"

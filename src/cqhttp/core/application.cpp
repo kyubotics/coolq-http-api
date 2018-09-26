@@ -15,6 +15,7 @@ namespace cqhttp {
 
         enabled_ = true;
         config_ = utils::JsonEx();
+        store_ = utils::JsonEx();
 
         worker_thread_pool_ = make_shared<ctpl::thread_pool>(1);
         logging::debug(TAG, u8"全局线程池创建成功");

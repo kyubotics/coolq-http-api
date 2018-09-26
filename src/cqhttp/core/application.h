@@ -68,6 +68,7 @@ namespace cqhttp {
         bool push_async_task(const std::function<void()> &task) const;
 
         utils::JsonEx &config() { return config_; }
+        utils::JsonEx &store() { return store_; }
         Bosma::Scheduler &scheduler() {
             if (scheduler_) {
                 return *scheduler_;
@@ -78,6 +79,7 @@ namespace cqhttp {
     private:
         std::vector<std::shared_ptr<Plugin>> plugins_;
         utils::JsonEx config_;
+        utils::JsonEx store_;
         std::shared_ptr<ctpl::thread_pool> worker_thread_pool_;
         std::shared_ptr<Bosma::Scheduler> scheduler_;
 
