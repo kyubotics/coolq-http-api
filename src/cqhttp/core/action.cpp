@@ -105,7 +105,16 @@ namespace cqhttp {
     }
 
     HANDLER(send_msg) {
-        const auto message_type = params.get_string("message_type");
+        auto message_type = params.get_string("message_type");
+        if (message_type.empty()) {
+            if (params.raw.count("group_id") > 0) {
+                message_type = "group";
+            } else if (params.raw.count("discuss_id") > 0) {
+                message_type = "discuss";
+            } else if (params.raw.count("user_id") > 0) {
+                message_type = "private";
+            }
+        }
         if (message_type == "private") {
             __send_private_msg(params, result);
         } else if (message_type == "group") {
