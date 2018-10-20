@@ -32,30 +32,31 @@
 | Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
 | Java | JFinal | HTTP | 3 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
 | Java | 内置 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
-| Go | 内置 | HTTP | 3、4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
+| Go | 内置 | API: HTTP、WebSocket<br>Event: HTTP、长轮询、WebSocket、反向 WebSocket | 3、4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 | Go | 内置 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
 | Go | Gorilla WebSocket | WebSocket | 3 | [ma6254/go-cqhttp](https://github.com/ma6254/go-cqhttp) | ma6254 |
 | C# | 内置 | HTTP | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
 
 ## 应用案例
 
-QQ 机器人可以用来做很多有意思的事情，下面列出一些基于本插件的应用案例：
+QQ 机器人可以用来做很多有意思的事情，下面列出一些基于本插件的开发框架和应用案例：
 
 | 项目地址 | 简介 |
 | ------- | --- |
 | [richardchien/none-bot](https://github.com/richardchien/none-bot) | 基于酷 Q 的 Python 异步 QQ 机器人框架 |
+| [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的 QQ 群机器人 |
+| [LovelyA72/YeziiBot-v1](https://github.com/LovelyA72/YeziiBot-v1) | 内置一定实例的 PHP QQ 机器人快速开发框架 |
+| [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | 使用 PHP 编写的轻量级多功能酷 Q 机器人框架 |
+| [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | 模块化、轻量化的，基于命令的 Node.js QQ 机器人框架 |
+| [milkice233/efb-qq-slave](https://github.com/milkice233/efb-qq-slave) | 基于 ehForwarderBot 框架的 QQ 从端 |
+| [projectriri/bot-gateway](https://projectriri.github.io/bot-gateway/) | 提供跨聊天平台的通用机器人 API 的机器人消息网关 |
 | [jqqqqqqqqqq/coolq-telegram-bot](https://github.com/jqqqqqqqqqq/coolq-telegram-bot) | QQ <-> Telegram Bot Framework & Forwarder |
 | [Mother-Ship/cabbageWeb](https://github.com/Mother-Ship/cabbageWeb) | 基于 Java Web 的 osu! 游戏数据查询机器人 |
-| [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的 QQ 群机器人 |
 | [bdbai/Kobirt](https://github.com/bdbai/Kobirt) | Ingress 游戏辅助机器人 |
 | [JRT-FOREVER/hub2coolq](https://github.com/JRT-FOREVER/hub2coolq) | GitHub webhook 消息转发至 QQ 群 |
-| [LovelyA72/YeziiBot-v1](https://github.com/LovelyA72/YeziiBot-v1) | 内置一定实例的 PHP QQ 机器人快速开发框架 |
 | [Kurarion/Bangumi-for-QQ](https://github.com/Kurarion/Bangumi-for-QQ) | 用于在 QQ 平台便捷地使用 Bangumi 部分功能（查寻条目、更新条目进度等） |
-| [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | 使用 PHP 编写的轻量级多功能酷 Q 机器人框架 |
 | [rikakomoe/cqhttp-twitter-bot](https://github.com/rikakomoe/cqhttp-twitter-bot) | 自动订阅 Twitter 发送到 QQ |
-| [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | 模块化、轻量化的，基于命令的 Node.js QQ 机器人框架 |
 | [XiaoLin0815/QQ2TG](https://github.com/XiaoLin0815/QQ2TG) | 帮助 QQ 与 Telegram 互联的小程序 |
-| [milkice233/efb-qq-slave](https://github.com/milkice233/efb-qq-slave) | 基于 ehForwarderBot 框架的 QQ 从端 |
 
 以上列出的只是实际应用中的一小部分，如果你使用本插件编写了任何好的应用案例或开发框架，也可以通过 issue 或 pull request 添加到这里的列表，共同充实社区。
 
