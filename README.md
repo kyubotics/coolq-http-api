@@ -23,8 +23,8 @@
 
 | 语言 | Web 框架 | 通信方式 | 插件版本 | 地址 | 作者 |
 | --- | ------- | ------- | ------- | --- | ---- |
-| Python | Quart | HTTP<br>反向 WebSocket | 4 | [richardchien/none-bot](https://github.com/richardchien/none-bot) | richardchien |
-| Python | Quart | HTTP<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
+| Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/none-bot](https://github.com/richardchien/none-bot) | richardchien |
+| Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
 | Python | Flask | HTTP | 3, 4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
 | Node.js | WebSocket-Node | WebSocket | 3, 4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
 | Node.js | Koa | HTTP | 3, 4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
@@ -37,7 +37,7 @@
 | Java | JFinal | HTTP | 4 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
 | Java | ? | HTTP | ? | [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | Ray-Eldath |
 | Java | 内置 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
-| Go | 内置 | **API:**<br>HTTP<br>WebSocket<br>**Event:**<br>HTTP<br>长轮询<br>WebSocket<br>反向 WebSocket | 3, 4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
+| Go | 内置 | **API:**<br>HTTP,<br>WebSocket,<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | 3, 4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 | Go | 内置 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
 | Go | Gorilla WebSocket | WebSocket | 3 | [ma6254/go-cqhttp](https://github.com/ma6254/go-cqhttp) | ma6254 |
 | C# | 内置 | HTTP | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
