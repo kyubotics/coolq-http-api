@@ -132,7 +132,7 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 
 | 字段名 | 数据类型 | 说明 |
 | ----- | ------ | ---- |
-| `user_id` | number (int64) | - | 发送者 QQ 号 |
+| `user_id` | number (int64) | 发送者 QQ 号 |
 | `nickname` | string | 昵称 |
 | `sex` | string | 性别，`male` 或 `female` 或 `unknown` |
 | `age` | number (int32) | 年龄 |
@@ -197,7 +197,7 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 
 | 字段名 | 数据类型 | 说明 |
 | ----- | ------ | ---- |
-| `user_id` | number (int64) | - | 发送者 QQ 号 |
+| `user_id` | number (int64) | 发送者 QQ 号 |
 | `nickname` | string | 昵称 |
 | `card` | string | 群名片／备注 |
 | `sex` | string | 性别，`male` 或 `female` 或 `unknown` |
@@ -235,7 +235,7 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 
 | 字段名 | 数据类型 | 说明 |
 | ----- | ------ | ---- |
-| `user_id` | number (int64) | - | 发送者 QQ 号 |
+| `user_id` | number (int64) | 发送者 QQ 号 |
 | `nickname` | string | 昵称 |
 | `sex` | string | 性别，`male` 或 `female` 或 `unknown` |
 | `age` | number (int32) | 年龄 |
