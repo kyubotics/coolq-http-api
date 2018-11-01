@@ -177,14 +177,18 @@ namespace cqhttp::utils::http {
                 return size * count;
             };
 
-            if (const auto response = request.get();
-                response.status_code >= 200 && response.status_code < 300
+            const auto response = request.get();
+            write_data_wrapper.file.close();
+
+            if (response.status_code >= 200 && response.status_code < 300
                 && (response.content_length > 0 && write_data_wrapper.read_count == response.content_length
                     || response.content_length == 0 && write_data_wrapper.read_count > 0)) {
+                logging::debug(u8"下载文件",
+                               local_path + "\ndownloaded size: " + to_string(write_data_wrapper.read_count)
+                                   + "\ncontent length: " + to_string(response.content_length)
+                                   + "\nfile size: " + to_string(fs::file_size(ansi_local_path)));
                 succeeded = true;
             }
-
-            write_data_wrapper.file.close();
         }
 
         if (!succeeded && fs::exists(ansi_local_path)) {
