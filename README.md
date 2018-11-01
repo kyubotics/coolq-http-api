@@ -17,37 +17,37 @@
 
 如果访问这个文档非常慢，请尝试国内的地址 [http://richardchien.gitee.io/coolq-http-api/docs/](http://richardchien.gitee.io/coolq-http-api/docs/)。
 
-## SDK
+## SDK／开发框架
 
-对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK：
+对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK 或开发框架：
 
 | 语言 | Web 框架 | 通信方式 | 插件版本 | 地址 | 作者 |
 | --- | ------- | ------- | ------- | --- | ---- |
-| Python | Quart | HTTP<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
-| Python | Flask | HTTP | 3、4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
-| Node.js | WebSocket-Node | WebSocket | 3、4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
-| Node.js | Koa | HTTP | 3、4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
-| PHP | 内置 | HTTP | 3、4 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
-| PHP | Swoole | API: WebSocket<br>Event: 反向 WebSocket | 3、4 | [crazywhalecc/CQBot-swoole](https://github.com/crazywhalecc/CQBot-swoole) | crazywhalecc |
+| Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
+| Python | Flask | HTTP | 3, 4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
+| Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/none-bot](https://github.com/richardchien/none-bot) | richardchien |
+| Node.js | WebSocket-Node | WebSocket | 3, 4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
+| Node.js | Koa | HTTP | 3, 4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
+| Node.js | Koa | HTTP | ? | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | t532 |
+| PHP | 内置 | HTTP | 3, 4 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
+| PHP | 内置 | HTTP | 4 | [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | kj415j45 |
+| PHP | Swoole | 反向 WebSocket | 4 | [crazywhalecc/CQBot-swoole](https://github.com/crazywhalecc/CQBot-swoole) | crazywhalecc |
+| PHP | 内置 | HTTP | ? | [LovelyA72/YeziiBot-v1](https://github.com/LovelyA72/YeziiBot-v1) | LovelyA72 |
 | Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
-| Java | JFinal | HTTP | 3 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
+| Java | JFinal | HTTP | 4 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
 | Java | 内置 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
-| Go | 内置 | API: HTTP、WebSocket<br>Event: HTTP、长轮询、WebSocket、反向 WebSocket | 3、4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
+| Java | ? | HTTP | ? | [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | Ray-Eldath |
+| Go | 内置 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | 3, 4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 | Go | 内置 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
 | Go | Gorilla WebSocket | WebSocket | 3 | [ma6254/go-cqhttp](https://github.com/ma6254/go-cqhttp) | ma6254 |
 | C# | 内置 | HTTP | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
 
 ## 应用案例
 
-QQ 机器人可以用来做很多有意思的事情，下面列出一些基于本插件的开发框架和应用案例：
+QQ 机器人可以用来做很多有意思的事情，下面列出一些基于本插件的应用案例：
 
 | 项目地址 | 简介 |
 | ------- | --- |
-| [richardchien/none-bot](https://github.com/richardchien/none-bot) | 基于酷 Q 的 Python 异步 QQ 机器人框架 |
-| [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的 QQ 群机器人 |
-| [LovelyA72/YeziiBot-v1](https://github.com/LovelyA72/YeziiBot-v1) | 内置一定实例的 PHP QQ 机器人快速开发框架 |
-| [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | 使用 PHP 编写的轻量级多功能酷 Q 机器人框架 |
-| [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | 模块化、轻量化的，基于命令的 Node.js QQ 机器人框架 |
 | [milkice233/efb-qq-slave](https://github.com/milkice233/efb-qq-slave) | 基于 ehForwarderBot 框架的 QQ 从端 |
 | [projectriri/bot-gateway](https://projectriri.github.io/bot-gateway/) | 提供跨聊天平台的通用机器人 API 的机器人消息网关 |
 | [jqqqqqqqqqq/coolq-telegram-bot](https://github.com/jqqqqqqqqqq/coolq-telegram-bot) | QQ <-> Telegram Bot Framework & Forwarder |
