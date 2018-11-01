@@ -1,9 +1,7 @@
 #include "./string.h"
 
-#include <Windows.h>
 #include <iconv.h>
 #include <codecvt>
-#include <unordered_set>
 
 #include "../app.h"
 #include "./memory.h"

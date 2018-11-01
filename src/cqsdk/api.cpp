@@ -1,7 +1,5 @@
 #include "./api.h"
 
-#include <Windows.h>
-
 using namespace std;
 
 namespace cq::api {
@@ -28,5 +26,5 @@ namespace cq::api {
     });
 
 #include "./api_funcs.h"
-    }
+    } // namespace raw
 } // namespace cq::api

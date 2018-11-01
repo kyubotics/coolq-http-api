@@ -2,6 +2,8 @@
 
 #include "./api.h"
 
+#undef ERROR
+
 namespace cq::logging {
     enum Level {
         DEBUG = 0,

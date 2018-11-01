@@ -1,5 +1,7 @@
 #pragma once
 
+#undef IGNORE
+
 namespace cq {
     namespace event {
         enum Operation {

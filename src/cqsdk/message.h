@@ -2,8 +2,6 @@
 
 #include "./common.h"
 
-#include <map>
-
 #include "./target.h"
 #include "./utils/string.h"
 
@@ -139,8 +137,8 @@ namespace cq::message {
          */
         std::string extract_plain_text() const;
 
-        list<MessageSegment> &segments() { return *this; }
-        const list<MessageSegment> &segments() const { return *this; }
+        std::list<MessageSegment> &segments() { return *this; }
+        const std::list<MessageSegment> &segments() const { return *this; }
 
         /**
          * Merge adjacent "text" segments.

@@ -1,5 +1,3 @@
-#include <Windows.h>
-
 #include "./app.h"
 
 #pragma unmanaged

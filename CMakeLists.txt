@@ -7,6 +7,7 @@ set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")  # build with object level paralle
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+include(cotire)
 include(FindVcpkgIncludeDir)
 
 if(CMAKE_BUILD_TYPE MATCHES "^Debug$")
@@ -41,6 +42,8 @@ target_link_libraries(${LIB_NAME} ${CURL_AND_DEPS_LIBRARIES})
 target_link_libraries(${LIB_NAME} ${SPDLOG_AND_DEPS_LIBRARIES})
 target_link_libraries(${LIB_NAME} sqlite3)
 target_link_libraries(${LIB_NAME} crypt32 bcrypt Wldap32 Ws2_32)
+
+cotire(${LIB_NAME})
 
 add_custom_command(TARGET ${LIB_NAME}
                    POST_BUILD
