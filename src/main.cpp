@@ -13,6 +13,7 @@
 
 #include "cqhttp/plugins/async_actions/async_actions.h"
 #include "cqhttp/plugins/experimental_actions/experimental_actions.h"
+#include "cqhttp/plugins/rate_limited_actions/rate_limited_actions.h"
 #include "cqhttp/plugins/restarter/restarter.h"
 #include "cqhttp/plugins/updater/updater.h"
 
@@ -48,6 +49,7 @@ CQ_MAIN {
     // extend actions
     use(plugins::restarter);
     use(plugins::updater);
+    use(plugins::rate_limited_actions);
     use(plugins::async_actions);
     use(plugins::experimental_actions);
 
