@@ -63,7 +63,7 @@ X-Client-Role: Event
 
 其中，`X-Client-Role` 可能为 `Event` 和 `API`，分别对应事件上报和 API 的两个连接。`X-Client-Role` 头的存在意味着你可以将 `ws_reverse_api_url` 和 `ws_reverse_event_url` 设置为相同的地址，或简单地使用 `ws_reverse_url` 来配置共用地址即可，然后只需要在 WebSocket 后端对请求头进行判断即可知道是哪个账号的哪个客户端在连接。
 
-除了使用 API 和 Event 双连接的方式，还可以通过将配置项 `ws_reverse_use_universal_client` 设为 `true`（默认 `false`）来让插件**只向 `ws_reverse_url` 建立一条连接**，`X-Client-Role` 为 `Universal`，API 和 Event 的数据均从这条连接上传输（相当于 API 和 Event 客户端的合并，对接收到的数据可通过 `post_type` 字段来判断是 API 响应还是事件）。统一客户端单连接的使用方式和分开的 API 和 Event 完全一致，下面不在单独说明。
+除了使用 API 和 Event 双连接的方式，还可以通过将配置项 `ws_reverse_use_universal_client` 设为 `true`（默认 `false`）来让插件**只向 `ws_reverse_url` 建立一条连接**，`X-Client-Role` 为 `Universal`，API 和 Event 的数据均从这条连接上传输（相当于 API 和 Event 客户端的合并，对接收到的数据可通过 `post_type` 字段来判断是 API 响应还是事件）。Universal 客户端单连接的使用方式和分开的 API 和 Event 完全一致，下面不在单独说明。
 
 如果配置了 `access_token`，则在建立连接时，还会加入 `Authorization` 请求头，例如：
 

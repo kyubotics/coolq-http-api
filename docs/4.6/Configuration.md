@@ -93,9 +93,10 @@ port = 5701
 | `ws_reverse_event_url` | 空 | 反向 WebSocket 事件上报地址，如果为空，则使用 `ws_reverse_url` 指定的值 |
 | `ws_reverse_reconnect_interval` | `3000` | 反向 WebSocket 客户端断线重连间隔，单位毫秒 |
 | `ws_reverse_reconnect_on_code_1000` | `true` | 是否在关闭状态码为 1000 的时候重连 |
+| `ws_reverse_use_universal_client` | `false` | 是否使用 Universal 客户端 |
 | `use_ws_reverse` | `false` | 是否使用反向 WebSocket 服务，即插件作为 WebSocket 客户端主动连接指定的 API 和事件上报地址，见 [通信方式的第三种](/CommunicationMethods#插件作为-websocket-客户端（反向-websocket）) |
 | `post_url` | 空 | 消息和事件的上报地址，通过 POST 方式请求，数据以 JSON 格式发送 |
-| `post_timeout` | `0` | HTTP 上报（即访问 `post_url`）的超时时间（单位：秒），0 表示不设置超时 |
+| `post_timeout` | `0` | HTTP 上报（即访问 `post_url`）的超时时间，单位秒，0 表示不设置超时 |
 | `access_token` | 空 | API 访问 token，如果不为空，则会在接收到请求时验证 `Authorization` 请求头是否为 `Token xxxxxxxx`，`xxxxxxxx` 为 access token |
 | `secret` | 空 | 上报数据签名密钥，如果不为空，则会在 HTTP 上报时对 HTTP 正文进行 HMAC SHA1 哈希，使用 `secret` 的值作为密钥，计算出的哈希值放在上报的 `X-Signature` 请求头，例如 `X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2` |
 | `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](/Message) |
@@ -110,11 +111,13 @@ port = 5701
 | `event_filter` | 空 | 指定事件过滤规则文件，见 [事件过滤器](/EventFilter)，留空将不开启事件过滤器 |
 | `enable_backward_compatibility` | `false` | 是否启用旧版兼容性，启用时**事件上报**的数据将和 3.x 版本保持兼容 |
 | `show_log_console` | `false` | 是否显示日志输出控制台 |
-| `max_log_file_size` | `6291456` | 最大单日志文件大小，默认 6 MB |
+| `max_log_file_size` | `6291456` | 最大单日志文件大小，单位字节，默认 6 MB |
 | `max_log_files` | `1` | 最大日志文件备份数量（采用日志轮替机制） |
 | `log_level` | `info` | 日志文件和日志控制台的日志等级，可选 `debug`、`info`、`warning`、`error`、`fatal` |
 | `use_extension` | `false` | 是否启用扩展机制，见 [扩展](/Extension) |
-| `disable_coolq_log` | `true` | 是否禁用酷 Q 原生日志，由于使用酷 Q 原生日志可能会导致快速重启时插件卡死，所以默认禁用，如果你不在乎重启时卡死，并且需要在酷 Q 原生日志窗口查看插件的日志，可以将此项设为 false |
+| `disable_coolq_log` | `true` | 是否禁用酷 Q 原生日志，由于使用酷 Q 原生日志可能会导致快速重启时插件卡死，所以默认禁用，如果你不在乎重启时卡死，并且需要在酷 Q 原生日志窗口查看插件的日志，可以将此项设为 `false` |
 | `online_status_detection_method` | `log_db` | QQ 在线状态检测方式，默认（`log_db`）从酷 Q 的日志数据库判断，设为 `get_stranger_info` 可切换成通过查询陌生人接口判断（频繁请求可能导致结果不准） |
 | `enable_heartbeat` | `false` | 是否启用心跳机制，启用时会产生类型为 `heartbeat` 的元事件，见 [元事件](/Post#元事件) |
-| `heartbeat_interval` | `15000` | 产生心跳元事件的时间间隔，默认 15 秒 |
+| `heartbeat_interval` | `15000` | 产生心跳元事件的时间间隔，单位毫秒 |
+| `enable_rate_limited_actions` | `false` | 是否启用限速 API 调用的支持 |
+| `rate_limit_interval` | `500` | 限速 API 调用的排队间隔时间，单位毫秒 |
