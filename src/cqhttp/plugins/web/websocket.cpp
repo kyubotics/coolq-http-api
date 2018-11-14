@@ -82,12 +82,13 @@ namespace cqhttp::plugins {
     }
 
     void WebSocket::hook_after_event(EventContext<cq::Event> &ctx) {
+        static const auto reg = regex("^(/|/event/?)$");
         if (started_) {
             logging::debug(TAG, u8"开始通过 WebSocket 服务端推送事件");
             size_t total_count = 0;
             size_t succeeded_count = 0;
             for (const auto &connection : server_->get_connections()) {
-                if (regex_match(connection->path, regex("^(/|/event/?)$"))) {
+                if (regex_match(connection->path, reg)) {
                     total_count++;
                     try {
                         const auto out_message = make_shared<WsServer::OutMessage>();
