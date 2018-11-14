@@ -47,7 +47,7 @@ namespace cqhttp::plugins {
 
     void RateLimitedActions::hook_missed_action(ActionContext &ctx) {
         if (enabled_) {
-            const auto suffix = "_async_rate_limited";
+            const auto suffix = "_rate_limited";
             const auto suffix_len = strlen(suffix);
             if (boost::ends_with(ctx.action, suffix)) {
                 const auto action = ctx.action.substr(0, ctx.action.length() - suffix_len);
