@@ -103,7 +103,7 @@ namespace cqhttp::plugins {
 
         std::shared_ptr<ApiClient> api_;
 
-        class EventClient final : public ClientBase {
+        class EventClient : public ClientBase {
         public:
             using ClientBase::ClientBase;
             std::string name() override { return "Event"; }
@@ -112,6 +112,17 @@ namespace cqhttp::plugins {
         };
 
         std::shared_ptr<EventClient> event_;
+
+        class UniversalClient final : public EventClient {
+        public:
+            using EventClient::EventClient;
+            std::string name() override { return "Universal"; }
+
+        protected:
+            void init() override;
+        };
+
+        std::shared_ptr<UniversalClient> universal_;
     };
 
     static std::shared_ptr<WebSocketReverse> websocket_reverse = std::make_shared<WebSocketReverse>();

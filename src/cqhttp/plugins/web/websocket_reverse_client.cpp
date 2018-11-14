@@ -164,6 +164,18 @@ namespace cqhttp::plugins {
         }
     }
 
+    void WebSocketReverse::UniversalClient::init() {
+        EventClient::init();
+
+        if (client_is_wss_.has_value()) {
+            if (client_is_wss_.value() == false) {
+                client_.ws->on_message = ws_api_on_message<WsClient>;
+            } else {
+                client_.wss->on_message = ws_api_on_message<WssClient>;
+            }
+        }
+    }
+
     void WebSocketReverse::EventClient::push_event(const json &payload) const {
         if (started_) {
             logging::debug(TAG, u8"开始通过反向 WebSocket 客户端上报事件");
