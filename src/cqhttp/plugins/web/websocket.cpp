@@ -33,6 +33,11 @@ namespace cqhttp::plugins {
 
         auto &event_endpoint = server_->endpoint["^/event/?$"];
         event_endpoint.on_open = on_open_callback;
+
+        // endpoint for both API and Event
+        auto &general_endpoint = server_->endpoint["^/$"];
+        general_endpoint.on_open = on_open_callback;
+        general_endpoint.on_message = ws_api_on_message<WsServer>;
     }
 
     void WebSocket::hook_enable(Context &ctx) {
@@ -82,7 +87,7 @@ namespace cqhttp::plugins {
             size_t total_count = 0;
             size_t succeeded_count = 0;
             for (const auto &connection : server_->get_connections()) {
-                if (boost::algorithm::starts_with(connection->path, "/event")) {
+                if (regex_match(connection->path, regex("^(/|/event/?)$"))) {
                     total_count++;
                     try {
                         const auto out_message = make_shared<WsServer::OutMessage>();
