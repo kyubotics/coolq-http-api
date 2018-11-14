@@ -35,9 +35,9 @@ namespace cqhttp::plugins {
         event_endpoint.on_open = on_open_callback;
 
         // endpoint for both API and Event
-        auto &general_endpoint = server_->endpoint["^/$"];
-        general_endpoint.on_open = on_open_callback;
-        general_endpoint.on_message = ws_api_on_message<WsServer>;
+        auto &universal_endpoint = server_->endpoint["^/$"];
+        universal_endpoint.on_open = on_open_callback;
+        universal_endpoint.on_message = ws_api_on_message<WsServer>;
     }
 
     void WebSocket::hook_enable(Context &ctx) {
@@ -82,13 +82,13 @@ namespace cqhttp::plugins {
     }
 
     void WebSocket::hook_after_event(EventContext<cq::Event> &ctx) {
-        static const auto reg = regex("^(/|/event/?)$");
+        static const auto path_regex = regex("^(/|/event/?)$");
         if (started_) {
             logging::debug(TAG, u8"开始通过 WebSocket 服务端推送事件");
             size_t total_count = 0;
             size_t succeeded_count = 0;
             for (const auto &connection : server_->get_connections()) {
-                if (regex_match(connection->path, reg)) {
+                if (regex_match(connection->path, path_regex)) {
                     total_count++;
                     try {
                         const auto out_message = make_shared<WsServer::OutMessage>();
