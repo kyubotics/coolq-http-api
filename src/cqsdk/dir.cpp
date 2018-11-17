@@ -18,9 +18,11 @@ namespace cq::dir {
     }
 
     string root() {
-        const auto app_dir = app();
-        const auto suffix = string("app\\" + app::id + "\\");
-        return app_dir.substr(0, app_dir.length() - suffix.length());
+        constexpr size_t size = 1024;
+        wchar_t w_exec_path[size]{};
+        GetModuleFileNameW(nullptr, w_exec_path, size); // this will get "C:\\Some\\Path\\CQA\\CQA.exe"
+        auto exec_path = utils::ws2s(w_exec_path);
+        return exec_path.substr(0, exec_path.rfind("\\")) + "\\";
     }
 
     string app(const std::string &sub_dir_name) {
