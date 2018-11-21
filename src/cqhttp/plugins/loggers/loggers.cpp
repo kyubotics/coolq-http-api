@@ -58,7 +58,7 @@ namespace cqhttp::plugins {
         }
 
         cq::logging::info_success(TAG, u8"日志系统初始化成功");
-        cq::logging::info(TAG, u8"请在酷 Q 主目录的 app\\io.github.richardchien.coolqhttpapi\\log\\ 中查看日志文件");
+        cq::logging::info(TAG, u8"请在酷 Q 主目录的 data\\app\\io.github.richardchien.coolqhttpapi\\log\\ 中查看日志文件");
         ctx.next();
     }
 

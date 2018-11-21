@@ -12,7 +12,7 @@
 
 注意如果酷 Q 启动时报错说插件加载失败，或者系统弹窗提示缺少 DLL 文件，则需要安装 [VC++ 2017 运行库](https://aka.ms/vs/15/release/VC_redist.x86.exe)，如果你的系统是 Windows 7 或 Windows Server 2008、或者安装 VC++ 2017 运行库之后仍然加载失败，则还需要安装 [通用 C 运行库更新](https://support.microsoft.com/zh-cn/help/3118401/update-for-universal-c-runtime-in-windows)，在这个链接里选择你系统对应的版本下载安装即可。如果此时还加载失败，请尝试重启系统。
 
-启用后插件将开启一个 HTTP 服务器来接收请求，默认监听 `0.0.0.0:5700`，首次启用会生成一个默认配置文件，在酷 Q 的 `app\io.github.richardchien.coolqhttpapi\config` 文件夹中，文件名为 `<user_id>.json`（`<user_id>` 为登录的 QQ 号），使用 JSON 格式填写。关于配置项的说明，见 [配置](/Configuration)。
+启用后插件将开启一个 HTTP 服务器来接收请求，默认监听 `0.0.0.0:5700`，首次启用会生成一个默认配置文件，在酷 Q 的 `data\app\io.github.richardchien.coolqhttpapi\config` 文件夹中，文件名为 `<user_id>.json`（`<user_id>` 为登录的 QQ 号），使用 JSON 格式填写。关于配置项的说明，见 [配置](/Configuration)。
 
 此时通过 `http://192.168.1.123:5700/` 即可调用酷 Q 的函数，例如 `http://192.168.1.123:5700/send_private_msg?user_id=123456&message=你好`，注意这里的 `192.168.1.123` 要换成你自己电脑的 IP，如果在本地跑，可以用 `127.0.0.1`，`user_id` 也要换成你想要发送到的 QQ 号。具体的 API 列表见 [API 描述](/API)。如果需要使用 HTTPS 来访问，见 [HTTPS](https://github.com/richardchien/coolq-http-api/wiki/HTTPS)。
 

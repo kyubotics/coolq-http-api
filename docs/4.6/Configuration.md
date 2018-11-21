@@ -2,7 +2,7 @@
 
 配置文件支持 INI 和 JSON 两种格式，并支持单个文件配置多个账号，或每个账号对应一个配置文件。
 
-插件启动时（或重启时）按如下顺序依次尝试加载配置文件，一旦有一条加载成功，则停止加载（所有路径均为相对于 `app\io.github.richardchien.coolqhttpapi` 的相对路径）：
+插件启动时（或重启时）按如下顺序依次尝试加载配置文件，一旦有一条加载成功，就停止加载（所有路径均为相对于 `data\app\io.github.richardchien.coolqhttpapi` 的相对路径）：
 
 - `config.(cfg|ini)`（扩展名的括号和竖线表示优先加载 `.cfg`，若没有，则加载 `.ini`，下同），文件中通用配置需要放在 `[general]` 下，QQ 号特定配置放在 `[<user_id>]` 下
 - `config\general.(cfg|ini)` + `config\<user_id>.(cfg|ini)`，前者是通用配置，全部放在 `[general]` 下，后者是 QQ 号特定配置，全部放在 `[<user_id>]` 下，后者覆盖前者中已存在的内容
@@ -15,7 +15,7 @@
 
 ### 使用 INI 格式，在单个文件中存放多个账号的配置
 
-- `app\io.github.richardchien.coolqhttpapi\config.ini`
+- `data\app\io.github.richardchien.coolqhttpapi\config.ini`
 
 ```ini
 [general]
@@ -32,7 +32,7 @@ port = 5701
 
 ### 使用 JSON 格式，在单个文件中存放多个账号的配置
 
-- `app\io.github.richardchien.coolqhttpapi\config.json`
+- `data\app\io.github.richardchien.coolqhttpapi\config.json`
 
 ```json
 {
@@ -52,7 +52,7 @@ port = 5701
 
 ### 使用 JSON 格式，每个账号对应一个配置文件
 
-- `app\io.github.richardchien.coolqhttpapi\config\general.json`
+- `data\app\io.github.richardchien.coolqhttpapi\config\general.json`
 
 ```json
 {
@@ -61,7 +61,7 @@ port = 5701
 }
 ```
 
-- `app\io.github.richardchien.coolqhttpapi\config\12345678.json`
+- `data\app\io.github.richardchien.coolqhttpapi\config\12345678.json`
 
 ```json
 {
@@ -70,7 +70,7 @@ port = 5701
 }
 ```
 
-- `app\io.github.richardchien.coolqhttpapi\config\87654321.json`
+- `data\app\io.github.richardchien.coolqhttpapi\config\87654321.json`
 
 ```json
 {
