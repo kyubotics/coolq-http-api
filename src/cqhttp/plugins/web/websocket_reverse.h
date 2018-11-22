@@ -19,7 +19,10 @@ namespace cqhttp::plugins {
         void hook_disable(Context &ctx) override;
         void hook_after_event(EventContext<cq::Event> &ctx) override;
 
-        bool good() const override { return (!api_ || api_->started()) && (!event_ || event_->started()); }
+        bool good() const override {
+            return (!api_ || api_->started()) && (!event_ || event_->started())
+                   && (!universal_ || universal_->started());
+        }
 
     private:
         bool use_ws_reverse_;
