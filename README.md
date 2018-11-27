@@ -8,6 +8,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/richardchien/cqhttp.svg)](https://hub.docker.com/r/richardchien/cqhttp/)
 [![QQ 群](https://img.shields.io/badge/qq%E7%BE%A4-201865589-orange.svg)](https://jq.qq.com/?_wv=1027&k=5Euplde)
 [![Telegram](https://img.shields.io/badge/telegram-chat-blue.svg)](https://t.me/cqhttp)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frichardchien%2Fcoolq-http-api.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Frichardchien%2Fcoolq-http-api?ref=badge_shield)
 
 通过 HTTP 或 WebSocket 对酷 Q 的事件进行上报以及接收请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。支持 Windows 7 和 Windows Server 2008 及更新版本，也可以运行在 Wine、Docker。
 
@@ -160,3 +161,7 @@ Copy-Item -Force $json_path "C:\Applications\CQA\app\${json_name}"
 ### 微信转账
 
 ![WeChat](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/wechat.png)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frichardchien%2Fcoolq-http-api.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Frichardchien%2Fcoolq-http-api?ref=badge_large)
