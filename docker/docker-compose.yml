@@ -1,22 +1,22 @@
 version: '2'
+
 services:
-    cqhttp:
-      image: richardchien/cqhttp:latest
-        #设置挂在目录的权限
-        privileged: true
-        #设置对外开放的端口
-        ports:
-          - "9200:9000"
-          - "5700:5700"
-        #http://127.0.0.1:9200/   管理页面地址  账户ＭＡＸ6char   
-        #启动的容器会在docker重启之后自动启动 
-        restart: always
-        #挂载目录到容器
-        volumes:
-          - /home/xuping/coolq/coolq:/home/user/coolq
-        environment:
-        #设定默认qq号码
-          COOLQ_ACCOUNT: QQnumber
-          #酷q发送消息的地址。 如果机器人是本机那就是本机地址。不要使用127.0.0.1
-          CQHTTP_POST_URL: http://172.17.0.1:5800
-          CQHTTP_SERVE_DATA_FILES: "yes"
+  cqhttp:
+    image: richardchien/cqhttp:latest
+      # network_mode: "host"  # 取消注释此项将使容器使用宿主机网络，此时相当于插件直接运行在宿主机，下面的 ports 可以全部删掉，另外注意根据需要配置 CQHTTP 只监听 127.0.0.1
+      ports:
+        - "9000:9000"  # noVNC 管理
+        - "127.0.0.1:5700:5700"  # CQHTTP 默认的 HTTP 端口
+        - "127.0.0.1:6700:6700"  # CQHTTP 默认的 WebSocket 端口
+      restart: always  # 重启策略
+      volumes:
+        - ./coolq/:/home/user/coolq/  # 挂载 酷Q 主目录
+      environment:
+        VNC_PASSWD: PAsSwoRd  # noVNC 连接密码
+        COOLQ_ACCOUNT: 12345678  # 要登录的机器人 QQ 号
+        COOLQ_URL: http://dlsec.cqp.me/cqa-tuling  # 如果使用 酷Q Air，本行可以删除，如使用 酷Q Pro，需将 URL 中的 cqa-tuling 改为 cqp-tuling
+        FORCE_ENV: "true"  # 强制使用环境变量中的配置（下面以 CQHTTP_ 开头的那些），这会使手动对 CQHTTP 配置文件的修改在重启容器后失效，删除此项则下面的配置只在容器第一次启动时写入配置文件
+        CQHTTP_POST_URL: http://172.17.0.1:8080  # HTTP 上报地址，172.17.0.1 通常是宿主机在默认网桥上的 IP 地址，可通过 docker inspect bridge 查看
+        CQHTTP_SERVE_DATA_FILES: "true"
+        CQHTTP_USE_WS: "true"
+        # 更多其它配置项
