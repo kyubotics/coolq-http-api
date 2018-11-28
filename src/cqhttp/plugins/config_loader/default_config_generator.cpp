@@ -5,10 +5,10 @@
 using namespace std;
 
 static const auto DEFAULT_CONFIG = string() + R"({
-    "host": "0.0.0.0",
+    "host": "[::]",
     "port": 5700,
     "use_http": true,
-    "ws_host": "0.0.0.0",
+    "ws_host": "[::]",
     "ws_port": 6700,
     "use_ws": false,
     "ws_reverse_url": "",
