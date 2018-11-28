@@ -1,0 +1,22 @@
+version: '2'
+services:
+    cqhttp:
+      image: richardchien/cqhttp:latest
+        #设置挂在目录的权限
+        privileged: true
+        #设置对外开放的端口
+        ports:
+          - "9200:9000"
+          - "5700:5700"
+        #http://127.0.0.1:9200/   管理页面地址  账户ＭＡＸ6char   
+        #启动的容器会在docker重启之后自动启动 
+        restart: always
+        #挂载目录到容器
+        volumes:
+          - /home/xuping/coolq/coolq:/home/user/coolq
+        environment:
+        #设定默认qq号码
+          COOLQ_ACCOUNT: QQnumber
+          #酷q发送消息的地址。 如果机器人是本机那就是本机地址。不要使用127.0.0.1
+          CQHTTP_POST_URL: http://172.17.0.1:5800
+          CQHTTP_SERVE_DATA_FILES: "yes"
