@@ -82,10 +82,10 @@ port = 5701
 
 | 配置项名称 | 默认值 | 说明 |
 | -------- | ------ | --- |
-| `host` | `0.0.0.0` | HTTP 服务器监听的 IP |
+| `host` | `[::]`（v4.6.2 开始）<br>`0.0.0.0`（v4.6.2 之前） | HTTP 服务器监听的 IP |
 | `port` | `5700` | HTTP 服务器监听的端口 |
 | `use_http` | `true` | 是否开启 HTTP 接口，即通过 HTTP 调用 API，见 [通信方式的第一种](/CommunicationMethods#插件作为-http-服务端) |
-| `ws_host` | `0.0.0.0` | WebSocket 服务器监听的 IP |
+| `ws_host` | `[::]`（v4.6.2 开始）<br>`0.0.0.0`（v4.6.2 之前） | WebSocket 服务器监听的 IP |
 | `ws_port` | `6700` | WebSocket 服务器监听的端口 |
 | `use_ws` | `false` | 是否开启 WebSocket 服务器，可用于调用 API 和推送事件，见 [通信方式的第二种](/CommunicationMethods#插件作为-websocket-服务端) |
 | `ws_reverse_url` | 空 | 反向 WebSocket Event 和事件上报的共用地址 |
