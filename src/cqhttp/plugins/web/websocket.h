@@ -9,6 +9,7 @@
 namespace cqhttp::plugins {
     struct WebSocket : Plugin {
         WebSocket() = default;
+        std::string name() const override { return "websocket"; }
 
         void hook_enable(Context &ctx) override;
         void hook_disable(Context &ctx) override;

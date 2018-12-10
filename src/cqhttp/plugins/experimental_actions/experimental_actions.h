@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct ExperimentalActions : Plugin {
+        std::string name() const override { return "experimental_actions"; }
         void hook_missed_action(ActionContext &ctx) override;
     };
 

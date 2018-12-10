@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct PostMessageFormatter : Plugin {
+        std::string name() const override { return "post_message_formatter"; }
         void hook_enable(Context &ctx) override;
         void hook_after_event(EventContext<cq::Event> &ctx) override;
 

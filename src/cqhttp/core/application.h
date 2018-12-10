@@ -58,11 +58,23 @@ namespace cqhttp {
 
         bool enabled() const { return enabled_; }
 
-        bool plugins_good() const {
-            return std::all_of(plugins_.cbegin(), plugins_.cend(), [](const auto &p) { return p->good(); });
+        // bool plugins_good() const {
+        //     return std::all_of(plugins_.cbegin(), plugins_.cend(), [](const auto &p) { return p->good(); });
+        // }
+
+        std::map<std::string, bool> plugins_good() const {
+            std::map<std::string, bool> results;
+            for (const auto &p : plugins_) {
+                results[p->name()] = p->good();
+            }
+            return results;
         }
 
-        bool good() const { return initialized() && enabled() && plugins_good(); }
+        bool good() const {
+            auto p = plugins_good();
+            return initialized() && enabled()
+                   && std::all_of(p.cbegin(), p.cend(), [](const auto &kv) { return kv.second; });
+        }
 
         bool resize_worker_thread_pool(int n_threads) const;
         bool push_async_task(const std::function<void()> &task) const;

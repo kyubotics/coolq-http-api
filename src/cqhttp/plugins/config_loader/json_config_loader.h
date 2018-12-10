@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct JsonConfigLoader : Plugin {
+        std::string name() const override { return "json_config_loader"; }
         void hook_enable(Context &ctx) override;
     };
 

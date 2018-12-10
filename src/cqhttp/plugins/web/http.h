@@ -9,6 +9,7 @@
 namespace cqhttp::plugins {
     struct Http : Plugin {
         Http() = default;
+        std::string name() const override { return "http"; }
 
         void hook_enable(Context &ctx) override;
         void hook_disable(Context &ctx) override;

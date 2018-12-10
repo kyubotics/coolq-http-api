@@ -14,6 +14,7 @@
 namespace cqhttp::plugins {
     struct WebSocketReverse : Plugin {
         WebSocketReverse() = default;
+        std::string name() const override { return "websocket_reverse"; }
 
         void hook_enable(Context &ctx) override;
         void hook_disable(Context &ctx) override;

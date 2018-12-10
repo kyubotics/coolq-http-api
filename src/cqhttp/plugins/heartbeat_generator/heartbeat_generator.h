@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct HeartbeatGenerator : Plugin {
+        std::string name() const override { return "heartbeat_generator"; }
         void hook_enable(Context &ctx) override;
     };
 

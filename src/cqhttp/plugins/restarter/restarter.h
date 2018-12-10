@@ -10,6 +10,7 @@
 
 namespace cqhttp::plugins {
     struct Restarter : Plugin {
+        std::string name() const override { return "restarter"; }
         void hook_initialize(Context &ctx) override;
         void hook_coolq_exit(Context &ctx) override;
         void hook_missed_action(ActionContext &ctx) override;

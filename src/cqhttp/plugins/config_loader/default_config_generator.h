@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct DefaultConfigGenerator : Plugin {
+        std::string name() const override { return "default_config_generator"; }
         void hook_enable(Context &ctx) override;
     };
 

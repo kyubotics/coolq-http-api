@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct Updater : Plugin {
+        std::string name() const override { return "updater"; }
         void hook_enable(Context &ctx) override;
         void hook_missed_action(ActionContext &ctx) override;
 

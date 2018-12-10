@@ -6,6 +6,7 @@
 
 namespace cqhttp::plugins {
     struct EventFilter : Plugin {
+        std::string name() const override { return "event_filter"; }
         void hook_enable(Context &ctx) override;
         void hook_disable(Context &ctx) override;
         void hook_after_event(EventContext<cq::Event> &ctx) override;

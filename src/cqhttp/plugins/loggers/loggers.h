@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct Loggers : Plugin {
+        std::string name() const override { return "loggers"; }
         void hook_enable(Context &ctx) override;
         void hook_disable(Context &ctx) override;
         void hook_missed_action(ActionContext &ctx) override;

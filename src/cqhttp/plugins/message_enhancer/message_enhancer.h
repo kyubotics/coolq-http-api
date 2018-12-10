@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct MessageEnhancer : Plugin {
+        std::string name() const override { return "message_enhancer"; }
         void hook_message_event(EventContext<cq::MessageEvent> &ctx) override;
         void hook_before_action(ActionContext &ctx) override;
     };

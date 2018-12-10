@@ -8,6 +8,7 @@
 
 namespace cqhttp::plugins {
     struct ExtensionLoader : Plugin {
+        std::string name() const override { return "extension_loader"; }
         void hook_enable(Context &ctx) override;
         void hook_disable(Context &ctx) override;
         void hook_after_event(EventContext<cq::Event> &ctx) override;

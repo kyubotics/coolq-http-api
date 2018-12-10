@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct IniConfigLoader : Plugin {
+        std::string name() const override { return "ini_config_loader"; }
         void hook_enable(Context &ctx) override;
     };
 

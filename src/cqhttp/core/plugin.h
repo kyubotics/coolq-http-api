@@ -36,6 +36,8 @@ namespace cqhttp {
         Plugin() = default;
         virtual ~Plugin() = default;
 
+        virtual std::string name() const = 0;
+
         virtual void hook_initialize(Context &ctx) { ctx.next(); }
         virtual void hook_enable(Context &ctx) { ctx.next(); }
         virtual void hook_disable(Context &ctx) { ctx.next(); }

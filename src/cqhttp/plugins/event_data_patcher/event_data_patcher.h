@@ -4,6 +4,7 @@
 
 namespace cqhttp::plugins {
     struct EventDataPatcher : Plugin {
+        std::string name() const override { return "event_data_patcher"; }
         void hook_after_event(EventContext<cq::Event> &ctx) override;
     };
 
