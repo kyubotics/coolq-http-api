@@ -6,6 +6,8 @@ using namespace std;
 using namespace cq;
 
 namespace cqhttp::plugins {
+    static const auto TAG = u8"配置";
+
     static bool load_config(json &config, const string &filename, const initializer_list<string> &sections = {}) {
         auto loaded = false;
 
@@ -30,6 +32,9 @@ namespace cqhttp::plugins {
                 }
 
                 loaded = true;
+            } catch (json::parse_error &) {
+                // syntax error
+                logging::fatal(TAG, u8"配置文件语法错误，路径：" + filepath);
             } catch (...) {
                 // failed to read
             }

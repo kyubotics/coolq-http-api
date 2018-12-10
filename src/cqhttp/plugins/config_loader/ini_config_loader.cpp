@@ -8,6 +8,8 @@ using namespace cq;
 namespace fs = std::filesystem;
 
 namespace cqhttp::plugins {
+    static const auto TAG = u8"配置";
+
     static void override_config(json &config, const boost::property_tree::ptree &pt,
                                 const initializer_list<string> &sections) {
         for (const auto &sec : sections) {
@@ -37,6 +39,9 @@ namespace cqhttp::plugins {
                     override_config(config, pt, sections);
                     loaded = true;
                     break;
+                } catch (boost::property_tree::ini_parser_error &) {
+                    // syntax error
+                    logging::fatal(TAG, u8"配置文件语法错误，路径：" + filepath);
                 } catch (...) {
                     // failed to read
                 }
