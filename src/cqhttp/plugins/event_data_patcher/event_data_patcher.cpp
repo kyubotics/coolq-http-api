@@ -22,6 +22,10 @@ namespace cqhttp::plugins {
                         {"card", info.card},
                         {"sex", info.sex},
                         {"age", info.age},
+                        {"area", info.area},
+                        {"level", info.level},
+                        {"role", info.role},
+                        {"title", info.title},
                     });
                 } catch (const cq::exception::ApiError &) {
                 }
