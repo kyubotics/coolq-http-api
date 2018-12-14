@@ -21,27 +21,26 @@
 
 对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK 或开发框架：
 
-| 语言 | Web 框架 | 通信方式 | 插件版本 | 地址 | 作者 |
-| --- | ------- | ------- | ------- | --- | ---- |
-| Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
-| Python | Flask | HTTP | 3, 4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
-| Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/none-bot](https://github.com/richardchien/none-bot) | richardchien |
-| Node.js | WebSocket-Node | WebSocket | 4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
-| Node.js | Koa | HTTP | 3, 4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
-| Node.js | Koa | HTTP | ? | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | t532 |
-| PHP | 内置 | HTTP | 3, 4 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
-| PHP | 内置 | HTTP | 4 | [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | kj415j45 |
-| PHP | Swoole | 反向 WebSocket | 4 | [crazywhalecc/CQBot-swoole](https://github.com/crazywhalecc/CQBot-swoole) | crazywhalecc |
-| PHP | 内置 | HTTP | ? | [LovelyA72/YeziiBot-v1](https://github.com/LovelyA72/YeziiBot-v1) | LovelyA72 |
-| Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
-| Java | JFinal | HTTP | 4 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
-| Java | 内置 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
-| Java | ? | HTTP | ? | [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | Ray-Eldath |
-| Go | 内置 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | 3, 4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
-| Go | 内置 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
-| Go | Gorilla WebSocket | WebSocket | 3 | [ma6254/go-cqhttp](https://github.com/ma6254/go-cqhttp) | ma6254 |
-| C# | 内置 | HTTP | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
-| C# | 内置 | HTTP,<br>WebSocket | 4 | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
+| | 语言 | Web 框架 | 通信方式 | 插件版本 | 地址 | 作者 |
+| ---- | --- | ------- | ------- | ------- | --- | ---- |
+|  | Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
+|  | Python | Flask | HTTP | 3, 4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
+| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/none-bot](https://github.com/richardchien/none-bot) | richardchien |
+| ⭐ | Node.js | WebSocket-Node | WebSocket | 4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
+|  | Node.js | Koa | HTTP | 3, 4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
+|  | Node.js | Koa | HTTP | ? | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | t532 |
+|  | PHP | 内置 | HTTP | 3, 4 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
+| ⭐ | PHP | 内置 | HTTP | 4 | [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | kj415j45 |
+| ⭐ | PHP | Swoole | 反向 WebSocket | 4 | [crazywhalecc/CQBot-swoole](https://github.com/crazywhalecc/CQBot-swoole) | crazywhalecc |
+|  | PHP | 内置 | HTTP | ? | [LovelyA72/YeziiBot-v1](https://github.com/LovelyA72/YeziiBot-v1) | LovelyA72 |
+| ⭐ | Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
+|  | Java | JFinal | HTTP | 4 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
+|  | Java | 内置 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
+| ⭐ | Go | 内置 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | 3, 4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
+|  | Go | 内置 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
+|  | Go | Gorilla WebSocket | WebSocket | 3 | [ma6254/go-cqhttp](https://github.com/ma6254/go-cqhttp) | ma6254 |
+| ⭐ | C# | 内置 | HTTP | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
+|  | C# | 内置 | HTTP,<br>WebSocket | 4 | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
 
 ## 应用案例
 
@@ -58,6 +57,13 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [Kurarion/Bangumi-for-QQ](https://github.com/Kurarion/Bangumi-for-QQ) | 用于在 QQ 平台便捷地使用 Bangumi 部分功能（查寻条目、更新条目进度等） |
 | [rikakomoe/cqhttp-twitter-bot](https://github.com/rikakomoe/cqhttp-twitter-bot) | 自动订阅 Twitter 发送到 QQ |
 | [XiaoLin0815/QQ2TG](https://github.com/XiaoLin0815/QQ2TG) | 帮助 QQ 与 Telegram 互联的小程序 |
+| [spacemeowx2/splatoon2-qqbot](https://github.com/spacemeowx2/splatoon2-qqbot) | 宇宙第一的 Splatoon2 的地图机器人 |
+| [OYMiss/forward-bot](https://github.com/OYMiss/forward-bot) | 用 Telegram 和 QQ 好友聊天的转发机器人 |
+| [mrthanlon/SICNUBOT](https://github.com/mrthanlon/SICNUBOT) | 专为四川师范大学设计用于审核发布消息用的 QQ 机器人 |
+| [billjyc/pocket48](https://github.com/billjyc/pocket48/tree/coolq) | 监控成员口袋 48 聚聚房间、微博和摩点项目 |
+| [chinshin/CQBot_hzx](https://github.com/chinshin/CQBot_hzx) | 摩点 & 微博 & 口袋 48 机器人（BEJ48-黄子璇） |
+| [Ice-Hazymoon/grnd_bot](https://github.com/Ice-Hazymoon/grnd_bot) | 订阅 RSSHub 更新并推送到 QQ 群 |
+| [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的群机器人，支持 QQ 和 Discord |
 
 以上列出的只是实际应用中的一小部分，如果你使用本插件编写了任何好的应用案例或开发框架，也可以通过 issue 或 pull request 添加到这里的列表，共同充实社区。
 
