@@ -130,8 +130,8 @@ port = 5701
 
 ```json
 {
-    "log_level": "debug", // 输出调试级别日志
-    "show_log_console": true, // 显示日志控制台
+    "log_level": "debug",  // 输出调试级别日志
+    "show_log_console": true,  // 显示日志控制台
 
     // 如果想要在酷Q的运行日志中查看插件日志，也可以加上下面这项
     "disable_coolq_log": false
@@ -175,17 +175,17 @@ port = 5701
     "event_filter": "filter.json",
 
     // 日志相关
-    "show_log_console": true, // 看需求，如果不需要通过 GUI 查看日志，这里推荐关闭
-    "max_log_file_size": 6291456, // 单日志文件最大字节数，6 MB
+    "show_log_console": true,  // 看需求，如果不需要通过 GUI 查看日志，这里推荐关闭
+    "max_log_file_size": 6291456,  // 单日志文件最大字节数，6 MB
     "max_log_files": 3,
-    "log_level": "info", // 消息量特别大的情况下，可以酌情设置为 warning
+    "log_level": "info",  // 消息量特别大的情况下，可以酌情设置为 warning
 
     // 心跳
     "enable_heartbeat": true,
-    "heartbeat_interval": 15000, // 15 秒一个心跳包
+    "heartbeat_interval": 15000,  // 15 秒一个心跳包
 
     // 请求频率限制
     "enable_rate_limited_actions": true,
-    "rate_limit_interval": 300 // 300 毫秒一条消息
+    "rate_limit_interval": 300  // 300 毫秒一条消息
 }
 ```
