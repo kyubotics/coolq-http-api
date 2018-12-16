@@ -121,3 +121,71 @@ port = 5701
 | `heartbeat_interval` | `15000` | 产生心跳元事件的时间间隔，单位毫秒 |
 | `enable_rate_limited_actions` | `false` | 是否启用限速 API 调用的支持 |
 | `rate_limit_interval` | `500` | 限速 API 调用的排队间隔时间，单位毫秒 |
+
+## 几种常用的配置项组合
+
+注意，将下面的 JSON 复制到插件配置文件时，请确保逗号正确，并且删掉注释。
+
+### 本地开发环境
+
+```json
+{
+    "log_level": "debug", // 输出调试级别日志
+    "show_log_console": true, // 显示日志控制台
+
+    // 如果想要在酷Q的运行日志中查看插件日志，也可以加上下面这项
+    "disable_coolq_log": false
+}
+```
+
+### 自动更新插件
+
+```json
+{
+    "update_source": "github",
+    "update_channel": "stable",
+    "auto_check_update": true,
+    "auto_perform_update": true
+}
+```
+
+### 生产环境
+
+```json
+{
+    // 关闭不用的功能，例如使用正向 WebSocket 时：
+    "use_http": false,
+    "use_ws": true,
+    "use_ws_reverse": false,
+    "post_url": "",
+
+    // 安全相关
+    "access_token": "some-token",
+    "secret": "some-secret",
+
+    // 关闭自动更新（默认就是关闭的）
+    "auto_check_update": false,
+    "auto_perform_update": false,
+
+    // 根据 CPU 核心数适当选择线程池大小
+    "thread_pool_size": 6,
+    "server_thread_pool_size": 8,
+
+    // 如有需要，使用过滤器避免不必要的上报
+    "event_filter": "filter.json",
+
+    // 日志相关
+    "show_log_console": true, // 看需求，如果不需要通过 GUI 查看日志，这里推荐关闭
+    "max_log_file_size": 6291456, // 单日志文件最大字节数，6 MB
+    "max_log_files": 3,
+    "log_level": "info", // 消息量特别大的情况下，可以酌情设置为 warning
+
+    // 心跳
+    "enable_heartbeat": true,
+    "heartbeat_interval": 15000, // 15 秒一个心跳包
+
+    // 请求频率限制
+    "enable_rate_limited_actions": true,
+    "rate_limit_interval": 300 // 300 毫秒一条消息
+}
+```
