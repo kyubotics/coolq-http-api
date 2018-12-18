@@ -173,3 +173,7 @@ https://afdian.net/@richardchien
 ### 微信转账
 
 ![WeChat](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/wechat.png)
+
+### PayPal
+
+https://paypal.me/richardchien0
