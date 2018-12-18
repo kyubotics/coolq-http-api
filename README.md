@@ -158,6 +158,10 @@ Copy-Item -Force $json_path "C:\Applications\CQA\app\${json_name}"
 
 [这里](https://github.com/richardchien/thanks) 列出了捐助者名单，由于一些收款渠道无法知道对方是谁，如有遗漏请联系我修改。
 
+### 爱发电
+
+https://afdian.net/@richardchien
+
 ### 支付宝免费红包
 
 ![AliPay Red Bag](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/alipay-redbag.jpg)
