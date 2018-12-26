@@ -377,6 +377,8 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 
 ### 生命周期
 
+**注意，目前生命周期元事件只有 HTTP 上报（配置了 `post_url`）的情况下可以收到，WebSocket 和反向 WebSocket 无法收到。**
+
 | 字段名 | 数据类型 | 可能的值 | 说明 |
 | ----- | ------ | -------- | --- |
 | `post_type` | string | `meta_event` | 上报类型 |
