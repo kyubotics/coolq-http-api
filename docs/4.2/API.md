@@ -399,7 +399,7 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 | 字段名 | 数据类型 | 默认值 | 说明 |
 | ----- | ------- | ----- | --- |
 | `group_id` | number | - | 群号 |
-| `user_id`  | number | - | QQ 号（不可以是登录号） |
+| `user_id`  | number | - | QQ 号 |
 | `no_cache` | boolean | `false` | 是否不使用缓存（使用缓存可能更新不及时，但响应更快） |
 
 #### 响应数据
