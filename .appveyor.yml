@@ -14,7 +14,7 @@ configuration:
 environment:
   VCPKG_ROOT: C:\tools\vcpkg
 
-cache: c:\tools\vcpkg\installed\ -> .appveyor.yml  # cache the installed vcpkg packages
+cache: c:\tools\vcpkg\installed\ -> vcpkg-commit.txt  # cache the installed vcpkg packages
 
 install:
   - git submodule init
