@@ -4,11 +4,11 @@ project(coolq-http-api)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "/utf-8 ${CMAKE_CXX_FLAGS}")  # use UTF-8 source files
 set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")  # build with object level parallelism
-include(UseStaticCRT)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 include(cotire)
+include(UseStaticCRT)
 include(FindVcpkgIncludeDir)
 
 if(CMAKE_BUILD_TYPE MATCHES "^Debug$")
