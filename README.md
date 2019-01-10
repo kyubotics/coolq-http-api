@@ -80,56 +80,17 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 ## 修改、编译
 
-本项目使用 [CMake](https://cmake.org/) 构建，依赖项通过 [Vcpkg](https://github.com/Microsoft/vcpkg) 管理。如果你没有使用过这两个工具，请先前往它们的官方网站了解基本用法。
-
-可以直接用 VS Code 或 VS 打开项目，项目中的所有代码文件全部使用 UTF-8 编码，你后续添加的所有代码文件都需要使用 UTF-8 编码。**注意，如果你使用 VS，则它默认使用 ANSI 编码保存文件，需要手动修改为 UTF-8**。[`io.github.richardchien.coolqhttpapi.json`](io.github.richardchien.coolqhttpapi.json) 文件将在 [`scripts/post_build.ps1`](scripts/post_build.ps1) 脚本中被转换为酷 Q 要求的 GB18030 编码。
-
-Vcpkg 使用如下 triplet：
-
-```cmake
-set(VCPKG_TARGET_ARCHITECTURE x86)
-set(VCPKG_CRT_LINKAGE dynamic)
-set(VCPKG_LIBRARY_LINKAGE static)
-set(VCPKG_PLATFORM_TOOLSET v141)
-
-set(CURL_USE_WINSSL ON)
-```
-
-你需要在 Vcpkg 的 `triplets` 文件夹中创建一个名为 `my-x86-windows-static.cmake` 的文件（文件名可以换为其它，但建议保留 `x86-windows-static` 这部分，似乎 Vcpkg 使用了文件名来判断要安装的包的版本），内容如上。创建了这个 triplet 之后，你需要将 [`scripts/generate.ps1`](scripts/generate.ps1) 中的 `$vcpkg_root`（vcpkg 根目录）和 `$vcpkg_triplet`（triplet 名称，例如 `my-x86-windows-static`）设置成你系统中的相应值（或设置环境变量），如果你使用 VS Code 或 VS 编辑项目，可以直接修改 `.vscode/tasks.json`（VS Code）或 `CMakeSettings.json`（VS）中的 `VCPKG_ROOT` 和 `VCPKG_TRIPLET` 环境变量，**注意，`.vscode/tasks.json` 中有两个 task 需要改**。
-
-除此之外，还需要安装如下依赖（使用上面的 triplet）：
-
-| 模块 | 依赖项 |
-| --- | ----- |
-| `cqsdk` | `boost-algorithm`<br>`libiconv` |
-| `cqhttp` | `cqsdk` 的依赖项<br>`nlohmann-json`<br>`boost-process`<br>`curl`<br>`libssh2`<br>`boost-property-tree`<br>`boost-asio`<br>`openssl`<br>`spdlog`<br>`sqlite3` |
-
-安装命令如下：
+本项目基于 [CoolQ C++ SDK](https://github.com/richardchien/coolq-cpp-sdk)，构建方式和它一致，参考如下命令：
 
 ```ps1
-cd vcpkg
-git checkout 90e627c7e6312d5ab04060c186e55ac58edaa634 -- ports  # 固定包版本到 2018 年 9 月 21 日
-.\vcpkg --vcpkg-root . --triplet my-x86-windows-static install boost-algorithm libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog sqlite3
+git clone https://github.com/richardchien/coolq-http-api.git # 克隆项目代码
+cd coolq-http-api
+
+powershell .\scripts\prepare.ps1 # 准备构建环境
+
+powershell .\scripts\generate.ps1 Debug # 生成 build 目录
+powershell .\scripts\build.ps1 Debug # 构建项目
 ```
-
-构建成功后，可以在 `build/Debug/Debug` 或 `build/Release/Release` 中找到生成的 DLL 和 JSON 文件，直接拷贝到酷 Q 的 `app` 目录即可测试使用（酷 Q 需要开启开发模式）。
-
-如果不想每次构建都手动拷贝这两个文件，可以在 `scripts` 目录添加文件 `install.ps1`（会被 `post_build.ps1` 在构建成功之后自动执行）如下：
-
-```ps1
-$lib_name = $args[0]
-$out_dir = $args[1]
-
-$dll_name = "${lib_name}.dll"
-$dll_path = "${out_dir}\${dll_name}"
-$json_name = "${lib_name}.json"
-$json_path = "${out_dir}\${json_name}"
-
-Copy-Item -Force $dll_path "C:\Applications\CQA\app\${dll_name}"
-Copy-Item -Force $json_path "C:\Applications\CQA\app\${json_name}"
-```
-
-注意上面脚本中需要适当修改酷 Q 的路径。
 
 ## 开源许可证、重新分发
 
@@ -149,6 +110,12 @@ Copy-Item -Force $json_path "C:\Applications\CQA\app\${json_name}"
 
 也欢迎加入 QQ 交流群 201865589 来和大家讨论～
 
+## 感谢
+
+- 感谢 Coxxs 的 酷Q 项目，为本插件的存在提供了可能，也感谢他对本插件的支持
+- 感谢所有捐助者对我的鼓励，[这里](https://github.com/richardchien/thanks) 列出了捐助者名单（由于一些收款渠道无法知道对方是谁，如有遗漏请联系我修改）
+- 感谢所有用户反馈的 bug、建议，使本插件不断完善
+
 ## 相似项目
 
 - [Hstb1230/http-to-cq](https://github.com/Hstb1230/http-to-cq)
@@ -157,9 +124,7 @@ Copy-Item -Force $json_path "C:\Applications\CQA\app\${json_name}"
 
 ## 捐助
 
-如果你觉得本插件挺好用的，不妨进行捐助～你的捐助会让我更加有动力完善插件，感谢你的支持！
-
-[这里](https://github.com/richardchien/thanks) 列出了捐助者名单，由于一些收款渠道无法知道对方是谁，如有遗漏请联系我修改。
+如果你觉得本插件挺好用，不妨进行捐助～你的捐助会让我更加有动力完善插件，感谢你的支持！
 
 ### 爱发电
 

@@ -1,9 +1,9 @@
 {
     "environments": [
         {
-            "VCPKG_ROOT": "C:\\CLI\\vcpkg",
+            "VCPKG_ROOT": "${projectDir}\\vcpkg",
             "VCPKG_CMAKE": "${env.VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake",
-            "VCPKG_TRIPLET": "my-x86-windows-static"
+            "VCPKG_TRIPLET": "x86-windows-static-custom"
         }
     ],
     "configurations": [
