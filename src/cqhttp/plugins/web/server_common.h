@@ -2,6 +2,7 @@
 
 #include "cqhttp/core/plugin.h"
 
+#include <regex>
 #include <thread>
 
 #include "cqhttp/plugins/web/vendor/simple_web/utility.hpp"
@@ -19,10 +20,11 @@ namespace cqhttp::plugins {
         }
 
         std::string token_given;
-        if (const auto headers_it = headers.find("Authorization");
-            headers_it != headers.end()
-            && (boost::starts_with(headers_it->second, "Token ") || boost::starts_with(headers_it->second, "token "))) {
-            token_given = headers_it->second.substr(strlen("Token "));
+        if (const auto headers_it = headers.find("Authorization"); headers_it != headers.end()) {
+            const auto auth = headers_it->second;
+            if (std::smatch m; std::regex_match(auth, m, std::regex(R"((?:[Tt]oken|Bearer)\s+(.*))"))) {
+                token_given = m.str(1);
+            }
         } else if (const auto args_it = query_args.find("access_token"); args_it != query_args.end()) {
             token_given = args_it->get<std::string>();
         }
