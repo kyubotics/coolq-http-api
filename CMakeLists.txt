@@ -10,11 +10,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 include(cotire)
 include(UseStaticCRT)
 include(FindVcpkgIncludeDir)
-
-if(CMAKE_BUILD_TYPE MATCHES "^Debug$")
-    # fix Vcpkg debug library lookup bug, see https://github.com/Microsoft/vcpkg/issues/1626
-    list(APPEND CMAKE_IGNORE_PATH ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib)
-endif()
+include(FixDebugLibraryLookup)
 
 include_directories(${VCPKG_INCLUDE_DIR})
 include_directories(src)
