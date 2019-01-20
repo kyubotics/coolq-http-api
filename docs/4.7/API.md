@@ -19,7 +19,7 @@ GET /send_private_msg?user_id=123456&message=hello HTTP/1.1
 Authorization: Token kSLuTF2GC2Q4q4ugm3
 ```
 
-`kSLuTF2GC2Q4q4ugm3` 换成你填写的 access token。
+`kSLuTF2GC2Q4q4ugm3` 换成你填写的 access token。4.7.1 版之后可以使用 `Bearer` 替代 `Token`，从而更符合标准。
 
 Access token 也可以通过 query 参数 `access_token` 传入，以便在无法修改请求头的情况下使用，例如：
 

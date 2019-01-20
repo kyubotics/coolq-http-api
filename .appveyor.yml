@@ -8,27 +8,22 @@ image:
 platform:
   - x86
 
+configuration:
+  - Release
+
 environment:
   VCPKG_ROOT: C:\tools\vcpkg
-  VCPKG_TRIPLET: my-x86-windows-static
 
-cache: c:\tools\vcpkg\installed\ -> .appveyor.yml  # cache the installed vcpkg packages
+cache: c:\tools\vcpkg\installed\ -> vcpkg-commit.txt, cmake/x86-windows-static-custom.cmake
 
 install:
-  - git -C %VCPKG_ROOT% pull
-  - git -C %VCPKG_ROOT% checkout 90e627c7e6312d5ab04060c186e55ac58edaa634 -- ports
-
-  - echo set(VCPKG_TARGET_ARCHITECTURE x86) > %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
-  - echo set(VCPKG_CRT_LINKAGE dynamic) >> %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
-  - echo set(VCPKG_LIBRARY_LINKAGE static) >> %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
-  - echo set(VCPKG_PLATFORM_TOOLSET v141) >> %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
-  - echo set(CURL_USE_WINSSL ON) >> %VCPKG_ROOT%\triplets\%VCPKG_TRIPLET%.cmake
-
-  - vcpkg --triplet %VCPKG_TRIPLET% install boost-algorithm libiconv nlohmann-json boost-process curl libssh2 boost-property-tree boost-asio openssl spdlog sqlite3
+  - git submodule init
+  - git submodule update
+  - powershell .\scripts\prepare.ps1 %VCPKG_ROOT%
 
 build_script:
-  - powershell scripts/generate.ps1 Release
-  - powershell scripts/build.ps1 Release
+  - powershell .\scripts\generate.ps1 %CONFIGURATION%
+  - powershell .\scripts\build.ps1 %CONFIGURATION%
 
 artifacts:
   - path: build/Release/Release/*.dll

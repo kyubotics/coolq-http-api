@@ -2,6 +2,18 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "prepare",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "'${workspaceFolder}/scripts/prepare.ps1'"
+            ],
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
             "label": "generate debug",
             "type": "shell",
             "command": "powershell",
@@ -11,12 +23,7 @@
                 "'${workspaceFolder}/scripts/generate.ps1'",
                 "Debug"
             ],
-            "options": {
-                "env": {
-                    "VCPKG_ROOT": "C:\\CLI\\vcpkg",
-                    "VCPKG_TRIPLET": "my-x86-windows-static"
-                }
-            },
+            "problemMatcher": [],
             "group": "build"
         },
         {
@@ -29,12 +36,7 @@
                 "'${workspaceFolder}/scripts/generate.ps1'",
                 "Release"
             ],
-            "options": {
-                "env": {
-                    "VCPKG_ROOT": "C:\\CLI\\vcpkg",
-                    "VCPKG_TRIPLET": "my-x86-windows-static"
-                }
-            },
+            "problemMatcher": [],
             "group": "build"
         },
         {
@@ -47,7 +49,9 @@
                 "'${workspaceFolder}/scripts/build.ps1'",
                 "Debug"
             ],
-            "problemMatcher": "$msCompile",
+            "problemMatcher": [
+                "$msCompile"
+            ],
             "group": "build",
             "dependsOn": [
                 "generate debug"
@@ -63,7 +67,9 @@
                 "'${workspaceFolder}/scripts/build.ps1'",
                 "Release"
             ],
-            "problemMatcher": "$msCompile",
+            "problemMatcher": [
+                "$msCompile"
+            ],
             "group": "build",
             "dependsOn": [
                 "generate release"
