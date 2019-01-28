@@ -70,7 +70,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [Bluefissure/FFXIVBOT](https://github.com/Bluefissure/FFXIVBOT) | 基于 Django Channels 的最终幻想 14 游戏数据查询机器人 |
 | [Milkitic/Daylily](https://github.com/Milkitic/Daylily) | 基于 ASP.NET Core 的跨平台机器人（含快速开发插件框架） |
 | [cczu-osa/amadeus](https://github.com/cczu-osa/amadeus) | 基于 NoneBot 的多功能 QQ 机器人 |
-| [duan602728596/qqtools](https://github.com/duan602728596/qqtools) | 基于Nwjs的QQ群工具（摩点、口袋48、微博提醒、入群欢迎、定时喊话、自定义命令和回复信息等） |
+| [duan602728596/qqtools](https://github.com/duan602728596/qqtools) | 基于 Nwjs 的QQ群工具（摩点、口袋 48、微博提醒、入群欢迎、定时喊话、自定义命令和回复信息等） |
 
 以上列出的只是实际应用中的一小部分，如果你使用本插件编写了任何好的应用案例或开发框架，也可以通过 issue 或 pull request 添加到这里的列表，共同充实社区。
 
