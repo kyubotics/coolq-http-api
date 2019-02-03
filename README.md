@@ -69,7 +69,8 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [Ray-Eldath/Avalon](https://github.com/Ray-Eldath/Avalon) | 多功能、可扩展的群机器人，支持 QQ 和 Discord |
 | [Bluefissure/FFXIVBOT](https://github.com/Bluefissure/FFXIVBOT) | 基于 Django Channels 的最终幻想 14 游戏数据查询机器人 |
 | [Milkitic/Daylily](https://github.com/Milkitic/Daylily) | 基于 ASP.NET Core 的跨平台机器人（含快速开发插件框架） |
-| [cczu-osa/amadeus](https://github.com/cczu-osa/amadeus) | 基于 NoneBot 的多功能 QQ 机器人 |
+| [cczu-osa/aki](https://github.com/cczu-osa/aki) | 基于 NoneBot 的多功能 QQ 机器人 |
+| [Tsuk1ko/CQ-picfinder-robot](https://github.com/Tsuk1ko/CQ-picfinder-robot) | 基于 Saucenao 的搜图机器人 |
 
 以上列出的只是实际应用中的一小部分，如果你使用本插件编写了任何好的应用案例或开发框架，也可以通过 issue 或 pull request 添加到这里的列表，共同充实社区。
 
