@@ -62,9 +62,3 @@ CQ_MAIN {
     use(plugins::websocket);
     use(plugins::websocket_reverse);
 }
-
-CQ_MENU(cq_menu_restart) { call_action("set_restart_plugin"); }
-
-CQ_MENU(cq_menu_check_update) { call_action(".check_update"); }
-
-CQ_MENU(cq_menu_restart_coolq) { call_action("set_restart"); }

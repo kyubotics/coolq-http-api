@@ -116,8 +116,12 @@
       "function": "cq_menu_check_update"
     },
     {
-      "name": "重启酷 Q",
-      "function": "cq_menu_restart_coolq"
+      "name": "打开应用目录",
+      "function": "cq_menu_open_app_dir"
+    },
+    {
+      "name": "打开酷Q目录",
+      "function": "cq_menu_open_coolq_dir"
     }
   ],
   "status": [],
