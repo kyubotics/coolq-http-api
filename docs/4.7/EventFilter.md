@@ -22,7 +22,7 @@
 {
     "message_type": "group",
     "anonymous": {
-        ".neq": null
+        ".eq": null
     }
 }
 ```
