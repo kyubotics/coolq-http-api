@@ -108,7 +108,7 @@
   ],
   "menu": [
     {
-      "name": "重启插件",
+      "name": "重启应用",
       "function": "cq_menu_restart"
     },
     {
