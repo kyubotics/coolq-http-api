@@ -154,7 +154,7 @@ namespace cqhttp {
 
 #pragma endregion
 
-#pragma region Group &Discuss Operation
+#pragma region Group and Discuss Operation
 
     HANDLER(set_group_kick) {
         const auto group_id = params.get_integer("group_id", 0);
@@ -380,11 +380,33 @@ namespace cqhttp {
     HANDLER(get_record) {
         const auto file = params.get_string("file");
         const auto out_format = params.get_string("out_format");
+        const auto full_path = params.get_bool("full_path", false);
         if (!file.empty() && !out_format.empty()) {
             CALL_API_BEGIN
-            result.data = {{"file", api::get_record(file, out_format)}};
+            result.data = {{"file", api::get_record(file, out_format, full_path)}};
             CALL_API_END
         }
+    }
+
+    HANDLER(get_image) {
+        const auto file = params.get_string("file");
+        if (!file.empty()) {
+            CALL_API_BEGIN
+            result.data = {{"file", api::get_image(file)}};
+            CALL_API_END
+        }
+    }
+
+    HANDLER(can_send_image) {
+        CALL_API_BEGIN
+        result.data = {{"yes", api::can_send_image()}};
+        CALL_API_END
+    }
+
+    HANDLER(can_send_record) {
+        CALL_API_BEGIN
+        result.data = {{"yes", api::can_send_record()}};
+        CALL_API_END
     }
 
 #pragma endregion

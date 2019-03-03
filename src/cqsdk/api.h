@@ -210,12 +210,27 @@ namespace cq::api {
         return utils::string_from_coolq(ret);
     }
 
-    inline std::string get_record(const std::string &file, const std::string &out_format) noexcept(false) {
-        const auto ret = raw::CQ_getRecord(
-            app::auth_code, utils::string_to_coolq(file).c_str(), utils::string_to_coolq(out_format).c_str());
+    inline std::string get_record(const std::string &file, const std::string &out_format,
+                                  const bool full_path = false) noexcept(false) {
+        const auto ret =
+            full_path
+                ? raw::CQ_getRecordV2(
+                      app::auth_code, utils::string_to_coolq(file).c_str(), utils::string_to_coolq(out_format).c_str())
+                : raw::CQ_getRecord(
+                      app::auth_code, utils::string_to_coolq(file).c_str(), utils::string_to_coolq(out_format).c_str());
         __throw_if_needed(ret);
         return utils::string_from_coolq(ret);
     }
+
+    inline std::string get_image(const std::string &file) noexcept(false) {
+        const auto ret = raw::CQ_getImage(app::auth_code, utils::string_to_coolq(file).c_str());
+        __throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
+    }
+
+    inline bool can_send_image() noexcept(false) { return static_cast<bool>(raw::CQ_canSendImage(app::auth_code)); }
+
+    inline bool can_send_record() noexcept(false) { return static_cast<bool>(raw::CQ_canSendRecord(app::auth_code)); }
 
 #pragma endregion
 
