@@ -101,7 +101,7 @@ port = 5701
 | `secret` | 空 | 上报数据签名密钥，如果不为空，则会在 HTTP 上报时对 HTTP 正文进行 HMAC SHA1 哈希，使用 `secret` 的值作为密钥，计算出的哈希值放在上报的 `X-Signature` 请求头，例如 `X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2` |
 | `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](/Message) |
 | `serve_data_files` | `false` | 是否提供请求 `data` 目录的文件的功能 |
-| `update_source` | `github` | 更新源，默认使用托管在 GitHub 的 [richardchien/coolq-http-api-release](https://github.com/richardchien/coolq-http-api-release) 仓库，对于酷 Q 运行在国内的情况，可以换成 `gitee` |
+| `update_source` | `github` | 更新源，默认使用托管在 GitHub 的 [richardchien/coolq-http-api-release](https://github.com/richardchien/coolq-http-api-release) 仓库，~~对于酷 Q 运行在国内的情况，可以换成 `gitee`~~，Gitee 源暂不可用 |
 | `update_channel` | `stable` | 更新通道，目前有 `stable`、`beta`、`alpha` 三个 |
 | `auto_check_update` | `false` | 是否自动检查更新（每次启用插件时检查），不启用的情况下，仍然可以在酷 Q 应用菜单中手动检查更新 |
 | `auto_perform_update` | `false` | 是否自动执行更新，仅在 `auto_check_update` 启用时有效，若启用，则插件将在自动检查到更新后，自动下载新版本并重启酷 Q 生效 |
