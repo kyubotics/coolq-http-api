@@ -223,4 +223,13 @@ namespace cqhttp::utils::http {
         const auto res = request.post();
         return static_cast<Response>(res);
     }
+
+    string url_encode(const string &text) {
+        const auto curl = curl_easy_init();
+        char *escaped_text = curl_easy_escape(curl, text.c_str(), 0);
+        const string escaped_string = escaped_text;
+        curl_free(escaped_text);
+        curl_easy_cleanup(curl);
+        return escaped_string;
+    }
 } // namespace cqhttp::utils::http

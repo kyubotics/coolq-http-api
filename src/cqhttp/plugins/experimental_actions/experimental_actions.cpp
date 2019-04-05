@@ -362,7 +362,9 @@ namespace cqhttp::plugins {
         // reuse the bkn & gsi parameters from above to post a new group notice
         try {
             const auto url = "https://web.qun.qq.com/cgi-bin/announce/add_qun_notice";
-            const auto body = params + "&gsi=" + gsi + "&text=" + text + "&title=" + title;
+            const auto body = params + "&gsi=" + gsi
+                              + "&text="  + utils::http::url_encode(text)
+                              + "&title=" + utils::http::url_encode(title);
             const auto post_response = utils::http::post(url, body, {{"Cookie", cookies}});
             const auto res = json::parse(post_response.body);
             if (res.at("ec").get<int>()) {  // error code
