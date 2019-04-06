@@ -19,7 +19,7 @@ cache: c:\tools\vcpkg\installed\ -> vcpkg-commit.txt, cmake/x86-windows-static-c
 install:
   - git submodule init
   - git submodule update
-  - powershell .\scripts\prepare.ps1 %VCPKG_ROOT%
+  - powershell .\scripts\prepare.ps1
 
 build_script:
   - powershell .\scripts\generate.ps1 %CONFIGURATION%

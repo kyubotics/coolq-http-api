@@ -4,3 +4,7 @@ set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_PLATFORM_TOOLSET v141)
 
 set(CURL_USE_WINSSL ON)
+
+if (PORT MATCHES "^libiconv|sqlite3$")
+    set(VCPKG_LIBRARY_LINKAGE dynamic)
+endif()

@@ -20,11 +20,11 @@ add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
                 -DNOMINMAX
                 -DCURL_STATICLIB)
 
-find_package(Boost REQUIRED COMPONENTS filesystem)  # boost-process stil depends on boost-filesystem
-find_package(Iconv REQUIRED)
+find_package(Boost REQUIRED COMPONENTS filesystem)  # boost-property-tree stil depends on boost-filesystem
+find_package(unofficial-iconv CONFIG REQUIRED)
 find_package(CURL REQUIRED)
 find_package(Spdlog REQUIRED)
-find_package(Sqlite3 REQUIRED)
+find_package(sqlite3 CONFIG REQUIRED)
 
 include(FixLinkConflict)
 
@@ -32,12 +32,12 @@ file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 set(LIB_NAME "io.github.richardchien.coolqhttpapi")
 add_library(${LIB_NAME} SHARED ${SOURCE_FILES})
 
-target_link_libraries(${LIB_NAME} ${Boost_LIBRARIES})
-target_link_libraries(${LIB_NAME} ${ICONV_AND_DEPS_LIBRARIES})
-target_link_libraries(${LIB_NAME} ${CURL_AND_DEPS_LIBRARIES})
-target_link_libraries(${LIB_NAME} ${SPDLOG_AND_DEPS_LIBRARIES})
-target_link_libraries(${LIB_NAME} sqlite3)
-target_link_libraries(${LIB_NAME} crypt32 bcrypt Wldap32 Ws2_32)
+target_link_libraries(${LIB_NAME} PRIVATE ${Boost_LIBRARIES})
+target_link_libraries(${LIB_NAME} PRIVATE unofficial::iconv::libiconv unofficial::iconv::libcharset)
+target_link_libraries(${LIB_NAME} PRIVATE ${CURL_AND_DEPS_LIBRARIES})
+target_link_libraries(${LIB_NAME} PRIVATE ${SPDLOG_AND_DEPS_LIBRARIES})
+target_link_libraries(${LIB_NAME} PRIVATE sqlite3)
+target_link_libraries(${LIB_NAME} PRIVATE crypt32 bcrypt)
 
 cotire(${LIB_NAME})
 
