@@ -2,6 +2,7 @@
 .vscode/settings.json
 .vscode/c_cpp_properties.json
 .vscode/.ropeproject
+.vscode/ipch
 vcpkg
 build
 !lib/*.lib
