@@ -1,7 +1,6 @@
 boost-algorithm
 libiconv
 nlohmann-json
-boost-process
 curl
 libssh2
 boost-property-tree

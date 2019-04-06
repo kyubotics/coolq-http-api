@@ -1,7 +1,6 @@
 #include "./action.h"
 
 #include <sqlite3.h>
-#include <boost/process.hpp>
 #include <filesystem>
 #include <set>
 
@@ -492,50 +491,6 @@ namespace cqhttp {
                        {"plugin_version", CQHTTP_VERSION},
                        {"plugin_build_number", CQHTTP_BUILD_NUMBER},
                        {"plugin_build_configuration", BUILD_CONFIGURATION}};
-    }
-
-    HANDLER(set_restart) {
-        const auto clean_log = params.get_bool("clean_log", false);
-        const auto clean_cache = params.get_bool("clean_cache", false);
-        const auto clean_event = params.get_bool("clean_event", false);
-
-        auto coolq_exe_path = cq::dir::root();
-        if (const auto edition = get_coolq_edition(); edition == "air") {
-            coolq_exe_path += "CQA.exe";
-        } else if (edition == "pro") {
-            coolq_exe_path += "CQP.exe";
-        } else {
-            result.code = Codes::OPERATION_FAILED;
-            return;
-        }
-
-        const auto restart_batch_path = cq::dir::app_per_account("tmp") + "restart.bat";
-        const auto ansi_restart_batch_path = ansi(restart_batch_path);
-        const auto self_id = api::get_login_user_id();
-        if (ofstream f(ansi_restart_batch_path); f.is_open()) {
-            f << "taskkill /F /PID " << _getpid() << endl;
-            f << "timeout 1 > NUL" << endl;
-            if (clean_log) {
-                f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "logv1.db")) << "\""
-                  << endl;
-            }
-            if (clean_cache) {
-                f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "cache.db")) << "\""
-                  << endl;
-            }
-            if (clean_event) {
-                f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "eventv2.db")) << "\""
-                  << endl;
-            }
-            f << "start \"\" \"" << ansi(coolq_exe_path) << "\" /account " << self_id << endl;
-        }
-
-        try {
-            boost::process::spawn(ansi_restart_batch_path);
-            result.code = Codes::OK;
-        } catch (exception &) {
-            result.code = Codes::OPERATION_FAILED;
-        }
     }
 
     HANDLER(clean_data_dir) {
