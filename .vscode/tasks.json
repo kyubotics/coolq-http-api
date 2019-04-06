@@ -74,6 +74,20 @@
             "dependsOn": [
                 "generate release"
             ]
+        },
+        {
+            "label": "clean all",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "'${workspaceFolder}/scripts/clean.ps1'"
+            ],
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": "build"
         }
     ]
 }
