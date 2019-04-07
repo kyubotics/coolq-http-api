@@ -337,8 +337,8 @@ namespace cqhttp::plugins {
         // list the current group notices and get the gsi
         string gsi;
         try {
-            const auto url = "https://web.qun.qq.com/cgi-bin/announce/get_t_list?" + params
-                             + "&ft=23&s=-1&n=10&ni=1&i=1";
+            const auto url =
+                "https://web.qun.qq.com/cgi-bin/announce/get_t_list?" + params + "&ft=23&s=-1&n=10&ni=1&i=1";
             const auto res = utils::http::get_json(url, true, cookies).value_or(nullptr);
             result.data = res.at("feeds");
             gsi = res.at("gsi");
@@ -347,7 +347,7 @@ namespace cqhttp::plugins {
             return;
         }
         if (!post_new_notice) {
-            return;  // get_group_notice finishes here
+            return; // get_group_notice finishes here
         }
 
         const auto text = ctx.params.get_string("text");
@@ -362,14 +362,13 @@ namespace cqhttp::plugins {
         // reuse the bkn & gsi parameters from above to post a new group notice
         try {
             const auto url = "https://web.qun.qq.com/cgi-bin/announce/add_qun_notice";
-            const auto body = params + "&gsi=" + gsi
-                              + "&text="  + utils::http::url_encode(text)
+            const auto body = params + "&gsi=" + gsi + "&text=" + utils::http::url_encode(text)
                               + "&title=" + utils::http::url_encode(title);
             const auto post_response = utils::http::post(url, body, {{"Cookie", cookies}});
             const auto res = json::parse(post_response.body);
-            if (res.at("ec").get<int>()) {  // error code
+            if (res.at("ec").get<int>()) { // error code
                 result.code = Codes::CREDENTIAL_INVALID;
-            } else if (res.at("id").get<int>() == 0) {  // insufficient user permission for posting a new notice
+            } else if (res.at("id").get<int>() == 0) { // insufficient user permission for posting a new notice
                 result.code = Codes::OPERATION_FAILED;
             }
         } catch (exception &) {
