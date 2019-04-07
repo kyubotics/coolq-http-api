@@ -80,8 +80,6 @@ namespace cqhttp::plugins {
         return nullopt;
     }
 
-    static void restart_coolq() { call_action("set_restart"); }
-
     static bool version_locked() { return fs::exists(ansi(cq::dir::app() + "version.lock")); }
 
     void Updater::check_update(const bool automatic) const {
@@ -105,8 +103,7 @@ namespace cqhttp::plugins {
                     if (automatic && auto_perform_update_) {
                         // auto update
                         if (perform_update(version, build_number)) {
-                            logging::info_success(TAG, u8"更新成功，即将重启酷 Q 以生效");
-                            restart_coolq();
+                            logging::info_success(TAG, u8"更新成功，将在重启 酷Q 后生效");
                         } else {
                             logging::error(TAG, u8"更新失败，请检查网络连接是否通畅，或尝试更换更新源。");
                         }
@@ -118,11 +115,7 @@ namespace cqhttp::plugins {
                                                     + u8"\r\n\r\n是否现在更新？");
                         if (code == IDYES) {
                             if (perform_update(version, build_number)) {
-                                code = message_box(MB_YESNO | MB_ICONQUESTION,
-                                                   u8"更新成功，请重启酷 Q 以生效。\r\n\r\n是否现在重启酷 Q？");
-                                if (code == IDYES) {
-                                    restart_coolq();
-                                }
+                                message_box(MB_OK | MB_ICONINFORMATION, u8"更新成功，请重启酷 Q 以生效。");
                             } else {
                                 message_box(MB_OK | MB_ICONERROR,
                                             u8"更新失败，请检查网络连接是否通畅，或尝试更换更新源。");
