@@ -115,7 +115,7 @@ namespace cqhttp::plugins {
                                                     + u8"\r\n\r\n是否现在更新？");
                         if (code == IDYES) {
                             if (perform_update(version, build_number)) {
-                                message_box(MB_OK | MB_ICONINFORMATION, u8"更新成功，请重启酷 Q 以生效。");
+                                message_box(MB_OK | MB_ICONINFORMATION, u8"更新成功，请重启 酷Q 以生效。");
                             } else {
                                 message_box(MB_OK | MB_ICONERROR,
                                             u8"更新失败，请检查网络连接是否通畅，或尝试更换更新源。");
