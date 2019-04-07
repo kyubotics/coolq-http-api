@@ -340,21 +340,23 @@ namespace cqhttp::plugins {
             const auto url =
                 "https://web.qun.qq.com/cgi-bin/announce/get_t_list?" + params + "&ft=23&s=-1&n=10&ni=1&i=1";
             const auto res = utils::http::get_json(url, true, cookies).value_or(nullptr);
-            result.data = res.at("feeds");
+            result.data = res.at("feeds").is_array() ? res.at("feeds") : json::array();
             gsi = res.at("gsi");
         } catch (exception &) {
-            result.code = Codes::OPERATION_FAILED;
+            result.code = Codes::CREDENTIAL_INVALID;
             return;
         }
         if (!post_new_notice) {
             return; // get_group_notice finishes here
         }
 
-        const auto text = ctx.params.get_string("text");
+        result.data = nullptr;
+
         const auto title = ctx.params.get_string("title");
+        const auto content = ctx.params.get_string("content");
         // well it's theoretically possible to create a empty group notice...
         // but that's not useful anyway, hence just let it go
-        if (text.empty() || title.empty()) {
+        if (title.empty() || content.empty()) {
             result.code = Codes::DEFAULT_ERROR;
             return;
         }
@@ -362,10 +364,10 @@ namespace cqhttp::plugins {
         // reuse the bkn & gsi parameters from above to post a new group notice
         try {
             const auto url = "https://web.qun.qq.com/cgi-bin/announce/add_qun_notice";
-            const auto body = params + "&gsi=" + gsi + "&text=" + utils::http::url_encode(text)
+            const auto body = params + "&gsi=" + gsi + "&text=" + utils::http::url_encode(content)
                               + "&title=" + utils::http::url_encode(title);
             const auto post_response = utils::http::post(url, body, {{"Cookie", cookies}});
-            const auto res = json::parse(post_response.body);
+            const auto res = post_response.get_json();
             if (res.at("ec").get<int>()) { // error code
                 result.code = Codes::CREDENTIAL_INVALID;
             } else if (res.at("id").get<int>() == 0) { // insufficient user permission for posting a new notice
