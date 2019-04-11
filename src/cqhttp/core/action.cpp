@@ -1,6 +1,7 @@
 #include "./action.h"
 
 #include <sqlite3.h>
+#include <chrono>
 #include <filesystem>
 #include <set>
 
@@ -429,8 +430,20 @@ namespace cqhttp {
             result.data["online"] = tmp_result.code == Codes::OK;
         } else {
             // online_status_detection_method == "log_db" or other invalid method
-            const auto db_uri = cq::dir::root() + "data\\" + to_string(api::get_login_user_id()) + "\\logv1.db";
-            const auto sql =
+
+            const auto build_db_uri_v2 = [] {
+                const auto now = chrono::system_clock::now();
+                const auto now_as_time_t = chrono::system_clock::to_time_t(now);
+                ostringstream oss;
+                oss << cq::dir::root() + "data\\" + to_string(api::get_login_user_id()) + "\\logv2_"
+                    << put_time(localtime(&now_as_time_t), "%Y%m") << ".db";
+                return oss.str();
+            };
+
+            // const auto db_uri_v1 = cq::dir::root() + "data\\" + to_string(api::get_login_user_id()) + "\\logv1.db";
+            const auto db_uri_v2 = build_db_uri_v2();
+
+            constexpr static auto sql =
                 u8R"(select count(*) = 0 as online
                      from (select name, detail
                            from log
@@ -446,7 +459,7 @@ namespace cqhttp {
                         or detail like '%停止%'
                         or detail like '%退出%';)";
             sqlite3 *db = nullptr;
-            auto err = sqlite3_open(db_uri.c_str(), &db);
+            auto err = sqlite3_open(db_uri_v2.c_str(), &db);
             if (!err) {
                 const auto callback = [](void *data, const int count, char **column_texts, char **column_names) -> int {
                     auto *res = reinterpret_cast<ActionResult *>(data);
@@ -464,7 +477,7 @@ namespace cqhttp {
             }
         }
 
-        result.data["good"] = result.data["app_good"] && result.data["online"];
+        result.data["good"] = result.data["app_good"] && result.data["online"].is_boolean() && result.data["online"];
     }
 
 #ifdef _DEBUG
