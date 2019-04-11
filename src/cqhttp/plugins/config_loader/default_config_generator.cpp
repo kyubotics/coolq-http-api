@@ -26,7 +26,7 @@ static const auto DEFAULT_CONFIG = string() + R"({
     "update_channel": "stable",
     "auto_check_update": false,
     "auto_perform_update": false,
-    "show_log_console": false,
+    "show_log_console": true,
     "log_level": "info"
 })";
 

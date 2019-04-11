@@ -35,7 +35,7 @@ namespace cqhttp::plugins {
         create_file_logger();
         logging::unregister_handler("default"); // remove default logging handler
 
-        if (ctx.config->get_bool("show_log_console", false)) {
+        if (ctx.config->get_bool("show_log_console", true)) {
             const auto console_handler = make_shared<logging::ConsoleHandler>();
             console_handler->init();
             logging::register_handler("console", console_handler);
