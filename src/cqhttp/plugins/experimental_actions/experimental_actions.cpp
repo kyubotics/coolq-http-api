@@ -1,6 +1,10 @@
 #include "./experimental_actions.h"
 
+#include <boost/process.hpp>
+#include <fstream>
+
 #include "cqhttp/plugins/experimental_actions/vendor/pugixml/pugixml.hpp"
+#include "cqhttp/utils/filesystem.h"
 #include "cqhttp/utils/http.h"
 
 using namespace std;
@@ -378,6 +382,50 @@ namespace cqhttp::plugins {
         }
     }
 
+    static void action_set_restart(ActionContext &ctx) {
+        auto &result = ctx.result;
+
+        const auto clean_log = ctx.params.get_bool("clean_log", false);
+        const auto clean_cache = ctx.params.get_bool("clean_cache", false);
+        const auto clean_event = ctx.params.get_bool("clean_event", false);
+        auto coolq_exe_path = cq::dir::root();
+        if (const auto edition = call_action("get_version_info").data["coolq_edition"].get<string>();
+            edition == "air") {
+            coolq_exe_path += "CQA.exe";
+        } else if (edition == "pro") {
+            coolq_exe_path += "CQP.exe";
+        } else {
+            result.code = Codes::OPERATION_FAILED;
+            return;
+        }
+        const auto restart_batch_path = cq::dir::app_per_account("tmp") + "restart.bat";
+        const auto ansi_restart_batch_path = ansi(restart_batch_path);
+        const auto self_id = api::get_login_user_id();
+        if (ofstream f(ansi_restart_batch_path); f.is_open()) {
+            f << "taskkill /F /PID " << _getpid() << endl;
+            f << "timeout 2 > NUL" << endl;
+            if (clean_log) {
+                f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "logv*.db")) << "\""
+                  << endl;
+            }
+            if (clean_cache) {
+                f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "cache.db")) << "\""
+                  << endl;
+            }
+            if (clean_event) {
+                f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "eventv2.db")) << "\""
+                  << endl;
+            }
+            f << "start \"\" \"" << ansi(coolq_exe_path) << "\" /account " << self_id << endl;
+        }
+        try {
+            boost::process::spawn(ansi_restart_batch_path);
+            result.code = Codes::OK;
+        } catch (exception &) {
+            result.code = Codes::OPERATION_FAILED;
+        }
+    }
+
     void ExperimentalActions::hook_missed_action(ActionContext &ctx) {
         if (ctx.action == "_get_friend_list") {
             action_get_friend_list(ctx);
@@ -389,6 +437,8 @@ namespace cqhttp::plugins {
             action_group_notice(ctx, false);
         } else if (ctx.action == "_send_group_notice") {
             action_group_notice(ctx, true);
+        } else if (ctx.action == "_set_restart") {
+            action_set_restart(ctx);
         } else {
             ctx.next();
         }

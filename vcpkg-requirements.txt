@@ -8,3 +8,4 @@ boost-asio
 openssl
 spdlog
 sqlite3
+boost-process
