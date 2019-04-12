@@ -432,12 +432,23 @@ namespace cqhttp {
             // online_status_detection_method == "log_db" or other invalid method
 
             const auto build_db_uri_v2 = [] {
+                const auto prefix = cq::dir::root() + "data\\" + to_string(api::get_login_user_id()) + "\\logv2_";
+
                 const auto now = chrono::system_clock::now();
-                const auto now_as_time_t = chrono::system_clock::to_time_t(now);
+                auto as_time_t = chrono::system_clock::to_time_t(now);
                 ostringstream oss;
-                oss << cq::dir::root() + "data\\" + to_string(api::get_login_user_id()) + "\\logv2_"
-                    << put_time(localtime(&now_as_time_t), "%Y%m") << ".db";
-                return oss.str();
+                oss << prefix << put_time(localtime(&as_time_t), "%Y%m") << ".db";
+
+                auto uri = oss.str();
+                if (!fs::exists(ansi(uri))) { // may occur at a new month
+                    oss.clear();
+                    const auto yesterday = now - 24h;
+                    as_time_t = chrono::system_clock::to_time_t(yesterday);
+                    oss << prefix << put_time(localtime(&as_time_t), "%Y%m") << ".db";
+                    uri = oss.str();
+                }
+
+                return uri;
             };
 
             // const auto db_uri_v1 = cq::dir::root() + "data\\" + to_string(api::get_login_user_id()) + "\\logv1.db";
@@ -459,7 +470,7 @@ namespace cqhttp {
                         or detail like '%停止%'
                         or detail like '%退出%';)";
             sqlite3 *db = nullptr;
-            auto err = sqlite3_open(db_uri_v2.c_str(), &db);
+            auto err = sqlite3_open_v2(db_uri_v2.c_str(), &db, SQLITE_OPEN_READONLY, nullptr); // readonly connection
             if (!err) {
                 const auto callback = [](void *data, const int count, char **column_texts, char **column_names) -> int {
                     auto *res = reinterpret_cast<ActionResult *>(data);
