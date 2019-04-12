@@ -3,7 +3,7 @@
 #define CQHTTP_ID "io.github.richardchien.coolqhttpapi"
 #define CQHTTP_NAME "CoolQ HTTP API"
 
-#define CQHTTP_BUILD_NUMBER 429
+#define CQHTTP_BUILD_NUMBER 430
 
 #define _CQHTTP_TO_STR(x) #x
 #define CQHTTP_TO_STR(x) _CQHTTP_TO_STR(x)
@@ -13,7 +13,7 @@
 #define _CQHTTP_STABLE 3
 
 #define CQHTTP_VERSION_MAJOR 4
-#define CQHTTP_VERSION_MINOR 9
+#define CQHTTP_VERSION_MINOR 10
 #define CQHTTP_VERSION_PATCH 0
 #define CQHTTP_VERSION_PRE _CQHTTP_STABLE
 #define CQHTTP_VERSION_PRE_VER 0
