@@ -29,6 +29,32 @@ namespace cqhttp::plugins {
     static MessageSegment enhance_send_file(const MessageSegment &raw, const string &data_dir);
     static MessageSegment enhance_receive_image(const MessageSegment &raw);
 
+    static struct FileType {
+        string ext;
+        string mime;
+    };
+
+    static FileType detect_file_type(const string &buffer) {
+        // see https://github.com/sindresorhus/file-type/blob/master/index.js
+        const auto check = [&buffer](const vector<int> &header) {
+            auto i = 0;
+            for (; i < header.size() && i < buffer.size(); i++) {
+                if (header[i] != static_cast<unsigned char>(buffer[i])) return false;
+            }
+            return i == header.size();
+        };
+        if (check({0xFF, 0xD8, 0xFF})) {
+            return {"jpg", "image/jpeg"};
+        } else if (check({0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A})) {
+            return {"png", "image/png"};
+        } else if (check({0x47, 0x49, 0x46})) {
+            return {"gif", "image/gif"};
+        } else if (check({0x42, 0x4D})) {
+            return {"bmp", "image/bmp"};
+        }
+        return {};
+    }
+
     void MessageEnhancer::hook_message_event(EventContext<cq::MessageEvent> &ctx) {
         Message msg;
         for (const auto &segment : ctx.event.message) {
@@ -61,17 +87,23 @@ namespace cqhttp::plugins {
     }
 
     static MessageSegment enhance_send_file(const MessageSegment &raw, const string &data_dir) {
-        const auto file_it = raw.data.find("file");
-        if (file_it == raw.data.end()) {
+        if (!raw.data.count("file")) {
             // there is no "file" parameter, skip it
             return raw;
         }
 
         auto segment = raw;
-        auto &file = (*file_it).second;
+        auto &file = raw.data.at("file");
 
-        string filename;
+        string filename, ext;
         function<bool()> make_file = nullptr;
+
+        const static auto check_ext = [](const auto &name) -> string {
+            if (smatch m; regex_search(name, m, regex(R"(\.(png|jpg|jpeg|gif|bmp)$)", regex::flag_type::icase))) {
+                return m.str(1);
+            }
+            return "tmp";
+        };
 
         if (starts_with(file, "http://") || starts_with(file, "https://")) {
             const auto &url = file;
@@ -83,9 +115,9 @@ namespace cqhttp::plugins {
             }
 
             if (use_cache) {
-                filename = md5_hash_hex(url) + ".tmp";
+                filename = md5_hash_hex(url) + "." + check_ext(url);
             } else {
-                filename = md5_hash_hex(url + to_string(random_int(1, 10000))) + ".tmp";
+                filename = md5_hash_hex(url + to_string(random_int(1, 10000))) + "." + check_ext(url);
             }
 
             make_file = [=] {
@@ -99,7 +131,7 @@ namespace cqhttp::plugins {
             };
         } else if (smatch m; regex_search(file, m, regex(R"(^file:\/{0,3})"))) {
             const auto src_filepath = file.substr(m.str().length());
-            filename = md5_hash_hex(src_filepath) + ".tmp";
+            filename = md5_hash_hex(src_filepath) + "." + check_ext(file);
             make_file = [=] {
                 const auto filepath = data_file_full_path(data_dir, filename);
 
@@ -112,14 +144,17 @@ namespace cqhttp::plugins {
                 }
             };
         } else if (starts_with(file, "base64://")) {
-            filename = md5_hash_hex("from_base64_" + to_string(time(nullptr)) + "_" + to_string(random_int(1, 10000)))
-                       + ".tmp";
-            make_file = [=, &file] {
-                const auto filepath = data_file_full_path(data_dir, filename);
+            filename = md5_hash_hex("from_base64_" + to_string(time(nullptr)) + "_"
+                                    + to_string(random_int(1, 10000))); // note that there isn't an extension yet
+            make_file = [=, &file, &filename] {
                 const auto base64_encoded = file.substr(strlen("base64://"));
+                const auto raw = base64::decode(base64_encoded);
+                const auto file_type = detect_file_type(raw);
+                filename = filename + "." + (file_type.ext.empty() ? "tmp" : file_type.ext);
+                const auto filepath = data_file_full_path(data_dir, filename);
 
                 if (ofstream f(ansi(filepath), ios::binary | ios::out); f.is_open()) {
-                    f << base64::decode(base64_encoded);
+                    f << raw;
                     return true;
                 }
                 return false;
