@@ -6,6 +6,7 @@
 #include "cqhttp/plugins/experimental_actions/vendor/pugixml/pugixml.hpp"
 #include "cqhttp/utils/filesystem.h"
 #include "cqhttp/utils/http.h"
+#include "cqhttp/utils/process.h"
 
 using namespace std;
 
@@ -401,7 +402,7 @@ namespace cqhttp::plugins {
         const auto ansi_restart_batch_path = ansi(restart_batch_path);
         const auto self_id = cq::api::get_login_user_id();
         if (ofstream f(ansi_restart_batch_path); f.is_open()) {
-            f << "taskkill /F /PID " << _getpid() << endl;
+            f << "taskkill /F /PID " << utils::process::get_parent_pid() << endl;
             f << "timeout 2 > NUL" << endl;
             if (clean_log) {
                 f << "del /f /s /q \"" << ansi(utils::fs::data_file_full_path(to_string(self_id), "logv*.db")) << "\""
