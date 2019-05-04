@@ -8,7 +8,6 @@
 #include "cqhttp/utils/http.h"
 
 using namespace std;
-namespace api = cq::api;
 
 namespace cqhttp::plugins {
     using Codes = ActionResult::Codes;
@@ -19,9 +18,9 @@ namespace cqhttp::plugins {
         const auto flat = ctx.params.get_bool("flat", false);
 
         try {
-            const auto cookies = api::get_cookies();
-            const auto g_tk = to_string(api::get_csrf_token());
-            const auto login_qq = to_string(api::get_login_user_id());
+            const auto cookies = cq::api::get_cookies();
+            const auto g_tk = to_string(cq::api::get_csrf_token());
+            const auto login_qq = to_string(cq::api::get_login_user_id());
 
             {
                 // try mobile QZone API
@@ -81,7 +80,7 @@ namespace cqhttp::plugins {
                         result.code = Codes::OK;
                         return;
                     }
-                } catch (exception &) {
+                } catch (std::exception &) {
                 }
             }
 
@@ -142,7 +141,7 @@ namespace cqhttp::plugins {
 
                     result.code = Codes::OK;
                     return;
-                } catch (exception &) {
+                } catch (std::exception &) {
                 }
             }
         } catch (cq::exception::ApiError &) {
@@ -167,9 +166,9 @@ namespace cqhttp::plugins {
         string cookies;
         string csrf_token;
         try {
-            login_id_str = to_string(api::get_login_user_id());
-            cookies = "pt2gguin=o" + login_id_str + ";ptisp=os;p_uin=o" + login_id_str + ";" + api::get_cookies();
-            csrf_token = to_string(api::get_csrf_token());
+            login_id_str = to_string(cq::api::get_login_user_id());
+            cookies = "pt2gguin=o" + login_id_str + ";ptisp=os;p_uin=o" + login_id_str + ";" + cq::api::get_cookies();
+            csrf_token = to_string(cq::api::get_csrf_token());
         } catch (cq::exception::ApiError &) {
             goto GET_GROUP_INFO_FAILED;
         }
@@ -209,7 +208,7 @@ namespace cqhttp::plugins {
                     result.data["admins"].push_back(j);
                 }
                 result.data.emplace("admin_count", result.data["admins"].size());
-            } catch (exception &) {
+            } catch (std::exception &) {
             }
         }
 
@@ -227,7 +226,7 @@ namespace cqhttp::plugins {
                     // it's actually impossible to reach here, but we check it in case
                     result.data.emplace("member_count", data.at("mem_num"));
                 }
-            } catch (exception &) {
+            } catch (std::exception &) {
             }
         }
 
@@ -269,8 +268,8 @@ namespace cqhttp::plugins {
             "Device/Apple(iPhone 6s) NetType/WIFI";
         string cookies;
         try {
-            cookies = api::get_cookies();
-            const auto info = api::get_stranger_info(user_id);
+            cookies = cq::api::get_cookies();
+            const auto info = cq::api::get_stranger_info(user_id);
             result.data["nickname"] = info.nickname;
         } catch (cq::exception::ApiError &) {
             goto GET_VIP_INFO_FAILED;
@@ -330,10 +329,10 @@ namespace cqhttp::plugins {
         string params;
         string cookies;
         try {
-            const int csrf_token = api::get_csrf_token();
+            const int csrf_token = cq::api::get_csrf_token();
             params = "bkn=" + to_string(csrf_token) + "&qid=" + to_string(group_id);
-            cookies = api::get_cookies();
-        } catch (exception &) {
+            cookies = cq::api::get_cookies();
+        } catch (std::exception &) {
             result.code = Codes::CREDENTIAL_INVALID;
             return;
         }
@@ -346,7 +345,7 @@ namespace cqhttp::plugins {
             const auto res = utils::http::get_json(url, true, cookies).value_or(nullptr);
             result.data = res.at("feeds").is_array() ? res.at("feeds") : json::array();
             gsi = res.at("gsi");
-        } catch (exception &) {
+        } catch (std::exception &) {
             result.code = Codes::CREDENTIAL_INVALID;
             return;
         }
@@ -377,7 +376,7 @@ namespace cqhttp::plugins {
             } else if (res.at("id").get<int>() == 0) { // insufficient user permission for posting a new notice
                 result.code = Codes::OPERATION_FAILED;
             }
-        } catch (exception &) {
+        } catch (std::exception &) {
             result.code = Codes::INVALID_DATA;
         }
     }
@@ -400,7 +399,7 @@ namespace cqhttp::plugins {
         }
         const auto restart_batch_path = cq::dir::app_per_account("tmp") + "restart.bat";
         const auto ansi_restart_batch_path = ansi(restart_batch_path);
-        const auto self_id = api::get_login_user_id();
+        const auto self_id = cq::api::get_login_user_id();
         if (ofstream f(ansi_restart_batch_path); f.is_open()) {
             f << "taskkill /F /PID " << _getpid() << endl;
             f << "timeout 2 > NUL" << endl;
@@ -421,7 +420,7 @@ namespace cqhttp::plugins {
         try {
             boost::process::spawn(ansi_restart_batch_path);
             result.code = Codes::OK;
-        } catch (exception &) {
+        } catch (std::exception &) {
             result.code = Codes::OPERATION_FAILED;
         }
     }
