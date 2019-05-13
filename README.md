@@ -28,21 +28,22 @@
 |  | Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
 |  | Python | Flask | HTTP | 3, 4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
 | ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/nonebot](https://github.com/richardchien/nonebot) | richardchien |
-| ⭐ | Node.js | WebSocket-Node | WebSocket | 4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
+| ⭐ | Node.js | WebSocket | WebSocket | 4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
 |  | Node.js | Koa | HTTP | 3, 4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
 |  | Node.js | Koa | HTTP | ? | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | t532 |
+|  | Deno | 标准库 | 反向 WebSocket | 4 | [nenojs/deno-cqhttp](https://github.com/nenojs/deno-cqhttp) | rikakomoe |
 |  | PHP | 内置 | HTTP | 3, 4 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
 | ⭐ | PHP | 内置 | HTTP | 4 | [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | kj415j45 |
 | ⭐ | PHP | Swoole | 反向 WebSocket | 4 | [crazywhalecc/CQBot-swoole](https://github.com/crazywhalecc/CQBot-swoole) | crazywhalecc |
 |  | PHP | 内置 | HTTP | ? | [LovelyA72/YeziiBot-v1](https://github.com/LovelyA72/YeziiBot-v1) | LovelyA72 |
-| ⭐ | Java | 内置 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
+| ⭐ | Java | 标准库 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
 |  | Java | JFinal | HTTP | 4 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
-|  | Java | 内置 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
-| ⭐ | Go | 内置 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | 3, 4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
-|  | Go | 内置 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
-| ⭐ | C# | 内置 | HTTP,<br>WebSocket | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
-| ⭐ | C# | 内置 | HTTP,<br>WebSocket,<br>反向 WebSocket | 4 | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
-|  | PowerShell | 内置 | HTTP | 4 | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
+|  | Java | 标准库 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
+| ⭐ | Go | 标准库 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | 3, 4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
+|  | Go | 标准库 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
+| ⭐ | C# | 标准库 | HTTP,<br>WebSocket | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
+| ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | 4 | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
+|  | PowerShell | 标准库 | HTTP | 4 | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
 
 ## 应用案例
 
