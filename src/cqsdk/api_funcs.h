@@ -1,5 +1,5 @@
 // We don't use "#pragma once" here, because this file is intended to be included twice,
-// by sdk_class.h and sdk.cpp, respectively to declare and define SDK functions.
+// by api.h and api.cpp, respectively to declare and define SDK functions.
 // Except for the two files mentioned above, no file is allowed to include this.
 
 #ifndef FUNC

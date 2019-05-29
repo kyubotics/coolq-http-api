@@ -20,6 +20,12 @@ add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
                 -DNOMINMAX
                 -DCURL_STATICLIB)
 
+# read app id from app_id.txt
+file(READ "app_id.txt" APP_ID)
+string(STRIP "${APP_ID}" APP_ID)
+set(APP_ID "\"${APP_ID}\"")
+add_compile_definitions(APP_ID=${APP_ID})
+
 find_package(Boost REQUIRED COMPONENTS filesystem)  # boost-property-tree stil depends on boost-filesystem
 find_package(unofficial-iconv CONFIG REQUIRED)
 find_package(CURL REQUIRED)
@@ -29,7 +35,7 @@ find_package(sqlite3 CONFIG REQUIRED)
 include(FixLinkConflict)
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
-set(LIB_NAME "io.github.richardchien.coolqhttpapi")
+set(LIB_NAME "app")
 add_library(${LIB_NAME} SHARED ${SOURCE_FILES})
 
 target_link_libraries(${LIB_NAME} PRIVATE ${Boost_LIBRARIES})
@@ -44,4 +50,4 @@ cotire(${LIB_NAME})
 add_custom_command(TARGET ${LIB_NAME}
                    POST_BUILD
                    COMMAND
-                   powershell -ExecutionPolicy Bypass -NoProfile -File "${PROJECT_SOURCE_DIR}/scripts/post_build.ps1" ${LIB_NAME} "$<TARGET_FILE_DIR:${LIB_NAME}>")
+                   powershell -ExecutionPolicy Bypass -NoProfile -File "${PROJECT_SOURCE_DIR}/scripts/post_build.ps1" ${APP_ID} ${LIB_NAME} "$<TARGET_FILE_DIR:${LIB_NAME}>")

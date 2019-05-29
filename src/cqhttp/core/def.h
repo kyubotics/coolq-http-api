@@ -1,6 +1,6 @@
 #pragma once
 
-#define CQHTTP_ID "io.github.richardchien.coolqhttpapi"
+#define CQHTTP_ID APP_ID
 #define CQHTTP_NAME "CoolQ HTTP API"
 
 #define CQHTTP_BUILD_NUMBER 431

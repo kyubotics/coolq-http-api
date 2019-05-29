@@ -11,7 +11,7 @@ namespace cq {
 
     namespace app {
         extern int32_t auth_code;
-        extern std::string id;
+        // extern std::string id;
 
         /**
          * Lifecycle:
@@ -61,13 +61,6 @@ namespace cq {
         extern std::function<void()> __main;
     } // namespace app
 } // namespace cq
-
-#define CQ_INITIALIZE(AppId)    \
-    static bool __cq_set_id() { \
-        cq::app::id = AppId;    \
-        return true;            \
-    }                           \
-    static bool __cq_set_id_dummy = __cq_set_id()
 
 #define CQ_MAIN                                             \
     static void __cq_main();                                \

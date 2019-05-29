@@ -27,8 +27,6 @@
 
 using namespace cqhttp;
 
-CQ_INITIALIZE(CQHTTP_ID);
-
 CQ_MAIN {
     init();
 
