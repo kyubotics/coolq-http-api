@@ -577,10 +577,6 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 | `plugin_build_number` | number | HTTP API 插件 build 号 |
 | `plugin_build_configuration` | string | HTTP API 插件编译配置，`debug` 或 `release` |
 
-#### 响应数据
-
-无
-
 ### `/set_restart_plugin` 重启 HTTP API 插件
 
 由于重启插件同时需要重启 API 服务，这意味着当前的 API 请求会被中断，因此需在异步地重启插件，接口返回的 `status` 是 `async`。
