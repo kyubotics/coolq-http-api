@@ -26,5 +26,5 @@ build_script:
   - powershell .\scripts\build.ps1 %CONFIGURATION%
 
 artifacts:
-  - path: build/Release/Release/*.dll
-  - path: build/Release/Release/*.json
+  - path: build/Release/Release/io.github.richardchien.coolqhttpapi/app.dll
+  - path: build/Release/Release/io.github.richardchien.coolqhttpapi/app.json
