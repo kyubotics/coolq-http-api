@@ -19,7 +19,7 @@ namespace cqhttp::plugins {
         client->config.header.emplace("X-Self-ID", to_string(cq::api::get_login_user_id()));
         client->config.header.emplace("X-Client-Role", this->name());
         if (!access_token_.empty()) {
-            client->config.header.emplace("Authorization", "Bearer " + access_token_);
+            client->config.header.emplace("Authorization", "Token " + access_token_);
         }
         client->on_close =
             [&](shared_ptr<typename WsClientT::Connection> connection, const int code, const string &reason) {
