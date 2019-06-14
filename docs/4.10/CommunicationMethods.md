@@ -68,9 +68,11 @@ X-Client-Role: Event
 如果配置了 `access_token`，则在建立连接时，还会加入 `Authorization` 请求头，例如：
 
 ```http
-Authorization: Bearer kSLuTF2GC2Q4q4ugm3
+Authorization: Token kSLuTF2GC2Q4q4ugm3
 X-Self-ID: 123456
 ```
+
+> 注意：这里本应该是 `Authorization: Bearer kSLuTF2GC2Q4q4ugm3`（和插件作为服务端的校验保持一致），但由于历史上的某次升级时忘记把这里的 `Token` 改为 `Bearer`，并且如果现在修改可能会对已有代码造成破坏，因此决定保持为 `Token` 不变。
 
 #### API 调用
 
