@@ -128,6 +128,6 @@
 
 这里有几点需要注意：
 
-- `enable_backward_compatibility` 配置项**不会**影响这里的事件数据对象，也就是说，即使 `enable_backward_compatibility` 设置为 `yes`（即默认情况），过滤器所看到的事件数据的字段和值也不会改变
+- `enable_backward_compatibility` 配置项**不会**影响这里的事件数据对象，也就是说，即使 `enable_backward_compatibility` 设置为 `yes`，过滤器所看到的事件数据的字段和值也不会改变
 - `message` 字段在运行过滤器时是消息段数组的形式（见 [消息格式](/Message)），无论配置文件中 `post_message_format` 是什么
 - `raw_message` 字段为未经 [增强 CQ 码](/CQCode) 处理的原始消息字符串，这意味着其中可能会出现形如 `[CQ:face,id=123]` 的 CQ 码
