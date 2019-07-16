@@ -32,6 +32,7 @@
 |  | Node.js | Koa | HTTP | 3, 4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
 |  | Node.js | Koa | HTTP | ? | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | t532 |
 |  | Node.js | ws 或 uWebSockets.js | 反向 WebSocket | 4 | [zyntuz/yacqhttp](https://github.com/zyntuz/yacqhttp) | zyntuz |
+| | Node.js | WebSocket-Node | WebSocket | 4 | [CaoMeiYouRen/node-coolq-robot](https://github.com/CaoMeiYouRen/node-coolq-robot) | CaoMeiYouRen |
 |  | Deno | 标准库 | 反向 WebSocket | 4 | [nenojs/deno-cqhttp](https://github.com/nenojs/deno-cqhttp) | rikakomoe |
 |  | PHP | - | HTTP | 3, 4 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
 | ⭐ | PHP | - | HTTP | 4 | [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | kj415j45 |
