@@ -202,6 +202,12 @@ namespace cq::api {
         return utils::string_from_coolq(ret);
     }
 
+    inline std::string get_cookies(const std::string &domain) noexcept(false) {
+        const auto ret = raw::CQ_getCookiesV2(app::auth_code, utils::string_to_coolq(domain).c_str());
+        __throw_if_needed(ret);
+        return utils::string_from_coolq(ret);
+    }
+
     inline int32_t get_csrf_token() noexcept { return raw::CQ_getCsrfToken(app::auth_code); }
 
     inline std::string get_app_directory() noexcept(false) {

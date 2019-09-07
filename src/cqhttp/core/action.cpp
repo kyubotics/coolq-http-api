@@ -143,11 +143,7 @@ namespace cqhttp {
         const auto times = static_cast<int32_t>(params.get_integer("times", 1));
         if (user_id && times > 0) {
             CALL_API_BEGIN
-            if (times == 1) {
-                api::send_like(user_id);
-            } else {
-                api::send_like(user_id, times);
-            }
+            api::send_like(user_id, times);
             CALL_API_END
         }
     }
@@ -357,8 +353,13 @@ namespace cqhttp {
 #pragma region Get CoolQ Information
 
     HANDLER(get_cookies) {
+        const auto domain = params.get_string("domain");
         CALL_API_BEGIN
-        result.data = {{"cookies", api::get_cookies()}};
+        if (domain.empty()) {
+            result.data = {{"cookies", api::get_cookies()}};
+        } else {
+            result.data = {{"cookies", api::get_cookies(domain)}};
+        }
         CALL_API_END
     }
 

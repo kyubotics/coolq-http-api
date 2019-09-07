@@ -68,8 +68,12 @@ namespace cq::message {
             };
         }
 
-        static MessageSegment music(const std::string &type, const int64_t &id) {
+        static MessageSegment music(const std::string &type, const int64_t id) {
             return {"music", {{"type", type}, {"id", std::to_string(id)}}};
+        }
+
+        static MessageSegment music(const std::string &type, const int64_t id, const int32_t style) {
+            return {"music", {{"type", type}, {"id", std::to_string(id)}, {"style", std::to_string(style)}}};
         }
 
         static MessageSegment music(const std::string &url, const std::string &audio_url, const std::string &title,

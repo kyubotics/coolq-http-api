@@ -54,6 +54,7 @@ FUNC(const char *, getGroupMemberInfoV2, int32_t auth_code, int64_t group_id, in
 
 // Get CoolQ Information
 FUNC(const char *, getCookies, int32_t auth_code)
+FUNC(const char *, getCookiesV2, int32_t auth_code, const char *domain)
 FUNC(int32_t, getCsrfToken, int32_t auth_code)
 FUNC(const char *, getAppDirectory, int32_t auth_code)
 FUNC(const char *, getRecord, int32_t auth_code, const char *file, const char *out_format)
