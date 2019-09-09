@@ -1,6 +1,7 @@
 var rootUrl = 'https://cqhttp.cc/docs';
 
 var versions = [
+    { title: 'v4.11', path: '/4.11/' },
     { title: 'v4.10', path: '/4.10/' },
     { title: 'v4.9', path: '/4.9/' },
     { title: 'v4.8', path: '/4.8/' },
