@@ -332,7 +332,7 @@ namespace cqhttp::plugins {
         try {
             const int csrf_token = cq::api::get_csrf_token();
             params = "bkn=" + to_string(csrf_token) + "&qid=" + to_string(group_id);
-            cookies = cq::api::get_cookies("web.qun.qq.com");
+            cookies = cq::api::get_cookies("qun.qq.com");
         } catch (std::exception &) {
             result.code = Codes::CREDENTIAL_INVALID;
             return;
