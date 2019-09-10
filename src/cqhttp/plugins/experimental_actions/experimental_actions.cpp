@@ -332,53 +332,48 @@ namespace cqhttp::plugins {
         try {
             const int csrf_token = cq::api::get_csrf_token();
             params = "bkn=" + to_string(csrf_token) + "&qid=" + to_string(group_id);
-            cookies = cq::api::get_cookies();
+            cookies = cq::api::get_cookies("web.qun.qq.com");
         } catch (std::exception &) {
             result.code = Codes::CREDENTIAL_INVALID;
             return;
         }
 
-        // list the current group notices and get the gsi
-        string gsi;
-        try {
-            const auto url =
-                "https://web.qun.qq.com/cgi-bin/announce/get_t_list?" + params + "&ft=23&s=-1&n=10&ni=1&i=1";
-            const auto res = utils::http::get_json(url, true, cookies).value_or(nullptr);
-            result.data = res.at("feeds").is_array() ? res.at("feeds") : json::array();
-            gsi = res.at("gsi");
-        } catch (std::exception &) {
-            result.code = Codes::CREDENTIAL_INVALID;
-            return;
-        }
-        if (!post_new_notice) {
-            return; // get_group_notice finishes here
-        }
-
-        result.data = nullptr;
-
-        const auto title = ctx.params.get_string("title");
-        const auto content = ctx.params.get_string("content");
-        // well it's theoretically possible to create a empty group notice...
-        // but that's not useful anyway, hence just let it go
-        if (title.empty() || content.empty()) {
-            result.code = Codes::DEFAULT_ERROR;
-            return;
-        }
-
-        // reuse the bkn & gsi parameters from above to post a new group notice
-        try {
-            const auto url = "https://web.qun.qq.com/cgi-bin/announce/add_qun_notice";
-            const auto body = params + "&gsi=" + gsi + "&text=" + utils::http::url_encode(content)
-                              + "&title=" + utils::http::url_encode(title);
-            const auto post_response = utils::http::post(url, body, {{"Cookie", cookies}});
-            const auto res = post_response.get_json();
-            if (res.at("ec").get<int>()) { // error code
-                result.code = Codes::CREDENTIAL_INVALID;
-            } else if (res.at("id").get<int>() == 0) { // insufficient user permission for posting a new notice
-                result.code = Codes::OPERATION_FAILED;
+        if (post_new_notice) {
+            const auto title = ctx.params.get_string("title");
+            const auto content = ctx.params.get_string("content");
+            // well it's theoretically possible to create a empty group notice...
+            // but that's not useful anyway, hence just let it go
+            if (title.empty() || content.empty()) {
+                result.code = Codes::DEFAULT_ERROR;
+                return;
             }
-        } catch (std::exception &) {
-            result.code = Codes::INVALID_DATA;
+
+            // reuse the bkn parameters from above to post a new group notice
+            try {
+                const auto url = "https://web.qun.qq.com/cgi-bin/announce/add_qun_notice";
+                const auto body = params + "&text=" + utils::http::url_encode(content)
+                                    + "&title=" + utils::http::url_encode(title);
+                const auto post_response = utils::http::post(url, body, {{"Cookie", cookies}});
+                const auto res = post_response.get_json();
+                if (res.at("ec").get<int>()) { // error code
+                    result.code = Codes::CREDENTIAL_INVALID;
+                } else if (res.at("id").get<int>() == 0) { // insufficient user permission for posting a new notice
+                    result.code = Codes::OPERATION_FAILED;
+                }
+            } catch (std::exception &) {
+                result.code = Codes::INVALID_DATA;
+            }
+        } else {
+            // list the current group notices
+            try {
+                const auto url =
+                    "https://web.qun.qq.com/cgi-bin/announce/get_t_list?" + params + "&ft=23&s=-1&n=10&ni=1&i=1";
+                const auto res = utils::http::get_json(url, true, cookies).value_or(nullptr);
+                result.data = res.at("feeds").is_array() ? res.at("feeds") : json::array();
+            } catch (std::exception &) {
+                result.code = Codes::CREDENTIAL_INVALID;
+                return;
+            }
         }
     }
 
