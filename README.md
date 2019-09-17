@@ -39,6 +39,7 @@
 | ⭐ | PHP | Swoole | 反向 WebSocket | 4 | [crazywhalecc/CQBot-swoole](https://github.com/crazywhalecc/CQBot-swoole) | crazywhalecc |
 |  | PHP | - | HTTP | ? | [LovelyA72/YeziiBot-v1](https://github.com/LovelyA72/YeziiBot-v1) | LovelyA72 |
 | ⭐ | Java | 标准库 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
+|  | Java | Spring | 反向 WebSocket | 4 | [lz1998/Spring-CQ](https://github.com/lz1998/Spring-CQ) | lz1998 |
 |  | Java | JFinal | HTTP | 4 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
 |  | Java | 标准库 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
 | ⭐ | Go | 标准库 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | 3, 4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
