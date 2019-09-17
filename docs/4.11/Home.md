@@ -22,7 +22,7 @@
 
 除了 HTTP 方式，现在还支持 WebSocket 和反向 WebSocket 两种通信方式，它们的适用场景和使用方法见 [通信方式](/CommunicationMethods)。
 
-另外，本插件所支持的 CQ 码在原生的基础上进行了一些增强，见 [CQ 码](/CQCode)，并且支持以字符串或消息段数组格式表示消息，见 [消息格式](/Message)。
+另外，本插件所支持的 CQ 码在 [原生 CQ 码](https://d.cqp.me/Pro/CQ%E7%A0%81) 的基础上进行了一些增强，见 [CQ 码](/CQCode)，并且支持以字符串或消息段数组格式表示消息，见 [消息格式](/Message)。
 
 对于其它可能比较容易遇到的问题，见 [FAQ](https://github.com/richardchien/coolq-http-api/wiki/FAQ)。
 
