@@ -336,7 +336,7 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 | `post_type` | string | `request` | 上报类型 |
 | `request_type` | string | `friend` | 请求类型 |
 | `user_id` | number (int64) | - | 发送请求的 QQ 号 |
-| `comment` | string | - | 验证信息（可能已被转义） |
+| `comment` | string | - | 验证信息（可能包含 CQ 码，特殊字符被转义） |
 | `flag` | string | - | 请求 flag，在调用处理请求的 API 时需要传入 |
 
 #### 响应数据
@@ -357,7 +357,7 @@ ctx.assert(ctx.request.headers['x-signature'] === `sha1=${sig}`, 403);
 | `sub_type` | string | `add`、`invite` | 请求子类型，分别表示加群请求、邀请登录号入群 |
 | `group_id` | number (int64) | - | 群号 |
 | `user_id` | number (int64) | - | 发送请求的 QQ 号 |
-| `comment` | string | - | 验证信息（可能已被转义） |
+| `comment` | string | - | 验证信息（可能包含 CQ 码，特殊字符被转义） |
 | `flag` | string | - | 请求 flag，在调用处理请求的 API 时需要传入 |
 
 #### 响应数据
