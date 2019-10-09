@@ -13,6 +13,7 @@ namespace cq::event {
     std::function<void(const GroupAdminEvent &)> on_group_admin;
     std::function<void(const GroupMemberDecreaseEvent &)> on_group_member_decrease;
     std::function<void(const GroupMemberIncreaseEvent &)> on_group_member_increase;
+    std::function<void(const GroupBanEvent &)> on_group_ban;
     std::function<void(const FriendAddEvent &)> on_friend_add;
     std::function<void(const FriendRequestEvent &)> on_friend_request;
     std::function<void(const GroupRequestEvent &)> on_group_request;
@@ -163,6 +164,28 @@ __CQ_EVENT(int32_t, cq_event_group_member_increase, 32)
     e.group_id = from_group;
     e.operator_id = from_qq;
     call_if_valid(event::on_group_member_increase, e);
+    return e.operation;
+}
+
+/**
+ * Type=104 群事件-群禁言
+ * sub_type 子类型，1/被解禁 2/被禁言
+ * from_group 来源群号
+ * from_qq 操作者QQ(即管理员QQ)
+ * being_operate_qq 被操作QQ(若为全群禁言/解禁，则本参数为 0)
+ * duration 禁言时长(单位 秒，仅子类型为2时可用)
+ */
+__CQ_EVENT(int32_t, cq_event_group_ban, 40)
+(int32_t sub_type, int32_t send_time, int64_t from_group, int64_t from_qq, int64_t being_operate_qq, int64_t duration) {
+    event::GroupBanEvent e;
+    e.target = Target(being_operate_qq, from_group, Target::GROUP);
+    e.time = send_time;
+    e.sub_type = static_cast<notice::SubType>(sub_type);
+    e.user_id = being_operate_qq;
+    e.group_id = from_group;
+    e.operator_id = from_qq;
+    e.duration = duration;
+    call_if_valid(event::on_group_ban, e);
     return e.operation;
 }
 

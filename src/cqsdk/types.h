@@ -65,11 +65,36 @@ namespace cq {
         }
     };
 
+    struct Friend : User {
+        const static size_t MIN_SIZE = 12;
+
+        // int64_t user_id; // from User
+        // std::string nickname; // from User
+        std::string remark;
+        // Sex sex; // from User, not using
+        // int32_t age; // from User, not using
+
+        static Friend from_bytes(const std::string &bytes) {
+            auto pack = utils::BinPack(bytes);
+            Friend frnd;
+            try {
+                frnd.user_id = pack.pop_int<int64_t>();
+                frnd.nickname = pack.pop_string();
+                frnd.remark = pack.pop_string();
+            } catch (exception::BytesNotEnough &) {
+                throw exception::ParseError("failed to parse from bytes to a Friend object");
+            }
+            return frnd;
+        }
+    };
+
     struct Group {
         const static size_t MIN_SIZE = 10;
 
         int64_t group_id = 0;
         std::string group_name;
+        int32_t member_count = 0; // only available with get_group_info()
+        int32_t max_member_count = 0; // only available with get_group_info()
 
         static Group from_bytes(const std::string &bytes) {
             auto pack = utils::BinPack(bytes);
@@ -77,6 +102,12 @@ namespace cq {
             try {
                 group.group_id = pack.pop_int<int64_t>();
                 group.group_name = pack.pop_string();
+                try {
+                    // optional, since this method should work for both get_group_list() and get_group_info()
+                    group.member_count = pack.pop_int<int32_t>();
+                    group.max_member_count = pack.pop_int<int32_t>();
+                } catch (exception::BytesNotEnough &ignored) {
+                }
             } catch (exception::BytesNotEnough &) {
                 throw exception::ParseError("failed to parse from bytes to a Group object");
             }
@@ -91,7 +122,7 @@ namespace cq {
         // int64_t user_id; // from User
         // std::string nickname; // from User
         std::string card;
-        // Sex sex = Sex::UNKNOWN; // from User
+        // Sex sex; // from User
         // int32_t age; // from User
         std::string area;
         int32_t join_time = 0;

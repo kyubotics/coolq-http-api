@@ -110,6 +110,15 @@ namespace cq::event {
         }
     };
 
+    struct GroupBanEvent final : NoticeEvent, UserIdMixin, GroupIdMixin, OperatorIdMixin {
+        GroupBanEvent() {
+            type = NOTICE;
+            notice_type = notice::GROUP_BAN;
+        }
+
+        int64_t duration;
+    };
+
     struct FriendAddEvent final : NoticeEvent, UserIdMixin {
         FriendAddEvent() {
             type = NOTICE;
@@ -138,6 +147,7 @@ namespace cq::event {
     extern std::function<void(const GroupAdminEvent &)> on_group_admin;
     extern std::function<void(const GroupMemberDecreaseEvent &)> on_group_member_decrease;
     extern std::function<void(const GroupMemberIncreaseEvent &)> on_group_member_increase;
+    extern std::function<void(const GroupBanEvent &)> on_group_ban;
     extern std::function<void(const FriendAddEvent &)> on_friend_add;
     extern std::function<void(const FriendRequestEvent &)> on_friend_request;
     extern std::function<void(const GroupRequestEvent &)> on_group_request;

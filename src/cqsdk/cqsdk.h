@@ -25,6 +25,7 @@ namespace cq {
     using event::GroupAdminEvent;
     using event::GroupMemberDecreaseEvent;
     using event::GroupMemberIncreaseEvent;
+    using event::GroupBanEvent;
     using event::FriendAddEvent;
     using event::FriendRequestEvent;
     using event::GroupRequestEvent;

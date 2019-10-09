@@ -42,6 +42,7 @@ namespace cq {
             GROUP_ADMIN,
             GROUP_MEMBER_DECREASE,
             GROUP_MEMBER_INCREASE,
+            GROUP_BAN,
             FRIEND_ADD,
         };
 
@@ -54,6 +55,8 @@ namespace cq {
             GROUP_MEMBER_DECREASE_KICK = 2,
             GROUP_MEMBER_INCREASE_APPROVE = 1,
             GROUP_MEMBER_INCREASE_INVITE = 2,
+            GROUP_BAN_LIFT_BAN = 1,
+            GROUP_BAN_BAN = 2,
         };
     } // namespace notice
 
