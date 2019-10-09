@@ -20,11 +20,12 @@ install:
   - git submodule init
   - git submodule update
   - powershell .\scripts\prepare.ps1
+  - set /p APP_ID=<app_id.txt
 
 build_script:
   - powershell .\scripts\generate.ps1 %CONFIGURATION%
   - powershell .\scripts\build.ps1 %CONFIGURATION%
 
 artifacts:
-  - path: build/Release/Release/io.github.richardchien.coolqhttpapi/app.dll
-  - path: build/Release/Release/io.github.richardchien.coolqhttpapi/app.json
+  - path: build/Release/Release/%APP_ID%
+    type: zip
