@@ -85,6 +85,13 @@
       "priority": 20000
     },
     {
+      "id": 8,
+      "type": 104,
+      "name": "群禁言",
+      "function": "cq_event_group_ban",
+      "priority": 20000
+    },
+    {
       "id": 10,
       "type": 201,
       "name": "好友添加",
@@ -92,14 +99,14 @@
       "priority": 20000
     },
     {
-      "id": 8,
+      "id": 11,
       "type": 301,
       "name": "加好友请求",
       "function": "cq_event_add_friend_request",
       "priority": 20000
     },
     {
-      "id": 9,
+      "id": 12,
       "type": 302,
       "name": "加群请求／邀请",
       "function": "cq_event_add_group_request",
@@ -143,11 +150,13 @@
     128, // setGroupSpecialTitle
     130, // getGroupMemberInfoV2 / getGroupMemberInfo
     131, // getStrangerInfo
+    132, // getGroupInfo
     140, // setDiscussLeave
     150, // setFriendAddRequest
     151, // setGroupAddRequest
     160, // getGroupMemberList
     161, // getGroupList
+    162, // getFriendList
     180 // deleteMsg
   ]
 }
