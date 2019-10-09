@@ -43,10 +43,20 @@ namespace cq {
         };
     }
 
+    inline void to_json(json &j, const Friend &f) {
+        j = {
+            {"user_id", f.user_id},
+            {"nickname", f.nickname},
+            {"remark", f.remark},
+        };
+    }
+
     inline void to_json(json &j, const Group &g) {
         j = {
             {"group_id", g.group_id},
             {"group_name", g.group_name},
+            {"member_count", g.member_count},
+            {"max_member_count", g.max_member_count},
         };
     }
 
@@ -348,6 +358,29 @@ namespace cq::event {
             {"group_id", e.group_id},
             {"operator_id", e.operator_id},
             {"user_id", e.user_id},
+        };
+    }
+
+    inline void to_json(json &j, const GroupBanEvent &e) {
+        const auto sub_type_str = [&]() {
+            switch (e.sub_type) {
+            case notice::GROUP_BAN_LIFT_BAN:
+                return "lift_ban";
+            case notice::GROUP_BAN_BAN:
+                return "ban";
+            }
+            return "unknown";
+        }();
+
+        j = {
+            {"time", e.time},
+            {"post_type", e.type},
+            {"notice_type", e.notice_type},
+            {"sub_type", sub_type_str},
+            {"group_id", e.group_id},
+            {"operator_id", e.operator_id},
+            {"user_id", e.user_id},
+            {"duration", e.duration},
         };
     }
 

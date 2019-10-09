@@ -322,10 +322,26 @@ namespace cqhttp {
         }
     }
 
+    HANDLER(get_friend_list) {
+        CALL_API_BEGIN
+        result.data = api::get_friend_list();
+        CALL_API_END
+    }
+
     HANDLER(get_group_list) {
         CALL_API_BEGIN
         result.data = api::get_group_list();
         CALL_API_END
+    }
+
+    HANDLER(get_group_info) {
+        const auto group_id = params.get_integer("group_id", 0);
+        const auto no_cache = params.get_bool("no_cache", false);
+        if (group_id) {
+            CALL_API_BEGIN
+            result.data = api::get_group_info(group_id, no_cache);
+            CALL_API_END
+        }
     }
 
     HANDLER(get_group_member_list) {
