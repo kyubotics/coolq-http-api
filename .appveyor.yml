@@ -21,6 +21,7 @@ install:
   - git submodule update
   - powershell .\scripts\prepare.ps1
   - powershell .\scripts\vcpkg.ps1 export --zip --output=export boost-algorithm libiconv nlohmann-json curl libssh2 boost-property-tree boost-asio openssl spdlog sqlite3 boost-process
+  - move c:\tools\vcpkg\export.zip export.zip
   - set /p APP_ID=<app_id.txt
 
 build_script:
@@ -30,4 +31,4 @@ build_script:
 artifacts:
   - path: build/Release/Release/%APP_ID%
     type: zip
-  - path: c:\tools\vcpkg\export.zip
+  - path: export.zip
