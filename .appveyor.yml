@@ -20,7 +20,7 @@ install:
   - git submodule init
   - git submodule update
   - powershell .\scripts\prepare.ps1
-  - c:\tools\vcpkg\vcpkg.exe export --zip --output=export boost-algorithm libiconv nlohmann-json curl libssh2 boost-property-tree boost-asio openssl spdlog sqlite3 boost-process
+  - powershell .\scripts\vcpkg.ps1 export --zip --output=export boost-algorithm libiconv nlohmann-json curl libssh2 boost-property-tree boost-asio openssl spdlog sqlite3 boost-process
   - set /p APP_ID=<app_id.txt
 
 build_script:
