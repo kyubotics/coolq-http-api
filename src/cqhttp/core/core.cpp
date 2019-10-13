@@ -88,6 +88,13 @@ namespace cqhttp {
         app.on_after_event(e, data);
     }
 
+    EVENT(on_group_ban, const cq::GroupBanEvent &e) {
+        json data = e;
+        app.on_before_event(e, data);
+        app.on_notice_event(e, data);
+        app.on_after_event(e, data);
+    }
+
     EVENT(on_friend_add, const cq::FriendAddEvent &e) {
         json data = e;
         app.on_before_event(e, data);
