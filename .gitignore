@@ -4,6 +4,7 @@
 .vscode/.ropeproject
 .vscode/ipch
 vcpkg
+vcpkg-export-*
 build
 !lib/*.lib
 scripts/install.ps1
