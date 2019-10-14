@@ -88,16 +88,34 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 ## 修改、编译
 
-本项目基于 [CoolQ C++ SDK](https://github.com/richardchien/coolq-cpp-sdk)，构建方式和它一致，参考如下命令：
+本项目基于 [CoolQ C++ SDK](https://github.com/richardchien/coolq-cpp-sdk)，构建方式和它一致，但由于一些历史原因，需要先手动下载预编译的依赖库。
+
+首先，克隆或下载本仓库代码：
 
 ```ps1
-git clone https://github.com/richardchien/coolq-http-api.git # 克隆项目代码
+git clone https://github.com/richardchien/coolq-http-api.git
 cd coolq-http-api
+```
 
-powershell .\scripts\prepare.ps1 # 准备构建环境
+然后，从 [这里](https://richardchien-my.sharepoint.com/:u:/g/personal/i_page_moe/Edh080tNqhZGvB7Qb3CR8k4BLdqEwdWZpmJJmig6qs9bLg?e=5wK22p) 下载 `vcpkg-export-20191012.zip`（也就是预编译的依赖），并解压到当前工程目录，确保工程目录结构如下：
 
-powershell .\scripts\generate.ps1 Debug # 生成 build 目录
-powershell .\scripts\build.ps1 Debug # 构建项目
+```
+coolq-http-api
+├── ...
+├── src
+├── vcpkg-export-20191012
+|   ├── installed
+|   ├── scripts
+│   └── .vcpkg-root
+├── CMakeLists.txt
+└── ...
+```
+
+最后生成并构建 CMake 项目：
+
+```ps1
+powershell .\scripts\generate.ps1 Debug
+powershell .\scripts\build.ps1 Debug
 ```
 
 ## 开源许可证、重新分发
