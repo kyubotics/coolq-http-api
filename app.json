@@ -2,8 +2,8 @@
   "ret": 1,
   "apiver": 9,
   "name": "HTTP API",
-  "version": "4.11.0",
-  "version_id": 432,
+  "version": "4.12.0",
+  "version_id": 433,
   "author": "Richard Chien",
   "description": "通过 HTTP 或 WebSocket 对 酷Q 的事件进行上报以及接收请求来调用 酷Q 的 DLL 接口，从而可以使用其它语言编写 酷Q 插件。具体见 https://cqhttp.cc。",
   "event": [
