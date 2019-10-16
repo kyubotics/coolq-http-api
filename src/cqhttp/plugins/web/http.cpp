@@ -15,6 +15,13 @@ using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 namespace cqhttp::plugins {
     static const auto TAG = "HTTP";
 
+    static void log_request(shared_ptr<HttpServer::Request> request) {
+        logging::debug(TAG,
+                       u8"收到 HTTP 请求：" + request->method + " " + request->path
+                           + (request->query_string.empty() ? "" : "?" + request->query_string) + u8"，来源 IP："
+                           + request->remote_endpoint_address());
+    }
+
     void Http::init_server() {
         logging::debug(TAG, u8"初始化 HTTP 服务器");
 
@@ -29,9 +36,7 @@ namespace cqhttp::plugins {
         const auto action_path_regex = "^/([^/\\s]+)/?$";
         server_->resource[action_path_regex]["GET"] = server_->resource[action_path_regex]["POST"] =
             [=](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
-                logging::debug(TAG,
-                               u8"收到 API 请求：" + request->method + " " + request->path
-                                   + (request->query_string.empty() ? "" : "?" + request->query_string));
+                log_request(request);
 
                 auto params = json::object();
                 const json args = request->parse_query_string();
@@ -107,6 +112,8 @@ namespace cqhttp::plugins {
         const auto regex = "^/(data/(?:bface|image|record|show)/.+)$";
         server_->resource[regex]["GET"] =
             [=](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+                log_request(request);
+
                 if (!serve_data_files_) {
                     response->write(SimpleWeb::StatusCode::client_error_not_found);
                     return;
