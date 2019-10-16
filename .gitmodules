@@ -1,4 +1,4 @@
 [submodule "extern/librcnb"]
 	path = extern/librcnb
-	url = git@github.com:rcnbapp/librcnb.git
+	url = https://github.com/rcnbapp/librcnb.git
 	branch = 45dd2e77d3f06165c7f0511d9556b88b4497c0dc
