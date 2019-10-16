@@ -10,6 +10,9 @@
 #include "cqhttp/utils/jsonex.h"
 #include "cqhttp/utils/string.h"
 
+#include "rcnb/decode.h"
+#include "rcnb/encode.h"
+
 using namespace std;
 namespace api = cq::api;
 namespace fs = std::filesystem;
@@ -547,6 +550,35 @@ namespace cqhttp {
                 result.code = Codes::OPERATION_FAILED;
             }
         }
+    }
+
+#pragma endregion
+
+#pragma region Easter Egg
+
+    HANDLER(rcnb) {
+        const auto text = params.get_string("text");
+        const auto action = params.get_string("action");
+        if (action == "encode") {
+            rcnb::encoder enc;
+            stringstream ss;
+            wstringstream wss;
+            ss << text;
+            enc.encode(ss, wss);
+            result.data = ws2s(wss.str());
+        } else if (action == "decode") {
+            rcnb::decoder dec;
+            stringstream ss;
+            wstringstream wss;
+            wss << s2ws(text);
+            dec.decode(wss, ss);
+            result.data = ss.str();
+        } else {
+            logging::warning("NB", "你的 action 不够 NB！");
+            return;
+        }
+        logging::info_success("NB", "XXNB！");
+        result.code = Codes::OK;
     }
 
 #pragma endregion

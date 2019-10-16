@@ -14,6 +14,9 @@ include(FixDebugLibraryLookup)
 include_directories(${VCPKG_INCLUDE_DIR})
 include_directories(src)
 
+add_subdirectory(extern/librcnb)
+include_directories(extern/librcnb/include)
+
 add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
                 -D_WIN32_WINNT=0x0501
                 -DWIN32_LEAN_AND_MEAN
@@ -44,6 +47,7 @@ target_link_libraries(${LIB_NAME} PRIVATE ${CURL_AND_DEPS_LIBRARIES})
 target_link_libraries(${LIB_NAME} PRIVATE ${SPDLOG_AND_DEPS_LIBRARIES})
 target_link_libraries(${LIB_NAME} PRIVATE sqlite3)
 target_link_libraries(${LIB_NAME} PRIVATE crypt32 bcrypt)
+target_link_libraries(${LIB_NAME} PRIVATE rcnb-static)
 
 cotire(${LIB_NAME})
 
