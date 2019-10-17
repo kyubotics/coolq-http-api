@@ -29,6 +29,7 @@
 |  | Python | Flask | HTTP | 3, 4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
 | ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/nonebot](https://github.com/richardchien/nonebot) | richardchien |
 | ⭐ | Node.js | WebSocket-Node | WebSocket | 4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
+|  | Node.js | Express | HTTP | 4 | [XHMM/lemon-bot](https://github.com/XHMM/lemon-bot) | XHMM |
 |  | Node.js | Koa | HTTP | 3, 4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
 |  | Node.js | Koa | HTTP | ? | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | t532 |
 |  | Node.js | ws 或 uWebSockets.js | 反向 WebSocket | 4 | [zyntuz/yacqhttp](https://github.com/zyntuz/yacqhttp) | zyntuz |
