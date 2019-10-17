@@ -13,6 +13,8 @@
 #include "cqhttp/utils/string.h"
 #include "cqsdk/utils/base64.h"
 
+#include "rcnb/decode.h"
+
 using namespace std;
 
 namespace cqhttp::plugins {
@@ -149,6 +151,27 @@ namespace cqhttp::plugins {
             make_file = [=, &file, &filename] {
                 const auto base64_encoded = file.substr(strlen("base64://"));
                 const auto raw = base64::decode(base64_encoded);
+                const auto file_type = detect_file_type(raw);
+                filename = filename + "." + (file_type.ext.empty() ? "tmp" : file_type.ext);
+                const auto filepath = data_file_full_path(data_dir, filename);
+
+                if (ofstream f(ansi(filepath), ios::binary | ios::out); f.is_open()) {
+                    f << raw;
+                    return true;
+                }
+                return false;
+            };
+        } else if (starts_with(file, "rcnb://")) {
+            filename = md5_hash_hex("from_rcnb_" + to_string(time(nullptr)) + "_"
+                                    + to_string(random_int(1, 10000))); // note that there isn't an extension yet
+            make_file = [=, &file, &filename] {
+                const auto rcnb_encoded = file.substr(strlen("rcnb://"));
+                rcnb::decoder dec;
+                stringstream ss;
+                wstringstream wss;
+                wss << s2ws(rcnb_encoded);
+                dec.decode(wss, ss);
+                const auto raw = ss.str();
                 const auto file_type = detect_file_type(raw);
                 filename = filename + "." + (file_type.ext.empty() ? "tmp" : file_type.ext);
                 const auto filepath = data_file_full_path(data_dir, filename);
