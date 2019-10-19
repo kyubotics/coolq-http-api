@@ -89,7 +89,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 ## 修改、编译
 
-本项目基于 [CoolQ C++ SDK](https://github.com/richardchien/coolq-cpp-sdk)，构建方式和它一致，但由于一些历史原因，需要先手动下载预编译的依赖库。
+本项目基于 [CoolQ C++ SDK](https://github.com/richardchien/coolq-cpp-sdk)，构建方式和它一致，但由于一些历史原因，需要先手动下载预编译的依赖库，并且使用 Visual Studio **2017** 构建（可以只安装 Build Tools，不必安装完整的 IDE）。
 
 首先，克隆或下载本仓库代码：
 
