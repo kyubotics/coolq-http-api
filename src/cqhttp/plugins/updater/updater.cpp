@@ -5,6 +5,7 @@
 
 #include "cqhttp/core/core.h"
 #include "cqhttp/core/helpers.h"
+#include "cqhttp/utils/filesystem.h"
 #include "cqhttp/utils/gui.h"
 #include "cqhttp/utils/http.h"
 
@@ -98,7 +99,7 @@ namespace cqhttp::plugins {
                     message_box(MB_OK | MB_ICONWARNING, u8"发现新版本：" + version
                             + u8"\r\n\r\n更新信息：\r\n"
                             + (description.empty() ? u8"无" : description)
-                            + u8"\r\n\r\n当前环境下不允许自动更新，如果你正在使用 Docker，请拉取最新版本的 Docker 镜像或解除版本锁（删除 app/io.github.richardchien.coolqhttpapi/version.lock）。");
+                            + u8"\r\n\r\n当前环境下不允许自动更新，如果你正在使用 Docker，请拉取最新版本的 Docker 镜像或解除版本锁（删除 " + utils::fs::app_dir_rel_path() + u8"version.lock）。");
                 } else {
                     if (automatic && auto_perform_update_) {
                         // auto update
@@ -115,7 +116,7 @@ namespace cqhttp::plugins {
                                                     + u8"\r\n\r\n是否现在更新？");
                         if (code == IDYES) {
                             if (perform_update(version, build_number)) {
-                                message_box(MB_OK | MB_ICONINFORMATION, u8"更新成功，请重启 酷Q 以生效。");
+                                message_box(MB_OK | MB_ICONINFORMATION, u8"更新成功，请重载应用以生效。");
                             } else {
                                 message_box(MB_OK | MB_ICONERROR,
                                             u8"更新失败，请检查网络连接是否通畅，或尝试更换更新源。");
