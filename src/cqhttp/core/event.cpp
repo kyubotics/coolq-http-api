@@ -39,9 +39,10 @@ namespace cqhttp {
         emit_event(e);
     }
 
-    void emit_heartbeat_meta_event(const json status) {
+    void emit_heartbeat_meta_event(const json status, const int64_t interval) {
         HeartbeatMetaEvent e;
         e.status = status;
+        e.interval = interval;
         emit_event(e);
     }
 } // namespace cqhttp

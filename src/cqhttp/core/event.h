@@ -64,6 +64,7 @@ namespace cqhttp {
         HeartbeatMetaEvent() : MetaEvent() { meta_event_type = HEARTBEAT; }
 
         json status;
+        int64_t interval; // in millisecond
     };
 
     inline void to_json(json &j, const HeartbeatMetaEvent &e) {
@@ -71,6 +72,7 @@ namespace cqhttp {
             {"post_type", "meta_event"},
             {"meta_event_type", e.meta_event_type},
             {"status", e.status},
+            {"interval", e.interval},
         };
     }
 
@@ -85,5 +87,5 @@ namespace cqhttp {
     }
 
     void emit_lifecycle_meta_event(const MetaEvent::SubType sub_type = MetaEvent::SUBTYPE_DEFAULT);
-    void emit_heartbeat_meta_event(const json status);
+    void emit_heartbeat_meta_event(const json status, const int64_t interval);
 } // namespace cqhttp
