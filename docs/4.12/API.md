@@ -620,9 +620,6 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 | `plugin_build_number` | number | HTTP API 插件 build 号 |
 | `plugin_build_configuration` | string | HTTP API 插件编译配置，`debug` 或 `release` |
 
-#### 响应数据
-
-无
 
 ### `/set_restart_plugin` 重启 HTTP API 插件
 
