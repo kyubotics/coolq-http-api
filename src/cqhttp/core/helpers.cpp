@@ -6,7 +6,7 @@ using namespace std;
 
 namespace cqhttp::helpers {
     string get_update_source_url(string rel_path) {
-        auto url = app.config().get_string("update_source", "global");
+        auto url = app.config().get_string("update_source", "china");
 
         if (url == "global" || url == "github") {
             url = "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/";

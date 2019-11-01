@@ -22,7 +22,7 @@ static const auto DEFAULT_CONFIG = string() + R"({
     "secret": "",
     "post_message_format": "string",
     "serve_data_files": false,
-    "update_source": "github",
+    "update_source": "china",
     "update_channel": "stable",
     "auto_check_update": false,
     "auto_perform_update": false,
