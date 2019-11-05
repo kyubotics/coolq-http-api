@@ -1,6 +1,6 @@
 # CQ 码
 
-CQ 码的使用方式和 酷Q 原生的 CQ 码兼容（关于原生 CQ 码的使用，请看 [Pro/CQ码](https://d.cqp.me/Pro/CQ%E7%A0%81)），在要发送的消息中插入相应的代码即可，例如：
+CQ 码的使用方式和 酷Q 原生的 CQ 码兼容（关于原生 CQ 码的使用，请看 酷Q 文档的 [CQ码](https://docs.cqp.im/manual/cqcode/)），在要发送的消息中插入相应的代码即可，例如：
 
 ```
 [CQ:face,id=14] [CQ:image,file=1.jpg]

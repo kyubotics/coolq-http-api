@@ -51,13 +51,11 @@ GET /send_private_msg?access_token=kSLuTF2GC2Q4q4ugm3&user_id=123456&message=hel
 }
 ```
 
-`status` 字段如果是 `ok` 则表示操作成功，同时 `retcode` （返回码）会等于 0，即 酷Q 函数返回了 0，也就是 酷Q 认为成功了，但实际上有某些情况下其实是没有成功的，比如向没有加入的群发送消息，返回码是 0，日志里也没有提示发送失败，但显然是发送不了的。这一点在 酷Q 的 [官方文档](https://d.cqp.me/Pro/%E5%BC%80%E5%8F%91/Error) 也说明了：
-
-> 需要指出的是，某些接口暂未进行错误代码的处理，此时即使发生错误，仍返回0。
+`status` 字段如果是 `ok` 则表示操作成功，同时 `retcode` （返回码）会等于 0，即 酷Q 函数返回了 0。
 
 `status` 字段如果是 `async` 则表示请求已提交异步处理，此时 `retcode` 为 1，具体成功或失败将无法获知。
 
-`status` 字段如果是 `failed` 则表示操作失败，此时 `retcode` 有两种情况：当大于 0 时，表示是 HTTP API 插件判断出的失败；小于 0 时，为调用 酷Q 函数的返回码，具体含义直接参考 [Pro/开发/Error](https://d.cqp.me/Pro/%E5%BC%80%E5%8F%91/Error) 和 酷Q 的日志。
+`status` 字段如果是 `failed` 则表示操作失败，此时 `retcode` 有两种情况：当大于 0 时，表示是 HTTP API 插件判断出的失败；小于 0 时，为调用 酷Q 函数的返回码，具体含义直接参考 酷Q 文档的 [错误代码](https://docs.cqp.im/dev/v9/errorcode/) 和 酷Q 日志。
 
 汇总如下：
 
