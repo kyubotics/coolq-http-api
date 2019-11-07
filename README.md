@@ -97,6 +97,8 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 ```ps1
 git clone https://github.com/richardchien/coolq-http-api.git
 cd coolq-http-api
+git submodule init
+git submodule update
 ```
 
 然后，从 [这里](https://richardchien-my.sharepoint.com/:u:/g/personal/i_page_moe/Edh080tNqhZGvB7Qb3CR8k4BLdqEwdWZpmJJmig6qs9bLg?e=5wK22p) 下载 `vcpkg-export-20191012.zip`（也就是预编译的依赖），并解压到当前工程目录，确保工程目录结构如下：
