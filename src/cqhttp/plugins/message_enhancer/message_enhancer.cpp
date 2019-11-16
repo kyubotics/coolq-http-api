@@ -214,6 +214,7 @@ namespace cqhttp::plugins {
     static MessageSegment enhance_receive_image(const MessageSegment &raw) {
         if (raw.data.find("url") != raw.data.end()) {
             // already has "url" parameter, skip it
+            return raw;
         }
 
         const auto file_it = raw.data.find("file");
