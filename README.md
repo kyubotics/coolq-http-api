@@ -48,6 +48,7 @@
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | 4 | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
 |  | PowerShell | 标准库 | HTTP | 4 | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
+|  | Kotlin | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | HTTP | 4 | [JuerGenie/juerobot](https://github.com/JuerGenie/juerobot) | JuerGenie |
 
 ## 应用案例
 
@@ -79,7 +80,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [Tsuk1ko/CQ-picfinder-robot](https://github.com/Tsuk1ko/CQ-picfinder-robot) | 基于 Saucenao 的搜图机器人 |
 | [kasora/dice](https://github.com/kasora/dice) | COC7 骰子 QQ 机器人 |
 | [shidenggui/tuishujun-for-qq](https://github.com/shidenggui/tuishujun-for-qq) | 基于推书君的小说查询推荐 QQ 机器人 |
-| [JuerGenie/cn.juerwhang.jgbot](https://github.com/JuerGenie/cn.juerwhang.jgbot) | 基于 [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) 进行二次封装的娱乐用 QQ 机器人 |
+| [JuerGenie/cn.juerwhang.jgbot](https://github.com/JuerGenie/cn.juerwhang.jgbot) | 基于 [JuerGenie/juerobot](https://github.com/JuerGenie/juerobot) 的娱乐用 QQ 机器人 |
 
 以上列出的只是实际应用中的一小部分，如果你使用本插件编写了任何好的应用案例或开发框架，也可以通过 issue 或 pull request 添加到这里的列表，共同充实社区。
 
