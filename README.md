@@ -48,7 +48,7 @@
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | 4 | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
 |  | PowerShell | 标准库 | HTTP | 4 | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
-|  | Kotlin | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | HTTP | 4 | [JuerGenie/juerobot](https://github.com/JuerGenie/juerobot) | JuerGenie |
+|  | Kotlin | 标准库 | HTTP | 4 | [JuerGenie/juerobot](https://github.com/JuerGenie/juerobot) | JuerGenie |
 
 ## 应用案例
 
