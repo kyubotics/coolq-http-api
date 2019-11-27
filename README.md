@@ -28,6 +28,7 @@
 |  | Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
 |  | Python | Flask | HTTP | 3, 4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
 | ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/nonebot](https://github.com/richardchien/nonebot) | richardchien |
+| ⭐ | Javascript/Typescript | React.js | WebSocket | 4 | [js-bot](https://pandolia.net/js-bot) | pandolia |
 | ⭐ | Node.js | WebSocket-Node | WebSocket | 4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
 |  | Node.js | Koa | HTTP | 3, 4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
 |  | Node.js | Koa | HTTP | ? | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | t532 |
@@ -55,6 +56,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 | 项目地址 | 简介 |
 | ------- | --- |
+| [js-bot](https://pandolie.net/js-bot) | 用 Typescrpit + React + CoolQ + cqhttp 插件打造的网页端聊天机器人 |
 | [milkice233/efb-qq-slave](https://github.com/milkice233/efb-qq-slave) | 基于 ehForwarderBot 框架的 QQ 从端 |
 | [projectriri/bot-gateway](https://projectriri.github.io/bot-gateway/) | 提供跨聊天平台的通用机器人 API 的机器人消息网关 |
 | [jqqqqqqqqqq/coolq-telegram-bot](https://github.com/jqqqqqqqqqq/coolq-telegram-bot) | QQ <-> Telegram Bot Framework & Forwarder |
