@@ -34,6 +34,7 @@
 |  | Node.js | ws 或 uWebSockets.js | 反向 WebSocket | 4 | [zyntuz/yacqhttp](https://github.com/zyntuz/yacqhttp) | zyntuz |
 |  | Node.js | WebSocket-Node | WebSocket | 4 | [CaoMeiYouRen/node-coolq-robot](https://github.com/CaoMeiYouRen/node-coolq-robot) | CaoMeiYouRen |
 |  | Node.js | Express | HTTP | 4 | [XHMM/lemon-bot](https://github.com/XHMM/lemon-bot) | XHMM |
+|  | JavaScript | - | WebSocket | 4 | [pandolia/js-bot](https://github.com/pandolia/js-bot) | pandolia |
 |  | Deno | 标准库 | 反向 WebSocket | 4 | [nenojs/deno-cqhttp](https://github.com/nenojs/deno-cqhttp) | rikakomoe |
 |  | PHP | - | HTTP | 3, 4 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
 | ⭐ | PHP | - | HTTP | 4 | [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | kj415j45 |
@@ -47,7 +48,7 @@
 |  | Go | 标准库 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | 4 | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
-|  | PowerShell | 标准库 | HTTP | 4 | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
+|  | PowerShell | - | HTTP | 4 | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
 |  | Kotlin | 标准库 | HTTP | 4 | [JuerGenie/juerobot](https://github.com/JuerGenie/juerobot) | JuerGenie |
 
 ## 应用案例
