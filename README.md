@@ -34,6 +34,7 @@
 |  | Node.js | ws 或 uWebSockets.js | 反向 WebSocket | 4 | [zyntuz/yacqhttp](https://github.com/zyntuz/yacqhttp) | zyntuz |
 |  | Node.js | WebSocket-Node | WebSocket | 4 | [CaoMeiYouRen/node-coolq-robot](https://github.com/CaoMeiYouRen/node-coolq-robot) | CaoMeiYouRen |
 |  | Node.js | Express | HTTP | 4 | [XHMM/lemon-bot](https://github.com/XHMM/lemon-bot) | XHMM |
+|  | Node.js | http / ws | HTTP / WebSocket | 4 | [koishijs/koishi](https://github.com/koishijs/koishi) | Shigma |
 |  | JavaScript | - | WebSocket | 4 | [pandolia/js-bot](https://github.com/pandolia/js-bot) | pandolia |
 |  | Deno | 标准库 | 反向 WebSocket | 4 | [nenojs/deno-cqhttp](https://github.com/nenojs/deno-cqhttp) | rikakomoe |
 |  | PHP | - | HTTP | 3, 4 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
