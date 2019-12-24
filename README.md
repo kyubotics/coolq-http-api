@@ -41,10 +41,10 @@
 |  | Java | Spring | 反向 WebSocket | [lz1998/Spring-CQ](https://github.com/lz1998/Spring-CQ) | lz1998 |
 |  | Java | JFinal | HTTP | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
 | ⭐ | Go | 标准库 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
-| ⭐ | C# | 标准库 | HTTP,<br>WebSocket | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
-| ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | 4 | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
-|  | PowerShell | - | HTTP | 4 | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
-|  | Kotlin | 标准库 | HTTP | 4 | [JuerGenie/juerobot](https://github.com/JuerGenie/juerobot) | JuerGenie |
+| ⭐ | C# | 标准库 | HTTP,<br>WebSocket | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
+| ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
+|  | PowerShell | - | HTTP | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
+|  | Kotlin | 标准库 | HTTP | [JuerGenie/juerobot](https://github.com/JuerGenie/juerobot) | JuerGenie |
 
 ## 应用案例
 
