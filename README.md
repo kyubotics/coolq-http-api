@@ -23,30 +23,24 @@
 
 对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK 或开发框架：
 
-| | 语言 | Web 框架 | 通信方式 | 插件版本 | 地址 | 作者 |
-| ---- | --- | ------- | ------- | ------- | --- | ---- |
-|  | Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
-|  | Python | Flask | HTTP | 3, 4 | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
-| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | 4 | [richardchien/nonebot](https://github.com/richardchien/nonebot) | richardchien |
-| ⭐ | Node.js | WebSocket-Node | WebSocket | 4 | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
-|  | Node.js | Koa | HTTP | 3, 4 | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
-|  | Node.js | Koa | HTTP | ? | [trustgit/nodebot](https://gitlab.com/trustgit/nodebot) | t532 |
-|  | Node.js | ws 或 uWebSockets.js | 反向 WebSocket | 4 | [zyntuz/yacqhttp](https://github.com/zyntuz/yacqhttp) | zyntuz |
-|  | Node.js | WebSocket-Node | WebSocket | 4 | [CaoMeiYouRen/node-coolq-robot](https://github.com/CaoMeiYouRen/node-coolq-robot) | CaoMeiYouRen |
-|  | Node.js | Express | HTTP | 4 | [XHMM/lemon-bot](https://github.com/XHMM/lemon-bot) | XHMM |
-| ⭐ | Node.js | Express | HTTP,<br>WebSocket | 3, 4 | [koishijs/koishi](https://github.com/koishijs/koishi) | Shigma |
-|  | JavaScript | - | WebSocket | 4 | [pandolia/js-bot](https://github.com/pandolia/js-bot) | pandolia |
-|  | Deno | 标准库 | 反向 WebSocket | 4 | [nenojs/deno-cqhttp](https://github.com/nenojs/deno-cqhttp) | rikakomoe |
-|  | PHP | - | HTTP | 3, 4 | [kilingzhang/coolq-php-sdk](https://github.com/kilingzhang/coolq-php-sdk) | kilingzhang |
-| ⭐ | PHP | - | HTTP | 4 | [kj415j45/kjBot](https://github.com/kj415j45/kjBot) | kj415j45 |
-| ⭐ | PHP | Swoole | 反向 WebSocket | 4 | [crazywhalecc/CQBot-swoole](https://github.com/crazywhalecc/CQBot-swoole) | crazywhalecc |
-|  | PHP | - | HTTP | ? | [LovelyA72/YeziiBot-v1](https://github.com/LovelyA72/YeziiBot-v1) | LovelyA72 |
-| ⭐ | Java | 标准库 | HTTP | 4 | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
-|  | Java | Spring | 反向 WebSocket | 4 | [lz1998/Spring-CQ](https://github.com/lz1998/Spring-CQ) | lz1998 |
-|  | Java | JFinal | HTTP | 4 | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
-|  | Java | 标准库 | HTTP | 3 | [yangjinhe/maintain-robot](https://github.com/yangjinhe/maintain-robot) | yangjinhe |
-| ⭐ | Go | 标准库 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | 3, 4 | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
-|  | Go | 标准库 | HTTP | 3 | [juzi5201314/cqhttp-go-sdk](https://github.com/juzi5201314/cqhttp-go-sdk) | juzi5201314 |
+| | 语言 | Web 框架 | 通信方式 | 地址 | 作者 |
+| --- | --- | --- | --- | --- | --- |
+| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [richardchien/nonebot](https://github.com/richardchien/nonebot) | richardchien |
+|  | Python | Quart | HTTP,<br>反向 WebSocket | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
+|  | Python | Flask | HTTP | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
+| ⭐ | Node.js | WebSocket-Node | WebSocket | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
+| ⭐ | Node.js | Express | HTTP,<br>WebSocket | [koishijs/koishi](https://github.com/koishijs/koishi) | Shigma |
+|  | Node.js | Koa | HTTP | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
+|  | Node.js | WebSocket-Node | WebSocket | [CaoMeiYouRen/node-coolq-robot](https://github.com/CaoMeiYouRen/node-coolq-robot) | CaoMeiYouRen |
+|  | Node.js | Express | HTTP | [XHMM/lemon-bot](https://github.com/XHMM/lemon-bot) | XHMM |
+|  | JavaScript | - | WebSocket | [pandolia/js-bot](https://github.com/pandolia/js-bot) | pandolia |
+|  | Deno | 标准库 | 反向 WebSocket | [nenojs/deno-cqhttp](https://github.com/nenojs/deno-cqhttp) | rikakomoe |
+| ⭐ | PHP | Swoole | 反向 WebSocket | [crazywhalecc/CQBot-swoole](https://github.com/crazywhalecc/CQBot-swoole) | crazywhalecc |
+|  | PHP | - | HTTP | [LovelyA72/YeziiBot-v2](https://github.com/LovelyA72/YeziiBot-v2) | LovelyA72 |
+| ⭐ | Java | 标准库 | HTTP | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
+|  | Java | Spring | 反向 WebSocket | [lz1998/Spring-CQ](https://github.com/lz1998/Spring-CQ) | lz1998 |
+|  | Java | JFinal | HTTP | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
+| ⭐ | Go | 标准库 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket | 4 | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | 4 | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
 |  | PowerShell | - | HTTP | 4 | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
