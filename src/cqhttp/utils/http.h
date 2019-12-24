@@ -4,6 +4,11 @@
 
 #include <map>
 
+#define CQHTTP_UTILS_HTTP_FAKE_UA                \
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
+    "AppleWebKit/537.36 (KHTML, like Gecko) "    \
+    "Chrome/56.0.2924.87 Safari/537.36"
+
 namespace cqhttp::utils::http {
     std::optional<json> get_json(const std::string &url, bool use_fake_ua = false, const std::string &cookies = "");
 

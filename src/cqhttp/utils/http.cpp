@@ -8,11 +8,6 @@
 using namespace std;
 namespace fs = std::filesystem;
 
-#define FAKE_USER_AGENT                          \
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
-    "AppleWebKit/537.36 (KHTML, like Gecko) "    \
-    "Chrome/56.0.2924.87 Safari/537.36"
-
 namespace cqhttp::utils::http::curl {
     typedef size_t (*WriteFunction)(char *, size_t, size_t, void *);
 
@@ -95,6 +90,8 @@ namespace cqhttp::utils::http::curl {
             curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, connect_timeout);
             curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
 
+            curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
             response.curl_code = curl_easy_perform(curl);
 
             if (response.curl_code == CURLE_OK) {
@@ -131,8 +128,8 @@ namespace cqhttp::utils::http::curl {
 
 namespace cqhttp::utils::http {
     optional<json> get_json(const string &url, const bool use_fake_ua, const string &cookies) {
-        auto request =
-            curl::Request(url, {{"User-Agent", use_fake_ua ? FAKE_USER_AGENT : CQHTTP_USER_AGENT}, {"Referer", url}});
+        auto request = curl::Request(
+            url, {{"User-Agent", use_fake_ua ? CQHTTP_UTILS_HTTP_FAKE_UA : CQHTTP_USER_AGENT}, {"Referer", url}});
         if (!cookies.empty()) {
             request.headers["Cookie"] = cookies;
         }
@@ -160,8 +157,8 @@ namespace cqhttp::utils::http {
         auto succeeded = false;
         const auto ansi_local_path = ansi(local_path);
 
-        auto request =
-            curl::Request(url, {{"User-Agent", use_fake_ua ? FAKE_USER_AGENT : CQHTTP_USER_AGENT}, {"Referer", url}});
+        auto request = curl::Request(
+            url, {{"User-Agent", use_fake_ua ? CQHTTP_UTILS_HTTP_FAKE_UA : CQHTTP_USER_AGENT}, {"Referer", url}});
 
         struct {
             size_t read_count;

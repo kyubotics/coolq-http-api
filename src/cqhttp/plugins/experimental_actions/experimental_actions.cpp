@@ -2,6 +2,7 @@
 
 #include <boost/process.hpp>
 #include <fstream>
+#include <regex>
 
 #include "cqhttp/plugins/experimental_actions/vendor/pugixml/pugixml.hpp"
 #include "cqhttp/utils/filesystem.h"
@@ -351,8 +352,8 @@ namespace cqhttp::plugins {
             // reuse the bkn parameters from above to post a new group notice
             try {
                 const auto url = "https://web.qun.qq.com/cgi-bin/announce/add_qun_notice";
-                const auto body = params + "&text=" + utils::http::url_encode(content)
-                                    + "&title=" + utils::http::url_encode(title);
+                const auto body =
+                    params + "&text=" + utils::http::url_encode(content) + "&title=" + utils::http::url_encode(title);
                 const auto post_response = utils::http::post(url, body, {{"Cookie", cookies}});
                 const auto res = post_response.get_json();
                 if (res.at("ec").get<int>()) { // error code
@@ -376,6 +377,35 @@ namespace cqhttp::plugins {
             }
         }
     }
+
+    // static void action_send_shuoshuo(ActionContext &ctx) {
+    //     auto &result = ctx.result;
+    //     result.code = Codes::OK;
+    //     result.data = nullptr;
+
+    //     const auto self_id = cq::api::get_login_user_id();
+    //     const auto qzone_home_url = "https://user.qzone.qq.com/" + to_string(self_id);
+    //     const auto bkn = cq::api::get_csrf_token();
+    //     const auto cookies = cq::api::get_cookies("qzone.qq.com");
+
+    //     utils::http::Headers headers{
+    //         {"Cookie", cookies},
+    //         {"User-Agent", CQHTTP_UTILS_HTTP_FAKE_UA},
+    //         {"Referer", "https://user.qzone.qq.com"},
+    //     };
+    //     auto resp = utils::http::get(qzone_home_url, headers);
+    //     cq::logging::debug("QZONE", resp.body);
+
+    //     auto regex_exp = R"(window\.g_qzonetoken.+\"([\d\w]+?)\")";
+    //     smatch m;
+    //     if (!regex_search(resp.body, m, regex(regex_exp))) {
+    //         result.code = Codes::INVALID_DATA;
+    //         return;
+    //     }
+
+    //     const auto qzone_token = m.str(1);
+    //     cq::logging::debug("QZONE", qzone_token);
+    // }
 
     static void action_set_restart(ActionContext &ctx) {
         auto &result = ctx.result;
@@ -432,6 +462,8 @@ namespace cqhttp::plugins {
             action_group_notice(ctx, false);
         } else if (ctx.action == "_send_group_notice") {
             action_group_notice(ctx, true);
+        } else if (ctx.action == "_send_shuoshuo") {
+            // action_send_shuoshuo(ctx);
         } else if (ctx.action == "_set_restart") {
             action_set_restart(ctx);
         } else {

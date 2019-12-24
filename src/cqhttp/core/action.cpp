@@ -389,12 +389,12 @@ namespace cqhttp {
     }
 
     HANDLER(get_credentials) {
-        CALL_API_BEGIN
-        result.data = {
-            {"cookies", api::get_cookies()},
-            {"csrf_token", api::get_csrf_token()},
-        };
-        CALL_API_END
+        __get_cookies(params, result);
+        if (result.code == Codes::OK) {
+            CALL_API_BEGIN
+            result.data["csrf_token"] = api::get_csrf_token();
+            CALL_API_END
+        }
     }
 
     HANDLER(get_record) {
