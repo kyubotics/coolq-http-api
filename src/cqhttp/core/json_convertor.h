@@ -166,6 +166,9 @@ namespace cq::notice {
         case GROUP_MEMBER_INCREASE:
             j = "group_increase";
             break;
+        case GROUP_BAN:
+            j = "group_ban";
+            break;
         case FRIEND_ADD:
             j = "friend_add";
             break;
