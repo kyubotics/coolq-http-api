@@ -18,6 +18,8 @@
 using namespace std;
 
 namespace cqhttp::plugins {
+    static const auto TAG = u8"增强CQ码";
+
     using cq::Message;
     using cq::MessageSegment;
     using boost::algorithm::starts_with;
@@ -127,8 +129,10 @@ namespace cqhttp::plugins {
 
                 if (use_cache && fs::is_regular_file(s2ws(filepath)) /* use cache */
                     || utils::http::download_file(url, filepath, true) /* or perform download */) {
+                    logging::debug(TAG, u8"文件已缓存或下载成功，URL：" + url);
                     return true;
                 }
+                logging::warning(TAG, u8"文件下载失败，URL：" + url);
                 return false;
             };
         } else if (smatch m; regex_search(file, m, regex(R"(^file:\/{0,3})"))) {
@@ -139,9 +143,11 @@ namespace cqhttp::plugins {
 
                 try {
                     copy_file(s2ws(src_filepath), s2ws(filepath), fs::copy_options::overwrite_existing);
+                    logging::debug(TAG, u8"文件拷贝成功，源路径：" + src_filepath);
                     return true;
                 } catch (fs::filesystem_error &) {
                     // copy failed
+                    logging::warning(TAG, u8"文件拷贝失败，源路径：" + src_filepath);
                     return false;
                 }
             };
