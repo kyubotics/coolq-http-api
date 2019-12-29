@@ -151,17 +151,13 @@ powershell .\scripts\build.ps1 Debug
 - [LEMOC](https://cqp.cc/t/29722)
 - [yukixz/cqsocketapi](https://github.com/yukixz/cqsocketapi)
 
-<!-- ## 捐助
+## 捐助
 
 如果你觉得本插件挺好用，不妨进行捐助～你的捐助会让我更加有动力完善插件，感谢你的支持！
 
 ### 爱发电
 
 https://afdian.net/@richardchien
-
-### 支付宝免费红包
-
-![AliPay Red Bag](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/alipay-redbag.jpg)
 
 ### 支付宝转账
 
@@ -173,4 +169,4 @@ https://afdian.net/@richardchien
 
 ### PayPal
 
-https://paypal.me/richardchien0 -->
+https://paypal.me/richardchien0
