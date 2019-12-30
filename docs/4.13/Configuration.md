@@ -101,6 +101,7 @@ port = 5701
 | `secret` | 空 | 上报数据签名密钥，如果不为空，则会在 HTTP 上报时对 HTTP 正文进行 HMAC SHA1 哈希，使用 `secret` 的值作为密钥，计算出的哈希值放在上报的 `X-Signature` 请求头，例如 `X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2` |
 | `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](/Message) |
 | `serve_data_files` | `false` | 是否提供请求 `data` 目录的文件的功能 |
+| `enable_cors` | `false` | 是否允许跨域请求 |
 | `update_source` | v4.12.3 之前 `github`<br>v4.12.3 及之后 `china` | 更新源，可选 `global`/`github` 和 `china`/`coding` |
 | `update_channel` | `stable` | 更新通道，目前有 `stable`、`beta`、`alpha` 三个 |
 | `auto_check_update` | `false` | 是否自动检查更新（每次启用插件时检查），不启用的情况下，仍然可以在 酷Q 应用菜单中手动检查更新 |
