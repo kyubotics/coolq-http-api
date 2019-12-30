@@ -34,6 +34,20 @@ namespace cqhttp::plugins {
             };
 
         const auto action_path_regex = "^/([^/\\s]+)/?$";
+        server_->resource[action_path_regex]["OPTIONS"] =
+            [=](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
+                log_request(request);
+                if (enable_cors_) {
+                    response->write("",
+                                    {
+                                        {"Access-Control-Allow-Origin", "*"},
+                                        {"Access-Control-Allow-Methods", "*"},
+                                        {"Access-Control-Allow-Headers", "*"},
+                                    });
+                } else {
+                    response->write(SimpleWeb::StatusCode::client_error_method_not_allowed);
+                }
+            };
         server_->resource[action_path_regex]["GET"] = server_->resource[action_path_regex]["POST"] =
             [=](shared_ptr<HttpServer::Response> response, shared_ptr<HttpServer::Request> request) {
                 log_request(request);
@@ -99,7 +113,8 @@ namespace cqhttp::plugins {
                     response->write(SimpleWeb::StatusCode::client_error_not_found);
                 } else {
                     logging::debug(TAG, u8"动作 " + action + u8" 执行成功");
-                    const decltype(request->header) headers{{"Content-Type", "application/json; charset=UTF-8"}};
+                    decltype(request->header) headers{{"Content-Type", "application/json; charset=UTF-8"}};
+                    if (enable_cors_) headers.emplace("Access-Control-Allow-Origin", "*");
                     const auto resp_body = json(result).dump();
                     logging::debug(TAG, u8"响应数据已准备完毕：" + resp_body);
                     response->write(resp_body, headers);
@@ -176,6 +191,7 @@ namespace cqhttp::plugins {
         use_http_ = ctx.config->get_bool("use_http", true);
         access_token_ = ctx.config->get_string("access_token", "");
         serve_data_files_ = ctx.config->get_bool("serve_data_files", false);
+        enable_cors_ = ctx.config->get_bool("enable_cors", false);
 
         if (use_http_) {
             init_server();

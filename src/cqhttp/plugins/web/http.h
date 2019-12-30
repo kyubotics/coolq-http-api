@@ -26,6 +26,7 @@ namespace cqhttp::plugins {
         bool use_http_{};
         std::string access_token_{};
         bool serve_data_files_{};
+        bool enable_cors_{};
 
         std::shared_ptr<SimpleWeb::Server<SimpleWeb::HTTP>> server_;
         std::thread thread_;
