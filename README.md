@@ -153,19 +153,19 @@ powershell .\scripts\build.ps1 Debug
 
 ## 捐助
 
-如果你觉得本插件挺好用，不妨进行捐助～你的捐助会让我更加有动力完善插件，感谢你的支持！
+本项目是我在业余时间开发并免费提供使用的，如果你觉得本插件挺好用，不妨进行捐助～你的捐助会让我更加有动力完善插件，感谢你的支持！
 
 ### 爱发电
 
 https://afdian.net/@richardchien
 
+### 微信赞赏码
+
+![WeChat Donate](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/wechat-donate.png)
+
 ### 支付宝转账
 
 ![AliPay](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/alipay.png)
-
-### 微信转账
-
-![WeChat](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/wechat.png)
 
 ### PayPal
 
