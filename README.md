@@ -30,7 +30,7 @@
 |  | Python | Flask | HTTP | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
 | ⭐ | Node.js | WebSocket-Node | WebSocket | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
 | ⭐ | Node.js | Express | HTTP,<br>WebSocket | [koishijs/koishi](https://github.com/koishijs/koishi) | Shigma |
-|  | Node.js | Koa | HTTP | [richardchien/cqhttp-node-sdk](https://github.com/richardchien/cqhttp-node-sdk) | richardchien |
+|  | Node.js | Koa | HTTP | [cqmoe/cqhttp-node-sdk](https://github.com/cqmoe/cqhttp-node-sdk) | richardchien |
 |  | Node.js | WebSocket-Node | WebSocket | [CaoMeiYouRen/node-coolq-robot](https://github.com/CaoMeiYouRen/node-coolq-robot) | CaoMeiYouRen |
 |  | Node.js | Express | HTTP | [XHMM/lemon-bot](https://github.com/XHMM/lemon-bot) | XHMM |
 |  | JavaScript | - | WebSocket | [pandolia/js-bot](https://github.com/pandolia/js-bot) | pandolia |
@@ -42,8 +42,8 @@
 |  | Java | JFinal | HTTP | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
 | ⭐ | Go | 标准库 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
-| ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | [frankli0324/cqhttp.Cyan](https://github.com/frankli0324/cqhttp.Cyan) | frankli0324 |
-|  | PowerShell | - | HTTP | [richardchien/cqhttp-powershell-sdk](https://github.com/richardchien/cqhttp-powershell-sdk) | richardchien |
+| ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | [frank-bots/cqhttp.Cyan](https://github.com/frank-bots/cqhttp.Cyan) | frankli0324 |
+|  | PowerShell | - | HTTP | [cqmoe/cqhttp-powershell-sdk](https://github.com/cqmoe/cqhttp-powershell-sdk) | richardchien |
 |  | Kotlin | 标准库 | HTTP | [JuerGenie/juerobot](https://github.com/JuerGenie/juerobot) | JuerGenie |
 
 ## 应用案例
