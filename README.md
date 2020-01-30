@@ -26,7 +26,7 @@
 | | 语言 | Web 框架 | 通信方式 | 地址 | 作者 |
 | --- | --- | --- | --- | --- | --- |
 | ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [richardchien/nonebot](https://github.com/richardchien/nonebot) | richardchien |
-|  | Python | Quart | HTTP,<br>反向 WebSocket | [cqmoe/python-aiocqhttp](https://github.com/cqmoe/python-aiocqhttp) | richardchien |
+| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [cqmoe/python-aiocqhttp](https://github.com/cqmoe/python-aiocqhttp) | richardchien |
 |  | Python | Flask | HTTP | [cqmoe/python-cqhttp](https://github.com/cqmoe/python-cqhttp) | richardchien |
 | ⭐ | Node.js | WebSocket-Node | WebSocket | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
 | ⭐ | Node.js | Express | HTTP,<br>WebSocket | [koishijs/koishi](https://github.com/koishijs/koishi) | Shigma |
@@ -54,7 +54,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | ------- | --- |
 | [milkice233/efb-qq-slave](https://github.com/milkice233/efb-qq-slave) | 基于 ehForwarderBot 框架的 QQ 从端 |
 | [projectriri/bot-gateway](https://projectriri.github.io/bot-gateway/) | 提供跨聊天平台的通用机器人 API 的机器人消息网关 |
-| [jqqqqqqqqqq/coolq-telegram-bot](https://github.com/jqqqqqqqqqq/coolq-telegram-bot) | QQ <-> Telegram Bot Framework & Forwarder |
+| [jqqqqqqqqqq/UnifiedMessageRelay](https://github.com/jqqqqqqqqqq/UnifiedMessageRelay) | QQ <-> Telegram Bot Framework & Forwarder |
 | [Mother-Ship/cabbageWeb](https://github.com/Mother-Ship/cabbageWeb) | 基于 Java Web 的 osu! 游戏数据查询机器人 |
 | [bdbai/Kobirt](https://github.com/bdbai/Kobirt) | Ingress 游戏辅助机器人 |
 | [JRT-FOREVER/hub2coolq](https://github.com/JRT-FOREVER/hub2coolq) | GitHub webhook 消息转发至 QQ 群 |
