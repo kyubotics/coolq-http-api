@@ -26,8 +26,8 @@
 | | 语言 | Web 框架 | 通信方式 | 地址 | 作者 |
 | --- | --- | --- | --- | --- | --- |
 | ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [richardchien/nonebot](https://github.com/richardchien/nonebot) | richardchien |
-|  | Python | Quart | HTTP,<br>反向 WebSocket | [richardchien/python-aiocqhttp](https://github.com/richardchien/python-aiocqhttp) | richardchien |
-|  | Python | Flask | HTTP | [richardchien/python-cqhttp](https://github.com/richardchien/python-cqhttp) | richardchien |
+|  | Python | Quart | HTTP,<br>反向 WebSocket | [cqmoe/python-aiocqhttp](https://github.com/cqmoe/python-aiocqhttp) | richardchien |
+|  | Python | Flask | HTTP | [cqmoe/python-cqhttp](https://github.com/cqmoe/python-cqhttp) | richardchien |
 | ⭐ | Node.js | WebSocket-Node | WebSocket | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
 | ⭐ | Node.js | Express | HTTP,<br>WebSocket | [koishijs/koishi](https://github.com/koishijs/koishi) | Shigma |
 |  | Node.js | Koa | HTTP | [cqmoe/cqhttp-node-sdk](https://github.com/cqmoe/cqhttp-node-sdk) | richardchien |
