@@ -200,11 +200,21 @@ namespace cqhttp::plugins {
         }
     }
 
-    void WebSocketReverse::EventClient::push_event(const json &payload) const {
+    void WebSocketReverse::EventClient::push_event(const json &payload) {
         if (started_) {
             logging::debug(TAG, u8"开始通过反向 WebSocket 客户端上报事件");
 
-            bool succeeded;
+            const auto send_cb = [=](const SimpleWeb::error_code &ec) {
+                if (!ec) {
+                    logging::info_success(TAG, u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 成功");
+                } else {
+                    logging::warning(TAG,
+                                     u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 失败，错误码："
+                                         + std::to_string(ec.value()) + u8"，将尝试重连");
+                    std::unique_lock<std::mutex> lock(mutex_);
+                    should_reconnect_ = true;
+                }
+            };
             try {
                 if (client_is_wss_.value() == false) {
                     const auto out_message = make_shared<WsClient::OutMessage>();
@@ -212,23 +222,16 @@ namespace cqhttp::plugins {
                     // the WsClient class is modified by us ("connection" property made public),
                     // so we must maintain the lock manually
                     unique_lock<mutex> lock(client_.ws->connection_mutex);
-                    client_.ws->connection->send(out_message); // TODO: send 失败应当重新连接
+                    client_.ws->connection->send(out_message, send_cb); // TODO: send 失败应当重新连接
                     lock.unlock();
                 } else {
                     const auto out_message = make_shared<WssClient::OutMessage>();
                     *out_message << payload.dump();
                     unique_lock<mutex> lock(client_.wss->connection_mutex);
-                    client_.wss->connection->send(out_message);
+                    client_.wss->connection->send(out_message, send_cb);
                     lock.unlock();
                 }
-                succeeded = true;
             } catch (...) {
-                succeeded = false;
-            }
-
-            if (succeeded) {
-                logging::info_success(TAG, u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 成功");
-            } else {
                 logging::warning(TAG, u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 失败");
             }
         }

@@ -112,7 +112,7 @@ namespace cqhttp::plugins {
             using ClientBase::ClientBase;
             std::string name() override { return "Event"; }
 
-            void push_event(const json &payload) const;
+            void push_event(const json &payload);
 
         protected:
             void init() override;
