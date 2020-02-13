@@ -1,0 +1,354 @@
+{
+    "definitions": {},
+    "$schema": "",
+    "$id": "https://cqhttp.cc/config-schema.json",
+    "type": "object",
+    "title": "CQHTTP 配置",
+    "properties": {
+        "host": {
+            "$id": "#/properties/host",
+            "type": "string",
+            "title": "HTTP 服务器 IP",
+            "description": "HTTP 服务器监听的 IP",
+            "default": "[::]",
+            "examples": [
+                "127.0.0.1",
+                "0.0.0.0"
+            ],
+            "pattern": "^(.*)$"
+        },
+        "port": {
+            "$id": "#/properties/port",
+            "type": "integer",
+            "title": "HTTP 服务器端口",
+            "description": "HTTP 服务器监听的端口",
+            "default": 5700
+        },
+        "use_http": {
+            "$id": "#/properties/use_http",
+            "type": "boolean",
+            "title": "使用 HTTP 接口",
+            "description": "是否开启 HTTP 接口，即通过 HTTP 调用 API",
+            "default": true
+        },
+        "ws_host": {
+            "$id": "#/properties/ws_host",
+            "type": "string",
+            "title": "WebSocket 服务器 IP",
+            "description": "WebSocket 服务器监听的 IP",
+            "default": "[::]",
+            "examples": [
+                "127.0.0.1",
+                "0.0.0.0"
+            ],
+            "pattern": "^(.*)$"
+        },
+        "ws_port": {
+            "$id": "#/properties/ws_port",
+            "type": "integer",
+            "title": "WebSocket 服务器端口",
+            "description": "WebSocket 服务器监听的端口",
+            "default": 6700
+        },
+        "use_ws": {
+            "$id": "#/properties/use_ws",
+            "type": "boolean",
+            "title": "使用 WebSocket 服务器",
+            "description": "是否开启 WebSocket 服务器，可用于调用 API 和推送事件",
+            "default": false
+        },
+        "ws_reverse_url": {
+            "$id": "#/properties/ws_reverse_url",
+            "type": "string",
+            "title": "反向 WebSocket URL",
+            "description": "反向 WebSocket Event 和事件上报的共用地址",
+            "default": "",
+            "examples": [
+                "ws://127.0.0.1:8080/ws/"
+            ],
+            "pattern": "^([wW][sS][sS]?:\\/\\/(.*))?$"
+        },
+        "ws_reverse_api_url": {
+            "$id": "#/properties/ws_reverse_api_url",
+            "type": "string",
+            "title": "反向 WebSocket API URL",
+            "description": "反向 WebSocket API 地址，如果为空，则使用 ws_reverse_url 指定的值",
+            "default": "",
+            "examples": [
+                "ws://127.0.0.1:8080/ws/api/"
+            ],
+            "pattern": "^([wW][sS][sS]?:\\/\\/(.*))?$"
+        },
+        "ws_reverse_event_url": {
+            "$id": "#/properties/ws_reverse_event_url",
+            "type": "string",
+            "title": "反向 WebSocket 事件 URL",
+            "description": "反向 WebSocket 事件上报地址，如果为空，则使用 ws_reverse_url 指定的值",
+            "default": "",
+            "examples": [
+                "ws://127.0.0.1:8080/ws/event/"
+            ],
+            "pattern": "^([wW][sS][sS]?:\\/\\/(.*))?$"
+        },
+        "ws_reverse_reconnect_interval": {
+            "$id": "#/properties/ws_reverse_reconnect_interval",
+            "type": "integer",
+            "title": "反向 WebSocket 重连间隔",
+            "description": "反向 WebSocket 客户端断线重连间隔，单位毫秒",
+            "default": 3000
+        },
+        "ws_reverse_reconnect_on_code_1000": {
+            "$id": "#/properties/ws_reverse_reconnect_on_code_1000",
+            "type": "boolean",
+            "title": "反向 WebSocket 在 1000 关闭码时重连",
+            "description": "是否在关闭状态码为 1000 的时候重连",
+            "default": true
+        },
+        "ws_reverse_use_universal_client": {
+            "$id": "#/properties/ws_reverse_use_universal_client",
+            "type": "boolean",
+            "title": "反向 WebSocket 使用 Universal 客户端",
+            "description": "是否使用 Universal 客户端（使用单个连接传输事件数据和 API 请求）",
+            "default": false
+        },
+        "use_ws_reverse": {
+            "$id": "#/properties/use_ws_reverse",
+            "type": "boolean",
+            "title": "使用反向 WebSocket 服务",
+            "description": "是否使用反向 WebSocket 服务，即插件作为 WebSocket 客户端主动连接指定的 API 和事件上报地址",
+            "default": false
+        },
+        "post_url": {
+            "$id": "#/properties/post_url",
+            "type": "string",
+            "title": "HTTP 上报 URL",
+            "description": "消息和事件的上报地址，通过 POST 方式请求，数据以 JSON 格式发送",
+            "default": "",
+            "examples": [
+                "http://127.0.0.1:8080/"
+            ],
+            "pattern": "^([hH][tT][tT][pP][sS]?:\\/\\/(.*))?$"
+        },
+        "post_timeout": {
+            "$id": "#/properties/post_timeout",
+            "type": "integer",
+            "title": "HTTP 上报超时",
+            "description": "HTTP 上报（即访问 post_url）的超时时间，单位秒，0 表示不设置超时",
+            "default": 0,
+            "examples": [
+                20
+            ]
+        },
+        "access_token": {
+            "$id": "#/properties/access_token",
+            "type": "string",
+            "title": "API 访问 token",
+            "description": "API 访问 token，如果不为空，则会在接收到请求时验证 Authorization 请求头是否为 Bearer xxxxxxxx，xxxxxxxx 为 access token",
+            "default": "",
+            "pattern": "^(.*)$"
+        },
+        "secret": {
+            "$id": "#/properties/secret",
+            "type": "string",
+            "title": "上报数据签名密钥",
+            "description": "上报数据签名密钥，如果不为空，则会在 HTTP 上报时对 HTTP 正文进行 HMAC SHA1 哈希，使用 secret 的值作为密钥，计算出的哈希值放在上报的 X-Signature 请求头，例如 X-Signature: sha1=f9ddd4863ace61e64f462d41ca311e3d2c1176e2",
+            "default": "",
+            "pattern": "^(.*)$"
+        },
+        "post_message_format": {
+            "$id": "#/properties/post_message_format",
+            "type": "string",
+            "title": "上报消息格式",
+            "default": "string",
+            "examples": [
+                "string",
+                "array"
+            ],
+            "pattern": "^(string|array)$"
+        },
+        "serve_data_files": {
+            "$id": "#/properties/serve_data_files",
+            "type": "boolean",
+            "title": "提供请求 data 目录的文件的功能",
+            "description": "是否提供请求 data 目录的文件的功能",
+            "default": false
+        },
+        "enable_cors": {
+            "$id": "#/properties/enable_cors",
+            "type": "boolean",
+            "title": "允许跨域请求",
+            "description": "是否允许跨域请求",
+            "default": false
+        },
+        "update_source": {
+            "$id": "#/properties/update_source",
+            "type": "string",
+            "title": "更新源",
+            "description": "更新源，可选 global/github 和 china/coding",
+            "default": "china",
+            "examples": [
+                "global",
+                "github",
+                "china",
+                "coding"
+            ],
+            "pattern": "^(.*)$"
+        },
+        "update_channel": {
+            "$id": "#/properties/update_channel",
+            "type": "string",
+            "title": "更新通道",
+            "description": "更新通道，目前有 stable、beta、alpha 三个",
+            "default": "stable",
+            "examples": [
+                "stable",
+                "beta",
+                "alpha"
+            ],
+            "pattern": "^(stable|beta|alpha)$"
+        },
+        "auto_check_update": {
+            "$id": "#/properties/auto_check_update",
+            "type": "boolean",
+            "title": "自动检查更新",
+            "description": "是否自动检查更新（每次启用插件时检查），不启用的情况下，仍然可以在 酷Q 应用菜单中手动检查更新",
+            "default": false
+        },
+        "auto_perform_update": {
+            "$id": "#/properties/auto_perform_update",
+            "type": "boolean",
+            "title": "自动执行更新",
+            "description": "是否自动执行更新，仅在 auto_check_update 启用时有效，若启用，则插件将在自动检查到更新后，自动下载新版本（需要手动重启 酷Q 以生效）",
+            "default": false
+        },
+        "thread_pool_size": {
+            "$id": "#/properties/thread_pool_size",
+            "type": "integer",
+            "title": "工作线程池大小",
+            "description": "工作线程池大小，用于异步 API 调用、反向 WebSocket API 调用和一些其它小的异步任务，应根据计算机性能和实际需求适当调节，若设为 0，则使用 CPU 核心数 * 2 + 1",
+            "default": 4
+        },
+        "server_thread_pool_size": {
+            "$id": "#/properties/server_thread_pool_size",
+            "type": "integer",
+            "title": "API 服务器线程池大小",
+            "description": "API 服务器线程池大小，用于异步处理请求（HTTP 和 WebSocket），应根据计算机性能和实际需求适当调节，若设为 0，则使用 CPU 核心数 * 2 + 1",
+            "default": 4
+        },
+        "convert_unicode_emoji": {
+            "$id": "#/properties/convert_unicode_emoji",
+            "type": "boolean",
+            "title": "在 CQ:emoji 和实际的 Unicode 之间进行转换",
+            "description": "是否在 CQ:emoji 和实际的 Unicode 之间进行转换，转换可能耗更多时间，但日常情况下影响不大，如果你的机器人需要处理非常大段的消息（上千字），且对性能有要求，可以考虑关闭转换",
+            "default": true
+        },
+        "event_filter": {
+            "$id": "#/properties/event_filter",
+            "type": "string",
+            "title": "事件过滤规则文件",
+            "description": "指定事件过滤规则文件，见 事件过滤器，留空将不开启事件过滤器",
+            "default": "",
+            "examples": [
+                "filter.json"
+            ],
+            "pattern": "^(.*)$"
+        },
+        "enable_backward_compatibility": {
+            "$id": "#/properties/enable_backward_compatibility",
+            "type": "boolean",
+            "title": "启用旧版兼容性",
+            "description": "是否启用旧版兼容性，启用时事件上报的数据将和 3.x 版本保持兼容",
+            "default": false
+        },
+        "show_log_console": {
+            "$id": "#/properties/show_log_console",
+            "type": "boolean",
+            "title": "显示日志输出控制台",
+            "description": "是否显示日志输出控制台",
+            "default": true
+        },
+        "max_log_file_size": {
+            "$id": "#/properties/max_log_file_size",
+            "type": "integer",
+            "title": "最大单日志文件大小",
+            "description": "最大单日志文件大小，单位字节，默认 6 MB",
+            "default": 6291456
+        },
+        "max_log_files": {
+            "$id": "#/properties/max_log_files",
+            "type": "integer",
+            "title": "最大日志文件备份数量",
+            "description": "最大日志文件备份数量（采用日志轮替机制）",
+            "default": 1
+        },
+        "log_level": {
+            "$id": "#/properties/log_level",
+            "type": "string",
+            "title": "日志等级",
+            "description": "日志文件和日志控制台的日志等级，可选 debug、info、warning、error、fatal",
+            "default": "",
+            "examples": [
+                "debug",
+                "info",
+                "warning",
+                "error",
+                "fatal"
+            ],
+            "pattern": "^(debug|info|warning|error|fatal)$"
+        },
+        "use_extension": {
+            "$id": "#/properties/use_extension",
+            "type": "boolean",
+            "title": "启用扩展机制",
+            "description": "是否启用扩展机制",
+            "default": false
+        },
+        "disable_coolq_log": {
+            "$id": "#/properties/disable_coolq_log",
+            "type": "boolean",
+            "title": "禁用 酷Q 原生日志",
+            "description": "是否禁用 酷Q 原生日志，由于使用 酷Q 原生日志可能会导致快速重启时插件卡死，所以默认禁用，如果你不在乎重启时卡死，并且需要在 酷Q 原生日志窗口查看插件的日志，可以将此项设为 false",
+            "default": true
+        },
+        "online_status_detection_method": {
+            "$id": "#/properties/online_status_detection_method",
+            "type": "string",
+            "title": "QQ 在线状态检测方式",
+            "description": "QQ 在线状态检测方式，默认（get_stranger_info）通过陌生人查询接口判断，设为 log_db 可切换成从 酷Q 的日志数据库判断，具体区别见 其 API 说明",
+            "default": "get_stranger_info",
+            "examples": [
+                "get_stranger_info",
+                "log_db"
+            ],
+            "pattern": "^(get_stranger_info|log_db)$"
+        },
+        "enable_heartbeat": {
+            "$id": "#/properties/enable_heartbeat",
+            "type": "boolean",
+            "title": "启用心跳机制",
+            "description": "是否启用心跳机制，启用时会产生类型为 heartbeat 的元事件",
+            "default": false
+        },
+        "heartbeat_interval": {
+            "$id": "#/properties/heartbeat_interval",
+            "type": "integer",
+            "title": "产生心跳元事件的间隔",
+            "description": "产生心跳元事件的时间间隔，单位毫秒",
+            "default": 15000
+        },
+        "enable_rate_limited_actions": {
+            "$id": "#/properties/enable_rate_limited_actions",
+            "type": "boolean",
+            "title": "启用限速 API 调用的支持",
+            "description": "是否启用限速 API 调用的支持",
+            "default": false
+        },
+        "rate_limit_interval": {
+            "$id": "#/properties/rate_limit_interval",
+            "type": "integer",
+            "title": "限速 API 调用的排队间隔",
+            "description": "限速 API 调用的排队间隔时间，单位毫秒",
+            "default": 500
+        }
+    }
+}
