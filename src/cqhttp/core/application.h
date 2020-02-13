@@ -76,8 +76,22 @@ namespace cqhttp {
                    && std::all_of(p.cbegin(), p.cend(), [](const auto &kv) { return kv.second; });
         }
 
-        bool resize_worker_thread_pool(int n_threads) const;
-        bool push_async_task(const std::function<void()> &task) const;
+        bool resize_worker_thread_pool(int n_threads) const {
+            if (!worker_thread_pool_) {
+                return false;
+            }
+            worker_thread_pool_->resize(n_threads);
+            return true;
+        }
+
+        template <typename F>
+        bool push_async_task(F &&task) const {
+            if (!worker_thread_pool_) {
+                return false;
+            }
+            worker_thread_pool_->push([task = std::forward<F>(task)](int) { task(); });
+            return true;
+        }
 
         utils::JsonEx &config() { return config_; }
         utils::JsonEx &store() { return store_; }

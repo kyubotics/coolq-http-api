@@ -57,20 +57,4 @@ namespace cqhttp {
         }
         iterate_hooks(&Plugin::hook_coolq_exit, Context());
     }
-
-    bool Application::resize_worker_thread_pool(const int n_threads) const {
-        if (!worker_thread_pool_) {
-            return false;
-        }
-        worker_thread_pool_->resize(n_threads);
-        return true;
-    }
-
-    bool Application::push_async_task(const std::function<void()> &task) const {
-        if (!worker_thread_pool_) {
-            return false;
-        }
-        worker_thread_pool_->push([=](int) { task(); });
-        return true;
-    }
 } // namespace cqhttp
