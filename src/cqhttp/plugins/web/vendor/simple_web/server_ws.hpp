@@ -777,13 +777,20 @@ namespace SimpleWeb {
       connection->cancel_timeout();
       connection->set_timeout();
 
-      {
-        std::unique_lock<std::mutex> lock(endpoint.connections_mutex);
-        endpoint.connections.insert(connection);
-      }
+      // cqhttp change: don't insert connection into connection set before running on_open
+      // {
+      //   std::unique_lock<std::mutex> lock(endpoint.connections_mutex);
+      //   endpoint.connections.insert(connection);
+      // }
 
       if(endpoint.on_open)
         endpoint.on_open(connection);
+
+      // cqhttp change: insert connection into connection set only if on_open didn't close it
+      if (!connection->closed) {
+        std::unique_lock<std::mutex> lock(endpoint.connections_mutex);
+        endpoint.connections.insert(connection);
+      }
     }
 
     void connection_close(const std::shared_ptr<Connection> &connection, Endpoint &endpoint, int status, const std::string &reason) const {
