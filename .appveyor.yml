@@ -3,13 +3,13 @@ branches:
     - /dev.*/  # do not build dev branch
 
 image:
-  - Visual Studio 2017
+  - Visual Studio 2019
 
 platform:
   - x86
 
 configuration:
-  - Release
+  - RelWithDebInfo
 
 environment:
   VCPKG_ROOT: C:\tools\vcpkg
@@ -27,5 +27,5 @@ build_script:
   - powershell .\scripts\build.ps1 %CONFIGURATION%
 
 artifacts:
-  - path: build/Release/Release/%APP_ID%
+  - path: build/%CONFIGURATION%/%CONFIGURATION%/%APP_ID%
     type: zip

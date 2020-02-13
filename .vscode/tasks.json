@@ -34,7 +34,7 @@
                 "-NoProfile",
                 "-File",
                 "'${workspaceFolder}/scripts/generate.ps1'",
-                "Release"
+                "RelWithDebInfo"
             ],
             "problemMatcher": [],
             "group": "build"
@@ -65,7 +65,7 @@
                 "-NoProfile",
                 "-File",
                 "'${workspaceFolder}/scripts/build.ps1'",
-                "Release"
+                "RelWithDebInfo"
             ],
             "problemMatcher": [
                 "$msCompile"
