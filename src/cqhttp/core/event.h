@@ -17,6 +17,7 @@ namespace cqhttp {
 
             LIFECYCLE_ENABLE,
             LIFECYCLE_DISABLE,
+            LIFECYCLE_CONNECT,
         };
 
         Type meta_event_type = UNKNOWN;
@@ -48,6 +49,8 @@ namespace cqhttp {
                 return "enable";
             case MetaEvent::LIFECYCLE_DISABLE:
                 return "disable";
+            case MetaEvent::LIFECYCLE_CONNECT:
+                return "connect";
             default:
                 return "unknown";
             }
@@ -86,6 +89,6 @@ namespace cqhttp {
         emit_event(event, json(event));
     }
 
-    void emit_lifecycle_meta_event(const MetaEvent::SubType sub_type = MetaEvent::SUBTYPE_DEFAULT);
+    void emit_lifecycle_meta_event(const MetaEvent::SubType sub_type);
     void emit_heartbeat_meta_event(const json status, const int64_t interval);
 } // namespace cqhttp

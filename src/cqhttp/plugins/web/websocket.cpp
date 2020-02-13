@@ -12,35 +12,39 @@ namespace cqhttp::plugins {
     void WebSocket::init_server() {
         logging::debug(TAG, u8"初始化 WebSocket");
 
-        auto on_open_callback = [=](const shared_ptr<WsServer::Connection> connection) {
-            logging::debug(
-                TAG,
-                u8"收到 WebSocket 连接：" + connection->path + u8"，来源 IP：" + connection->remote_endpoint_address());
-            const json args = SimpleWeb::QueryString::parse(connection->query_string);
-            const auto authorized = authorize(access_token_, connection->header, args);
-            if (!authorized) {
-                logging::debug(TAG, u8"没有提供 Token 或 Token 不符，已关闭连接");
-                const auto out_message = make_shared<WsServer::OutMessage>();
-                *out_message << "authorization failed";
-                connection->send(out_message);
-                connection->send_close(1000); // we don't want this client any more
-            }
+        auto gen_on_open_callback = [=](const bool send_connect_event) {
+            return [=](const shared_ptr<WsServer::Connection> connection) {
+                logging::debug(TAG,
+                               u8"收到 WebSocket 连接：" + connection->path + u8"，来源 IP："
+                                   + connection->remote_endpoint_address());
+                const json args = SimpleWeb::QueryString::parse(connection->query_string);
+                const auto authorized = authorize(access_token_, connection->header, args);
+                if (!authorized) {
+                    logging::debug(TAG, u8"没有提供 Token 或 Token 不符，已关闭连接");
+                    const auto out_message = make_shared<WsServer::OutMessage>();
+                    *out_message << "authorization failed";
+                    connection->send(out_message);
+                    connection->send_close(1000); // we don't want this client any more
+                } else if (send_connect_event) {
+                    emit_lifecycle_meta_event(MetaEvent::SubType::LIFECYCLE_CONNECT);
+                }
+            };
         };
 
         server_ = make_shared<WsServer>();
 
         auto &api_endpoint = server_->endpoint["^/api/?$"];
-        api_endpoint.on_open = on_open_callback;
+        api_endpoint.on_open = gen_on_open_callback(false);
         api_endpoint.on_message = [](auto connection, auto message) {
             ws_api_on_message<WsServer>(connection, message);
         };
 
         auto &event_endpoint = server_->endpoint["^/event/?$"];
-        event_endpoint.on_open = on_open_callback;
+        event_endpoint.on_open = gen_on_open_callback(true);
 
         // endpoint for both API and Event
         auto &universal_endpoint = server_->endpoint["^/$"];
-        universal_endpoint.on_open = on_open_callback;
+        universal_endpoint.on_open = gen_on_open_callback(true);
         universal_endpoint.on_message = [](auto connection, auto message) {
             ws_api_on_message<WsServer>(connection, message);
         };

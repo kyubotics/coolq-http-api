@@ -113,6 +113,9 @@ namespace cqhttp::plugins {
             std::string name() override { return "Event"; }
 
             void push_event(const json &payload) const;
+
+        protected:
+            void init() override;
         };
 
         std::shared_ptr<EventClient> event_;

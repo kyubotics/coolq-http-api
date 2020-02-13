@@ -184,19 +184,17 @@ namespace cqhttp::plugins {
         }
     }
 
-    void WebSocketReverse::UniversalClient::init() {
-        EventClient::init();
+    void WebSocketReverse::EventClient::init() {
+        ClientBase::init();
 
         if (client_is_wss_.has_value()) {
             if (client_is_wss_.value() == false) {
-                client_.ws->on_message = [&connection_mutex = client_.ws->connection_mutex](auto connection,
-                                                                                            auto message) {
-                    api_on_message<WsClient>(connection_mutex, connection, message);
+                client_.ws->on_open = [](const shared_ptr<WsClient::Connection> connection) {
+                    emit_lifecycle_meta_event(MetaEvent::SubType::LIFECYCLE_CONNECT);
                 };
             } else {
-                client_.wss->on_message = [&connection_mutex = client_.wss->connection_mutex](auto connection,
-                                                                                              auto message) {
-                    api_on_message<WssClient>(connection_mutex, connection, message);
+                client_.ws->on_open = [](const shared_ptr<WsClient::Connection> connection) {
+                    emit_lifecycle_meta_event(MetaEvent::SubType::LIFECYCLE_CONNECT);
                 };
             }
         }
@@ -214,7 +212,7 @@ namespace cqhttp::plugins {
                     // the WsClient class is modified by us ("connection" property made public),
                     // so we must maintain the lock manually
                     unique_lock<mutex> lock(client_.ws->connection_mutex);
-                    client_.ws->connection->send(out_message);
+                    client_.ws->connection->send(out_message); // TODO: send 失败应当重新连接
                     lock.unlock();
                 } else {
                     const auto out_message = make_shared<WssClient::OutMessage>();
@@ -232,6 +230,24 @@ namespace cqhttp::plugins {
                 logging::info_success(TAG, u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 成功");
             } else {
                 logging::warning(TAG, u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 失败");
+            }
+        }
+    }
+
+    void WebSocketReverse::UniversalClient::init() {
+        EventClient::init();
+
+        if (client_is_wss_.has_value()) {
+            if (client_is_wss_.value() == false) {
+                client_.ws->on_message = [&connection_mutex = client_.ws->connection_mutex](auto connection,
+                                                                                            auto message) {
+                    api_on_message<WsClient>(connection_mutex, connection, message);
+                };
+            } else {
+                client_.wss->on_message = [&connection_mutex = client_.wss->connection_mutex](auto connection,
+                                                                                              auto message) {
+                    api_on_message<WssClient>(connection_mutex, connection, message);
+                };
             }
         }
     }
