@@ -152,14 +152,34 @@ namespace cqhttp::plugins {
         client_is_wss_ = nullopt;
     }
 
+    template <typename WsT>
+    static void api_on_message(mutex &connection_mutex, const std::shared_ptr<typename WsT::Connection> connection,
+                               const std::shared_ptr<typename WsT::InMessage> message) {
+        app.push_async_task([=, &connection_mutex] {
+            auto send_result = [&](const std::shared_ptr<typename WsT::Connection> conn,
+                                   const ActionResult &result,
+                                   const json &echo) {
+                std::lock_guard lock(connection_mutex);
+                ws_api_send_result<WsT>(conn, result, echo);
+            };
+            ws_api_on_message<WsT>(connection, message, std::move(send_result));
+        });
+    }
+
     void WebSocketReverse::ApiClient::init() {
         ClientBase::init();
 
         if (client_is_wss_.has_value()) {
             if (client_is_wss_.value() == false) {
-                client_.ws->on_message = ws_api_on_message<WsClient>;
+                client_.ws->on_message = [&connection_mutex = client_.ws->connection_mutex](auto connection,
+                                                                                            auto message) {
+                    api_on_message<WsClient>(connection_mutex, connection, message);
+                };
             } else {
-                client_.wss->on_message = ws_api_on_message<WssClient>;
+                client_.wss->on_message = [&connection_mutex = client_.wss->connection_mutex](auto connection,
+                                                                                              auto message) {
+                    api_on_message<WssClient>(connection_mutex, connection, message);
+                };
             }
         }
     }
@@ -169,9 +189,15 @@ namespace cqhttp::plugins {
 
         if (client_is_wss_.has_value()) {
             if (client_is_wss_.value() == false) {
-                client_.ws->on_message = ws_api_on_message<WsClient>;
+                client_.ws->on_message = [&connection_mutex = client_.ws->connection_mutex](auto connection,
+                                                                                            auto message) {
+                    api_on_message<WsClient>(connection_mutex, connection, message);
+                };
             } else {
-                client_.wss->on_message = ws_api_on_message<WssClient>;
+                client_.wss->on_message = [&connection_mutex = client_.wss->connection_mutex](auto connection,
+                                                                                              auto message) {
+                    api_on_message<WssClient>(connection_mutex, connection, message);
+                };
             }
         }
     }

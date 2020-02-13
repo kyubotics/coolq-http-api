@@ -31,7 +31,9 @@ namespace cqhttp::plugins {
 
         auto &api_endpoint = server_->endpoint["^/api/?$"];
         api_endpoint.on_open = on_open_callback;
-        api_endpoint.on_message = ws_api_on_message<WsServer>;
+        api_endpoint.on_message = [](auto connection, auto message) {
+            ws_api_on_message<WsServer>(connection, message);
+        };
 
         auto &event_endpoint = server_->endpoint["^/event/?$"];
         event_endpoint.on_open = on_open_callback;
@@ -39,7 +41,9 @@ namespace cqhttp::plugins {
         // endpoint for both API and Event
         auto &universal_endpoint = server_->endpoint["^/$"];
         universal_endpoint.on_open = on_open_callback;
-        universal_endpoint.on_message = ws_api_on_message<WsServer>;
+        universal_endpoint.on_message = [](auto connection, auto message) {
+            ws_api_on_message<WsServer>(connection, message);
+        };
     }
 
     void WebSocket::hook_enable(Context &ctx) {

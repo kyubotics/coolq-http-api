@@ -3,30 +3,36 @@
 #include "cqhttp/core/plugin.h"
 
 namespace cqhttp::plugins {
+    template <typename WsT>
+    static void ws_api_send_result(const std::shared_ptr<typename WsT::Connection> connection,
+                                   const ActionResult &result, const json &echo) {
+        static const auto TAG = u8"WS API";
+        json resp_json = result;
+        if (!echo.is_null()) {
+            resp_json["echo"] = echo;
+        }
+        const auto resp_body = resp_json.dump();
+        logging::debug(TAG, u8"响应数据已准备完毕：" + resp_body);
+        const auto out_message = std::make_shared<typename WsT::OutMessage>();
+        *out_message << resp_body;
+        connection->send(out_message);
+        logging::debug(TAG, u8"响应内容已发送");
+    }
+
     /**
      * Common "on_message" callback for websocket server's api endpoint and reverse websocket api client.
      * \tparam WsT WsServer (websocket server /api/ endpoint) or WsClient (reverse websocket api client)
      */
     template <typename WsT>
-    static void ws_api_on_message(const std::shared_ptr<typename WsT::Connection> connection,
-                                  const std::shared_ptr<typename WsT::InMessage> message) {
-        static const auto TAG = u8"WS通用";
+    static void ws_api_on_message(
+        const std::shared_ptr<typename WsT::Connection> connection,
+        const std::shared_ptr<typename WsT::InMessage> message,
+        std::function<void(const std::shared_ptr<typename WsT::Connection>, const ActionResult &, const json &)>
+            send_result = ws_api_send_result<WsT>) {
+        static const auto TAG = u8"WS API";
 
         const auto ws_message_str = message->string();
         logging::debug(TAG, u8"收到 API 请求：" + ws_message_str);
-
-        const auto send_result = [&connection](const ActionResult &result, const json &echo = nullptr) {
-            json resp_json = result;
-            if (!echo.is_null()) {
-                resp_json["echo"] = echo;
-            }
-            const auto resp_body = resp_json.dump();
-            logging::debug(TAG, u8"响应数据已准备完毕：" + resp_body);
-            const auto out_message = std::make_shared<typename WsT::OutMessage>();
-            *out_message << resp_body;
-            connection->send(out_message);
-            logging::debug(TAG, u8"响应内容已发送");
-        };
 
         json payload;
         try {
@@ -36,7 +42,7 @@ namespace cqhttp::plugins {
         }
         if (!(payload.is_object() && payload.find("action") != payload.end() && payload["action"].is_string())) {
             logging::debug(TAG, u8"请求中的 JSON 无效或者不是对象");
-            send_result(ActionResult(ActionResult::Codes::HTTP_BAD_REQUEST));
+            send_result(connection, ActionResult(ActionResult::Codes::HTTP_BAD_REQUEST), nullptr);
             return;
         }
 
@@ -61,7 +67,7 @@ namespace cqhttp::plugins {
         } catch (...) {
         }
 
-        send_result(result, echo);
+        send_result(connection, result, echo);
         logging::info_success(TAG, u8"已成功处理一个 API 请求：" + action);
     }
 } // namespace cqhttp::plugins
