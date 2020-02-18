@@ -38,7 +38,7 @@
 | ⭐ | PHP | Swoole | 反向 WebSocket | [crazywhalecc/CQBot-swoole](https://github.com/crazywhalecc/CQBot-swoole) | crazywhalecc |
 |  | PHP | - | HTTP | [LovelyA72/YeziiBot-v2](https://github.com/LovelyA72/YeziiBot-v2) | LovelyA72 |
 | ⭐ | Java | 标准库 | HTTP | [HyDevelop/PicqBotX](https://github.com/HyDevelop/PicqBotX) | Hykilpikonna |
-|  | Java | Spring | 反向 WebSocket | [lz1998/Spring-CQ](https://github.com/lz1998/Spring-CQ) | lz1998 |
+|  | Java | Spring | 反向 WebSocket | [lz1998/Spring-CQ](https://github.com/lz1998/Spring-CQ)（[教程](https://www.bilibili.com/video/av89649630/)） | lz1998 |
 |  | Java | JFinal | HTTP | [thevsk/cqhttp-java-jfinal-sdk](https://github.com/thevsk/cqhttp-java-jfinal-sdk) | thevsk |
 | ⭐ | Go | 标准库 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
