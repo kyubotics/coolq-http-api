@@ -323,40 +323,49 @@ namespace cqhttp::plugins {
     }
 
     void Http::hook_after_event(EventContext<cq::Event> &ctx) {
-        if (!post_url_.empty()) {
-            logging::debug(TAG, u8"开始通过 HTTP 上报事件");
-            const auto resp = post_json(post_url_, ctx.data, secret_, post_timeout_);
+        if (post_url_.empty()) {
+            ctx.next();
+            return;
+        }
+        if (ctx.data["post_type"] == "meta_event" && ctx.data["meta_event_type"] == "lifecycle"
+            && ctx.data["_post_method"] != static_cast<int>(LifecycleMetaEvent::_PostMethod::ALL)
+            && ctx.data["_post_method"] != static_cast<int>(LifecycleMetaEvent::_PostMethod::HTTP)) {
+            ctx.next();
+            return;
+        }
 
-            if (resp.status_code == 0) {
-                logging::warning(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 无法访问");
+        logging::debug(TAG, u8"开始通过 HTTP 上报事件");
+        const auto resp = post_json(post_url_, ctx.data, secret_, post_timeout_);
+
+        if (resp.status_code == 0) {
+            logging::warning(TAG, u8"HTTP 上报地址 " + post_url_ + u8" 无法访问");
+        } else {
+            const auto log_msg = u8"通过 HTTP 上报数据到 " + post_url_ + (resp.ok() ? u8" 成功" : u8" 失败")
+                                 + u8"，状态码：" + to_string(resp.status_code);
+            if (resp.ok()) {
+                logging::info_success(TAG, log_msg);
             } else {
-                const auto log_msg = u8"通过 HTTP 上报数据到 " + post_url_ + (resp.ok() ? u8" 成功" : u8" 失败")
-                                     + u8"，状态码：" + to_string(resp.status_code);
-                if (resp.ok()) {
-                    logging::info_success(TAG, log_msg);
-                } else {
-                    logging::warning(TAG, log_msg);
-                }
+                logging::warning(TAG, log_msg);
             }
+        }
 
-            if (resp.ok() && !resp.body.empty()) {
-                logging::debug(TAG, u8"收到响应 " + resp.body);
+        if (resp.ok() && !resp.body.empty()) {
+            logging::debug(TAG, u8"收到响应 " + resp.body);
 
-                const auto resp_payload = resp.get_json();
-                if (resp_payload.is_object()) {
-                    const utils::JsonEx params = resp_payload;
+            const auto resp_payload = resp.get_json();
+            if (resp_payload.is_object()) {
+                const utils::JsonEx params = resp_payload;
 
-                    // note here that the ctx.data object was processed by backward_compatibility plugin,
-                    // but now that the ".handle_quick_operation" action can handle legacy data format,
-                    // it's ok here to use ctx.data directly
-                    call_action(".handle_quick_operation", {{"context", ctx.data}, {"operation", params.raw}});
+                // note here that the ctx.data object was processed by backward_compatibility plugin,
+                // but now that the ".handle_quick_operation" action can handle legacy data format,
+                // it's ok here to use ctx.data directly
+                call_action(".handle_quick_operation", {{"context", ctx.data}, {"operation", params.raw}});
 
-                    if (params.get_bool("block", false)) {
-                        ctx.event.block();
-                    }
-                } else {
-                    logging::debug(TAG, u8"上报响应不是有效的 JSON，已忽略");
+                if (params.get_bool("block", false)) {
+                    ctx.event.block();
                 }
+            } else {
+                logging::debug(TAG, u8"上报响应不是有效的 JSON，已忽略");
             }
         }
 

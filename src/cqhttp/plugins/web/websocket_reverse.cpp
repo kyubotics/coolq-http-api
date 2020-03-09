@@ -113,6 +113,13 @@ namespace cqhttp::plugins {
     }
 
     void WebSocketReverse::hook_after_event(EventContext<cq::Event> &ctx) {
+        if (ctx.data["post_type"] == "meta_event" && ctx.data["meta_event_type"] == "lifecycle"
+            && ctx.data["_post_method"] != static_cast<int>(LifecycleMetaEvent::_PostMethod::ALL)
+            && ctx.data["_post_method"] != static_cast<int>(LifecycleMetaEvent::_PostMethod::WEBSOCKET)) {
+            ctx.next();
+            return;
+        }
+
         if (event_) {
             event_->push_event(ctx.data);
         }

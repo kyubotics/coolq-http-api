@@ -33,9 +33,22 @@ namespace cqhttp {
         emit_event(event, data, &Application::on_meta_event);
     }
 
-    void emit_lifecycle_meta_event(const MetaEvent::SubType sub_type) {
+    void emit_lifecycle_meta_event(const MetaEvent::SubType sub_type,
+                                   const LifecycleMetaEvent::_PostMethod post_method) {
         LifecycleMetaEvent e;
         e.sub_type = sub_type;
+        switch (sub_type) {
+        case MetaEvent::LIFECYCLE_ENABLE:
+        case MetaEvent::LIFECYCLE_DISABLE:
+            e._post_method = LifecycleMetaEvent::_PostMethod::HTTP;
+            break;
+        case MetaEvent::LIFECYCLE_CONNECT:
+            e._post_method = LifecycleMetaEvent::_PostMethod::WEBSOCKET;
+            break;
+        default:
+            e._post_method = post_method;
+            break;
+        }
         emit_event(e);
     }
 

@@ -92,6 +92,13 @@ namespace cqhttp::plugins {
     }
 
     void WebSocket::hook_after_event(EventContext<cq::Event> &ctx) {
+        if (ctx.data["post_type"] == "meta_event" && ctx.data["meta_event_type"] == "lifecycle"
+            && ctx.data["_post_method"] != static_cast<int>(LifecycleMetaEvent::_PostMethod::ALL)
+            && ctx.data["_post_method"] != static_cast<int>(LifecycleMetaEvent::_PostMethod::WEBSOCKET)) {
+            ctx.next();
+            return;
+        }
+
         static const auto path_regex = regex("^(/|/event/?)$");
         if (started_) {
             logging::debug(TAG, u8"开始通过 WebSocket 服务端推送事件");
