@@ -23,6 +23,7 @@ namespace cqhttp::plugins {
         }
         client->on_close =
             [&](shared_ptr<typename WsClientT::Connection> connection, const int code, const string &reason) {
+                connected_ = false;
                 if (reconnect_on_code_1000_ || code != 1000) {
                     logging::debug(TAG,
                                    u8"反向 WebSocket 连接断开，close code: " + to_string(code) + "，reason：" + reason);
@@ -30,6 +31,7 @@ namespace cqhttp::plugins {
                 }
             };
         client->on_error = [&](shared_ptr<typename WsClientT::Connection>, const SimpleWeb::error_code &e) {
+            connected_ = false;
             logging::debug(TAG, u8"反向 WebSocket 连接发生错误，error code: " + to_string(e.value()));
             notify_should_reconnect();
         };
@@ -68,6 +70,7 @@ namespace cqhttp::plugins {
                     logging::debug(TAG, u8"反向 WebSocket 建立连接失败");
                     notify_should_reconnect();
                 }
+                connected_ = false;
                 started_ = false;
             });
             logging::info_success(TAG, u8"开启反向 WebSocket 客户端（" + name() + u8"）成功，开始连接 " + url_);
@@ -75,6 +78,7 @@ namespace cqhttp::plugins {
     }
 
     void WebSocketReverse::ClientBase::disconnect() {
+        connected_ = false;
         if (started_) {
             if (client_is_wss_.value() == false) {
                 client_.ws->stop();
@@ -171,11 +175,13 @@ namespace cqhttp::plugins {
 
         if (client_is_wss_.has_value()) {
             if (client_is_wss_.value() == false) {
+                client_.ws->on_open = [&](auto) { connected_ = true; };
                 client_.ws->on_message = [&connection_mutex = client_.ws->connection_mutex](auto connection,
                                                                                             auto message) {
                     api_on_message<WsClient>(connection_mutex, connection, message);
                 };
             } else {
+                client_.wss->on_open = [&](auto) { connected_ = true; };
                 client_.wss->on_message = [&connection_mutex = client_.wss->connection_mutex](auto connection,
                                                                                               auto message) {
                     api_on_message<WssClient>(connection_mutex, connection, message);
@@ -189,11 +195,13 @@ namespace cqhttp::plugins {
 
         if (client_is_wss_.has_value()) {
             if (client_is_wss_.value() == false) {
-                client_.ws->on_open = [](const shared_ptr<WsClient::Connection> connection) {
+                client_.ws->on_open = [&](const shared_ptr<WsClient::Connection> connection) {
+                    connected_ = true;
                     emit_lifecycle_meta_event(MetaEvent::SubType::LIFECYCLE_CONNECT);
                 };
             } else {
-                client_.ws->on_open = [](const shared_ptr<WsClient::Connection> connection) {
+                client_.ws->on_open = [&](const shared_ptr<WsClient::Connection> connection) {
+                    connected_ = true;
                     emit_lifecycle_meta_event(MetaEvent::SubType::LIFECYCLE_CONNECT);
                 };
             }
@@ -201,39 +209,42 @@ namespace cqhttp::plugins {
     }
 
     void WebSocketReverse::EventClient::push_event(const json &payload) {
-        if (started_) {
-            logging::debug(TAG, u8"开始通过反向 WebSocket 客户端上报事件");
+        if (!connected_) {
+            logging::info(TAG, u8"反向 WebSocket 连接尚未建立，无法上报");
+            return;
+        }
 
-            const auto send_cb = [=](const SimpleWeb::error_code &ec) {
-                if (!ec) {
-                    logging::info_success(TAG, u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 成功");
-                } else {
-                    logging::warning(TAG,
-                                     u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 失败，错误码："
-                                         + std::to_string(ec.value()) + u8"，将尝试重连");
-                    std::unique_lock<std::mutex> lock(mutex_);
-                    should_reconnect_ = true;
-                }
-            };
-            try {
-                if (client_is_wss_.value() == false) {
-                    const auto out_message = make_shared<WsClient::OutMessage>();
-                    *out_message << payload.dump();
-                    // the WsClient class is modified by us ("connection" property made public),
-                    // so we must maintain the lock manually
-                    unique_lock<mutex> lock(client_.ws->connection_mutex);
-                    client_.ws->connection->send(out_message, send_cb); // TODO: send 失败应当重新连接
-                    lock.unlock();
-                } else {
-                    const auto out_message = make_shared<WssClient::OutMessage>();
-                    *out_message << payload.dump();
-                    unique_lock<mutex> lock(client_.wss->connection_mutex);
-                    client_.wss->connection->send(out_message, send_cb);
-                    lock.unlock();
-                }
-            } catch (...) {
-                logging::warning(TAG, u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 失败");
+        logging::debug(TAG, u8"开始通过反向 WebSocket 客户端上报事件");
+
+        const auto send_cb = [=](const SimpleWeb::error_code &ec) {
+            if (!ec) {
+                logging::info_success(TAG, u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 成功");
+            } else {
+                logging::warning(TAG,
+                                 u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 失败，错误码："
+                                     + std::to_string(ec.value()) + u8"，将尝试重连");
+                std::unique_lock<std::mutex> lock(mutex_);
+                should_reconnect_ = true;
             }
+        };
+        try {
+            if (client_is_wss_.value() == false) {
+                const auto out_message = make_shared<WsClient::OutMessage>();
+                *out_message << payload.dump();
+                // the WsClient class is modified by us ("connection" property made public),
+                // so we must maintain the lock manually
+                unique_lock<mutex> lock(client_.ws->connection_mutex);
+                client_.ws->connection->send(out_message, send_cb); // TODO: send 失败应当重新连接
+                lock.unlock();
+            } else {
+                const auto out_message = make_shared<WssClient::OutMessage>();
+                *out_message << payload.dump();
+                unique_lock<mutex> lock(client_.wss->connection_mutex);
+                client_.wss->connection->send(out_message, send_cb);
+                lock.unlock();
+            }
+        } catch (...) {
+            logging::warning(TAG, u8"通过反向 WebSocket 客户端上报数据到 " + url_ + u8" 失败");
         }
     }
 
