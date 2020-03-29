@@ -82,10 +82,10 @@ port = 5701
 
 | 配置项名称 | 默认值 | 说明 |
 | -------- | ------ | --- |
-| `host` | `[::]` | HTTP 服务器监听的 IP |
+| `host` | `0.0.0.0` | HTTP 服务器监听的 IP |
 | `port` | `5700` | HTTP 服务器监听的端口 |
 | `use_http` | `true` | 是否开启 HTTP 接口，即通过 HTTP 调用 API，见 [通信方式的第一种](/CommunicationMethods#插件作为-http-服务端) |
-| `ws_host` | `[::]` | WebSocket 服务器监听的 IP |
+| `ws_host` | `0.0.0.0` | WebSocket 服务器监听的 IP |
 | `ws_port` | `6700` | WebSocket 服务器监听的端口 |
 | `use_ws` | `false` | 是否开启 WebSocket 服务器，可用于调用 API 和推送事件，见 [通信方式的第二种](/CommunicationMethods#插件作为-websocket-服务端) |
 | `ws_reverse_url` | 空 | 反向 WebSocket Event 和事件上报的共用地址 |
@@ -102,7 +102,7 @@ port = 5701
 | `post_message_format` | `string` | 上报消息格式，`string` 为字符串格式，`array` 为数组格式，具体见 [消息格式](/Message) |
 | `serve_data_files` | `false` | 是否提供请求 `data` 目录的文件的功能 |
 | `enable_cors` | `false` | 是否允许跨域请求 |
-| `update_source` | v4.12.3 之前 `github`<br>v4.12.3 及之后 `china` | 更新源，可选 `global`/`github` 和 `china`/`coding` |
+| `update_source` | v4.14.2 之前 `china`<br>v4.14.2 开始 `global` | 更新源 |
 | `update_channel` | `stable` | 更新通道，目前有 `stable`、`beta`、`alpha` 三个 |
 | `auto_check_update` | `false` | 是否自动检查更新（每次启用插件时检查），不启用的情况下，仍然可以在 酷Q 应用菜单中手动检查更新 |
 | `auto_perform_update` | `false` | 是否自动执行更新，仅在 `auto_check_update` 启用时有效，若启用，则插件将在自动检查到更新后，自动下载新版本（需要手动重启 酷Q 以生效） |
@@ -143,7 +143,7 @@ port = 5701
 
 ```json
 {
-    "update_source": "china",
+    "update_source": "global",
     "update_channel": "stable",
     "auto_check_update": true,
     "auto_perform_update": true
