@@ -10,10 +10,11 @@
             "type": "string",
             "title": "HTTP 服务器 IP",
             "description": "HTTP 服务器监听的 IP",
-            "default": "[::]",
+            "default": "0.0.0.0",
             "examples": [
                 "127.0.0.1",
-                "0.0.0.0"
+                "0.0.0.0",
+                "[::]"
             ],
             "pattern": "^(.*)$"
         },
@@ -36,10 +37,11 @@
             "type": "string",
             "title": "WebSocket 服务器 IP",
             "description": "WebSocket 服务器监听的 IP",
-            "default": "[::]",
+            "default": "0.0.0.0",
             "examples": [
                 "127.0.0.1",
-                "0.0.0.0"
+                "0.0.0.0",
+                "[::]"
             ],
             "pattern": "^(.*)$"
         },
@@ -184,13 +186,12 @@
             "$id": "#/properties/update_source",
             "type": "string",
             "title": "更新源",
-            "description": "更新源，可选 global/github 和 china/coding",
-            "default": "china",
+            "description": "更新源",
+            "default": "global",
             "examples": [
                 "global",
                 "github",
-                "china",
-                "coding"
+                "https://raw.githubusercontent.com/richardchien/coolq-http-api-release/master/"
             ],
             "pattern": "^(.*)$"
         },
