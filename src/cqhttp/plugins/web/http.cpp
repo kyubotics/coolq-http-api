@@ -198,7 +198,7 @@ namespace cqhttp::plugins {
 
             server_->config.thread_pool_size =
                 fix_server_thread_pool_size(ctx.config->get_integer("server_thread_pool_size", 4));
-            server_->config.address = ctx.config->get_string("host", "[::]");
+            server_->config.address = ctx.config->get_string("host", "0.0.0.0");
             server_->config.port = ctx.config->get_integer("port", 5700);
             thread_ = thread([&]() {
                 started_ = true;
