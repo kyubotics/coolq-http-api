@@ -3,19 +3,27 @@ import json
 import shutil
 import logging
 from configparser import ConfigParser
-from distutils.util import strtobool
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
+
+APP_ID = 'io.github.richardchien.coolqhttpapi'
 
 COOLQ_DIR = '/home/user/coolq'
 COOLQ_CONFIG_FILE = os.path.join(COOLQ_DIR, 'conf', 'CQP.cfg')
 COOLQ_APP_DIR = os.path.join(COOLQ_DIR, 'app')
-APP_ID = 'io.github.richardchien.coolqhttpapi'
-APP_DIR = os.path.join(COOLQ_APP_DIR, APP_ID)
+COOLQ_APP_DATA_DIR = os.path.join(COOLQ_DIR, 'data', 'app')
+
+APP_DIR_OLD = os.path.join(COOLQ_APP_DIR, APP_ID)
+APP_DIR = os.path.join(COOLQ_APP_DATA_DIR, APP_ID)
 APP_CONFIG_DIR = os.path.join(APP_DIR, 'config')
 VERSION_LOCK_FILE = os.path.join(APP_DIR, 'version.lock')
 
-CPK_FILE = '/home/user/io.github.richardchien.coolqhttpapi.cpk'
+CPK_NAME = f'{APP_ID}.cpk'
+CPK_FILE = f'/home/user/{CPK_NAME}'
+
+
+def strtobool(s):
+    return s.lower() in {'1', 'true', 'yes', 'on'}
 
 
 def touch(path):
@@ -23,11 +31,13 @@ def touch(path):
         os.utime(path, None)
 
 
+def makedirs(dir, mode=0o755, exist_ok=True):
+    os.makedirs(dir, mode=mode, exist_ok=exist_ok)
+
+
 def copy_cpk():
-    shutil.copyfile(
-        CPK_FILE,
-        os.path.join(COOLQ_APP_DIR, APP_ID + '.cpk')
-    )
+    makedirs(COOLQ_APP_DIR)
+    shutil.copyfile(CPK_FILE, os.path.join(COOLQ_APP_DIR, CPK_NAME))
 
 
 def enable_plugin():
@@ -97,10 +107,9 @@ def app_config_format():
 
 
 def write_app_config(config_name, app_config):
-    os.makedirs(APP_CONFIG_DIR, mode=0o755, exist_ok=True)
+    makedirs(APP_CONFIG_DIR)
     file_format = app_config_format()
-    with open(os.path.join(APP_CONFIG_DIR,
-                           config_name + '.' + file_format),
+    with open(os.path.join(APP_CONFIG_DIR, config_name + '.' + file_format),
               'w') as config_file:
         if file_format == 'json':
             json.dump(dict(app_config[config_name].items()),
@@ -109,17 +118,29 @@ def write_app_config(config_name, app_config):
             app_config.write(config_file)
 
 
+def move_old_app_dir():
+    if os.path.exists(APP_DIR_OLD) and not os.path.exists(APP_DIR):
+        logging.debug(f'检测到旧的插件数据，正在复制到新位置 {APP_DIR}……')
+        makedirs(os.path.dirname(APP_DIR))
+        shutil.copytree(APP_DIR_OLD, APP_DIR)
+        app_data_backup_dir = f'{APP_DIR_OLD.rstrip(os.path.sep)}.bak'
+        shutil.move(APP_DIR_OLD, app_data_backup_dir)
+        logging.debug(f'复制插件数据成功，旧的插件数据已备份在 {app_data_backup_dir}。')
+
+
 def bootstrap():
+    move_old_app_dir()
+
     if is_first_start():
         logging.debug('容器首次启动，开始初始化……')
-        os.makedirs(APP_DIR, exist_ok=True)
+        makedirs(APP_DIR)
         logging.debug('正在安装插件……')
         copy_cpk()
         touch(VERSION_LOCK_FILE)
         logging.debug('正在启用插件……')
         enable_plugin()
     elif version_locked():
-        logging.debug('插件版本已锁定，开始覆盖 cpk 文件……')
+        logging.debug('插件版本已锁定，正在覆盖 cpk 文件……')
         copy_cpk()
 
     config_name = os.getenv('COOLQ_ACCOUNT', 'general')
@@ -140,8 +161,12 @@ def bootstrap():
         remove_app_config(config_name, include_general=False)
         write_app_config(config_name, app_config)
 
-    logging.info('CoolQ HTTP API 插件 bootstrap 完成。')
+    logging.info('CQHTTP 插件 bootstrap 成功。')
 
 
 if __name__ == '__main__':
-    bootstrap()
+    try:
+        bootstrap()
+    except Exception as e:
+        logging.exception(e)
+        logging.error('CQHTTP 插件 bootstrap 失败。')
