@@ -13,3 +13,4 @@ DerivePointerAlignment: true
 PointerAlignment: Right
 AlignTrailingComments: false
 SpacesInContainerLiterals: false
+IncludeBlocks: Preserve
