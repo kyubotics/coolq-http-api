@@ -153,12 +153,13 @@ namespace cqhttp::utils::http {
         return nullopt;
     }
 
-    bool download_file(const string &url, const string &local_path, const bool use_fake_ua) {
+    bool download_file(const string &url, const string &local_path, const bool use_fake_ua, const long timeout) {
         auto succeeded = false;
         const auto ansi_local_path = ansi(local_path);
 
         auto request = curl::Request(
             url, {{"User-Agent", use_fake_ua ? CQHTTP_UTILS_HTTP_FAKE_UA : CQHTTP_USER_AGENT}, {"Referer", url}});
+        request.timeout = timeout;
 
         struct {
             size_t read_count;

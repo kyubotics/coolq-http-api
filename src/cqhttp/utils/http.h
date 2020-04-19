@@ -12,7 +12,8 @@
 namespace cqhttp::utils::http {
     std::optional<json> get_json(const std::string &url, bool use_fake_ua = false, const std::string &cookies = "");
 
-    bool download_file(const std::string &url, const std::string &local_path, bool use_fake_ua = false);
+    bool download_file(const std::string &url, const std::string &local_path, const bool use_fake_ua = false,
+                       const long timeout = 0);
 
     struct CaseInsensitiveCompare {
         bool operator()(const std::string &a, const std::string &b) const noexcept {
@@ -50,10 +51,10 @@ namespace cqhttp::utils::http {
         mutable std::optional<json> json_opt_;
     };
 
-    Response get(const std::string &url, Headers headers = {}, long timeout = 0);
+    Response get(const std::string &url, Headers headers = {}, const long timeout = 0);
     Response post(const std::string &url, const std::string &body = "", const std::string &content_type = "text/plain",
-                  long timeout = 0);
-    Response post(const std::string &url, const std::string &body, Headers headers, long timeout = 0);
+                  const long timeout = 0);
+    Response post(const std::string &url, const std::string &body, Headers headers = {}, const long timeout = 0);
 
     std::string url_encode(const std::string &text);
 } // namespace cqhttp::utils::http

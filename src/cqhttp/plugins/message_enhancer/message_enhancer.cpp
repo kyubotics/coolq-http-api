@@ -118,6 +118,11 @@ namespace cqhttp::plugins {
                 use_cache = to_bool(segment.data["cache"], true);
             }
 
+            auto timeout = 0L; // do not timeout by default
+            if (segment.data.find("timeout") != segment.data.end()) {
+                timeout = stol(segment.data["timeout"]);
+            }
+
             filename = md5_hash_hex(url) + "." + check_ext(url);
 
             make_file = [=] {
@@ -128,7 +133,7 @@ namespace cqhttp::plugins {
                     fs::remove(filepath_ws);
                 }
                 if (use_cache && fs::is_regular_file(filepath_ws) /* use cache */
-                    || utils::http::download_file(url, filepath, true) /* or perform download */) {
+                    || utils::http::download_file(url, filepath, true, timeout) /* or perform download */) {
                     logging::debug(TAG, u8"文件已缓存或下载成功，URL：" + url);
                     return true;
                 }
