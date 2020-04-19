@@ -118,16 +118,16 @@ namespace cqhttp::plugins {
                 use_cache = to_bool(segment.data["cache"], true);
             }
 
-            if (use_cache) {
-                filename = md5_hash_hex(url) + "." + check_ext(url);
-            } else {
-                filename = md5_hash_hex(url + to_string(random_int(1, 10000))) + "." + check_ext(url);
-            }
+            filename = md5_hash_hex(url) + "." + check_ext(url);
 
             make_file = [=] {
                 const auto filepath = data_file_full_path(data_dir, filename);
+                const auto filepath_ws = s2ws(filepath);
 
-                if (use_cache && fs::is_regular_file(s2ws(filepath)) /* use cache */
+                if (!use_cache && fs::is_regular_file(filepath_ws)) {
+                    fs::remove(filepath_ws);
+                }
+                if (use_cache && fs::is_regular_file(filepath_ws) /* use cache */
                     || utils::http::download_file(url, filepath, true) /* or perform download */) {
                     logging::debug(TAG, u8"文件已缓存或下载成功，URL：" + url);
                     return true;
