@@ -28,28 +28,7 @@
 
 ### 使用 Docker
 
-如果你使用 Docker 来部署服务，可以直接运行已制作好的 Docker 镜像，例如：
-
-```bash
-$ docker pull richardchien/cqhttp:latest
-$ mkdir coolq  # 用于存储 酷Q 的程序文件
-$ docker run -ti --rm --name cqhttp-test \
-             -v $(pwd)/coolq:/home/user/coolq \  # 将宿主目录挂载到容器内用于持久化 酷Q 的程序文件
-             -p 9000:9000 \  # noVNC 端口，用于从浏览器控制 酷Q
-             -p 5700:5700 \  # CQHTTP 插件开放的端口
-             -e COOLQ_ACCOUNT=123456 \ # 要登录的 QQ 账号，可选但建议填
-             -e CQHTTP_POST_URL=http://example.com:8080 \  # 事件上报地址
-             -e CQHTTP_SERVE_DATA_FILES=yes \  # 允许通过 HTTP 接口访问 酷Q 数据文件
-             richardchien/cqhttp:latest
-```
-
-其中，`CQHTTP_POST_URL`、`CQHTTP_SERVE_DATA_FILES` 是用于配置插件运行的，格式为「`CQHTTP_` + 插件配置项的大写」，具体的配置项，见 [配置](/Configuration)。
-
-然后访问 `http://<你的IP>:9000/` 进入 noVNC（默认密码 `MAX8char`），登录 酷Q，即可开始使用（插件已自动启用，配置文件也根据启动命令的环境变量自动生成了）。一般情况下，你不太需要关注插件是如何存在于容器中的。
-
-API 描述、事件上报等文档，见前面「手动安装」一节提供的指引链接。
-
-关于在 Docker 中使用本插件的更多细节，见 [Docker](/Docker)。
+如需使用 Docker 来部署服务，请参考 [Docker](/Docker)。
 
 ## 从旧版升级
 
