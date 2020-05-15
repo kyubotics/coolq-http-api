@@ -5,6 +5,8 @@ importScripts(
 const ALLOWED_HOSTS = [
   'cqhttp.cc',
   'cqhttp.bleatingsheep.org',
+  'img.shields.io',
+  'raw.githubusercontent.com',
   'unpkg.com'
 ]
 
