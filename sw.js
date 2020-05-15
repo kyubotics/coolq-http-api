@@ -4,7 +4,8 @@ importScripts(
 
 const ALLOWED_HOSTS = [
   'cqhttp.cc',
-  'cqhttp.bleatingsheep.org'
+  'cqhttp.bleatingsheep.org',
+  'unpkg.com'
 ]
 
 const matchCb = ({ url, event }) => {
