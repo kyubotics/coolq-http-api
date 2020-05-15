@@ -11,7 +11,7 @@ const ALLOWED_HOSTS = [
 ]
 
 const matchCb = ({ url, event }) => {
-  return event.request.method === 'GET' && ALLOWED_HOSTS.includes(url.host)
+  return true
 }
 
 workbox.routing.registerRoute(
