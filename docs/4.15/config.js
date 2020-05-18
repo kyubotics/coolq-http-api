@@ -1,5 +1,4 @@
 let config = {
-    title: 'CQHTTP 插件文档',
     home: 'Home.md',
     repo: 'richardchien/coolq-http-api',
     nav: [
