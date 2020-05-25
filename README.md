@@ -46,7 +46,8 @@
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | [frank-bots/cqhttp.Cyan](https://github.com/frank-bots/cqhttp.Cyan) | frankli0324 |
 |  | C# | Fleck | 反向 WebSocket | [cqbef/cqhttp.WebSocketReverse.NETCore](https://github.com/cqbef/cqhttp.WebSocketReverse.NETCore) | cqbef |
-|  | PowerShell | - | HTTP | [cqmoe/cqhttp-powershell-sdk](https://github.com/cqmoe/cqhttp-powershell-sdk) | richardchien |
+|  | PowerShell | .NET | HTTP | [cqmoe/cqhttp-powershell-sdk](https://github.com/cqmoe/cqhttp-powershell-sdk) | richardchien |
+|  | Lua | lua-http | HTTP | [cleoold/cqhttp-lua53-sdk](https://github.com/cleoold/cqhttp-lua53-sdk) | cleoold |
 
 ## 应用案例
 
