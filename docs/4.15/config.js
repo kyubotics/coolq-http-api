@@ -43,7 +43,7 @@ let config = {
                     title: 'CQ 码', path: '/CQCode'
                 },
                 {
-                    title: '表情 CQ 码 ID 表', path: '/CQCodeTable'
+                    title: '表情 CQ 码 ID 表', path: 'https://github.com/richardchien/coolq-http-api/wiki/表情-CQ-码-ID-表'
                 }
             ]
         },
