@@ -41,6 +41,9 @@ let config = {
                 },
                 {
                     title: 'CQ 码', path: '/CQCode'
+                },
+                {
+                    title: '表情 CQ 码 ID 表', path: '/CQCodeTable'
                 }
             ]
         },
