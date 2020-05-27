@@ -25,7 +25,7 @@
 
 | | 语言 | Web 框架 | 通信方式 | 地址 | 作者 |
 | --- | --- | --- | --- | --- | --- |
-| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [nonebot/nonebot](https://github.com/nonebot/nonebot) | richardchien |
+| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [nonebot/nonebot](https://github.com/nonebot/nonebot) | nonebot |
 | ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [cqmoe/python-aiocqhttp](https://github.com/cqmoe/python-aiocqhttp) | richardchien |
 |  | Python | Flask | HTTP | [cqmoe/python-cqhttp](https://github.com/cqmoe/python-cqhttp) | richardchien |
 | ⭐ | Node.js | WebSocket-Node | WebSocket | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
