@@ -1,5 +1,4 @@
 let config = {
-    title: 'CQHTTP 插件文档',
     home: 'Home.md',
     repo: 'richardchien/coolq-http-api',
     nav: [
@@ -42,6 +41,9 @@ let config = {
                 },
                 {
                     title: 'CQ 码', path: '/CQCode'
+                },
+                {
+                    title: '表情 CQ 码 ID 表', path: 'https://github.com/richardchien/coolq-http-api/wiki/表情-CQ-码-ID-表'
                 }
             ]
         },

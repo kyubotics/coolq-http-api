@@ -23,7 +23,7 @@
 
 对于下面这些语言的开发者，如果不想自己处理繁杂的请求和解析操作，可以尝试社区中开发者们已经封装好的的 SDK 或开发框架：
 
-| | 语言 | Web 框架 | 通信方式 | 地址 | 作者 |
+| | 语言 | Web 框架 | 通信方式 | 地址 | 核心作者 |
 | --- | --- | --- | --- | --- | --- |
 | ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [nonebot/nonebot](https://github.com/nonebot/nonebot) | richardchien<br>yanyongyu |
 | ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [nonebot/aiocqhttp](https://github.com/nonebot/aiocqhttp) | richardchien |
@@ -43,7 +43,9 @@
 | ⭐ | Go | 标准库 | **API:**<br>HTTP,<br>WebSocket<br>**Event:**<br>HTTP,<br>长轮询,<br>WebSocket,<br>反向 WebSocket | [catsworld/qq-bot-api](https://github.com/catsworld/qq-bot-api) | catsworld<br>rikakomoe |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket | [int-and-his-friends/Sisters.WudiLib](https://github.com/int-and-his-friends/Sisters.WudiLib) | bleatingsheep |
 | ⭐ | C# | 标准库 | HTTP,<br>WebSocket,<br>反向 WebSocket | [frank-bots/cqhttp.Cyan](https://github.com/frank-bots/cqhttp.Cyan) | frankli0324 |
-|  | PowerShell | - | HTTP | [cqmoe/cqhttp-powershell-sdk](https://github.com/cqmoe/cqhttp-powershell-sdk) | richardchien |
+|  | C# | Fleck | 反向 WebSocket | [cqbef/cqhttp.WebSocketReverse.NETCore](https://github.com/cqbef/cqhttp.WebSocketReverse.NETCore) | cqbef |
+|  | PowerShell | .NET | HTTP | [cqmoe/cqhttp-powershell-sdk](https://github.com/cqmoe/cqhttp-powershell-sdk) | richardchien |
+|  | Lua | lua-http | HTTP,<br>WebSocket | [cleoold/cqhttp-lua53-sdk](https://github.com/cleoold/cqhttp-lua53-sdk) | cleoold |
 
 ## 应用案例
 
@@ -77,6 +79,8 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [shidenggui/tuishujun-for-qq](https://github.com/shidenggui/tuishujun-for-qq) | 基于推书君的小说查询推荐 QQ 机器人 |
 | [JuerGenie/cn.juerwhang.jgbot](https://github.com/JuerGenie/cn.juerwhang.jgbot) | 基于 [JuerGenie/juerobot](https://github.com/JuerGenie/juerobot) 的娱乐用 QQ 机器人 |
 | [drsanwujiang/DiceRobot](https://github.com/drsanwujiang/DiceRobot) | 一个基于 coolq-http-api 插件的 TRPG 骰子机器人 |
+| [UltraSoundX/SDFMU-Library](https://github.com/UltraSoundX/SDFMU-Library) | 山东第一医科大图书馆预约机器人 |
+| [Quan666/ELF_RSS](https://github.com/Quan666/ELF_RSS) | 基于 NoneBot 的，交互式 RSS 订阅、转发机器人 |
 
 以上列出的只是实际应用中的一小部分，如果你使用本插件编写了任何好的应用案例或开发框架，也可以通过 issue 或 pull request 添加到这里的列表，共同充实社区。
 
