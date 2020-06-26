@@ -1,4 +1,4 @@
-# CQHTTP 插件
+# CQHTTP
 
 [![License](https://img.shields.io/github/license/richardchien/coolq-http-api.svg)](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/LICENSE)
 [![Build Status](https://img.shields.io/appveyor/ci/richardchien/coolq-http-api.svg)](https://ci.appveyor.com/project/richardchien/coolq-http-api)
@@ -11,7 +11,7 @@
 [![QQ 版本发布群](https://img.shields.io/badge/%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83%E7%BE%A4-218529254-green.svg)](https://jq.qq.com/?_wv=1027&k=5Nl0zhE)
 [![Telegram 版本发布频道](https://img.shields.io/badge/%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83%E9%A2%91%E9%81%93-join-green.svg)](https://t.me/cqhttp_release)
 
-通过 HTTP 或 WebSocket 对酷 Q 的事件进行上报以及接收请求来调用酷 Q 的 DLL 接口，从而可以使用其它语言编写酷 Q 插件。支持 Windows 7 和 Windows Server 2008 及更新版本，也可以运行在 Wine、Docker。
+通过 HTTP 或 WebSocket 对 [酷Q](https://cqp.cc/) 的事件进行上报以及接收请求来调用 酷Q 的 DLL 接口，从而可以使用其它语言编写 酷Q 插件。支持 Windows 7 和 Windows Server 2008 及更新版本，也可以运行在 Wine、Docker。
 
 ## 使用方法
 
@@ -25,12 +25,10 @@
 
 | | 语言 | Web 框架 | 通信方式 | 地址 | 作者 |
 | --- | --- | --- | --- | --- | --- |
-| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [nonebot/nonebot](https://github.com/nonebot/nonebot) | richardchien |
-| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [cqmoe/python-aiocqhttp](https://github.com/cqmoe/python-aiocqhttp) | richardchien |
-|  | Python | Flask | HTTP | [cqmoe/python-cqhttp](https://github.com/cqmoe/python-cqhttp) | richardchien |
+| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [nonebot/nonebot](https://github.com/nonebot/nonebot) | richardchien<br>yanyongyu |
+| ⭐ | Python | Quart | HTTP,<br>反向 WebSocket | [nonebot/aiocqhttp](https://github.com/nonebot/aiocqhttp) | richardchien |
 | ⭐ | Node.js | WebSocket-Node | WebSocket | [momocow/node-cq-websocket](https://github.com/momocow/node-cq-websocket) | momocow |
 | ⭐ | Node.js | Express | HTTP,<br>WebSocket | [koishijs/koishi](https://github.com/koishijs/koishi) | Shigma |
-|  | Node.js | Koa | HTTP | [cqmoe/cqhttp-node-sdk](https://github.com/cqmoe/cqhttp-node-sdk) | richardchien |
 |  | Node.js | WebSocket-Node | WebSocket | [CaoMeiYouRen/node-coolq-robot](https://github.com/CaoMeiYouRen/node-coolq-robot) | CaoMeiYouRen |
 |  | Node.js | Express | HTTP | [XHMM/lemon-bot](https://github.com/XHMM/lemon-bot) | XHMM |
 |  | JavaScript | - | WebSocket | [pandolia/js-bot](https://github.com/pandolia/js-bot) | pandolia |
@@ -84,7 +82,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 ## Nightly 版本
 
-如果你急需测试尚未发布的最新特性，可以前往 https://ci.appveyor.com/project/richardchien/coolq-http-api/build/artifacts 下载从 master 分支的最新代码构建出的 DLL 和 JSON 文件，将它们放入酷 Q 的 `app` 文件夹并开启酷 Q 的开发模式即可使用。
+如果你急需测试尚未发布的最新特性，可以前往 https://ci.appveyor.com/project/richardchien/coolq-http-api/build/artifacts 下载从 master 分支的最新代码构建出的 DLL 和 JSON 文件，将它们放入 酷Q 的 `app` 文件夹并开启 酷Q 的开发模式即可使用。
 
 **需要注意的是，master 分支所构建出的插件并不确保任何时候都是可用的，可能出现功能存在，但尚未完成的情况。**
 
@@ -145,13 +143,21 @@ powershell .\scripts\build.ps1 Debug
 - 感谢 酷Q 项目，为本插件的存在提供了可能
 - 感谢所有 SDK 作者，扩展了本插件的生态，使用户更容易上手
 - 感谢所有捐助者对我的鼓励，[这里](https://github.com/richardchien/thanks) 列出了捐助者名单（由于一些收款渠道无法知道对方是谁，如有遗漏请联系我修改）
+- 感谢 [sjdy521/Mojo-Webqq](https://github.com/sjdy521/Mojo-Webqq) 项目给本插件的接口设计提供了参考
 - 感谢所有用户反馈的 bug 和建议，使本插件不断完善
 
 ## 相似项目
 
+除了 CQHTTP，还有一些其它相似功能的插件：
+
 - [Hstb1230/http-to-cq](https://github.com/Hstb1230/http-to-cq)
 - [LEMOC](https://cqp.cc/t/29722)
 - [yukixz/cqsocketapi](https://github.com/yukixz/cqsocketapi)
+
+除了上述基于 酷Q 平台的插件，还有一些基于其它机器人平台、旨在兼容 CQHTTP 接口的项目，为 QQ 机器人开发社区注入了新的活力：
+
+- [yyuueexxiinngg/cqhttp-mirai](https://github.com/yyuueexxiinngg/cqhttp-mirai)（兼容部分 API）
+- [iTXTech/mirai-native](https://github.com/iTXTech/mirai-native)（通过直接加载 CQHTTP 的 DLL 实现）
 
 ## 捐助
 
