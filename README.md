@@ -81,6 +81,7 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 | [drsanwujiang/DiceRobot](https://github.com/drsanwujiang/DiceRobot) | 一个基于 coolq-http-api 插件的 TRPG 骰子机器人 |
 | [UltraSoundX/SDFMU-Library](https://github.com/UltraSoundX/SDFMU-Library) | 山东第一医科大图书馆预约机器人 |
 | [Quan666/ELF_RSS](https://github.com/Quan666/ELF_RSS) | 基于 NoneBot 的，交互式 RSS 订阅、转发机器人 |
+| [lz1998/Spring-CQ-web](https://github.com/lz1998/Spring-CQ-web) | 基于 SpringCQ 的机器人 web 控制台 |
 
 以上列出的只是实际应用中的一小部分，如果你使用本插件编写了任何好的应用案例或开发框架，也可以通过 issue 或 pull request 添加到这里的列表，共同充实社区。
 
