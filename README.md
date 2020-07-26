@@ -164,6 +164,7 @@ powershell .\scripts\build.ps1 Debug
 
 - [yyuueexxiinngg/cqhttp-mirai](https://github.com/yyuueexxiinngg/cqhttp-mirai)（兼容部分 API）
 - [iTXTech/mirai-native](https://github.com/iTXTech/mirai-native)（通过直接加载 CQHTTP 的 DLL 实现）
+- [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)（兼容部分 API）
 
 ## 捐助
 
