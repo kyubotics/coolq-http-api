@@ -1,7 +1,6 @@
 # CQHTTP
 
 [![License](https://img.shields.io/github/license/richardchien/coolq-http-api.svg)](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/LICENSE)
-[![Build Status](https://img.shields.io/appveyor/ci/richardchien/coolq-http-api.svg)](https://ci.appveyor.com/project/richardchien/coolq-http-api)
 [![Release](https://img.shields.io/github/release/richardchien/coolq-http-api.svg)](https://github.com/richardchien/coolq-http-api/releases)
 [![Download Count](https://img.shields.io/github/downloads/richardchien/coolq-http-api/total.svg)](https://github.com/richardchien/coolq-http-api/releases)
 [![Docker Build Status](https://img.shields.io/travis/richardchien/coolq-http-api.svg?label=docker%20build)](https://travis-ci.org/richardchien/coolq-http-api)
@@ -87,11 +86,11 @@ QQ 机器人可以用来做很多有意思的事情，下面列出一些基于�
 
 以上列出的只是实际应用中的一小部分，如果你使用本插件编写了任何好的应用案例或开发框架，也可以通过 issue 或 pull request 添加到这里的列表，共同充实社区。
 
-## Nightly 版本
+<!-- ## Nightly 版本
 
 如果你急需测试尚未发布的最新特性，可以前往 https://ci.appveyor.com/project/richardchien/coolq-http-api/build/artifacts 下载从 master 分支的最新代码构建出的 DLL 和 JSON 文件，将它们放入 酷Q 的 `app` 文件夹并开启 酷Q 的开发模式即可使用。
 
-**需要注意的是，master 分支所构建出的插件并不确保任何时候都是可用的，可能出现功能存在，但尚未完成的情况。**
+**需要注意的是，master 分支所构建出的插件并不确保任何时候都是可用的，可能出现功能存在，但尚未完成的情况。** -->
 
 ## 修改、编译
 
