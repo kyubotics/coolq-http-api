@@ -7,8 +7,9 @@
 [![Docker Build Status](https://img.shields.io/travis/richardchien/coolq-http-api.svg?label=docker%20build)](https://travis-ci.org/richardchien/coolq-http-api)
 [![Docker Pulls](https://img.shields.io/docker/pulls/richardchien/cqhttp.svg)](https://hub.docker.com/r/richardchien/cqhttp/)
 [![QQ 群](https://img.shields.io/badge/qq%E7%BE%A4-201865589-orange.svg)](https://jq.qq.com/?_wv=1027&k=5Euplde)
-[![QQ 版本发布群](https://img.shields.io/badge/%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83%E7%BE%A4-218529254-green.svg)](https://jq.qq.com/?_wv=1027&k=5Nl0zhE)
-[![Telegram 版本发布频道](https://img.shields.io/badge/%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83%E9%A2%91%E9%81%93-join-green.svg)](https://t.me/cqhttp_release)
+[![Telegram 群](https://img.shields.io/badge/telegram-chat-blue.svg)](https://t.me/cqhttp)
+
+**由于本人精力有限，且 酷Q 即将停止服务，本项目已停止维护，也不再会开发其它平台的同类插件，感谢大家一直以来的支持和鼓励！**
 
 通过 HTTP 或 WebSocket 对 [酷Q](https://cqp.cc/) 的事件进行上报以及接收请求来调用 酷Q 的 DLL 接口，从而可以使用其它语言编写 酷Q 插件。支持 Windows 7 和 Windows Server 2008 及更新版本，也可以运行在 Wine、Docker。
 
@@ -165,25 +166,3 @@ powershell .\scripts\build.ps1 Debug
 - [yyuueexxiinngg/cqhttp-mirai](https://github.com/yyuueexxiinngg/cqhttp-mirai)（兼容部分 API）
 - [iTXTech/mirai-native](https://github.com/iTXTech/mirai-native)（通过直接加载 CQHTTP 的 DLL 实现）
 - [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)（兼容部分 API）
-
-## 捐助
-
-本项目是我在业余时间开发并免费提供使用的，如果你觉得本插件挺好用，不妨进行捐助，别忘了备注你的 ID 或昵称，以便我添加到捐助者名单～
-
-你的捐助会让我更加有动力完善插件，感谢你的支持！
-
-### 爱发电
-
-https://afdian.net/@richardchien
-
-### 微信赞赏码
-
-![WeChat Donate](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/wechat-donate.png)
-
-### 支付宝转账
-
-![AliPay](https://raw.githubusercontent.com/richardchien/coolq-http-api/master/docs/alipay.png)
-
-### PayPal
-
-https://paypal.me/richardchien0
